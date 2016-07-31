@@ -1,0 +1,60 @@
+﻿@model ActivityReservation.Areas.Admin.ViewModels.LoginViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>登录 - 后台管理系统</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css"/>
+</head>
+<body>
+
+    <div class="container" style="max-width:30em;">
+        <header>
+            <h1 class="h1">登录<small>后台管理系统</small></h1>
+        </header>
+        <section>
+            <form class="form-signin" style="margin:2em auto">
+                <div class="form-group">
+                    <label for="inputUsername" class="sr-only">用户名</label>
+                    <input type="email" id="inputUsername" name="UserName" class="form-control" placeholder="用户名" required="required" autofocus>
+                </div>
+                <div>
+                    <label for="inputPassword" class="sr-only">密码</label>
+                    <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="密码" required>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" value="remember-me" name="rememberMe" id="rememberMe"> Remember me
+                    </label>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" type="button" id="btnLogin">登录</button>
+            </form>
+        </section>
+        <footer>
+            <p>&copy; @DateTime.Now.Year - @HttpContext.Current.Application["SystemTitle"] </p>
+        </footer>
+    </div>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        $("#btnLogin").on("click", function () {
+            var username = $("#inputUsername").val();
+            var password = $("#inputPassword").val();
+            var remember = $("#rememberMe").checked;
+            $.post("LogOn", {"UserName":username,"Password":password,"RememberMe":remember},function(data,status){
+                if (status=="success") {
+                    if(data){
+                        location.href = "/Admin/Home/Index";
+                    }
+                    else{
+                        alert("登录失败");
+                        $("#inputPassword").val();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

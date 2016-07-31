@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 
 namespace ActivityReservation.Areas.Admin.Controllers
-{    
+{        
     public class AccountController : Controller
     {
         /// <summary>
@@ -19,17 +19,31 @@ namespace ActivityReservation.Areas.Admin.Controllers
         /// Ajax 异步登录
         /// </summary>
         /// <returns>登录结果</returns>
-        public JsonResult LogOn()
+        [AllowAnonymous]
+        [HttpPost]
+        public JsonResult LogOn(ViewModels.LoginViewModel model)
         {
-            //TODO:是否登录成功逻辑添加
-
-            return Json("");
+            Models.User u = new Models.User() { UserName = model.UserName,UserPassword = model.Password};
+            //是否登录成功逻辑添加
+            Business.BLLUser handler = new Business.BLLUser();
+            u = handler.Login(u);
+            if (u!=null)
+            {
+                Helpers.AuthFormService.Login(model.UserName,model.RememberMe);
+                return Json(true);
+            }
+            return Json(false);
         }
 
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Logout()
         {
             //clear session
             Session.Clear();
+            Helpers.AuthFormService.Logout();
             //redirect to login page
             return RedirectToAction("Login");
         }

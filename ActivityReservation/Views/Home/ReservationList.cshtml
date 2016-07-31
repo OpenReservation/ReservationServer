@@ -1,0 +1,57 @@
+﻿@model ListModel<Models.Reservation>
+@{ 
+    Layout = null;
+}
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>活动室名称</th>
+            <th>预约使用时间</th>
+            <th>预约人姓名</th>
+            <th>预约人联系方式</th>
+            <th>预约时间</th>
+            <th>审核状态</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Models.Reservation item in Model.Data)
+        {
+            <tr>
+                <td>
+                    @item.Place
+                </td>
+                <td>
+                    @item.ReservationForTime
+                </td>
+                <td>
+                    @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                </td>
+                <td>
+                    @item.ReservationPersonName
+                </td>
+                <td>
+                    @item.ReservationPersonPhone
+                </td>
+                <td>
+                    @{
+                        switch (@item.ReservationStatus)
+                        {
+                            case 0:
+                                MvcHtmlString.Create("待审核");
+                                break;
+                            case 1:
+                                MvcHtmlString.Create("审核通过");
+                                break;
+                            case 2:
+                                MvcHtmlString.Create("审核未通过");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                </td>
+            </tr>
+            }        
+    </tbody>
+</table>
+@Html.Pager(Model.Pager);

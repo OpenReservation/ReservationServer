@@ -14,18 +14,9 @@ namespace ActivityReservation
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             //register system settings
-            RegisterSystemSettings();
+            SystemSettingsConfig.RegisterSystemSettings();
             //log4net init
             Common.LogHelper.LogInit(Server.MapPath("log4net.config"));
-        }
-
-        public void RegisterSystemSettings()
-        {
-            List<Models.SystemSettings> settings = new Business.BLLSystemSettings().GetAll();
-            foreach (Models.SystemSettings item in settings)
-            {
-                Application[item.SettingName] = item.SettingValue;
-            }
         }
     }
 }

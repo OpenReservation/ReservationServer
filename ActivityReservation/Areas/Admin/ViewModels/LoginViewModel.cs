@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace ActivityReservation.Areas.Admin.Models
+namespace ActivityReservation.Areas.Admin.ViewModels
 {
     public class LoginViewModel
     {

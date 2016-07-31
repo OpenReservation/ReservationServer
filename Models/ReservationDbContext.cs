@@ -7,7 +7,10 @@ namespace Models
         public ReservationDbContext() : base("name=ReservationConn")
         {
             //DbInit
+            //remove database
+            //Database.Delete();
             Database.SetInitializer(new ReservationDbInitializer());
+            //Database.SetInitializer(new DropCreateDatabaseIfModelChanges());
             //disable initializer
             //Database.SetInitializer<ReservationDbContext>(null);
         }

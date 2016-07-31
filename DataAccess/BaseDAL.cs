@@ -65,8 +65,15 @@ namespace DataAccess
 
         public T GetOne(Expression<Func<T, bool>> whereLambda)
         {
-            T t = db.Set<T>().Where(whereLambda).FirstOrDefault();
-            return t;
+            try
+            {
+                T t = db.Set<T>().Where(whereLambda).FirstOrDefault();
+                return t;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
         public List<T> GetAll()
@@ -112,16 +119,79 @@ namespace DataAccess
         /// <returns>符合要求的列表</returns>
         public virtual List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
         {
-            //查询总的记录数
-            rowsCount = db.Set<T>().Where(whereLambda).Count();
-            // 分页 一定注意： Skip 之前一定要 OrderBy
-            if (isAsc)
+            try
             {
-                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                //查询总的记录数
+                rowsCount = whereLambda == null ? db.Set<T>().Count() : db.Set<T>().Where(whereLambda).Count();
+                // 分页 一定注意： Skip 之前一定要 OrderBy
+                if (isAsc)
+                {
+                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                }
+                else
+                {
+                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                rowsCount = -1;
+                return null;
+            }            
+        }
+
+        /// <summary>
+        /// 获取分页数据，双排序
+        /// </summary>
+        /// <typeparam name="TKey">排序键值1</typeparam>
+        /// <typeparam name="TKey1">排序键值2</typeparam>
+        /// <param name="pageIndex">页码索引</param>
+        /// <param name="pageSize">页码容量，每页数据量</param>
+        /// <param name="rowsCount">符合条件的总数据量</param>
+        /// <param name="whereLambda">查询条件</param>
+        /// <param name="orderBy">排序条件1，首要排序条件</param>
+        /// <param name="orderby1">排序条件2，次要排序条件</param>
+        /// <param name="isAsc">首要排序条件的排序顺序，是否正序排列</param>
+        /// <param name="isAsc1">次要排序条件的排序顺序，是否正序排列 </param>
+        /// <returns>符合条件的数据集合</returns>
+        public virtual List<T> GetPagedList<TKey,TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,Expression<Func<T,TKey1>> orderby1, bool isAsc = true,bool isAsc1=true)
+        {
+            try
+            {
+                //查询总的记录数
+                rowsCount = db.Set<T>().Where(whereLambda).Count();
+                // 分页 一定注意： Skip 之前一定要 OrderBy
+                if (isAsc)
+                {
+                    if (isAsc1)
+                    {
+
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenBy(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                    else
+                    {
+
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                }
+                else
+                {
+                    if (isAsc1)
+                    {
+
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenBy(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                    else
+                    {
+
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                rowsCount = -1;
+                return null;
             }
         }
 

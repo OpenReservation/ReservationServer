@@ -93,6 +93,25 @@ namespace Business
             return dbHandler.GetPagedList(pageIndex, pageSize, out rowsCount, whereLambda, orderBy, isAsc);
         }
 
+        /// <summary>
+        /// 获取分页数据，双排序
+        /// </summary>
+        /// <typeparam name="TKey">排序键值1</typeparam>
+        /// <typeparam name="TKey1">排序键值2</typeparam>
+        /// <param name="pageIndex">页码索引</param>
+        /// <param name="pageSize">页码容量，每页数据量</param>
+        /// <param name="rowsCount">符合条件的总数据量</param>
+        /// <param name="whereLambda">查询条件</param>
+        /// <param name="orderBy">排序条件1，首要排序条件</param>
+        /// <param name="orderby1">排序条件2，次要排序条件</param>
+        /// <param name="isAsc">首要排序条件的排序顺序，是否正序排列</param>
+        /// <param name="isAsc1">次要排序条件的排序顺序，是否正序排列 </param>
+        /// <returns>符合条件的数据集合</returns>
+        public virtual List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true)
+        {
+            return dbHandler.GetPagedList(pageIndex, pageSize, out rowsCount, whereLambda, orderBy, orderby1, isAsc, isAsc1);
+        }
+
         #endregion 查询分页数据（返回符合要求的记录总数）+ GetPagedList
 
         /// <summary>

@@ -36,38 +36,61 @@ namespace Models
         private DateTime reservationTime = DateTime.Now;
 
         /// <summary>
+        /// 预约使用的日期
+        /// </summary>
+        private DateTime reservationForDate;
+
+        /// <summary>
         /// 预约使用时间
         /// </summary>
-        private DateTime reservationForTime;
+        private string reservationForTime;
+
+        /// <summary>
+        /// 预约状态
+        /// 0：待审核
+        /// 1：审核通过
+        /// 2：审核不通过
+        /// </summary>
+        private int reservationStatus=0;
+
+        /// <summary>
+        /// 更新人
+        /// </summary>
+        private string updateBy;
+
+        /// <summary>
+        /// 更新时间
+        /// </summary>
+        private DateTime updateTime;
 
         /// <summary>
         /// 预约时间段1
         /// </summary>
-        private bool t1;
+        private bool t1 = false;
         /// <summary>
         ///  预约时间段2
         /// </summary>
-        private bool t2;
+        private bool t2 = false;
         /// <summary>
         ///  预约时间段3
         /// </summary>
-        private bool t3;
+        private bool t3 = false;
         /// <summary>
         ///  预约时间段4
         /// </summary>
-        private bool t4;
+        private bool t4 = false;
         /// <summary>
         ///  预约时间段5
         /// </summary>
-        private bool t5;
+        private bool t5 = false;
         /// <summary>
         ///  预约时间段6
         /// </summary>
-        private bool t6;
+        private bool t6 = false;
         /// <summary>
         ///  预约时间段7
         /// </summary>
-        private bool t7;
+        private bool t7 = false;
 
         [Column]
         [Key]
@@ -143,7 +166,7 @@ namespace Models
             }
         }
         [Column]
-        public DateTime ReservationForTime
+        public String ReservationForTime
         {
             get
             {
@@ -246,6 +269,58 @@ namespace Models
             {
                 t7 = value;
             }
-        }        
+        }
+        [Column]
+        public int ReservationStatus
+        {
+            get
+            {
+                return reservationStatus;
+            }
+
+            set
+            {
+                reservationStatus = value;
+            }
+        }
+        [Column]
+        public string UpdateBy
+        {
+            get
+            {
+                return updateBy;
+            }
+
+            set
+            {
+                updateBy = value;
+            }
+        }
+        [Column]
+        public DateTime UpdateTime
+        {
+            get
+            {
+                return updateTime;
+            }
+
+            set
+            {
+                updateTime = value;
+            }
+        }
+        [Column]
+        public DateTime ReservationForDate
+        {
+            get
+            {
+                return reservationForDate;
+            }
+
+            set
+            {
+                reservationForDate = value;
+            }
+        }
     }
 }

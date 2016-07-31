@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActivityReservation.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,10 +16,17 @@ namespace ActivityReservation.Controllers
 
         public ActionResult ReservationList(int pageIndex=1,int pageSize=10)
         {
-            int a = 0;
+            int rowsCount = 0;
             //load data
-            List<Models.Reservation> list = new Business.BLLReservation().GetPagedList(pageIndex, pageSize, out a,null,m=>m.ReservationForTime,false);
-            return View(list);
+            List<Models.Reservation> list = new Business.BLLReservation().GetPagedList(pageIndex, pageSize,out rowsCount,m=>System.Data.Entity.DbFunctions.DiffDays(DateTime.Today,m.ReservationForDate)<=7,m=>m.ReservationForDate, m=>m.ReservationId,false,false);
+            PagerModel pager = new PagerModel(pageSize,rowsCount);
+            ListModel<Models.Reservation> dataList = new ListModel<Models.Reservation>() { Data = list, Pager = pager };
+            return View(dataList);
+        }
+
+        public ActionResult Reservate()
+        {
+            return View();
         }
 
         public ActionResult About()

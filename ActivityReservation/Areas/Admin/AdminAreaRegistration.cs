@@ -17,7 +17,8 @@ namespace ActivityReservation.Areas.Admin
             context.MapRoute(
                 "Admin_default",
                 "Admin/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
+                new { action = "Index", id = UrlParameter.Optional },
+                namespaces:new string[] { "ActivityReservation.Areas.Admin.Controllers" }
             );
         }
     }

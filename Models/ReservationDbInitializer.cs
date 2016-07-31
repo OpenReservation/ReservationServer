@@ -7,7 +7,7 @@ namespace Models
     internal class ReservationDbInitializer : IDatabaseInitializer<ReservationDbContext>
     {
         public void InitializeDatabase(ReservationDbContext context)
-        {
+        {            
             //数据库初始化，不存在则创建
             if (!context.Database.Exists())
             {

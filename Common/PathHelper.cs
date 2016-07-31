@@ -14,25 +14,6 @@ namespace Common
         {
             //拼接路径
             return System.Web.Hosting.HostingEnvironment.MapPath("~/")+ virtualPath;
-        }
-
-        /// <summary>
-        /// 获取文件列表
-        /// </summary>
-        /// <param name="dir">目录名</param>
-        /// <returns></returns>
-        public static List<FileModel> GetFileList(string dir)
-        {
-            string[] files = System.IO.Directory.GetFiles(dir);
-            List<FileModel>  fileList =new List<FileModel>();
-            FileModel model = null;
-            foreach (string item in files)
-            {
-                FileInfo info = new FileInfo(item);
-                model = new FileModel() { CreateTime = info.CreationTime, FileName = info.Name, FileSize = info.Length / 1024 ,FileExtension=info.Extension,FilePath=info.FullName};
-                fileList.Add(model);
-            }
-            return fileList;
-        }
+        }        
     }
 }

@@ -1,0 +1,140 @@
+﻿@model List<Models.ReservationPlace>
+
+@{
+    ViewBag.Title = "预约";
+}
+@section styles{
+    @Styles.Render("~/Content/jqueryui")
+    <style>
+        section {
+            display:none;
+            max-width:24em;
+            margin:1em auto;
+        }
+        ul {
+            list-style:none;
+        }
+    </style>
+}
+<div class="container text-center" style="padding:1em;" ng-app="ReservationApp">
+    @*<header>
+        <h2>预约</h2>
+    </header>*@
+    <div class="container" ng-controller="ReservateCtrl">
+        @* 选择预约日期 *@
+        <section id="secPickDate">
+            <p class="lead">选择预约日期</p>
+            <div id="datepicker"></div>
+        </section>
+        @* 选择预约活动室 *@
+        <section id="secActivityRoom">
+            <p class="lead">选择预约活动室</p>
+            <div id="placesList">
+                @if (Model.Count > 0)
+                {
+                    <ul>
+                        @foreach (Models.ReservationPlace place in Model)
+                        {
+                            <li>
+                                <label>
+                                    @place.PlaceName
+                                    <input type="radio" value="@place.PlaceId" name="place" />
+                                </label>
+                        </li>
+                        }
+                    </ul>
+                }                
+            </div>
+        </section>
+        @* 选择预约时间段 *@
+        <section id="secPickTimePeriod">
+            <p class="lead">选择预约时间段</p>
+            <div>                
+            </div>
+        </section>
+        @* 填写预约人信息 *@
+        <section id="secFillPersonInfo">
+            <p class="lead">填写预约人信息</p>
+            <div>
+
+            </div>
+        </section>
+        @* 确认预约信息 *@
+        <section id="secConfirmInfo">
+            <p class="lead">确认预约信息</p>
+            <div id="divConfirmInfo"></div>
+        </section>
+        <footer style="padding-top:15px">
+            <button ng-click="nextStep()" type="button" id="btnNext">下一步</button>
+        </footer>
+    </div>
+</div>
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/angular")
+    <script>
+        var sections = document.getElementsByTagName("section");
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+            $("#datepicker").children("div").css("margin","0 auto")
+        });
+        //angular
+        angular.module("ReservationApp", [])
+        .controller("ReservateCtrl", function ($scope) {
+            //model
+            $scope.reservationModel = {
+                ReservationPersonName: "",
+                ReservationPersonPhone: "",
+                ReservationPlaceId: "",
+                ReservationForDate: "",
+                ReservationForTime: "",
+                ReservationPlaceName: ""
+            };
+            //current step
+            $scope.step = 0;
+            sections[$scope.step].style.display = 'block';
+            //next
+            $scope.nextStep = function () {
+                switch ($scope.step) {
+                    case 0:
+                        //预约日期判断处理
+                        break;
+                    case 1:
+                        //预约地点 判断
+                        break;
+                    case 2:
+                        //预约时间段 判断
+                        break;
+                    case 3:
+                        //预约人信息 判断
+                        break;
+                    case 4:
+                        //预约信息确认
+                        break;
+                    default:
+                        break;
+                }
+                if ($scope.step < 4) {
+                    sections[$scope.step].style.display = 'none';
+                    $scope.step = $scope.step + 1;
+                    sections[$scope.step].style.display = 'block';
+                    if ($scope.step == 4) {
+                        $("#btnNext").text('确定');
+                    }
+                } else {
+                    //submit form
+
+                }
+            };
+            //previous
+            $scope.previousStep = function () {
+                sections[$scope.step].style.display = 'none';
+                $scope.step = $scope.step - 1;
+                sections[$scope.step].style.display = 'block';
+            };
+
+        });
+    </script>
+}
