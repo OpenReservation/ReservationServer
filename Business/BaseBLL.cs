@@ -59,6 +59,41 @@ namespace Business
         {
             return dbHandler.GetAll();
         }
+        /// <summary>
+        /// 查询所有数据并根据指定项排序
+        /// </summary>
+        /// <typeparam name="TKey">排序项</typeparam>
+        /// <param name="orderBy">排序表达式</param>
+        /// <param name="isAsc">是否是正序排列</param>
+        /// <returns></returns>
+        public List<T> GetAll<TKey>(Expression<Func<T, TKey>> orderBy, bool isAsc)
+        {
+            return dbHandler.GetAll(orderBy, isAsc);
+        }
+
+        /// <summary>
+        /// 查询符合条件的数据集合
+        /// </summary>
+        /// <param name="whereLambda">查询条件</param>
+        /// <returns></returns>
+        public List<T> GetAll(Expression<Func<T, bool>> whereLambda)
+        {
+            return dbHandler.GetAll(whereLambda);
+        }
+
+        /// <summary>
+        /// 根据指定条件查询数据并按指定项排序
+        /// </summary>
+        /// <typeparam name="TKey">排序项</typeparam>
+        /// <param name="whereLambda">查询条件</param>
+        /// <param name="orderBy">排序表达式</param>
+        /// <param name="isAsc">是否正序排列</param>
+        /// <returns></returns>
+        public List<T> GetAll<TKey>(Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc)
+        {
+            return dbHandler.GetAll(whereLambda, orderBy, isAsc);
+        }
+
 
         /// <summary>
         /// 查询分页数据 + List<T> GetPagedList

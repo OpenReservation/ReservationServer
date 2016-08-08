@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="BaseDAL.cs" />
     <Compile Include="DALCollection.cs" />
+    <Compile Include="DALReservation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

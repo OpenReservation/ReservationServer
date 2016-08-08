@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="BaseBLL.cs" />
     <Compile Include="BLLCollection.cs" />
+    <Compile Include="BLLReservation.cs" />
     <Compile Include="BLLUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

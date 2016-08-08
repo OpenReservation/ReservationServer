@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th>活动室名称</th>
+            <th>预约使用日期</th>
             <th>预约使用时间</th>
             <th>预约人姓名</th>
             <th>预约人联系方式</th>
@@ -18,13 +19,13 @@
         {
             <tr>
                 <td>
-                    @item.Place
+                    @item.Place.PlaceName
+                </td>
+                <td>
+                    @item.ReservationForDate.ToString("yyyy-MM-dd")
                 </td>
                 <td>
                     @item.ReservationForTime
-                </td>
-                <td>
-                    @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
                 </td>
                 <td>
                     @item.ReservationPersonName
@@ -33,22 +34,27 @@
                     @item.ReservationPersonPhone
                 </td>
                 <td>
+                    @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                </td>
+                <td>
                     @{
-                        switch (@item.ReservationStatus)
+                        string status = "待审核";
+                        switch (item.ReservationStatus)
                         {
                             case 0:
-                                MvcHtmlString.Create("待审核");
+                                status = "待审核";
                                 break;
                             case 1:
-                                MvcHtmlString.Create("审核通过");
+                                status = "审核通过";
                                 break;
                             case 2:
-                                MvcHtmlString.Create("审核未通过");
+                                status = "审核未通过";
                                 break;
                             default:
                                 break;
-                        }
+                        }                        
                     }
+                    @Html.Raw(status)
                 </td>
             </tr>
             }        

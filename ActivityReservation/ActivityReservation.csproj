@@ -148,7 +148,9 @@
     <Compile Include="Helpers\AuthFormService.cs" />
     <Compile Include="Helpers\ListModel.cs" />
     <Compile Include="Helpers\PagerHelper.cs" />
+    <Compile Include="Helpers\SearchHelperModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ReservationViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -159,6 +161,13 @@
     <Content Include="Content\jqueryui\images\ui-icons_777777_256x240.png" />
     <Content Include="Content\jqueryui\images\ui-icons_cc0000_256x240.png" />
     <Content Include="Content\jqueryui\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\layer\layer.js" />
+    <Content Include="Content\layer\skin\default\icon-ext.png" />
+    <Content Include="Content\layer\skin\default\icon.png" />
+    <Content Include="Content\layer\skin\default\loading-0.gif" />
+    <Content Include="Content\layer\skin\default\loading-1.gif" />
+    <Content Include="Content\layer\skin\default\loading-2.gif" />
+    <Content Include="Content\layer\skin\layer.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -215,7 +224,6 @@
     <Folder Include="Areas\Admin\Views\Home\" />
     <Folder Include="Areas\Admin\Views\ReservationManage\" />
     <Folder Include="Areas\Admin\Views\SystemSettings\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

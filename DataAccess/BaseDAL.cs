@@ -13,7 +13,7 @@ namespace DataAccess
         /// <summary>
         /// db operator
         /// </summary>
-        private Models.ReservationDbContext db = new Models.ReservationDbContext();
+        protected Models.ReservationDbContext db = new Models.ReservationDbContext();
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {
@@ -76,9 +76,62 @@ namespace DataAccess
             }
         }
 
+        /// <summary>
+        /// 查询所有数据
+        /// </summary>
+        /// <returns></returns>
         public List<T> GetAll()
         {
             return db.Set<T>().ToList();
+        }
+
+        /// <summary>
+        /// 查询所有数据并根据指定项排序
+        /// </summary>
+        /// <typeparam name="TKey">排序项</typeparam>
+        /// <param name="orderBy">排序表达式</param>
+        /// <param name="isAsc">是否是正序排列</param>
+        /// <returns></returns>
+        public List<T> GetAll<TKey>(Expression<Func<T, TKey>> orderBy,bool isAsc)
+        {
+            if (isAsc)
+            {
+                return db.Set<T>().OrderBy(orderBy).ToList();
+            }
+            else
+            {
+                return db.Set<T>().OrderByDescending(orderBy).ToList();
+            }
+        }
+        
+        /// <summary>
+        /// 查询符合条件的数据集合
+        /// </summary>
+        /// <param name="whereLambda">查询条件</param>
+        /// <returns></returns>
+        public List<T> GetAll(Expression<Func<T, bool>> whereLambda)
+        {
+            return db.Set<T>().Where(whereLambda).AsNoTracking().ToList();
+        }
+        
+        /// <summary>
+        /// 根据指定条件查询数据并按指定项排序
+        /// </summary>
+        /// <typeparam name="TKey">排序项</typeparam>
+        /// <param name="whereLambda">查询条件</param>
+        /// <param name="orderBy">排序表达式</param>
+        /// <param name="isAsc">是否正序排列</param>
+        /// <returns></returns>
+        public List<T> GetAll<TKey>(Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc)
+        {
+            if (isAsc)
+            {
+                return db.Set<T>().Where(whereLambda).OrderBy(orderBy).ToList();
+            }
+            else
+            {
+                return db.Set<T>().Where(whereLambda).OrderByDescending(orderBy).ToList();
+            }
         }
 
         /// <summary>

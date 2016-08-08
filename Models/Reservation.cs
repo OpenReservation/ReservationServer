@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace Models
 {
@@ -51,7 +48,12 @@ namespace Models
         /// 1：审核通过
         /// 2：审核不通过
         /// </summary>
-        private int reservationStatus=0;
+        private int reservationStatus = 0;
+
+        /// <summary>
+        /// 预约人的IP
+        /// </summary>
+        private string reservationFromIp;
 
         /// <summary>
         /// 更新人
@@ -65,32 +67,40 @@ namespace Models
 
         /// <summary>
         /// 预约时间段1
+        /// true:可预约，false:不可预约
+        /// 预约之后某个时间段由true变为false
         /// </summary>
-        private bool t1 = false;
+        private bool t1 = true;
+
         /// <summary>
         ///  预约时间段2
         /// </summary>
-        private bool t2 = false;
+        private bool t2 = true;
+
         /// <summary>
         ///  预约时间段3
         /// </summary>
-        private bool t3 = false;
+        private bool t3 = true;
+
         /// <summary>
         ///  预约时间段4
         /// </summary>
-        private bool t4 = false;
+        private bool t4 = true;
+
         /// <summary>
         ///  预约时间段5
         /// </summary>
-        private bool t5 = false;
+        private bool t5 = true;
+
         /// <summary>
         ///  预约时间段6
         /// </summary>
-        private bool t6 = false;
+        private bool t6 = true;
+
         /// <summary>
         ///  预约时间段7
         /// </summary>
-        private bool t7 = false;
+        private bool t7 = true;
 
         [Column]
         [Key]
@@ -135,22 +145,6 @@ namespace Models
             }
         }
 
-        [Column]
-        [ForeignKey("Place")]
-        public Guid ReservationPlaceId
-        {
-            get
-            {
-                return reservationPlaceId;
-            }
-
-            set
-            {
-                reservationPlaceId = value;
-            }
-        }
-
-        public ReservationPlace Place { get; set; }
 
         [Column]
         public DateTime ReservationTime
@@ -165,6 +159,7 @@ namespace Models
                 reservationTime = value;
             }
         }
+
         [Column]
         public String ReservationForTime
         {
@@ -192,6 +187,7 @@ namespace Models
                 t1 = value;
             }
         }
+
         [Column]
         public bool T2
         {
@@ -205,6 +201,7 @@ namespace Models
                 t2 = value;
             }
         }
+
         [Column]
         public bool T3
         {
@@ -218,6 +215,7 @@ namespace Models
                 t3 = value;
             }
         }
+
         [Column]
         public bool T4
         {
@@ -231,6 +229,7 @@ namespace Models
                 t4 = value;
             }
         }
+
         [Column]
         public bool T5
         {
@@ -244,6 +243,7 @@ namespace Models
                 t5 = value;
             }
         }
+
         [Column]
         public bool T6
         {
@@ -257,6 +257,7 @@ namespace Models
                 t6 = value;
             }
         }
+
         [Column]
         public bool T7
         {
@@ -270,6 +271,7 @@ namespace Models
                 t7 = value;
             }
         }
+
         [Column]
         public int ReservationStatus
         {
@@ -283,6 +285,7 @@ namespace Models
                 reservationStatus = value;
             }
         }
+
         [Column]
         public string UpdateBy
         {
@@ -296,6 +299,7 @@ namespace Models
                 updateBy = value;
             }
         }
+
         [Column]
         public DateTime UpdateTime
         {
@@ -309,6 +313,7 @@ namespace Models
                 updateTime = value;
             }
         }
+
         [Column]
         public DateTime ReservationForDate
         {
@@ -322,5 +327,37 @@ namespace Models
                 reservationForDate = value;
             }
         }
+
+        [Column]
+        public string ReservationFromIp
+        {
+            get
+            {
+                return reservationFromIp;
+            }
+
+            set
+            {
+                reservationFromIp = value;
+            }
+        }
+
+        [Column]
+        [ForeignKey("Place")]
+        public Guid ReservationPlaceId
+        {
+            get
+            {
+                return reservationPlaceId;
+            }
+
+            set
+            {
+                reservationPlaceId = value;
+            }
+        }
+
+        public ReservationPlace Place { get; set; }
+
     }
 }

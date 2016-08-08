@@ -52,7 +52,7 @@ namespace ActivityReservation.Helpers
 
         public int PageSize { get; set; }
 
-        public int PageCount { get { return Convert.ToInt32(Math.Floor(TotalCount * 1.0 / PageSize)); } }
+        public int PageCount { get; private set; }
 
         public int TotalCount { get; set; }
 
@@ -61,6 +61,7 @@ namespace ActivityReservation.Helpers
             PageIndex = 1;
             PageSize = 10;
             TotalCount = totalCount;
+            PageCount = Convert.ToInt32(Math.Ceiling(TotalCount * 1.0 / PageSize));
         }
 
         public PagerModel(int pageSize, int totalCount)
@@ -68,6 +69,15 @@ namespace ActivityReservation.Helpers
             PageIndex = 1;
             PageSize = pageSize;
             TotalCount = totalCount;
+            PageCount = Convert.ToInt32(Math.Ceiling(TotalCount * 1.0 / PageSize));
+        }
+
+        public PagerModel(int pageIndex, int pageSize, int totalCount)
+        {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            TotalCount = totalCount;
+            PageCount = Convert.ToInt32(Math.Ceiling(TotalCount * 1.0 / PageSize));
         }
     }
 }

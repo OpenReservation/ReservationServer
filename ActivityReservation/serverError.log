@@ -1,0 +1,308 @@
+2016-08-04 00:23:12,452 [5] ERROR ActivityReservation.Controllers.HomeController - 更新条目时出错。有关详细信息，请参阅内部异常。
+System.Data.Entity.Infrastructure.DbUpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.Entity.Core.UpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.SqlClient.SqlException: 从 datetime2 数据类型到 datetime 数据类型的转换产生一个超出范围的值。
+语句已终止。
+   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.<NonQuery>b__0(DbCommand t, DbCommandInterceptionContext`1 c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.NonQuery(DbCommand command, DbCommandInterceptionContext interceptionContext)
+   在 System.Data.Entity.Internal.InterceptableDbCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Core.Mapping.Update.Internal.DynamicUpdateCommand.Execute(Dictionary`2 identifierValues, List`1 generatedValues)
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.<Update>b__2(UpdateTranslator ut)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update[T](T noChangesResult, Func`2 updateFunction)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update()
+   在 System.Data.Entity.Core.Objects.ObjectContext.<SaveChangesToStore>b__35()
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesToStore(SaveOptions options, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClass2a.<SaveChangesInternal>b__27()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesInternal(SaveOptions options, Boolean executeInExistingTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 DataAccess.BaseDaL`1.Add(T t) 位置 E:\works\web\ActivityReservation\DataAccess\BaseDAL.cs:行号 39
+   在 Business.BaseBLL`1.Add(T t) 位置 E:\works\web\ActivityReservation\Business\BaseBLL.cs:行号 25
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(Reservation model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 52
+2016-08-07 16:00:24,172 [7] ERROR ActivityReservation.Controllers.HomeController - 更新条目时出错。有关详细信息，请参阅内部异常。
+System.Data.Entity.Infrastructure.DbUpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.Entity.Core.UpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.SqlClient.SqlException: 从 datetime2 数据类型到 datetime 数据类型的转换产生一个超出范围的值。
+语句已终止。
+   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.<NonQuery>b__0(DbCommand t, DbCommandInterceptionContext`1 c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.NonQuery(DbCommand command, DbCommandInterceptionContext interceptionContext)
+   在 System.Data.Entity.Internal.InterceptableDbCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Core.Mapping.Update.Internal.DynamicUpdateCommand.Execute(Dictionary`2 identifierValues, List`1 generatedValues)
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.<Update>b__2(UpdateTranslator ut)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update[T](T noChangesResult, Func`2 updateFunction)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update()
+   在 System.Data.Entity.Core.Objects.ObjectContext.<SaveChangesToStore>b__35()
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesToStore(SaveOptions options, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClass2a.<SaveChangesInternal>b__27()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesInternal(SaveOptions options, Boolean executeInExistingTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 DataAccess.BaseDaL`1.Add(T t) 位置 E:\works\web\ActivityReservation\DataAccess\BaseDAL.cs:行号 39
+   在 Business.BaseBLL`1.Add(T t) 位置 E:\works\web\ActivityReservation\Business\BaseBLL.cs:行号 25
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 165
+2016-08-07 16:34:35,222 [5] ERROR ActivityReservation.Controllers.HomeController - 更新条目时出错。有关详细信息，请参阅内部异常。
+System.Data.Entity.Infrastructure.DbUpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.Entity.Core.UpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.SqlClient.SqlException: 从 datetime2 数据类型到 datetime 数据类型的转换产生一个超出范围的值。
+语句已终止。
+   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.<NonQuery>b__0(DbCommand t, DbCommandInterceptionContext`1 c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.NonQuery(DbCommand command, DbCommandInterceptionContext interceptionContext)
+   在 System.Data.Entity.Internal.InterceptableDbCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Core.Mapping.Update.Internal.DynamicUpdateCommand.Execute(Dictionary`2 identifierValues, List`1 generatedValues)
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.<Update>b__2(UpdateTranslator ut)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update[T](T noChangesResult, Func`2 updateFunction)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update()
+   在 System.Data.Entity.Core.Objects.ObjectContext.<SaveChangesToStore>b__35()
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesToStore(SaveOptions options, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClass2a.<SaveChangesInternal>b__27()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesInternal(SaveOptions options, Boolean executeInExistingTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 DataAccess.BaseDaL`1.Add(T t) 位置 E:\works\web\ActivityReservation\DataAccess\BaseDAL.cs:行号 39
+   在 Business.BaseBLL`1.Add(T t) 位置 E:\works\web\ActivityReservation\Business\BaseBLL.cs:行号 25
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 167
+2016-08-07 16:37:02,916 [5] ERROR ActivityReservation.Controllers.HomeController - 更新条目时出错。有关详细信息，请参阅内部异常。
+System.Data.Entity.Infrastructure.DbUpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.Entity.Core.UpdateException: 更新条目时出错。有关详细信息，请参阅内部异常。 ---> System.Data.SqlClient.SqlException: 从 datetime2 数据类型到 datetime 数据类型的转换产生一个超出范围的值。
+语句已终止。
+   在 System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   在 System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+   在 System.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   在 System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async, Int32 timeout, Task& task, Boolean asyncWrite, SqlDataReader ds, Boolean describeParameterEncryptionRequest)
+   在 System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, TaskCompletionSource`1 completion, Int32 timeout, Task& task, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(TaskCompletionSource`1 completion, String methodName, Boolean sendToPipe, Int32 timeout, Boolean asyncWrite)
+   在 System.Data.SqlClient.SqlCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.<NonQuery>b__0(DbCommand t, DbCommandInterceptionContext`1 c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext,TResult](TTarget target, Func`3 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbCommandDispatcher.NonQuery(DbCommand command, DbCommandInterceptionContext interceptionContext)
+   在 System.Data.Entity.Internal.InterceptableDbCommand.ExecuteNonQuery()
+   在 System.Data.Entity.Core.Mapping.Update.Internal.DynamicUpdateCommand.Execute(Dictionary`2 identifierValues, List`1 generatedValues)
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.<Update>b__2(UpdateTranslator ut)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update[T](T noChangesResult, Func`2 updateFunction)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update()
+   在 System.Data.Entity.Core.Objects.ObjectContext.<SaveChangesToStore>b__35()
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesToStore(SaveOptions options, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClass2a.<SaveChangesInternal>b__27()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesInternal(SaveOptions options, Boolean executeInExistingTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 DataAccess.BaseDaL`1.Add(T t) 位置 E:\works\web\ActivityReservation\DataAccess\BaseDAL.cs:行号 39
+   在 Business.BaseBLL`1.Add(T t) 位置 E:\works\web\ActivityReservation\Business\BaseBLL.cs:行号 25
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 167
+2016-08-07 22:19:54,427 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:19:57,497 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:19:59,755 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:01,680 [8] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:02,495 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:03,127 [9] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:03,155 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:03,448 [9] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:03,474 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:04,241 [9] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:04,273 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:04,567 [11] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:04,597 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:04,948 [10] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:04,977 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:05,436 [11] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:05,479 [11] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:05,794 [8] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:05,818 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:06,141 [9] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:07,120 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:07,140 [8] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:07,447 [9] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:08,154 [8] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:08,177 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
+2016-08-07 22:20:40,143 [6] ERROR ActivityReservation.Controllers.HomeController - 输入字符串的格式不正确。
+System.FormatException: 输入字符串的格式不正确。
+   在 System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   在 System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   在 System.Convert.ToInt32(String value)
+   在 ActivityReservation.Controllers.HomeController.MakeReservation(ReservationViewModel model) 位置 E:\works\web\ActivityReservation\ActivityReservation\Controllers\HomeController.cs:行号 147
