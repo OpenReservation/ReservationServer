@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 
 namespace ActivityReservation.Helpers
 {
-    public class ListModel<T> where T:class,new()
+    public class PagedListModel<T> where T : class, new()
     {
         public List<T> Data { get; set; }
 

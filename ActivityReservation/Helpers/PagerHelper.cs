@@ -12,33 +12,28 @@ namespace ActivityReservation.Helpers
         public static MvcHtmlString Pager(this HtmlHelper helper, PagerModel pager)
         {
             StringBuilder sbHtmlText = new StringBuilder();
-            sbHtmlText.Append("<div class='form-inline pager' style='text-align:center;padding:10px;'>");
+            sbHtmlText.Append("<div style=\"text-align:center\"><nav><ul  class=\"pagination\">");
             if (pager.PageIndex <= 1)
             {
-                sbHtmlText.Append("<button type='button' class='btn btn-link disabled' disabled='disabled'>第一页</button>");
-                sbHtmlText.Append("<button type='button' class='btn btn-link disabled' disabled='disabled'>上一页</button>");
+                sbHtmlText.Append("<li class=\"disabled\"><a href=\"javascript:void()\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>");
             }
             else
             {
-                sbHtmlText.Append("<button type='button' class='btn btn-link' onclick='loadData(1)'>上一页</button>");
-                sbHtmlText.AppendFormat("<button type='button' class='btn btn-link' onclick='loadData({0})'>上一页</button>", pager.PageIndex - 1);
-                sbHtmlText.AppendFormat("&nbsp;<button type = 'button' class='btn btn-link' onclick = 'loadData({0})'> {0} </button>", pager.PageIndex - 1);
+                sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\" aria-label=\"{0}\"><span aria-hidden=\"true\">&laquo;</span></a></li>", pager.PageIndex - 1);
+                sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\">{0}</a></li>", pager.PageIndex - 1);
             }
-            sbHtmlText.AppendFormat("<span><strong>{0}</strong></span>", pager.PageIndex);
+            sbHtmlText.AppendFormat("<li class=\"active\"><a href=\"javascript:void()\">{0}<span class=\"sr-only\">(current)</span></a></li>", pager.PageIndex);
             if (pager.PageIndex >= pager.PageCount)
             {
-                sbHtmlText.Append("<button type='button' class='btn btn-link disabled' disabled='disabled'>下一页</button>&nbsp;");
-                sbHtmlText.Append("<button type='button' class='btn btn-link disabled' disabled='disabled'>最后一页</button>");
+                sbHtmlText.Append("<li class=\"disabled\"><a href=\"javascript:void()\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>");
             }
             else
             {
-                sbHtmlText.AppendFormat("<button type = 'button' class='btn btn-link' onclick = 'loadData({0})'> {0} </button>", pager.PageIndex + 1);
-                sbHtmlText.AppendFormat("<button type='button' class='btn btn-link' onclick='loadData({0})'>下一页</button>", pager.PageIndex + 1);
-                sbHtmlText.AppendFormat("<button type='button' class='btn btn-link' onclick='loadData({0})'>最后一页</button>", pager.PageSize);
+                sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\">{0}</a></li>", pager.PageIndex + 1);
+                sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>", pager.PageIndex + 1);
             }
-
-            sbHtmlText.AppendFormat("<div style='display:inline-block'><span>每页有<strong>{0}</strong>条数据，一共有<strong>{1}</strong>页，总计<strong>{2}</strong>条数据</span></div>", pager.PageSize, pager.PageCount, pager.TotalCount);
-            sbHtmlText.Append("</div>");
+            sbHtmlText.Append("</ul></nav>");
+            sbHtmlText.AppendFormat("<div><span>每页有<strong>{0}</strong>条数据，一共有<strong>{1}</strong>页，总计<strong>{2}</strong>条数据</span></div></div>", pager.PageSize, pager.PageCount, pager.TotalCount);            
             return MvcHtmlString.Create(sbHtmlText.ToString());
         }
     }

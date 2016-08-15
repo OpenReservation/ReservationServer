@@ -6,9 +6,13 @@ using System.Web.Mvc;
 
 namespace ActivityReservation.Areas.Admin.Controllers
 {
+    /// <summary>
+    /// 系统设置
+    /// </summary>
+    [Authorize]
+    [Filters.AdminPermissionRequired]
     public class SystemSettingsController : Controller
     {
-        // GET: Admin/SystemSettings
         public ActionResult Index()
         {
             return View();

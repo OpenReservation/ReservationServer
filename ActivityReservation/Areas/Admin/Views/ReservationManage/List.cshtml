@@ -1,5 +1,6 @@
-﻿@model PagedListModel<Models.Reservation>
-@{ 
+﻿@using ActivityReservation.Helpers;
+@model PagedListModel<Models.Reservation>
+@{
     Layout = null;
 }
 <table class="table table-hover">
@@ -14,18 +15,16 @@
             <th>预约人联系方式</th>
             <th>预约时间</th>
             <th>审核状态</th>
-            <th></th>
+            <th>审核操作</th>
         </tr>
     </thead>
     <tbody>
         @foreach (Models.Reservation item in Model.Data)
         {
-            string status = "待审核", className = "";
+            string status = "待审核",className = "";
             switch (item.ReservationStatus)
             {
                 case 0:
-                    status = "待审核";
-                    className = "";
                     break;
                 case 1:
                     status = "审核通过";
@@ -63,14 +62,19 @@
                 <td>
                     @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
                 </td>
-                <td>
+                <td>                    
                     @Html.Raw(status)
                 </td>
-                <td>
-                    <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
+                <td id="td_@item.ReservationId">
+                    <button class="btn btn-danger" onclick="DeleteReservation('@item.ReservationId')">删除</button>
+                    @if (item.ReservationStatus == 0)
+                    {
+                        <button onclick="UpdateStatus('@item.ReservationId',1)" class="btn btn-success">通过</button>
+                        <button onclick="UpdateStatus('@item.ReservationId',-1)" class="btn btn-warning">不通过</button>
+                    }
                 </td>
             </tr>
-            }        
+        }
     </tbody>
 </table>
 @Html.Pager(Model.Pager)

@@ -31,9 +31,9 @@ namespace Models
                 //block types init
                 List<BlockType> blockTypes = new List<BlockType>()
             {
-                new BlockType() { TypeId = Guid.NewGuid(), TypeName = "Phone" },
-                new BlockType() { TypeId = Guid.NewGuid(), TypeName = "IpAddress" },
-                new BlockType() { TypeId = Guid.NewGuid(), TypeName = "PersonName" }
+                new BlockType() { TypeId = Guid.NewGuid(), TypeName = "联系方式" },
+                new BlockType() { TypeId = Guid.NewGuid(), TypeName = "Ip地址" },
+                new BlockType() { TypeId = Guid.NewGuid(), TypeName = "预约人姓名" }
             };
                 context.BlockTypes.AddRange(blockTypes);
                 //Places init
@@ -49,8 +49,8 @@ namespace Models
                 //sys settings init
                 List<SystemSettings> settings = new List<SystemSettings>()
             {
-                new SystemSettings() { SettingId = Guid.NewGuid(),SettingName = "SystemTitle",SettingValue="ReservationSystem"},
-                new SystemSettings() { SettingId = Guid.NewGuid(),SettingName = "AdminBlockIpAddress",SettingValue="192.168.1.100"}
+                new SystemSettings() { SettingId = Guid.NewGuid(),SettingName = "SystemTitle",DisplayName="系统标题",SettingValue="活动室预约系统"},
+                new SystemSettings() { SettingId = Guid.NewGuid(),SettingName = "SystemKeyWords",DisplayName="系统关键词",SettingValue="预约,活动室,河南理工大学"}
             };
                 context.SystemSettings.AddRange(settings);
                 //update db

@@ -10,8 +10,10 @@ namespace ActivityReservation.Controllers
 {
     public class HomeController : Controller
     {
+        /// <summary>
+        /// logger
+        /// </summary>
         private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
-
         public ActionResult Index()
         {
             return View();
@@ -23,7 +25,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult ReservationList(SearchHelperModel search)
         {
-            Expression<Func<Models.Reservation, bool>> whereLambda = (m => System.Data.Entity.DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 && System.Data.Entity.DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0);
+            Expression<Func<Models.Reservation, bool>> whereLambda = (m => System.Data.Entity.DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 && System.Data.Entity.DbFunctions.DiffDays(DateTime.Today,m.ReservationForDate) >= 0);
             int rowsCount = 0;
             //补充查询条件
             //根据预约日期查询
@@ -34,12 +36,12 @@ namespace ActivityReservation.Controllers
             //根据预约人联系方式查询
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLambda = (m => m.ReservationPersonPhone == search.SearchItem1 && System.Data.Entity.DbFunctions.DiffDays(m.ReservationForDate, DateTime.Today) <= 7 && System.Data.Entity.DbFunctions.DiffDays(m.ReservationForDate, DateTime.Today) >= 0);
+                whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
             }
             //load data
             List<Models.Reservation> list = new Business.BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out rowsCount,whereLambda, m=>m.ReservationForDate, m=>m.ReservationTime,false,false);
             PagerModel pager = new PagerModel(search.PageIndex,search.PageSize, rowsCount);
-            ListModel<Models.Reservation> dataList = new ListModel<Models.Reservation>() { Data = list, Pager = pager };
+            PagedListModel<Models.Reservation> dataList = new PagedListModel<Models.Reservation>() { Data = list, Pager = pager };
             return View(dataList);
         }       
         /// <summary>
@@ -59,60 +61,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult GetAvailablePeriods(DateTime dt,Guid placeId)
         {
-            List<Models.Reservation> reservationList = new Business.BLLReservation().GetAll(r=> System.Data.Entity.DbFunctions.DiffDays(r.ReservationForDate,dt)==0&& r.ReservationPlaceId == placeId);
-            bool[] periodsStatus = new bool[7] { true,true,true,true,true,true,true} ;
-            foreach (Models.Reservation item in reservationList)
-            {
-                if (periodsStatus[0])
-                {
-                    if (!item.T1)
-                    {
-                        periodsStatus[0] = false;
-                    }
-                }
-                if (periodsStatus[1])
-                {
-                    if (!item.T2)
-                    {
-                        periodsStatus[1] = false;
-                    }
-                }
-                if (periodsStatus[2])
-                {
-                    if (!item.T3)
-                    {
-                        periodsStatus[2] = false;
-                    }
-                }
-                if (periodsStatus[3])
-                {
-                    if (!item.T4)
-                    {
-                        periodsStatus[3] = false;
-                    }
-                }
-                if (periodsStatus[4])
-                {
-                    if (!item.T5)
-                    {
-                        periodsStatus[4] = false;
-                    }
-                }
-                if (periodsStatus[5])
-                {
-                    if (!item.T6)
-                    {
-                        periodsStatus[5] = false;
-                    }
-                }
-                if (periodsStatus[6])
-                {
-                    if (!item.T7)
-                    {
-                        periodsStatus[6] = false;
-                    }
-                }                
-            }
+            bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(dt, placeId);
             return Json(periodsStatus);
         }
         /// <summary>
@@ -126,13 +75,39 @@ namespace ActivityReservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    //预约时间段分割
                     string[] periodIds = model.ReservationForTimeIds.Split(',');
+                    //1.判断预约日期是否在可预约范围内【0~7】                    
+                    if (!ReservationHelper.IsReservationForDateAvailabel(model.ReservationForDate))
+                    {
+                        //预约日期不可用
+                        return Json(false);
+                    }
+                    //2.对预约时间段判断，判断该时间段是否被预约
+                    bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(model.ReservationForDate, model.ReservationPlaceId);
+                    foreach (string item in periodIds)
+                    {
+                        int index = Convert.ToInt32(item);
+                        if (!periodsStatus[index-1])
+                        {
+                            //预约时间段冲突
+                            return Json(false);
+                        }
+                    }
+                    //3.对预约人信息进行判断是否在黑名单中
+                    if (ReservationHelper.IsInBlockList(model))
+                    {
+                        //预约人信息在黑名单中
+                        return Json(false);
+                    }                                    
                     Models.Reservation reservation = new Models.Reservation()
                     {
                         ReservationForDate = model.ReservationForDate,
                         ReservationForTime = model.ReservationForTime,
                         ReservationPlaceId = model.ReservationPlaceId,
 
+                        ReservationUnit = model.ReservationUnit,
+                        ReservationActivityContent = model.ReservationActivityContent,
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
@@ -174,16 +149,21 @@ namespace ActivityReservation.Controllers
                     new Business.BLLReservation().Add(reservation);
                     return Json(true);
                 }
-                else
-                {
-                    return Json(false);
-                }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                return Json(false);
             }
+            return Json(false);
+        }
+        /// <summary>
+        /// Print
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Check(Guid id)
+        {
+            Models.Reservation r = new Business.BLLReservation().GetOne(re => re.ReservationId == id);
+            return View(r);
         }
         public ActionResult About()
         {

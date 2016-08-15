@@ -16,15 +16,31 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("活动室预约系统", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("系统管理后台", "Index", "Home", new { area = "Admin" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("主页", "Index", "Home")</li>
-                    <li>@Html.ActionLink("预约", "Reservate", "Home")</li>
-                    <li>@Html.ActionLink("关于", "About", "Home")</li>                    
+                    <li>@Html.ActionLink("首页", "Index", "Home")</li>
+                    <li>@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
+                    <li>@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">                    
+                    @if (Session["User"] == null)
+                    {
+                        <li><a href="/Admin/Account/Login">登录</a></li >
+                    }
+                    else
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> @((Session["User"] as Models.User).UserName) <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("我的账户", "Index", "Account")</li>
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("退出登录", "Logout", "Account")</li>
+                            </ul>
+                        </li>
+                    }                        
                 </ul>
             </div>
         </div>

@@ -56,6 +56,33 @@ namespace Models
         private string reservationFromIp;
 
         /// <summary>
+        /// 预约单位
+        /// </summary>
+        private string reservationUnit;
+        [Column]
+        public string ReservationUnit
+        {
+            get { return reservationUnit; }
+            set { reservationUnit = value; }
+        }
+
+        /// <summary>
+        /// 预约内容，活动内容
+        /// </summary>
+        private string reservationActivityContent;
+        [Column]
+        public string ReservationActivityContent
+        {
+            get { return reservationActivityContent; }
+            set { reservationActivityContent = value; }
+        }
+
+        /// <summary>
+        /// 更新/审核 备注信息
+        /// </summary>
+        private string updateMemo;
+
+        /// <summary>
         /// 更新人
         /// </summary>
         private string updateBy;
@@ -64,7 +91,6 @@ namespace Models
         /// 更新时间
         /// </summary>
         private DateTime updateTime;
-
         /// <summary>
         /// 预约时间段1
         /// true:可预约，false:不可预约
@@ -357,7 +383,20 @@ namespace Models
             }
         }
 
-        public ReservationPlace Place { get; set; }
+        [Column]
+        public string UpdateMemo
+        {
+            get
+            {
+                return updateMemo;
+            }
 
+            set
+            {
+                updateMemo = value;
+            }
+        }
+
+        public virtual ReservationPlace Place { get; set; }        
     }
 }

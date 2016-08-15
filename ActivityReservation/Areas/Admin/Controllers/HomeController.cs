@@ -7,12 +7,14 @@ using System.Web.Mvc;
 namespace ActivityReservation.Areas.Admin.Controllers
 {
     [Authorize]
+    [Filters.PermissionRequired]
     public class HomeController : Controller
-    {
-        // GET: Admin/Home
-        public string Index()
+    {        
+        public ActionResult Index()
         {
-            return "登录成功，欢迎进入活动室预约系统管理后台";
+            return View();
         }
+
+        
     }
 }

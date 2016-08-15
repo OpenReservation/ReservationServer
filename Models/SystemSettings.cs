@@ -21,6 +21,11 @@ namespace Models
         private string settingName;
 
         /// <summary>
+        /// 显示名称
+        /// </summary>
+        private string displayName;
+
+        /// <summary>
         /// settingValue
         /// </summary>
         private string settingValue;
@@ -53,13 +58,25 @@ namespace Models
             }
         }
         [Column]
+        public string DisplayName
+        {
+            get
+            {
+                return displayName;
+            }
+
+            set
+            {
+                displayName = value;
+            }
+        }
+        [Column]
         public string SettingValue
         {
             get
             {
                 return settingValue;
             }
-
             set
             {
                 settingValue = value;

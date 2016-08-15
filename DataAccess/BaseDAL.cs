@@ -11,6 +11,10 @@ namespace DataAccess
     public class BaseDaL<T> where T : class
     {
         /// <summary>
+        /// logger
+        /// </summary>
+        private static Common.LogHelper logger = new Common.LogHelper(typeof(BaseDaL<T>));
+        /// <summary>
         /// db operator
         /// </summary>
         protected Models.ReservationDbContext db = new Models.ReservationDbContext();
@@ -72,6 +76,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
+                logger.Error(ex);
                 return null;
             }
         }
@@ -189,6 +194,7 @@ namespace DataAccess
             catch (Exception ex)
             {
                 rowsCount = -1;
+                logger.Error(ex);
                 return null;
             }            
         }
@@ -244,6 +250,7 @@ namespace DataAccess
             catch (Exception ex)
             {
                 rowsCount = -1;
+                logger.Error(ex);
                 return null;
             }
         }

@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Common.Filters
+namespace ActivityReservation.Filters
 {
     /// <summary>
     /// 需要登录才能进行操作
@@ -12,7 +12,7 @@ namespace Common.Filters
         {
             if (filterContext.HttpContext.Session["User"]==null)
             {
-                filterContext.Result = new RedirectResult("~/");
+                filterContext.Result = new RedirectResult("~/Admin/Account/Login");
             }
             base.OnActionExecuting(filterContext);
         }
@@ -25,9 +25,9 @@ namespace Common.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (filterContext.HttpContext.Session["Admin"] == null)
+            if ((filterContext.HttpContext.Session["User"] == null) || !((filterContext.HttpContext.Session["User"] as Models.User).IsSuper))
             {
-                filterContext.Result = new RedirectResult("~/");
+                filterContext.Result = new RedirectResult("~/Admin/Account/Login");
             }
             base.OnActionExecuting(filterContext);
         }

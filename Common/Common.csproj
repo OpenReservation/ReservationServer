@@ -61,9 +61,6 @@
   <ItemGroup>
     <Compile Include="ConfigurationHelper.cs" />
     <Compile Include="ConverterHelper.cs" />
-    <Compile Include="EmailServiceHelper.cs" />
-    <Compile Include="Filters\ErrorHandlerAttribute.cs" />
-    <Compile Include="Filters\PermissionRequireAttribute.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="PathHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

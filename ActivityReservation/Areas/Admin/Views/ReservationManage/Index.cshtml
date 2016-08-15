@@ -1,0 +1,119 @@
+﻿@{
+    ViewBag.Title = "预约列表";
+}
+@section styles{
+<style>
+    .table > tbody > tr > td {
+        vertical-align: middle;
+    }
+</style>
+}
+<div class="table-wraper">
+    <div class="table-header">
+        <h3 class="table-title">预约列表</h3>
+        <div class="form-inline" style="margin:0.6em 0">
+            <label for="contactPhone" class="sr-only">预约人联系方式</label>
+            <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
+            <span>
+                <label>
+                    <input type="radio" value="0" name="statusType" checked="checked" />待审核
+                </label>
+                <label>
+                    <input type="radio" value="1" name="statusType" />全部
+                </label>
+            </span>
+            <button id="btnSearch" type="button" class="btn btn-primary">搜索</button>
+        </div>
+    </div>
+    <div class="table-body" id="div_main"></div>
+</div>
+@section scripts{
+<script>
+        var pageSize = 10,pageIndex=1;
+        //加载数据
+        function loadData(pIndex) {
+            if (!pIndex) {
+                pageIndex = 1;
+            } else {
+                pageIndex = pIndex;
+            }
+            $.ajax({
+                url: "/Admin/ReservationManage/List",
+                data: {
+                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem0": "", "SearchItem1": $("#contactPhone").val(), "SearchItem2": $("input[name='statusType']:radio:checked").val()
+                },
+                success: function (data, status) {
+                    if (status == "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        layer.msg('数据加载异常，请稍后重试！');
+                    }
+                }
+            });
+        }
+        //更新预约状态
+        function UpdateStatus(reservationId, status) {
+            layer.confirm("将要更新预约状态，是否继续？", {
+                btn: ["继续", "取消"],
+                title:"确认",
+                yes: function (index) {
+                    if (reservationId && status) {
+                        var td = $("#td_" + reservationId);
+                        td.children("button").each(function (index, ele) {
+                            $(ele).attr("disabled", "disabled");
+                        });
+                        $.post("/Admin/ReservationManage/UpdateReservationStatus", { "reservationId": reservationId, "status": status }, function (data) {
+                            if (data) {
+                                layer.msg("更新成功");
+                                loadData(pageIndex);
+                            }
+                        });
+                    } else {
+                        layer.msg('参数异常，操作失败');
+                    }
+                    layer.close(index);
+                },
+                cancel: function () {
+
+                }
+            }
+            );
+        }
+
+        function DeleteReservation(reservationId) {
+            layer.confirm("将要删除预约记录，是否继续？", {
+                btn: ["继续", "取消"],
+                title: "警告",
+                yes: function (index) {
+                    if (reservationId) {
+                        $.post("/Admin/ReservationManage/DeleteReservation", { "reservationId": reservationId}, function (data) {
+                            if (data) {
+                                layer.msg("删除预约记录成功");
+                                loadData(pageIndex);
+                            } else {
+                                layer.msg("删除预约记录失败");
+                            }
+                        });
+                    } else {
+                        layer.msg('参数异常，操作失败');
+                    }
+                    layer.close(index);
+                },
+                cancel: function () {
+
+                }
+            }
+            );
+        }
+        //
+        $("#btnSearch").on("click", function () {
+            loadData();
+        });
+        $("input[name='statusType']:radio").on("change", function () {
+            loadData();
+        });
+        $(function () {
+            loadData();
+        });
+</script>
+}

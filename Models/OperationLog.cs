@@ -27,6 +27,11 @@ namespace Models
         /// </summary>
         private string operBy;
 
+        /// <summary>
+        /// logModule
+        /// </summary>
+        private string logModule;
+
         [Key]
         [Column]
         public Guid LogId
@@ -81,6 +86,19 @@ namespace Models
             set
             {
                 operBy = value;
+            }
+        }
+        [Column]
+        public string LogModule
+        {
+            get
+            {
+                return logModule;
+            }
+
+            set
+            {
+                logModule = value;
             }
         }
     }

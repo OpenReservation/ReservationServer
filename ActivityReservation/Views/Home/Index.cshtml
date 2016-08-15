@@ -1,14 +1,24 @@
 ﻿@{
     ViewBag.Title = "首页";
 }
-
-<div class="container" style="padding:1.5em">
-    <div class="row form-horizontal">
-        
+@section styles{
+    <style>
+        .table>tbody>tr>td {
+            vertical-align:middle;
+        }
+    </style>
+}
+<div class="container">
+    <div class="form-inline" style="margin:1em 0">
+        <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" /> 
+        <button id="btnSearch" class="btn btn-primary">搜索</button>
     </div>
     <div id="div_main">
 
     </div>
+    <form id="checkForm" class="hidden" action="@Url.Action("Check")" method="post">
+        <input name="id" id="reId" value="" />
+    </form>
 </div>
 @section scripts{
 <script>
@@ -17,12 +27,22 @@
         if (!pageIndex) {
             pageIndex = 1;
         }
-        $.post("/Home/ReservationList", { pageIndex: 1, pageSize: pageSize }, function (data,status) {
-            if (status=="success") {
+        $.post("/Home/ReservationList", { "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#contactPhone").val() }, function (data, status) {
+            if (status == "success") {
                 $("#div_main").html(data);
+            } else {
+                layer.msg('数据加载异常，请稍后重试！');
             }
         });
     }
+    function view(id) {
+        $("#reId").val(id);
+        $("#checkForm").submit();
+    }
+    //
+    $("#btnSearch").on("click", function () {
+        loadData();
+    });
     $(function () {
         loadData();
     });

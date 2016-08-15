@@ -8,18 +8,24 @@
     <style>
         .center-block {
             display:block;
-            padding-top:1em;
+            padding-top:0.6em;
             margin-left:auto;
             margin-right:auto;
         }
+        .container > .show-inline {
+            display:inline-block;
+        }
         section {            
             display:none;
-            margin:1em auto;
+            margin:0.4em auto;
             max-width:24em;
         }
         ul {
             list-style:none;
-        }        
+        }
+        .btn {
+            display:none;
+        }
     </style>
 }
 <div class="container center-block" ng-app="ReservationApp">
@@ -70,6 +76,14 @@
                 <p class="lead">填写预约人信息</p>
                 <div class="form" style="text-align:left;padding-left:5em">
                     <div class="form-group">
+                        <label for="txtUnit">预约单位</label>
+                        <input type="text" class="form-control" value="" ng-minlength="3" ng-maxlength="30" id="txtUnit" placeholder="预约单位" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtActivity">预约活动内容</label>
+                        <input type="text" class="form-control" value="" id="txtActivity" placeholder="活动内容"  required="required" />
+                    </div>
+                    <div class="form-group">
                         <label for="txtUsername">预约人姓名</label>
                         <input type="text" value="" class="form-control" id="txtUsername" required="required" placeholder="姓名" />
                     </div>
@@ -96,6 +110,14 @@
                         <td>{{ reservationModel.ReservationForTime }}</td>
                     </tr>
                     <tr>
+                        <td>预约单位</td>
+                        <td>{{ reservationModel.ReservationUnit }}</td>
+                    </tr>
+                    <tr>
+                        <td>预约活动内容</td>
+                        <td>{{ reservationModel.ReservationActivityContent }}</td>
+                    </tr>
+                    <tr>
                         <td>预约人姓名</td>
                         <td>{{ reservationModel.ReservationPersonName }}</td>
                     </tr>
@@ -105,12 +127,10 @@
                     </tr>
                 </table>
             </section>
-            <footer>
-                <div class="container">
-                    <button id="btnPreviousStep" ng-class="{'hidden':step==0}" type="button" ng-click="previousStep()" class="btn btn-default">上一步</button>
-                    <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'hidden':step==4}" id="btnNext">下一步</button>
-                    <button ng-click="submitForm()" type="button" class="btn btn-default" ng-class="{'hidden':step!=4,'disabled':!isModelValid()}">提&emsp;交</button>
-                </div>
+            <footer class="container">
+                    <button id="btnPreviousStep" ng-class="{'show-inline':step!=0}" type="button" ng-click="previousStep()" class="btn btn-default">上一步</button>
+                    <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'show-inline':step!=4}" id="btnNext">下一步</button>
+                    <button ng-click="submitForm()" type="button" ng-disabled="isSubmit" class="btn btn-default" ng-class="{'show-inline':step==4,'disabled':!isModelValid()}">提&emsp;交</button>
             </footer>
         </form>
     </div>
@@ -121,17 +141,25 @@
     <script>
         var phoneRegExp = /^\d{11}$/;
         var pNameRegExp = /^[\u4e00-\u9fa5]{2,4}$/;
+        Date.prototype.addDays = function (number) {
+            var adjustDate = new Date(this.getTime() + 24 * 60 * 60 * 1000 * number);
+            return adjustDate;
+        }
         $(function () {
             $("#datepicker").datepicker({
-                dateFormat: "yy-mm-dd"
+                dateFormat: "yy-mm-dd",
+                minDate: new Date(),
+                maxDate: new Date().addDays(7)
             });
-            $("#datepicker").children("div").css("margin","0 auto")
+            $("#datepicker").children("div").css("margin", "0 auto");
         });
         //angular
         angular.module("ReservationApp", [])
         .controller("ReservateCtrl", function ($scope,$http) {
             //model
             $scope.reservationModel = {
+                ReservationUnit: "",
+                ReservationActivityContent: "",
                 ReservationPersonName: "",
                 ReservationPersonPhone: "",
                 ReservationPlaceId: "",
@@ -140,6 +168,8 @@
                 ReservationForTimeIds: "",
                 ReservationPlaceName: ""
             };
+            //是否已经提交，避免客户端重复提交
+            $scope.isSubmit = false;
             //判断数据是否通过验证
             $scope. isModelValid=function() {
                 //所有属性均不能为空
@@ -157,25 +187,30 @@
                 }
                 //联系方式
                 if (!$scope.reservationModel.ReservationPersonPhone.match(phoneRegExp)) {
-                    return false;
+                    return false;    
                 }
                 return true;
             }
             //current step
             $scope.step = 0;
             //submit
-            $scope.submitForm = function () {                
+            $scope.submitForm = function () {
+                $scope.isSubmit = true;
                 $http.post("/Home/MakeReservation", $scope.reservationModel)
                 .success(function (response) {
                     //console.log(response);
                     if (response) {
                         layer.msg('预约成功！');
                         location.href = "/";
+                    } else {
+                        layer.msg("预约失败，请重新预约");
+                        $scope.isSubmit = false;
                     }
                 })
                 .error(function (response) {
                     layer.msg('预约失败，请稍后重试！');
-                    console.log(response);
+                    $scope.isSubmit = false;
+                    //console.log(response);
                 });
             };
             //next
@@ -189,6 +224,8 @@
                             console.log('请选择预约日期');
                             return;
                         } else {
+                            //TODO:从服务器端判断日期是否合法，不合法则提示用户重新选择
+
                             $scope.reservationModel.ReservationForDate = date;
                         }
                         break;
@@ -201,11 +238,14 @@
                             //请求服务器端接口，判断可用预约时间段
                             $http.post("/Home/GetAvailablePeriods", { "dt": $scope.reservationModel.ReservationForDate, "placeId": $scope.reservationModel.ReservationPlaceId }).success(function (response) {
                                 var statusArray = response;
-                                console.log(statusArray);
+                                //console.log(statusArray);
                                 $("input:checkbox[name='cbPeriod']").each(function (index, ele) {
                                     if (!statusArray[index]) {
                                         $(ele).attr("disabled", "disabled");
                                         $(ele).addClass("disabled");
+                                    } else {
+                                        $(ele).removeAttr("disabled");
+                                        $(ele).removeClass("disabled");
                                     }
                                 });
                             }).error(function (res) {
@@ -243,9 +283,9 @@
                         break;
                     case 3:
                         //预约人信息 判断
-                        var pName = $("#txtUsername").val();
-                        var pPhone = $("#txtPhone").val();
-                        if (pPhone && pName) {
+                        var pName = $("#txtUsername").val(), pPhone = $("#txtPhone").val(), unit = $("#txtUnit").val(), activity = $("#txtActivity").val();
+
+                        if (pPhone && pName && unit && activity) {
                             if (!pName.match(pNameRegExp)) {
                                 layer.msg("联系人姓名输入有误");
                                 return;
@@ -254,11 +294,13 @@
                                 layer.msg('联系电话格式有误，请修改后重试');
                                 return;
                             }
+                            $scope.reservationModel.ReservationUnit = unit;
+                            $scope.reservationModel.ReservationActivityContent = activity;
                             $scope.reservationModel.ReservationPersonName = pName;
                             $scope.reservationModel.ReservationPersonPhone = pPhone;
                         } else {
-                            layer.msg("预约人信息不完整！");
-                            console.log("预约人信息不完整！");
+                            layer.msg("预约信息填写不完整！");
+                            return;
                         }
                         break;
                     case 4:

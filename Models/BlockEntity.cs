@@ -27,6 +27,10 @@ namespace Models
         /// </summary>
         private DateTime blockTime;
 
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        private bool isActive = true;
 
         [Column]
         [Key]
@@ -84,7 +88,21 @@ namespace Models
                 blockTime = value;
             }
         }
-        
-        public BlockType BlockType { get; set; }
+
+        [Column]
+        public bool IsActive
+        {
+            get
+            {
+                return isActive;
+            }
+
+            set
+            {
+                isActive = value;
+            }
+        }
+
+        public virtual BlockType BlockType { get; set; }
     }
 }
