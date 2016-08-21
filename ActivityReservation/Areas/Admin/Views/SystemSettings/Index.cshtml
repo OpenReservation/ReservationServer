@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "系统设置管理";
+}
+<div class="table-wraper">
+    <div class="table-header">
+        <h3 class="table-title">系统设置管理</h3>
+    </div>
+    <div class="table-body" id="div_main"></div>
+</div>
+@section scripts{
+    <script>
+        var pageSize = 10, pageIndex = 1;
+        //加载数据
+        function loadData(pIndex) {
+            if (!pIndex) {
+                pageIndex = 1;
+            } else {
+                pageIndex = pIndex;
+            }
+            $.ajax({
+                url: "/Admin/SystemSettings/List",
+                data: {
+                    "PageIndex": pageIndex, "PageSize": pageSize
+                },
+                success: function (data, status) {
+                    if (status == "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        layer.msg('数据加载异常，请稍后重试！');
+                    }
+                }
+            });
+        }        
+        //更新
+        function Update(id,settingName,obj) {            
+            if (id) {
+                $(obj).attr("disabled", "disabled");
+                //layer.propmt
+                layer.prompt({
+                    title: '请输入新的值',
+                    formType: 0 //prompt风格，支持0-2
+                }, function (param) {
+                    if (param) {
+                        $.post("/Admin/SystemSettings/UpdateSettings", { "SettingId": id, "SettingName":settingName,"SettingValue": param }, function (data) {
+                            if (data) {
+                                layer.msg('更新成功');
+                                location.reload();
+                            } else {
+                                layer.msg("更新失败，请稍后重试！");
+                            }
+                        });
+                    }
+                });
+                $(obj).removeAttr("disabled");
+            } else {
+                layer.msg("参数异常，更新状态失败");
+            }
+        }
+        $(function () {
+            loadData();
+        });
+    </script>
+}

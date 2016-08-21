@@ -6,19 +6,20 @@
     <div class="table-header">
         <h3 class="table-title">预约黑名单管理 <small><button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加黑名单</button></small></h3>
         <div class="form-inline">
-            <div style="display:inline-block">
+            <div style="display:inline-block" class="form-group">
                 按黑名单类型查看：
                 <label>
                     <input type="radio" checked="checked" value="0" class="radio-inline" name="blockTypes" />全部
                 </label>
                 @foreach (Models.BlockType t in Model)
-            {
+                {
                     <label>
                         <input type="radio" class="radio-inline" value="@t.TypeId" name="blockTypes" />@t.TypeName
                     </label>
                 }
+                &nbsp;&nbsp;
+                <input type="search" value="" id="entityValue" class="form-control" placeholder="黑名单内容" />
             </div>
-            <input type="search" value="" id="entityValue" class="form-control" placeholder="黑名单内容" />
             <button type="button" id="btnSearch" class="btn btn-success">搜索</button>
         </div>
     </div>
@@ -100,7 +101,7 @@
             });
         });
         //更新
-        function UpdateStatus(id, status, obj) {            
+        function UpdateStatus(id, entityName,status, obj) {            
             if (id && status) {
                 $(obj).attr("disabled", "disabled");
                 layer.confirm("将要更改这条黑名单的状态，是否继续？", {
@@ -108,7 +109,7 @@
                         title: "确认"                    
                     },
                     function (idx) {
-                        $.post("/Admin/BlockEntity/UpdateEntityStatus", { "entityId": id, "status": status }, function (data) {
+                        $.post("/Admin/BlockEntity/UpdateEntityStatus", { "entityId": id,"entityName":entityName, "status": status }, function (data) {
                             if (data) {
                                 layer.msg('更新成功');
                                 loadData(pageIndex);
@@ -117,7 +118,6 @@
                         layer.close(idx);
                     },
                     function () {
-                        console.log("canceled");
                         $(obj).removeAttr("disabled");
                     }
                 );
@@ -126,7 +126,7 @@
             }
         }
         //删除
-        function DeleteEntity(id,obj) {
+        function DeleteEntity(id,entityName,obj) {
             if (id) {
                 $(obj).attr("disabled", "disabled");
                 layer.confirm("将要从黑名单中删除这条数据，是否继续？", {
@@ -134,7 +134,7 @@
                     btn: ["确定", "取消"]                    
                 },
                 function (idx) {
-                    $.post("/Admin/BlockEntity/DeleteEntity", { "entityId": id }, function (data) {
+                    $.post("/Admin/BlockEntity/DeleteEntity", { "entityId": id,"entityName":entityName }, function (data) {
                         if (data) {
                             layer.msg("删除成功");
                             loadData(pageIndex);
@@ -143,7 +143,6 @@
                     layer.close(idx);
                 },
                 function (idx) {
-                    //console.log("canceled");
                     $(obj).removeAttr("disabled");
                     layer.close(idx);
                 });

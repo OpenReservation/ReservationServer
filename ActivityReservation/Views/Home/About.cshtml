@@ -1,7 +1,10 @@
 ﻿@{
-    ViewBag.Title = "About";
+    ViewBag.Title = "关于";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>@ViewBag.Message</h3>
+<h3>关于活动室预约系统</h3>
 
-<p>Use this area to provide additional information.</p>
+<div class="table-body" style="padding:1em;font-size:1em;line-height:1.5em">
+    @HttpContext.Current.Application["SystemDescription"] <br />
+    联系电话：@HttpContext.Current.Application["SystemContactPhone"] <br/>
+    联系邮箱：@HttpContext.Current.Application["SystemContactEmail"] <br />
+</div>

@@ -1,9 +1,137 @@
-﻿@{
+﻿@model Models.User
+@{
     ViewBag.Title = "我的账户";
+}
+@section styles{
+    <style>
+        #div_profile,#div_modifyPass {
+            padding:20px;
+        }
+    </style>
 }
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">我的账户</h3>        
     </div>
-    <div class="table-body" id="div_main"></div>
+    <div class="table-body" id="div_main">
+        <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#div_profile" data-toggle="tab">个人资料</a></li>
+            <li role="presentation"><a href="#div_modifyPass" data-toggle="tab">修改密码</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="div_profile">
+                <dl>
+                    <dt>用户名</dt>
+                    <dd>@Html.DisplayFor(u => u.UserName) </dd>
+
+                    <dt>用户邮箱</dt>
+                    <dd>@Html.DisplayFor(u => u.UserMail)</dd>
+                </dl>
+                <button type="button" class="btn btn-default" id="btnModifyEmail">修改邮箱</button>
+            </div>
+            <div class="tab-pane fade" id="div_modifyPass" ng-app="ModifyPassApp">
+                <form id="modifyPassForm" name="modifyPassForm" action="@Url.Action("UpdatePass")" method="post" ng-controller="ModifyPassCtrl">
+                    <div class="form-group">
+                        <input type="password" value="" id="oldPass" placeholder="请输入原密码" class="form-control" ng-model="modifyPassModel.OldPassword" ng-minlength="6" ng-maxlength="20" required autofocus />
+                        <input type="password" value="" id="newPass" placeholder="请输入新密码" class="form-control" ng-minlength="6" ng-maxlength="20" ng-model="modifyPassModel.NewPassword" required />
+                        <input type="password" value="" ng-model="modifyPassModel.ConfirmPassword" ng-minlength="6" ng-maxlength="20" id="newPass1" placeholder="请确认密码" class="form-control" required />
+                    </div>
+                    <button type="button" ng-click="updatePass()" ng-disabled="!(modifyPassForm.$valid && isFormValid())" class="btn btn-default">修改</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+@section scripts{
+    <script src="~/Scripts/angular.min.js"></script>
+    <script>
+        //修改邮箱
+        $("#btnModifyEmail").on("click", function () {
+            //layer.propmt
+            layer.prompt({
+                title: '请输入新的邮箱',
+                formType: 0 //prompt风格，支持0-2
+            }, function (param) {
+                if (param) {
+                    $(this).attr("disabeld", "disabled");
+                    var inputEmail = param;
+                    //验证邮箱合法性
+                    //正则判断邮箱
+                    var regEmail = /^([a-zA-Z0-9_-])+@@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+                    if (!inputEmail.match(regEmail)) {
+                        layer.msg("邮箱格式有误，请重试输入");
+                        return;
+                    }
+                    //判断邮箱是否唯一
+                    var isEmailValid = false;
+                    $.ajax({
+                        url: "/Admin/Account/ValidUserMail",
+                        async: false,
+                        method: "POST",
+                        data: { "userMail": inputEmail },
+                        success: function (data) {
+                            isEmailValid = data;
+                        }
+                    });
+                    if (!isEmailValid) {
+                        layer.msg("该邮箱已经被使用，邮箱不可重复");
+                        return;
+                    }
+                    //update
+                    $.post("/Admin/Account/ModifyEmail", { "email": param }, function (data) {
+                        if (data) {
+                            layer.msg('修改成功');
+                            location.reload();
+                        } else {
+                            layer.msg("修改失败，请稍后重试！");
+                            $(this).removeAttr("disabeld");
+                        }
+                    });
+                }
+            });
+        });
+        //修改密码
+        angular.module("ModifyPassApp", []).controller("ModifyPassCtrl", function ($scope, $http) {
+            $scope.modifyPassModel = {
+                OldPassword : "",
+                NewPassword: "",
+                ConfirmPassword:""
+            };
+            $scope.isFormValid = function () {
+                if ($scope.modifyPassModel.ConfirmPassword != $scope.modifyPassModel.NewPassword) {
+                    return false;
+                }
+                return true;
+            };
+            $scope.updatePass = function () {
+                var isOldPassValid = false;
+                $.ajax({
+                    url: "/Admin/Account/ValidOldPassword",
+                    async: false,
+                    method: "POST",
+                    data: { "password": $scope.modifyPassModel.OldPassword },
+                    success: function (data) {
+                        isOldPassValid = data;
+                    }
+                });
+                if (!isOldPassValid) {
+                    layer.msg("原密码输入错误");
+                    return;
+                }
+                $http.post("/Admin/Account/ModifyPassword", {
+                        "OldPassword": $scope.modifyPassModel.OldPassword,
+                        "NewPassword": $scope.modifyPassModel.NewPassword,
+                        "ConfirmPassword":$scope.modifyPassModel.ConfirmPassword
+                    })
+                    .success(function (data) {
+                        if (data) {
+                            layer.msg('密码修改成功，请重新登录');
+                            location.href = '/Admin/Account/Login';
+                        } else {
+                            layer.msg("密码修改失败！请稍后重试");
+                        }
+                });
+            };
+        });
+    </script>
+}

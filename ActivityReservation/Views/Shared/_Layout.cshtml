@@ -3,14 +3,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewBag.Title - @HttpContext.Current.Application["SystemTitle"]</title>
+    <meta name="keywords" content="@HttpContext.Current.Application["SystemKeywords"]" />
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     @RenderSection("styles",required:false)
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top hidden-print">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -22,7 +23,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("主页", "Index", "Home")</li>
+                    <li>@Html.ActionLink("首页", "Index", "Home")</li>
                     <li>@Html.ActionLink("预约", "Reservate", "Home")</li>
                     <li>@Html.ActionLink("关于", "About", "Home")</li>                    
                 </ul>
@@ -30,9 +31,9 @@
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
+        <div class="main-content">@RenderBody()</div>
+        <hr class="hidden-print" />
+        <footer class="hidden-print">
             <p>&copy; @DateTime.Now.Year - @HttpContext.Current.Application["SystemTitle"]</p>
         </footer>
     </div>

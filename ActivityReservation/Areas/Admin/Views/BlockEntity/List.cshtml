@@ -44,13 +44,13 @@
                     <td>
                         @if (item.IsActive)
                     {
-                            <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId', -1,this)">禁用</button>
+                            <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId', '@item.BlockValue',-1,this)">禁用</button>
                         }
                         else
                         {
-                            <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId',1,this)">启用</button>
+                            <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId','@item.BlockValue',1,this)">启用</button>
                         }
-                        <button type="button" class="btn btn-danger" onclick="DeleteEntity('@item.BlockId',this)">删除</button>
+                        <button type="button" class="btn btn-danger" onclick="DeleteEntity('@item.BlockId','@item.BlockValue',this)">删除</button>
                     </td>
                 </tr>
             }

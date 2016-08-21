@@ -1,11 +1,6 @@
 ﻿@{
     ViewBag.Title = "管理后台首页";
 }
-@section styles{
-    <style>
-        
-    </style>
-}
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">系统管理后台首页</h3>                
@@ -18,7 +13,7 @@
             @if ((Session["User"] as Models.User).IsSuper)
             {
                 <li role="separator" class="list-unstyled"><br /> </li>
-                <li class="list-group-item">@Html.ActionLink("账户管理", "List", "Account")</li>
+                <li class="list-group-item">@Html.ActionLink("用户管理", "UserList", "Account")</li>
                 <li class="list-group-item">@Html.ActionLink("操作日志查看", "Index", "OperationLog")</li>
                 <li class="list-group-item">@Html.ActionLink("系统设置管理", "Index", "SystemSettings")</li>
             }

@@ -45,6 +45,7 @@ namespace DataAccess
             }
             catch (Exception ex)
             {
+                logger.Error(ex);
                 rowsCount = -1;
                 return null;
             }

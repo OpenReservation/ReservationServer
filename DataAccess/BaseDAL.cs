@@ -13,7 +13,7 @@ namespace DataAccess
         /// <summary>
         /// logger
         /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(BaseDaL<T>));
+        protected static Common.LogHelper logger = new Common.LogHelper(typeof(BaseDaL<T>));
         /// <summary>
         /// db operator
         /// </summary>

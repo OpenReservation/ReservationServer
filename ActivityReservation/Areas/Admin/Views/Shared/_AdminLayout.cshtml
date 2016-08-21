@@ -46,7 +46,9 @@
         </div>
     </div>
     <div class="container body-content">
-        @RenderBody()
+        <div class="main-content">
+            @RenderBody()
+        </div>        
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - @HttpContext.Current.Application["SystemTitle"]</p>

@@ -1,0 +1,220 @@
+﻿@{
+    ViewBag.Title = "用户管理";
+}
+<div class="table-wraper">
+    <div class="table-header">
+        <h3 class="table-title">
+            用户管理 &nbsp;
+            <small>
+                <button type="button" class="btn btn-primary btn-sm" id="btnAddAccount">新增用户</button>
+            </small>
+        </h3>
+        <div class="form-inline" style="margin:0.6em 0">
+            <div class="form-group">
+                <input type="search" value="" id="searchUsername" placeholder="用户名" class="form-control" />
+            </div>            
+            <button id="btnSearch" type="button" class="btn btn-success">搜索</button>
+        </div>
+    </div>
+    <div class="table-body" id="div_main"></div>
+</div>
+<div id="div_AddAccount" style="display:none;padding:20px;">
+    <input type="text" value="" id="inputUsername" placeholder="请输入用户名" required="required" class="form-control" />
+    <input type="text" value="" id="inputUserEmail" placeholder="请输入用户邮箱" required="required" class="form-control" />
+    <input type="password" value="" id="inputUserPass" placeholder="请输入用户密码" required="required" class="form-control" />
+    <input type="password" value="" id="inputUserPass1" placeholder="请再次输入密码" required="required" class="form-control" />
+</div>
+<div id="div_UpdatePass" style="display:none;padding:20px">
+    <input type="password" value="" id="newPass" placeholder="请输入新密码" class="form-control" />
+    <input type="password" value="" id="newPass1" placeholder="请确认密码" class="form-control" />
+</div>
+@section scripts{
+    <script>
+        var pageSize = 10, pageIndex = 1;
+        //加载数据
+        function loadData(pIndex) {
+            if (!pIndex) {
+                pageIndex = 1;
+            } else {
+                pageIndex = pIndex;
+            }
+            $.ajax({
+                url: "/Admin/Account/UserListTable",
+                data: {
+                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#searchUsername").val()
+                },
+                success: function (data, status) {
+                    if (status == "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        layer.msg('数据加载异常，请稍后重试！');
+                    }
+                }
+            });
+        }
+        //search
+        $("#btnSearch").on("click", function () {
+            loadData();
+        });
+        //Add Account
+        $("#btnAddAccount").on("click", function () {
+            layer.open({
+                type: 1,
+                content: $("#div_AddAccount"),
+                area: ["400px", "290px"],
+                title: "添加用户",
+                btn: ['添加', '取消'],
+                yes: function (index) {
+                    var inputName = $("#inputUsername").val(), inputEmail = $("#inputUserEmail").val(), inputPass = $("#inputUserPass").val(), inputPass1 = $("#inputUserPass1").val();
+                    if (inputName && inputEmail && inputPass && inputPass1) {
+                        if (inputName.length<2 || inputName.length >10) {
+                            layer.msg('用户名长度不合法，长度应在2到10个字符之间');
+                            return;
+                        }
+                        if (inputPass.length <6 || inputPass.length > 20) {
+                            layer.msg('用户密码长度不合法，长度应在6到20个字符之间');
+                            return;
+                        }
+                        //正则判断邮箱
+                        var regEmail = /^([a-zA-Z0-9_-])+@@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+                        if (!inputEmail.match(regEmail)) {
+                            layer.msg("邮箱格式有误，请重试输入");
+                            return;
+                        }
+                        //判断两次密码是否输入一致
+                        if (inputPass != inputPass1) {
+                            layer.msg('两次密码输入不一致');
+                            return;
+                        }
+                        //判断用户名是否唯一
+                        var isNameValid = false;
+                        $.ajax({
+                            url: "/Admin/Account/ValidUsername",
+                            async: false,
+                            method:"POST",
+                            data: { "userName": inputName },
+                            success: function (data) {
+                                isNameValid = data;
+                            }
+                        });
+                        if (!isNameValid) {
+                            layer.msg("用户名不能重复，该用户名已存在");
+                            return;
+                        }
+                        //判断邮箱是否唯一
+                        var isEmailValid = false;
+                        $.ajax({
+                            url: "/Admin/Account/ValidUserMail",
+                            async: false,
+                            method: "POST",
+                            data: { "userMail": inputEmail },
+                            success: function (data) {
+                                isEmailValid = data;
+                            }
+                        });
+                        if (!isEmailValid) {
+                            layer.msg("该邮箱已经被使用，邮箱不可重复");
+                            return;
+                        }
+                        //输入数据合法
+                        $.post("/Admin/Account/CreateAccount", {"Username":inputName,"UserEmail":inputEmail,"UserPassword":inputPass,"ConfirmPassword":inputPass1},function (data) {
+                            if (data) {
+                                layer.msg("用户添加成功");
+                                loadData();
+                            }else{
+                                layer.msg("用户添加失败，请稍后重试！");
+                            }
+                        });
+                    } else {
+                        layer.msg('用户信息填写不完整');
+                        return;
+                    }
+                    layer.close(index);
+                },
+                cancel: function () {
+
+                }
+            });
+        });
+        //UpdatePassword
+        function UpdatePassword(id,username,obj) {
+            if (id && username) {
+                $(obj).attr("disabled", "disabled");
+                layer.open({
+                    type:1,
+                    title: "重置密码",
+                    area: ["300px", "220px"],
+                    content: $("#div_UpdatePass"),
+                    btn: ["确定", "取消"],
+                    yes: function (index) {
+                        var pass = $("#newPass").val(), pass1 = $("#newPass1").val();
+                        if (pass && pass1) {
+                            if (pass.length<6 || pass.length>20) {
+                                layer.msg('密码长度不合法，密码长度应在6到20之间');
+                                return;
+                            }
+                            if (pass != pass1) {
+                                layer.msg('两次密码不一致，请重新输入');
+                                return;
+                            }
+                            $.post("/Admin/Account/ResetPass", { "UserId": id, "UserName": username, "UserPassword": pass }, function (data) {
+                                if (data) {
+                                    layer.msg("密码重置成功");
+                                } else {
+                                    layer.msg("密码重置失败，请稍后重试");
+                                }
+                            })
+                            $(obj).removeAttr("disabled");
+                            layer.close(index);
+                        } else {
+                            layer.msg('重置密码信息不完整')
+                        }
+                    },
+                    btn2:function (index) {
+                        $(obj).removeAttr("disabled");
+                        layer.close(index);
+                    },
+                    cancel: function (index) {
+                        $(obj).removeAttr("disabled");
+                        layer.close(index);
+                    }
+                });
+            } else {
+                layer.msg("参数异常，更新状态失败");
+            }
+        }
+        //删除账户
+        function DeleteAccount(id,userName,obj) {
+            if (id && userName) {
+                $(obj).attr("disabled", "disabled");
+                //layer.propmt
+                layer.confirm("将要删除用户名为 "+userName+" 的用户，是否继续？", {
+                    title: "警告",
+                    btn: ["删除", "取消"]
+                },
+                function (idx) {
+                    $.post("/Admin/Account/DeleteAccount", { "UserId": id, "UserName": userName }, function (data) {
+                        if (data) {
+                            layer.msg("用户删除成功");
+                            loadData(pageIndex);
+                        } else {
+                            layer.msg("删除失败，请稍后重试");
+                        }
+                    });
+                    layer.close(idx);
+                },
+                function (idx) {
+                    $(obj).removeAttr("disabled");
+                    layer.close(idx);
+                });
+                $(obj).removeAttr("disabled");
+            } else {
+                layer.msg("参数异常，删除失败");
+            }
+        }
+        //
+        $(function () {
+            loadData();
+        });
+    </script>
+}

@@ -1,0 +1,35 @@
+﻿@using ActivityReservation.Helpers;
+@model PagedListModel<Models.SystemSettings>
+@{
+    Layout = null;
+}
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>设置名称</th>
+            <th>设置含义</th>
+            <th>设置值</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Models.SystemSettings item in Model.Data)
+        {
+            <tr>
+                <td>
+                    @item.SettingName
+                </td>
+                <td>
+                    @item.DisplayName
+                </td>
+                <td>
+                    @item.SettingValue
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default" onclick="Update('@item.SettingId','@item.SettingName',this)">更新</button>
+                </td>                
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.Pager(Model.Pager)

@@ -12,16 +12,18 @@
     <div class="table-header">
         <h3 class="table-title">预约列表</h3>
         <div class="form-inline" style="margin:0.6em 0">
-            <label for="contactPhone" class="sr-only">预约人联系方式</label>
-            <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
-            <span>
-                <label>
-                    <input type="radio" value="0" name="statusType" checked="checked" />待审核
-                </label>
-                <label>
-                    <input type="radio" value="1" name="statusType" />全部
-                </label>
-            </span>
+            <div class="form-group">
+                <label for="contactPhone" class="sr-only">预约人联系方式</label>
+                <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
+                <span>
+                    <label>
+                        <input type="radio" value="0" name="statusType" checked="checked" />待审核
+                    </label>
+                    <label>
+                        <input type="radio" value="1" name="statusType" />全部
+                    </label>
+                </span>
+            </div>            
             <button id="btnSearch" type="button" class="btn btn-primary">搜索</button>
         </div>
     </div>

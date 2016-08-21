@@ -141,6 +141,7 @@
     <Compile Include="Areas\Admin\Controllers\ReservationManageController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemSettingsController.cs" />
     <Compile Include="Areas\Admin\ViewModels\BlockEntityViewModel.cs" />
+    <Compile Include="Areas\Admin\ViewModels\CreateAccountViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\LoginViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\ModifyPasswordViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -150,7 +151,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AuthFormService.cs" />
-    <Compile Include="Helpers\BusinessHelper.cs" />
     <Compile Include="Helpers\PagedListModel.cs" />
     <Compile Include="Helpers\OperLogHelper.cs" />
     <Compile Include="Helpers\PagerHelper.cs" />
@@ -201,6 +201,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Areas\Admin\Views\BlockEntity\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BlockEntity\List.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemSettings\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemSettings\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\UserList.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\UserListTable.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -239,7 +243,6 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Views\SystemSettings\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

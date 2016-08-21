@@ -107,7 +107,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                     if (count == 1)
                     {
                         //记录日志
-                        OperLogHelper.AddOperLog(String.Format("添加{0}到黑名单", blockValue), Module.BlockEntity, (Session["User"] as Models.User).UserName);
+                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), Module.BlockEntity, (Session["User"] as Models.User).UserName);
                         return Json(true);
                     }
                 }
@@ -129,7 +129,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         /// <param name="entityId">黑名单数据id</param>
         /// <param name="status">状态</param>
         /// <returns></returns>
-        public ActionResult UpdateEntityStatus(Guid entityId, int status)
+        public ActionResult UpdateEntityStatus(Guid entityId, string entityName, int status)
         {
             Models.BlockEntity entity = new Models.BlockEntity() { BlockId = entityId };
             if (status > 0)
@@ -145,7 +145,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 int count = Handler.Update(entity,"IsActive");
                 if (count>0)
                 {
-                    OperLogHelper.AddOperLog(String.Format("更改黑名单{0}状态{1}", entityId, entity.IsActive), Module.BlockEntity, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive?"启用":"禁用"), Module.BlockEntity, (Session["User"] as Models.User).UserName);
                     return Json(true);
                 }
             }
@@ -160,8 +160,9 @@ namespace ActivityReservation.Areas.Admin.Controllers
         /// 从黑名单中删除一条数据
         /// </summary>
         /// <param name="entityId">黑名单数据id</param>
+        /// <param name="entityName">黑名单数据名称</param>
         /// <returns></returns>
-        public ActionResult DeleteEntity(Guid entityId)
+        public ActionResult DeleteEntity(Guid entityId,string entityName)
         {
             try
             {
@@ -169,7 +170,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 if (c == 1)
                 {
                     //记录日志
-                    OperLogHelper.AddOperLog(String.Format("删除黑名单{0}", entityId), Module.BlockEntity, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("删除黑名单 {0}", entityName), Module.BlockEntity, (Session["User"] as Models.User).UserName);
                     return Json(true);
                 }
             }
