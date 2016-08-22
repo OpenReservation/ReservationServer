@@ -67,7 +67,10 @@
                     @Html.Raw(status)
                 </td>
                 <td>
-                    <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
+                    @if (item.ReservationStatus == 1)
+                    {
+                        <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
+                    }
                 </td>
             </tr>
             }        

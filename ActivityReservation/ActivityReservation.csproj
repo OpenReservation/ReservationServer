@@ -205,6 +205,7 @@
     <Content Include="Areas\Admin\Views\SystemSettings\List.cshtml" />
     <Content Include="Areas\Admin\Views\Account\UserList.cshtml" />
     <Content Include="Areas\Admin\Views\Account\UserListTable.cshtml" />
+    <Content Include="Areas\Admin\Views\ReservationManage\Reservate.cshtml" />
     <None Include="Properties\PublishProfiles\localFileSystem.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

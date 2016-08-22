@@ -26,11 +26,111 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 return handler;
             }
         }
-
-        // GET: Admin/ReservationManage
+        
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult Reservate()
+        {
+            List<Models.ReservationPlace> places = new Business.BLLReservationPlace().GetAll(s => s.PlaceName, true);
+            return View(places);
+        }
+
+        /// <summary>
+        /// 预约接口
+        /// </summary>
+        /// <param name="model">预约信息实体</param>
+        /// <returns></returns>
+        public ActionResult MakeReservation(ActivityReservation.ViewModels.ReservationViewModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    //预约时间段分割
+                    string[] periodIds = model.ReservationForTimeIds.Split(',');
+                    //1.判断预约日期是否在可预约范围内【0~7】,管理员预约可不受限制                    
+                    //if (!ReservationHelper.IsReservationForDateAvailabel(model.ReservationForDate))
+                    //{
+                    //    //预约日期不可用
+                    //    return Json(false);
+                    //}
+                    //2.对预约时间段判断，判断该时间段是否被预约
+                    bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(model.ReservationForDate, model.ReservationPlaceId);
+                    foreach (string item in periodIds)
+                    {
+                        int index = Convert.ToInt32(item);
+                        if (!periodsStatus[index - 1])
+                        {
+                            //预约时间段冲突
+                            return Json(false);
+                        }
+                    }
+                    //3.对预约人信息进行判断是否在黑名单中
+                    if (ReservationHelper.IsInBlockList(model))
+                    {
+                        //预约人信息在黑名单中
+                        return Json(false);
+                    }
+                    Models.Reservation reservation = new Models.Reservation()
+                    {
+                        ReservationForDate = model.ReservationForDate,
+                        ReservationForTime = model.ReservationForTime,
+                        ReservationPlaceId = model.ReservationPlaceId,
+
+                        ReservationUnit = model.ReservationUnit,
+                        ReservationActivityContent = model.ReservationActivityContent,
+                        ReservationPersonName = model.ReservationPersonName,
+                        ReservationPersonPhone = model.ReservationPersonPhone,
+
+                        ReservationFromIp = HttpContext.Request.UserHostAddress,//记录预约人IP地址
+
+                        UpdateBy = model.ReservationPersonName,
+                        UpdateTime = DateTime.Now,
+                        ReservationId = Guid.NewGuid()
+                    };
+                    foreach (string item in periodIds)
+                    {
+                        switch (Convert.ToInt32(item))
+                        {
+                            case 1:
+                                reservation.T1 = false;
+                                break;
+                            case 2:
+                                reservation.T2 = false;
+                                break;
+                            case 3:
+                                reservation.T3 = false;
+                                break;
+                            case 4:
+                                reservation.T4 = false;
+                                break;
+                            case 5:
+                                reservation.T5 = false;
+                                break;
+                            case 6:
+                                reservation.T6 = false;
+                                break;
+                            case 7:
+                                reservation.T7 = false;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    new Business.BLLReservation().Add(reservation);
+                    string userName = (Session["User"] as Models.User).UserName;
+                    OperLogHelper.AddOperLog(String.Format("管理员 {0} 后台预约 {1}：{2}", userName, reservation.ReservationId, reservation.ReservationActivityContent), Module.Reservation, userName);
+                    return Json(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return Json(false);
         }
 
         /// <summary>
@@ -97,7 +197,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 if (count == 1)
                 {
                     //记录操作日志
-                    OperLogHelper.AddOperLog(String.Format("更新{0}:{1}预约状态",reservationId,reservation.ReservationActivityContent), Module.Reservation, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("更新 {0}:{1} 预约状态",reservationId,reservation.ReservationActivityContent), Module.Reservation, (Session["User"] as Models.User).UserName);
                     return Json(true);
                 }
             }
@@ -117,10 +217,15 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             try
             {
-                int count = Handler.Delete(new Models.Reservation() { ReservationId = id });
+                Models.Reservation reservation = Handler.GetOne(r => r.ReservationId == id);
+                if (reservation == null)
+                {
+                    return Json(false);
+                }
+                int count = Handler.Delete(reservation);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog("删除预约记录", Module.Reservation, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("删除预约记录 {0}:{1}", id, reservation.ReservationActivityContent), Module.Reservation, (Session["User"] as Models.User).UserName);
                     return Json(true);
                 }
             }
