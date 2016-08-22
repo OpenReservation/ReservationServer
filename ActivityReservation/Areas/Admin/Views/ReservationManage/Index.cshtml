@@ -3,8 +3,14 @@
 }
 @section styles{
 <style>
+    .table > thead > tr > th {
+        vertical-align: middle;
+    }
     .table > tbody > tr > td {
         vertical-align: middle;
+    }
+    td > .btn {
+      margin-bottom:4px;
     }
 </style>
 }
@@ -88,7 +94,7 @@
                 title: "警告",
                 yes: function (index) {
                     if (reservationId) {
-                        $.post("/Admin/ReservationManage/DeleteReservation", { "reservationId": reservationId}, function (data) {
+                        $.post("/Admin/ReservationManage/DeleteReservation", { "id": reservationId}, function (data) {
                             if (data) {
                                 layer.msg("删除预约记录成功");
                                 loadData(pageIndex);

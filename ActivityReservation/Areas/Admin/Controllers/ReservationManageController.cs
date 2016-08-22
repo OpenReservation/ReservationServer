@@ -81,6 +81,10 @@ namespace ActivityReservation.Areas.Admin.Controllers
             try
             {
                 Models.Reservation reservation = Handler.GetOne(r => r.ReservationId == reservationId);
+                if (reservation == null)
+                {
+                    return Json(false);
+                }
                 if (status > 0)
                 {
                     reservation.ReservationStatus = 1;
@@ -93,7 +97,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 if (count == 1)
                 {
                     //记录操作日志
-                    OperLogHelper.AddOperLog("更新预约状态", Module.Reservation, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("更新{0}:{1}预约状态",reservationId,reservation.ReservationActivityContent), Module.Reservation, (Session["User"] as Models.User).UserName);
                     return Json(true);
                 }
             }

@@ -65,13 +65,14 @@
                 <td>                    
                     @Html.Raw(status)
                 </td>
-                <td id="td_@item.ReservationId">
-                    <button class="btn btn-danger" onclick="DeleteReservation('@item.ReservationId')">删除</button>
-                    @if (item.ReservationStatus == 0)
-                    {
-                        <button onclick="UpdateStatus('@item.ReservationId',1)" class="btn btn-success">通过</button>
-                        <button onclick="UpdateStatus('@item.ReservationId',-1)" class="btn btn-warning">不通过</button>
-                    }
+                <td>
+                        <button class="btn btn-danger" onclick="DeleteReservation('@item.ReservationId')">删除</button>
+                        @if (item.ReservationStatus == 0)
+                        {
+                            <button onclick="UpdateStatus('@item.ReservationId',1)" class="btn btn-success">通过</button>
+                            <button onclick="UpdateStatus('@item.ReservationId',-1)" class="btn btn-warning">不通过</button>
+                        }
+                            
                 </td>
             </tr>
         }
