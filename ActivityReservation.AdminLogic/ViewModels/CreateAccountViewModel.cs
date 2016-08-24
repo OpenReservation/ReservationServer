@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ActivityReservation.Areas.Admin.ViewModels
+namespace ActivityReservation.AdminLogic.ViewModels
 {
     public class CreateAccountViewModel
     {

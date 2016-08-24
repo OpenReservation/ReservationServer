@@ -5,16 +5,11 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ActivityReservation.Areas.Admin.Controllers
+namespace ActivityReservation.AdminLogic.Controllers
 {
-    [Authorize]        
-    public class AccountController : Controller
+    [Authorize]
+    public class AccountController : BaseAdminController
     {
-        /// <summary>
-        /// logger
-        /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(AccountController));
-
         /// <summary>
         /// 管理员登录页面
         /// </summary>
@@ -46,8 +41,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
             {
                 Models.User u = new Models.User() { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
-                Business.BLLUser handler = new Business.BLLUser();
-                u = handler.Login(u);
+                u = BusinessHelper.UserHelper.Login(u);
                 if (u != null)
                 {
                     Helpers.AuthFormService.Login(model.UserName, model.RememberMe);
@@ -125,7 +119,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                     if (u.UserPassword.Equals(Common.SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
                         u.UserPassword = Common.SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        int count = new Business.BLLUser().Update(u, "UserPassword");
+                        int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                         if (count == 1)
                         {
                             //密码修改成功，需要重新登录
@@ -158,13 +152,13 @@ namespace ActivityReservation.Areas.Admin.Controllers
             {
                 return Json(false);
             }
-            Models.User u = Session["User"] as Models.User;
+            Models.User u = CurrentUser;
             if (u != null)
             {
                 u.UserMail = email;
                 try
                 {
-                    int count = new Business.BLLUser().Update(u, "UserMail");
+                    int count = BusinessHelper.UserHelper.Update(u, "UserMail");
                     if (count == 1)
                     {
                         Session["User"] = u;
@@ -190,7 +184,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                Business.BLLUser userBLL = new Business.BLLUser();
+                Business.BLLUser userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
                 Models.User u = userBLL.GetOne(s => s.UserName == accountModel.Username);
                 if (u!=null)
@@ -238,7 +232,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             try
             {
-                int count = new Business.BLLUser().Delete(u);
+                int count = BusinessHelper.UserHelper.Delete(u);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), Module.Account, (Session["User"] as Models.User).UserName);
@@ -265,7 +259,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
             {
                 //加密
                 u.UserPassword = Common.SecurityHelper.SHA256_Encrypt(u.UserPassword);
-                int count = new Business.BLLUser().Update(u, "UserPassword");
+                int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码",u.UserName), Module.Account, (Session["User"] as Models.User).UserName);
@@ -291,7 +285,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         [AllowAnonymous]
         public ActionResult ValidUsername(string userName)
         {
-            Models.User u = new Business.BLLUser().GetOne(s=>s.UserName == userName);
+            Models.User u = BusinessHelper.UserHelper.GetOne(s=>s.UserName == userName);
             if (u == null)
             {
                 return Json(true);
@@ -308,9 +302,10 @@ namespace ActivityReservation.Areas.Admin.Controllers
         /// <param name="userMail">用户邮箱</param>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult ValidUserMail(string userMail)
         {
-            Models.User u = new Business.BLLUser().GetOne(s => s.UserMail == userMail);
+            Models.User u = BusinessHelper.UserHelper.GetOne(s => s.UserMail == userMail);
             if (u == null)
             {
                 return Json(true);
@@ -329,7 +324,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         [Filters.PermissionRequired]
         public ActionResult ValidOldPassword(string password)
         {
-            Models.User u = Session["User"] as Models.User;
+            Models.User u = CurrentUser;
             if (u!=null)
             {
                 if (u.UserPassword.Equals(Common.SecurityHelper.SHA256_Encrypt(password)))
@@ -356,7 +351,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 whereLambda = (u => u.UserName.Contains(search.SearchItem1) && u.IsSuper == false);
             }
             int rowsCount = 0;
-            List<Models.User> userList = new Business.BLLUser().GetPagedList(search.PageIndex, search.PageSize, out rowsCount,whereLambda, u => u.AddTime, false);
+            List<Models.User> userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount,whereLambda, u => u.AddTime, false);
             PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
             PagedListModel<Models.User> data = new PagedListModel<Models.User>() { Pager = pager, Data = userList };
             return View(data);

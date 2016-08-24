@@ -6,20 +6,15 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ActivityReservation.Areas.Admin.Controllers
+namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 系统设置
     /// </summary>
     [Authorize]
     [Filters.AdminPermissionRequired]
-    public class SystemSettingsController : Controller
+    public class SystemSettingsController : BaseAdminController
     {
-        /// <summary>
-        /// logger
-        /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(SystemSettingsController));
-
         /// <summary>
         /// 系统设置首页
         /// </summary>
@@ -39,10 +34,39 @@ namespace ActivityReservation.Areas.Admin.Controllers
             //默认查询所有
             Expression<Func<Models.SystemSettings, bool>> whereLambda = (s => 1 == 1);
             int rowsCount = 0;
-            List<Models.SystemSettings> settingsList = new Business.BLLSystemSettings().GetPagedList(search.PageIndex,search.PageSize,out rowsCount,whereLambda,s=>s.SettingName);
+            if (!String.IsNullOrEmpty(search.SearchItem1))
+            {
+                whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
+            }
+            List<Models.SystemSettings> settingsList = BusinessHelper.SettingsHelper.GetPagedList(search.PageIndex,search.PageSize,out rowsCount,whereLambda,s=>s.SettingName);
             PagerModel pager = new PagerModel(search.PageIndex, search.PageSize,rowsCount);
             PagedListModel<Models.SystemSettings> data = new PagedListModel<Models.SystemSettings>() { Pager = pager, Data = settingsList };
             return View(data);
+        }
+
+        /// <summary>
+        /// 新增设置
+        /// </summary>
+        /// <param name="setting">设置</param>
+        /// <returns></returns>
+        public ActionResult AddSetting(Models.SystemSettings setting)
+        {
+            try
+            {
+                setting.SettingId = Guid.NewGuid();
+                int count = BusinessHelper.SettingsHelper.Add(setting);
+                if (count == 1)
+                {
+                    OperLogHelper.AddOperLog(String.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue), Module.Settings, Username);
+                    HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
+                    return Json(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return Json(false);
         }
 
         /// <summary>
@@ -54,11 +78,10 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             try
             {
-                int count = new Business.BLLSystemSettings().Update(setting, "SettingValue");
+                int count = BusinessHelper.SettingsHelper.Update(setting, "SettingValue");
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId,setting.SettingName, setting.SettingValue), Module.Settings, (Session["User"] as Models.User).UserName);
-                    setting = new Business.BLLSystemSettings().GetOne(s => s.SettingId == setting.SettingId);
                     HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
                 }

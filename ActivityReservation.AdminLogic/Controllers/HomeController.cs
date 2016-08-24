@@ -4,11 +4,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ActivityReservation.Areas.Admin.Controllers
+namespace ActivityReservation.AdminLogic.Controllers
 {
     [Authorize]
     [Filters.PermissionRequired]
-    public class HomeController : Controller
+    public class HomeController : BaseAdminController
     {        
         public ActionResult Index()
         {

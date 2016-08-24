@@ -18,7 +18,7 @@ namespace ActivityReservation.Areas.Admin
                 "Admin_default",
                 "Admin/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional },
-                namespaces:new string[] { "ActivityReservation.Areas.Admin.Controllers" }
+                namespaces:new string[] { "ActivityReservation.AdminLogic.Controllers" }
             );
         }
     }

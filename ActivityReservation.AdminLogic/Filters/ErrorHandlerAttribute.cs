@@ -25,8 +25,7 @@ namespace ActivityReservation.Filters
                 filterContext.ExceptionHandled = true;
                 filterContext.HttpContext.Response.Clear();
                 filterContext.Result = view;
-            }
-            
+            }            
         }
     }
 }

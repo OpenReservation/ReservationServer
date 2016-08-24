@@ -19,7 +19,7 @@ namespace ActivityReservation.Helpers
             }
             else
             {
-                sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\" aria-label=\"{0}\"><span aria-hidden=\"true\">&laquo;</span></a></li>", pager.PageIndex - 1);
+                sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData(1)\" aria-label=\"1\"><span aria-hidden=\"true\">&laquo;</span></a></li>", pager.PageIndex - 1);
                 sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\">{0}</a></li>", pager.PageIndex - 1);
             }
             sbHtmlText.AppendFormat("<li class=\"active\"><a href=\"javascript:void()\">{0}<span class=\"sr-only\">(current)</span></a></li>", pager.PageIndex);
@@ -34,6 +34,34 @@ namespace ActivityReservation.Helpers
             }
             sbHtmlText.Append("</ul></nav>");
             sbHtmlText.AppendFormat("<div><span>每页有<strong>{0}</strong>条数据，一共有<strong>{1}</strong>页，总计<strong>{2}</strong>条数据</span></div></div>", pager.PageSize, pager.PageCount, pager.TotalCount);            
+            return MvcHtmlString.Create(sbHtmlText.ToString());
+        }
+
+        public static MvcHtmlString Pager(this HtmlHelper helper, PagerModel pager, Func<int, string> onPageChange)
+        {
+            StringBuilder sbHtmlText = new StringBuilder();
+            sbHtmlText.Append("<div style=\"text-align:center\"><nav><ul  class=\"pagination\">");
+            if (pager.PageIndex <= 1)
+            {
+                sbHtmlText.Append("<li class=\"disabled\"><a href=\"javascript:void()\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>");
+            }
+            else
+            {
+                sbHtmlText.AppendFormat("<li><a href=\"{0}\" aria-label=\"Previous\"><span aria-hidden=\"true\">&laquo;</span></a></li>", onPageChange(pager.PageIndex - 1));
+                sbHtmlText.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", onPageChange(pager.PageIndex - 1), pager.PageIndex - 1);
+            }
+            sbHtmlText.AppendFormat("<li class=\"active\"><a href=\"javascript:void()\">{0}<span class=\"sr-only\">(current)</span></a></li>", pager.PageIndex);
+            if (pager.PageIndex >= pager.PageCount)
+            {
+                sbHtmlText.Append("<li class=\"disabled\"><a href=\"javascript:void()\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>");
+            }
+            else
+            {
+                sbHtmlText.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", onPageChange(pager.PageIndex+1),pager.PageIndex + 1);
+                sbHtmlText.AppendFormat("<li><a href=\"{0}\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>", onPageChange(pager.PageIndex + 1));
+            }
+            sbHtmlText.Append("</ul></nav>");
+            sbHtmlText.AppendFormat("<div><span>每页有<strong>{0}</strong>条数据，一共有<strong>{1}</strong>页，总计<strong>{2}</strong>条数据</span></div></div>", pager.PageSize, pager.PageCount, pager.TotalCount);
             return MvcHtmlString.Create(sbHtmlText.ToString());
         }
     }

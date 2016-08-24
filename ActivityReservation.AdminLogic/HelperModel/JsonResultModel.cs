@@ -1,4 +1,4 @@
-﻿namespace ActivityReservation.ViewModels
+﻿namespace ActivityReservation.HelperModels
 {
     public class JsonResultModel
     {

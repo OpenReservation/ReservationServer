@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace ActivityReservation.Areas.Admin.ViewModels
+namespace ActivityReservation.AdminLogic.ViewModels
 {
     public class BlockEntityViewModel
     {

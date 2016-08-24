@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ActivityReservation.Areas.Admin.ViewModels
+namespace ActivityReservation.AdminLogic.ViewModels
 {
     /// <summary>
     /// 用户登录，viewmodel

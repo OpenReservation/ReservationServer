@@ -7,37 +7,20 @@ using System.Web;
 using System.Web.Mvc;
 using Business;
 
-namespace ActivityReservation.Areas.Admin.Controllers
+namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 黑名单
     /// </summary>
     [Authorize]
     [Filters.PermissionRequired]
-    public class BlockEntityController : Controller
+    public class BlockEntityController : BaseAdminController
     {
-        /// <summary>
-        /// logger
-        /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(BlockEntityController));
-
-        private static Business.BLLBlockEntity handler = null;        
-        private static BLLBlockEntity Handler
-        {
-            get
-            {
-                if (handler == null)
-                {
-                    handler = new BLLBlockEntity();
-                }
-                return handler;
-            }            
-        }
 
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
-            List<Models.BlockType> types = new Business.BLLBlockType().GetAll();
+            List<Models.BlockType> types = BusinessHelper.BlockTypeHelper.GetAll();
             return View(types);
         }
 
@@ -73,7 +56,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
             int rowsCount = 0;
             try
             {
-                List<Models.BlockEntity> blockList = new Business.BLLBlockEntity().GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, b => b.BlockTime, false);
+                List<Models.BlockEntity> blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, b => b.BlockTime, false);
                 PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
                 PagedListModel<Models.BlockEntity> dataList = new PagedListModel<Models.BlockEntity>() { Pager = pager, Data = blockList };
                 return View(dataList);
@@ -103,7 +86,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 };
                 try
                 {
-                    int count = Handler.Add(entity);
+                    int count = BusinessHelper.BlockEntityHelper.Add(entity);
                     if (count == 1)
                     {
                         //记录日志
@@ -142,7 +125,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
             }
             try
             {
-                int count = Handler.Update(entity,"IsActive");
+                int count = BusinessHelper.BlockEntityHelper.Update(entity,"IsActive");
                 if (count>0)
                 {
                     OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive?"启用":"禁用"), Module.BlockEntity, (Session["User"] as Models.User).UserName);
@@ -166,7 +149,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             try
             {
-                int c = Handler.Delete(new Models.BlockEntity() { BlockId = entityId });
+                int c = BusinessHelper.BlockEntityHelper.Delete(new Models.BlockEntity() { BlockId = entityId });
                 if (c == 1)
                 {
                     //记录日志

@@ -4,29 +4,15 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace ActivityReservation.Areas.Admin.Controllers
+namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 预约管理
     /// </summary>
     [Authorize]
     [Filters.PermissionRequired]
-    public class ReservationManageController : Controller
-    {
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(ReservationManageController));
-        private static Business.BLLReservation handler = null;
-        private Business.BLLReservation Handler
-        {
-            get
-            {
-                if (handler == null)
-                {
-                    handler = new Business.BLLReservation();
-                }
-                return handler;
-            }
-        }
-        
+    public class ReservationManageController : BaseAdminController
+    {        
         public ActionResult Index()
         {
             return View();
@@ -34,7 +20,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
 
         public ActionResult Reservate()
         {
-            List<Models.ReservationPlace> places = new Business.BLLReservationPlace().GetAll(s => s.PlaceName, true);
+            List<Models.ReservationPlace> places = BusinessHelper.ReservationPlaceHelper.GetAll(s => s.PlaceName, true);
             return View(places);
         }
 
@@ -120,9 +106,8 @@ namespace ActivityReservation.Areas.Admin.Controllers
                                 break;
                         }
                     }
-                    new Business.BLLReservation().Add(reservation);
-                    string userName = (Session["User"] as Models.User).UserName;
-                    OperLogHelper.AddOperLog(String.Format("管理员 {0} 后台预约 {1}：{2}", userName, reservation.ReservationId, reservation.ReservationActivityContent), Module.Reservation, userName);
+                    BusinessHelper.ReservationHelper.Add(reservation);
+                    OperLogHelper.AddOperLog(String.Format("管理员 {0} 后台预约 {1}：{2}", Username, reservation.ReservationId, reservation.ReservationActivityContent), Module.Reservation, Username);
                     return Json(true);
                 }
             }
@@ -163,7 +148,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 }                
             }
             //load data
-            List<Models.Reservation> list = new Business.BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
+            List<Models.Reservation> list = BusinessHelper.ReservationHelper.GetReservationList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
             PagedListModel<Models.Reservation> dataList = new PagedListModel<Models.Reservation>() { Data = list, Pager = pager };
             return View(dataList);
@@ -180,7 +165,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             try
             {
-                Models.Reservation reservation = Handler.GetOne(r => r.ReservationId == reservationId);
+                Models.Reservation reservation = BusinessHelper.ReservationHelper.GetOne(r => r.ReservationId == reservationId);
                 if (reservation == null)
                 {
                     return Json(false);
@@ -193,7 +178,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
                 {
                     reservation.ReservationStatus = 2;
                 }
-                int count = Handler.Update(reservation, "ReservationStatus");                
+                int count = BusinessHelper.ReservationHelper.Update(reservation, "ReservationStatus");                
                 if (count == 1)
                 {
                     //记录操作日志
@@ -217,12 +202,12 @@ namespace ActivityReservation.Areas.Admin.Controllers
         {
             try
             {
-                Models.Reservation reservation = Handler.GetOne(r => r.ReservationId == id);
+                Models.Reservation reservation = BusinessHelper.ReservationHelper.GetOne(r => r.ReservationId == id);
                 if (reservation == null)
                 {
                     return Json(false);
                 }
-                int count = Handler.Delete(reservation);
+                int count = BusinessHelper.ReservationHelper.Delete(reservation);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("删除预约记录 {0}:{1}", id, reservation.ReservationActivityContent), Module.Reservation, (Session["User"] as Models.User).UserName);

@@ -4,20 +4,15 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
-namespace ActivityReservation.Areas.Admin.Controllers
+namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 操作日志
     /// </summary>
     [Authorize]
     [Filters.AdminPermissionRequired]
-    public class OperationLogController : Controller
+    public class OperationLogController : BaseAdminController
     {
-        /// <summary>
-        /// logger
-        /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(OperationLogController));
-
         /// <summary>
         /// 操作日志首页
         /// </summary>
@@ -58,7 +53,7 @@ namespace ActivityReservation.Areas.Admin.Controllers
             int rowsCount = 0;
             try
             {
-                List<Models.OperationLog> logList = new Business.BLLOperationLog().GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
+                List<Models.OperationLog> logList = BusinessHelper.OperLogHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
                 PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
                 PagedListModel<Models.OperationLog> dataList = new PagedListModel<Models.OperationLog>() { Data = logList, Pager = pager };
                 return View(dataList);
