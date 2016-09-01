@@ -19,12 +19,16 @@ namespace ActivityReservation.Filters
     /// </summary>
     public class PermissionRequiredAttribute : ActionFilterAttribute
     {
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if (filterContext.HttpContext.Session["User"]==null)
+            if (!filterContext.ActionDescriptor.IsDefined(typeof(NoPermissionRequiredAttribute),true))
             {
-                filterContext.Result = new RedirectResult("~/Admin/Account/Login");
-            }
+                if (filterContext.HttpContext.Session["User"] == null)
+                {
+                    filterContext.Result = new RedirectResult("~/Admin/Account/Login");
+                }
+            }            
             base.OnActionExecuting(filterContext);
         }
     }
