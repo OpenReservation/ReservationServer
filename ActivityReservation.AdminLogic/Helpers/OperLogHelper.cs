@@ -96,6 +96,9 @@ namespace ActivityReservation.Helpers
                 case Module.Settings:
                     moduleName = "设置管理";
                     break;
+                case Module.ReservationPlace:
+                    moduleName = "活动室管理";
+                    break;
                 default:
                     break;
             }
