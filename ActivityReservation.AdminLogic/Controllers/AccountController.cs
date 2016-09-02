@@ -201,7 +201,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     UserId = Guid.NewGuid(),
                     UserName = accountModel.Username,
-                    UserPassword = accountModel.UserPassword,
+                    UserPassword = Common.SecurityHelper.SHA256_Encrypt(accountModel.UserPassword),
                     UserMail = accountModel.UserEmail
                 };
                 try
