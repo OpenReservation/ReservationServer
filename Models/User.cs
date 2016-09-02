@@ -7,36 +7,25 @@ namespace Models
     [Table("tabUser")]
     public class User
     {
-        /// <summary>
-        /// 用户编号
-        /// </summary>
+        #region Private Field
         private Guid userId;
 
-        /// <summary>
-        ///  用户名
-        /// </summary>
         private string userName;
 
-        /// <summary>
-        /// 用户邮箱，用来激活账号和找回密码
-        /// </summary>
         private string userMail;
 
-        /// <summary>
-        /// 用户密码
-        /// </summary>
         private string userPassword;
 
-        /// <summary>
-        /// 是否是超级管理员
-        /// </summary>
         private bool isSuper = false;
 
-        /// <summary>
-        /// 添加时间
-        /// </summary>
-        private DateTime addTime = DateTime.Now;
+        private bool isEnabled = true;
 
+        private DateTime addTime = DateTime.Now; 
+        #endregion
+
+        /// <summary>
+        /// 用户id,唯一编号
+        /// </summary>
         [Column]
         [Key]
         public Guid UserId
@@ -52,6 +41,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  用户名
+        /// </summary>
         [Column]
         public string UserName
         {
@@ -66,6 +58,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 用户密码
+        /// </summary>
         [Column]
         public string UserPassword
         {
@@ -80,6 +75,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 是否是超级管理员
+        /// </summary>
         [Column]
         public bool IsSuper
         {
@@ -94,6 +92,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 添加时间
+        /// </summary>
         [Column]
         public DateTime AddTime
         {
@@ -108,6 +109,10 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 用户邮箱
+        /// </summary>
+        [Column]
         public string UserMail
         {
             get
@@ -118,6 +123,23 @@ namespace Models
             set
             {
                 userMail = value;
+            }
+        }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        [Column]
+        public bool IsEnabled
+        {
+            get
+            {
+                return isEnabled;
+            }
+
+            set
+            {
+                isEnabled = value;
             }
         }
     }

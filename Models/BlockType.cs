@@ -7,6 +7,7 @@ namespace Models
     [Table("tabBlockType")]
     public class BlockType
     {
+        #region Private Field
         /// <summary>
         /// typeId
         /// </summary>
@@ -15,8 +16,12 @@ namespace Models
         /// <summary>
         /// typeName
         /// </summary>
-        private string typeName;
+        private string typeName; 
+        #endregion
 
+        /// <summary>
+        /// 黑名单类型id
+        /// </summary>
         [Column]
         [Key]
         public Guid TypeId
@@ -31,6 +36,10 @@ namespace Models
                 typeId = value;
             }
         }
+
+        /// <summary>
+        /// 黑名单类型名称
+        /// </summary>
         [Column]
         public string TypeName
         {

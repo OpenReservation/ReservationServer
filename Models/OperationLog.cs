@@ -7,6 +7,7 @@ namespace Models
     [Table("tabOperationLog")]
     public class OperationLog
     {
+        #region Private Field
         /// <summary>
         /// logId
         /// </summary>
@@ -30,7 +31,8 @@ namespace Models
         /// <summary>
         /// logModule
         /// </summary>
-        private string logModule;
+        private string logModule; 
+        #endregion
 
         [Key]
         [Column]
@@ -88,6 +90,7 @@ namespace Models
                 operBy = value;
             }
         }
+
         [Column]
         public string LogModule
         {

@@ -7,6 +7,7 @@ namespace Models
     [Table("tabBlockEntity")]
     public class BlockEntity
     {
+        #region Private Field
         /// <summary>
         /// id
         /// </summary>
@@ -30,8 +31,12 @@ namespace Models
         /// <summary>
         /// 是否启用
         /// </summary>
-        private bool isActive = true;
+        private bool isActive = true; 
+        #endregion
 
+        /// <summary>
+        /// 黑名单id
+        /// </summary>
         [Column]
         [Key]
         public Guid BlockId
@@ -47,8 +52,10 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 黑名单类型id
+        /// </summary>
         [Column]
-        [ForeignKey("BlockType")]
         public Guid BlockTypeId
         {
             get
@@ -62,6 +69,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 黑名单值
+        /// </summary>
         [Column]
         public string BlockValue
         {
@@ -75,6 +85,10 @@ namespace Models
                 blockValue = value;
             }
         }
+
+        /// <summary>
+        /// 添加到黑名单时间
+        /// </summary>
         [Column]
         public DateTime BlockTime
         {
@@ -89,6 +103,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 是否启用
+        /// </summary>
         [Column]
         public bool IsActive
         {
@@ -103,6 +120,10 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 黑名单类型信息
+        /// </summary>
+        [ForeignKey("BlockTypeId")]
         public virtual BlockType BlockType { get; set; }
     }
 }

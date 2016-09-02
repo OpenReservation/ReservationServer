@@ -4,17 +4,28 @@ using System.Data.Entity;
 
 namespace Models
 {
-    internal class ReservationDbInitializer : IDatabaseInitializer<ReservationDbContext>
+    class ReservationDbInitializer : DropCreateDatabaseIfModelChanges<ReservationDbContext>
     {
-        public void InitializeDatabase(ReservationDbContext context)
-        {            
+        public override void InitializeDatabase(ReservationDbContext context)
+        {
             //数据库初始化，不存在则创建
             if (!context.Database.Exists())
             {
                 context.Database.Create();
                 //初始化数据
                 InitData(context);
+                //update db
+                context.SaveChanges();
             }
+            else
+            {
+                base.InitializeDatabase(context);
+            }
+        }
+
+        protected override void Seed(ReservationDbContext context)
+        {
+            InitData(context);
         }
 
         /// <summary>
@@ -58,12 +69,9 @@ namespace Models
                     new SystemSettings() { SettingId = Guid.NewGuid(),SettingName = "SystemContactEmail",DisplayName = "系统联系邮箱",SettingValue = "lilingjuan@hpu.edu.cn"}
                 };
                 context.SystemSettings.AddRange(settings);
-                //update db
-                context.SaveChanges();
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }

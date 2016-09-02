@@ -7,6 +7,7 @@ namespace Models
     [Table("tabReservation")]
     public class Reservation
     {
+        #region Private Field
         /// <summary>
         /// 预约id
         /// </summary>
@@ -23,7 +24,7 @@ namespace Models
         private string reservationPersonPhone;
 
         /// <summary>
-        /// 预约活动室名称
+        /// 预约活动室id
         /// </summary>
         private Guid reservationPlaceId;
 
@@ -56,26 +57,14 @@ namespace Models
         private string reservationFromIp;
 
         /// <summary>
-        /// 预约单位
-        /// </summary>
-        private string reservationUnit;
-        [Column]
-        public string ReservationUnit
-        {
-            get { return reservationUnit; }
-            set { reservationUnit = value; }
-        }
-
-        /// <summary>
         /// 预约内容，活动内容
         /// </summary>
         private string reservationActivityContent;
-        [Column]
-        public string ReservationActivityContent
-        {
-            get { return reservationActivityContent; }
-            set { reservationActivityContent = value; }
-        }
+
+        /// <summary>
+        /// 预约单位
+        /// </summary>
+        private string reservationUnit;
 
         /// <summary>
         /// 更新/审核 备注信息
@@ -91,6 +80,7 @@ namespace Models
         /// 更新时间
         /// </summary>
         private DateTime updateTime;
+
         /// <summary>
         /// 预约时间段1
         /// true:可预约，false:不可预约
@@ -126,8 +116,12 @@ namespace Models
         /// <summary>
         ///  预约时间段7
         /// </summary>
-        private bool t7 = true;
+        private bool t7 = true; 
+        #endregion
 
+        /// <summary>
+        /// 预约id
+        /// </summary>
         [Column]
         [Key]
         public Guid ReservationId
@@ -143,6 +137,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约人姓名
+        /// </summary>
         [Column]
         public string ReservationPersonName
         {
@@ -157,6 +154,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约人联系方式
+        /// </summary>
         [Column]
         public string ReservationPersonPhone
         {
@@ -171,7 +171,9 @@ namespace Models
             }
         }
 
-
+        /// <summary>
+        /// 预约时间
+        /// </summary>
         [Column]
         public DateTime ReservationTime
         {
@@ -186,6 +188,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约使用时间
+        /// </summary>
         [Column]
         public String ReservationForTime
         {
@@ -201,6 +206,25 @@ namespace Models
         }
 
         [Column]
+        public string ReservationUnit
+        {
+            get { return reservationUnit; }
+            set { reservationUnit = value; }
+        }
+
+        [Column]
+        public string ReservationActivityContent
+        {
+            get { return reservationActivityContent; }
+            set { reservationActivityContent = value; }
+        }
+
+        /// <summary>
+        /// 预约时间段1
+        /// true:可预约，false:不可预约
+        /// 预约之后某个时间段由true变为false
+        /// </summary>
+        [Column]
         public bool T1
         {
             get
@@ -214,6 +238,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  预约时间段2
+        /// </summary>
         [Column]
         public bool T2
         {
@@ -228,6 +255,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  预约时间段3
+        /// </summary>
         [Column]
         public bool T3
         {
@@ -242,6 +272,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  预约时间段4
+        /// </summary>
         [Column]
         public bool T4
         {
@@ -256,6 +289,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  预约时间段5
+        /// </summary>
         [Column]
         public bool T5
         {
@@ -270,6 +306,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  预约时间段6
+        /// </summary>
         [Column]
         public bool T6
         {
@@ -284,6 +323,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        ///  预约时间段7
+        /// </summary>
         [Column]
         public bool T7
         {
@@ -298,6 +340,12 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约状态
+        /// 0：待审核
+        /// 1：审核通过
+        /// 2：审核不通过
+        /// </summary>
         [Column]
         public int ReservationStatus
         {
@@ -312,6 +360,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 更新人
+        /// </summary>
         [Column]
         public string UpdateBy
         {
@@ -326,6 +377,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 更新时间
+        /// </summary>
         [Column]
         public DateTime UpdateTime
         {
@@ -340,6 +394,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约使用的日期
+        /// </summary>
         [Column]
         public DateTime ReservationForDate
         {
@@ -354,6 +411,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约人的IP
+        /// </summary>
         [Column]
         public string ReservationFromIp
         {
@@ -368,8 +428,10 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约活动室id
+        /// </summary>
         [Column]
-        [ForeignKey("Place")]
         public Guid ReservationPlaceId
         {
             get
@@ -383,6 +445,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 更新/审核 备注信息
+        /// </summary>
         [Column]
         public string UpdateMemo
         {
@@ -397,6 +462,10 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 预约活动室信息
+        /// </summary>
+        [ForeignKey("ReservationPlaceId")]
         public virtual ReservationPlace Place { get; set; }        
     }
 }
