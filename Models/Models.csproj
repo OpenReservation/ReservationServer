@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="BlockEntity.cs" />
     <Compile Include="BlockType.cs" />
+    <Compile Include="Notice.cs" />
     <Compile Include="OperationLog.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reservation.cs" />

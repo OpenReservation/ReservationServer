@@ -54,6 +54,7 @@
     <Compile Include="Controllers\BaseAdminController.cs" />
     <Compile Include="Controllers\BlockEntityController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NoticeController.cs" />
     <Compile Include="Controllers\OperationLogController.cs" />
     <Compile Include="Controllers\ReservationManageController.cs" />
     <Compile Include="Controllers\SystemSettingsController.cs" />

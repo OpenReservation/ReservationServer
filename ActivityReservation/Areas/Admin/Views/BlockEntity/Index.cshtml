@@ -52,6 +52,7 @@
             } else {
                 pageIndex = pIndex;
             }
+            $("#div_main").html('<br /><img src="/images/loading.gif"/> 正在玩命加载中，请稍后...');
             $.ajax({
                 url: "/Admin/BlockEntity/List",
                 data: {
@@ -61,6 +62,7 @@
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
+                        $("#div_main").html('');
                         layer.msg('数据加载异常，请稍后重试！');
                     }
                 }
