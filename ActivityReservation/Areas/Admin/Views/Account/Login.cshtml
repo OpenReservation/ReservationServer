@@ -64,16 +64,14 @@
                 return false;
             }
         }
-        $("#btnLogin").on("click", function () {
+        function Login() {
             if (!isFormValid()) {
                 return;
             }
             var username = $("#inputUsername").val();
             var password = $("#inputPassword").val();
             var remember = $("#rememberMe").checked;
-
             var returnUrl = GetQueryString("ReturnUrl");
-
             $("#btnLogin").text("登录中...");
             $("#btnLogin").attr("disabled", "disabled");
             $.post("LogOn", {"UserName":username,"Password":password,"RememberMe":remember},function(data,status){
@@ -98,7 +96,13 @@
                     $("#btnLogin").text("登录");
                 }
             });
-        });
+        }
+        $("#btnLogin").on("click", Login);
+        document.onkeydown = function (e) {
+            if (e.keyCode == 13) {
+                Login();
+            }
+        }
     </script>
 </body>
-</html>
+</html> 
