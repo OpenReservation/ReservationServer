@@ -7,7 +7,7 @@
     <thead>
         <tr>
             <th>公告标题</th>
-            <th>公告简介</th>
+            <th>公告发布人</th>
             <th>公告更新时间</th>
             <th>公告发布时间</th>
             <th>操作</th>
@@ -21,11 +21,7 @@
                     @item.NoticeTitle
                 </td>
                 <td>
-                    @if (!String.IsNullOrEmpty(item.NoticeImagePath))
-                    {
-                        <img src="@item.NoticeImagePath" /><br/>
-                    }
-                    @item.NoticeDesc
+                    @item.NoticePublisher
                 </td>
                 <td>
                     @item.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
@@ -34,7 +30,7 @@
                     @item.NoticePublishTime.ToString("yyyy-MM-dd HH:mm:ss")
                 </td>
                 <td>
-                    <a href="@item.NoticePath" target="_blank">查看</a>
+                    <a href="/Notice/@item.NoticePath" target="_blank">查看</a>
                 </td>
             </tr>
         }

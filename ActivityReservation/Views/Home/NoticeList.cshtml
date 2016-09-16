@@ -1,0 +1,16 @@
+﻿@model PagedListModel<Models.Notice>
+@{
+    Layout = null;
+}
+<ul>
+    @foreach (Models.Notice item in Model.Data)
+    {
+        <li>
+            <a href="/Notice/@item.NoticePath" target="_blank">
+                <span class="notice-title">@item.NoticeTitle</span>
+                <span class="pub-time">@item.NoticePublishTime.ToString("yyyy-MM-dd HH:mm:ss")</span>
+            </a>
+        </li>
+    }
+</ul>
+@Html.Pager(Model.Pager)

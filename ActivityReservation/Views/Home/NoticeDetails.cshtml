@@ -1,0 +1,12 @@
+﻿@model Models.Notice
+
+@{
+    ViewBag.Title = Model.NoticeTitle;
+}
+
+<h2>
+    @Model.NoticeTitle
+</h2>
+<div>
+    @Html.Raw(Model.NoticeContent)
+</div>

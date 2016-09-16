@@ -27,6 +27,10 @@ footer {
     text-align:center;
 }
 /* custome styles for */
+#div_main {
+    width:100%;
+    overflow:auto;
+}
 .table-wraper {
     width:100%;
     min-width:400px;

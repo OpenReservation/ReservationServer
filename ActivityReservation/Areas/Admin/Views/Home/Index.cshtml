@@ -10,6 +10,7 @@
             <li class="list-group-item">@Html.ActionLink("我的账户", "Index", "Account")</li>
             <li class="list-group-item">@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
             <li class="list-group-item">@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
+            <li class="list-group-item">@Html.ActionLink("公告管理", "Index", "Notice")</li>
             @if ((Session["User"] as Models.User).IsSuper)
             {
                 <li role="separator" class="list-unstyled"><br /> </li>

@@ -1,8 +1,120 @@
 ﻿@model Models.Notice
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "添加新公告";
 }
+@section styles{
+    <link rel="stylesheet" type="text/css" href="~/Content/kindeditor/themes/default/default.css" />
+}
+<div class="table-wraper">
+    <div class="table-header">
+        <h3 class="table-title">
+            添加新公告
+        </h3>        
+    </div>
+    <div class="table-body" id="div_main">
+        <form id="noticeForm" method="post" style="padding-top:1.2em">
+            <div class="form-group">
+                <button type="button" id="btnSave" class="btn btn-primary">保存</button> &nbsp;
+                <button type="button" id="btnPreview" class="btn btn-primary">预览</button>                
+            </div>
+            <div class="form-group">
+                <label for="title" class="sr-only">公告标题</label>
+                <input type="text" name="Title" id="title" class="form-control" value="" min="2" maxlength="20" placeholder="请输入公告标题" />
+            </div>
+            <div class="form-group">
+                <label for="customPath" class="sr-only">自定义公告地址</label>
+                <input type="text" id="customPath" name="CustomPath" placeholder="自定义公告访问地址" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="content" class="sr-only">公告内容</label>
+                <input type="text" name="Content" id="content" value="" placeholder="公告内容" />
+            </div>
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/kindeditor/kindeditor-all-min.js"></script>
+    <script src="~/Content/kindeditor/lang/zh-CN.js"></script>
+    <script>
+        var editor;
+        KindEditor.ready(function (K) {
+            editor = K.create('#content', {
+                uploadJson: '/Admin/Home/UploadFile',
+                fileManagerJson: '/Admin/Home/FileManager',
+                allowFileManager: true,
+                width:'100%',
+                afterCreate: function () {
+                    var self = this;
+                    K.ctrl(document, 13, function () {
+                        self.sync();
+                        K('form')[0].submit();
+                    });
+                    K.ctrl(self.edit.doc, 13, function () {
+                        self.sync();
+                        K('form')[0].submit();
+                    });
+                }
+            });
+        });
+        //submit
+        $("#btnSave").on("click", function onSubmit() {
+            var title = $("#title").val(), content = editor.html();
+            if (!title) {
+                layer.msg('公告标题不能为空！');
+                $("#title").focus();
+                return;
+            }
+            if (!content) {
+                layer.msg('公告内容不能为空！');
+                return;
+            }
+            var path = $("#customPath").val();
+            if (path) {
+                //TODO:正则验证，不允许存在空格和特殊字符
+                //如果自定义路径不为空则验证是可用
+                if (!ValidPath(path)) {
+                    layer.msg("指定路径不可用，请修改");
+                    return;
+                }
+            }
+            editor.sync();
+            $("#noticeForm").attr("action", "/Admin/Notice/Create");
+            $("#noticeForm").attr("target", "_self");
+            $("#noticeForm").submit();
+        });
 
-<h2>Create</h2>
-
+        function ValidPath(path) {
+            var status = false;
+            $.ajax({
+                url: "/Admin/Notice/IsPathAvailable",
+                method: "POST",
+                async: false,
+                data: { "path": path },
+                success: function (data) {
+                    if (data) {
+                        status = true;
+                    }
+                }
+            });
+            return status;
+        }
+        //preview
+        $("#btnPreview").on("click", function () {
+            var title = $("#title").val(), content = editor.html();
+            if (!title) {
+                layer.msg('公告标题不能为空！');
+                $("#title").focus();
+                return;
+            }
+            if (!content) {
+                layer.msg('公告内容不能为空！');
+                return;
+            }
+            editor.sync();
+            $("#noticeForm").attr("action", "/Admin/Notice/Preview");
+            $("#noticeForm").attr("target", "_blank");
+            $("#noticeForm").submit();
+        });
+    </script>
+}

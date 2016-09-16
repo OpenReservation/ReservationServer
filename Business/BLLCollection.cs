@@ -62,4 +62,12 @@ namespace Business
             dbHandler = new DALSystemSettings();
         }
     }
+
+    public partial class BLLNotice : BaseBLL<Models.Notice>
+    {
+        protected override void InitDbHandler()
+        {
+            dbHandler = new DALNotice();
+        }
+    }
 }

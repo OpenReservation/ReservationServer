@@ -38,6 +38,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Mvc">
       <HintPath>..\libs\System.Web.Mvc.dll</HintPath>
     </Reference>
@@ -73,6 +74,7 @@
     <Compile Include="ViewModels\CreateAccountViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ModifyPasswordViewModel.cs" />
+    <Compile Include="ViewModels\NoticeViewModel.cs" />
     <Compile Include="ViewModels\ReservationViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

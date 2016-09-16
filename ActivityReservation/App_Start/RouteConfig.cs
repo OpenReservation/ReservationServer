@@ -12,7 +12,9 @@ namespace ActivityReservation
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
+            //notice route
+            routes.MapRoute("Notice", "Notice/{path}", new { controller = "Home", action = "NoticeDetails" }, namespaces: new string[] { "ActivityReservation.Controllers" });
+            //default route
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

@@ -22,6 +22,8 @@ namespace ActivityReservation.Helpers
         BLLBlockEntity BlockEntityHelper { get; }
 
         BLLBlockType BlockTypeHelper { get; }
+
+        BLLNotice NoticeHelper { get; }
     }
 
     public class BusinessHelper : IBusinessHelper
@@ -36,6 +38,8 @@ namespace ActivityReservation.Helpers
 
         private BLLSystemSettings settingsHelper = null;
         private BLLUser userHelper = null;
+
+        private BLLNotice noticeHelper = null;
 
         public BLLBlockEntity BlockEntityHelper
         {
@@ -58,6 +62,18 @@ namespace ActivityReservation.Helpers
                     blockTypeHelper = new BLLBlockType();
                 }
                 return blockTypeHelper;
+            }
+        }
+
+        public BLLNotice NoticeHelper
+        {
+            get
+            {
+                if (noticeHelper == null)
+                {
+                    noticeHelper = new BLLNotice();
+                }
+                return noticeHelper;
             }
         }
 

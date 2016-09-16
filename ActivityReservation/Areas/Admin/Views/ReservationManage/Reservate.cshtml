@@ -1,5 +1,4 @@
 ﻿@model List<Models.ReservationPlace>
-
 @{
     ViewBag.Title = "预约";
 }
@@ -50,7 +49,7 @@
                         {
                                 <li>
                                     <label>
-                                        <input type="radio" value="@place.PlaceId" name="place" />@place.PlaceName
+                                        <input type="radio" ng-click="nextStep()" value="@place.PlaceId" name="place" />@place.PlaceName
                                     </label>
                                 </li>
                         }
@@ -245,6 +244,7 @@
                                         $(ele).removeAttr("disabled");
                                         $(ele).removeClass("disabled");
                                     }
+                                    $(ele).removeClass("checked");
                                 });
                             }).error(function (res) {
                                 console.error(res);

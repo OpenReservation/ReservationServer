@@ -13,7 +13,7 @@
         <div class="form-group">
             <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
         </div>
-        <button id="btnSearch" class="btn btn-primary">搜索</button> <br/>
+        <button id="btnSearch" type="button" class="btn btn-primary">搜索</button> <br/>
         <span class="text-info">注：默认只显示最近7天的预约，已过期的预约可以根据预约人联系方式查询</span>
     </div>
     <div id="div_main">
@@ -44,7 +44,7 @@
         $("#reId").val(id);
         $("#checkForm").submit();
     }
-    //
+    //search
     $("#btnSearch").on("click", function () {
         loadData();
     });

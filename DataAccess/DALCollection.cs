@@ -13,4 +13,6 @@
     public partial class DALReservationPlace : BaseDaL<Models.ReservationPlace> { }
 
     public partial class DALSystemSettings : BaseDaL<Models.SystemSettings> { }
+
+    public partial class DALNotice : BaseDaL<Models.Notice> { }
 }

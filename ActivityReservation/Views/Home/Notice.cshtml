@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "公告列表";
+}
+<div class="container">
+    <h3 class="table-title">公告列表</h3>
+    <div class="form-inline" style="margin:1em 0">
+        <div class="form-group">
+            <input type="search" name="title" id="title" value="" placeholder="公告标题" class="form-control" />
+        </div>
+        <button id="btnSearch" type="button" class="btn btn-primary">搜索</button>
+    </div>
+    <div id="div_main">
+
+    </div>
+</div>
+@section scripts{
+    <script>
+        var pageSize = 10,pageIndex=1;
+        //加载数据
+        function loadData(pIndex) {
+            if (!pIndex) {
+                pageIndex = 1;
+            } else {
+                pageIndex = pIndex;
+            }
+            $("#div_main").html('<br /><img src="/images/loading.gif"/> 正在玩命加载中，请稍后...');
+            $.ajax({
+                url: "/Home/NoticeList",
+                data: {
+                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#title").val()
+                },
+                success: function (data, status) {
+                    if (status == "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        $("#div_main").html('');
+                        layer.msg('数据加载异常，请稍后重试！');
+                    }
+                }
+            });
+        }
+        //搜索
+        $("#btnSearch").on("click", function () {
+            loadData();
+        });
+        $(function () {
+            loadData();
+        });
+    </script>
+}

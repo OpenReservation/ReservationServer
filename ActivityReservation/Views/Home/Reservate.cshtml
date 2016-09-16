@@ -44,18 +44,18 @@
                 <p class="lead">选择预约活动室</p>
                 <div id="placesList">
                     @if (Model.Count > 0)
-                {
+                    {
                         <ul>
                             @foreach (Models.ReservationPlace place in Model)
-                        {
+                            {
                                 <li>
                                     <label>
-                                        <input type="radio" value="@place.PlaceId" name="place" />@place.PlaceName
+                                        <input type="radio" value="@place.PlaceId" ng-click="nextStep()" name="place" />@place.PlaceName
                                     </label>
                                 </li>
-                        }
+                            }
                         </ul>
-                }
+                    }
                 </div>
             </section>
             @* 选择预约时间段 *@
@@ -240,6 +240,7 @@
                                 var statusArray = response;
                                 //console.log(statusArray);
                                 $("input:checkbox[name='cbPeriod']").each(function (index, ele) {
+                                    $(ele).removeAttr("checked");
                                     if (!statusArray[index]) {
                                         $(ele).attr("disabled", "disabled");
                                         $(ele).addClass("disabled");

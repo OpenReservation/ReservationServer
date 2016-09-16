@@ -165,6 +165,69 @@ namespace ActivityReservation.Controllers
             Models.Reservation r = new Business.BLLReservation().GetOne(re => re.ReservationId == id);
             return View(r);
         }
+        /// <summary>
+        /// 公告
+        /// </summary>
+        /// <param name="path">路径</param>
+        /// <returns></returns>
+        public ActionResult Notice()
+        {
+            return View();
+        }
+        /// <summary>
+        /// 公告列表
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult NoticeList(SearchHelperModel search)
+        {
+            Expression<Func<Models.Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
+            if (!String.IsNullOrEmpty(search.SearchItem1))
+            {
+                whereLamdba = (n => n.CheckStatus && !n.IsDeleted && n.NoticeTitle.Contains(search.SearchItem1));
+            }
+            try
+            {
+                int count = 0;
+                var noticeList = new Business.BLLNotice().GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba, n => n.NoticePublishTime, false);
+                PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, count);
+                PagedListModel<Models.Notice> data = new PagedListModel<Models.Notice> { Data = noticeList, Pager = pager };
+                return View(data);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }            
+        }
+        /// <summary>
+        /// 公告详情
+        /// </summary>
+        /// <param name="path">访问路径</param>
+        /// <returns></returns>
+        public ActionResult NoticeDetails(string path)
+        {
+            if (String.IsNullOrEmpty(path))
+            {
+                return RedirectToAction("Notice");
+            }
+            try
+            {
+                var notice = new Business.BLLNotice().GetOne(n => n.NoticePath == path);
+                if (notice != null)
+                {
+                    return View(notice);
+                }
+                else
+                {
+                    return RedirectToAction("Notice");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+        }
         public ActionResult About()
         {
             ViewBag.Message = "Your application description page.";

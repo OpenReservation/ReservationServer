@@ -38,7 +38,8 @@ namespace ActivityReservation.Helpers
         public static bool TryAutoLogin()
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[LoginCookieName];
-            if (cookie != null && cookie.Expires > DateTime.Now)
+            //if (cookie != null && cookie.Expires > DateTime.Now)
+            if (cookie != null)
             {
                 string cookieValue = cookie.Value;
                 var ticket = FormsAuthentication.Decrypt(cookieValue);

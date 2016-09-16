@@ -3,7 +3,7 @@
 }
 <div class="table-wraper">
     <div class="table-header">
-        <h3 class="table-title">通知公告</h3>
+        <h3 class="table-title">公告列表<small>&nbsp;&nbsp;<a href="/Admin/Notice/Create" role="button" id="btnAdd" class="btn btn-primary btn-sm">添加公告</a></small></h3>
         <div class="form-inline" style="margin:0.6em 0">
             <div class="form-group">
                 <input type="search" value="" id="title" placeholder="通知公告标题" class="form-control" />
@@ -27,7 +27,7 @@
             $.ajax({
                 url: "/Admin/Notice/List",
                 data: {
-                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem0": "", "SearchItem1": $("#title").val()
+                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#title").val()
                 },
                 success: function (data, status) {
                     if (status == "success") {
