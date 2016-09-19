@@ -2,6 +2,8 @@
 /*/bin
 /.vs
 /*/PublishProfiles
+/packages
 /ActivityReservation/Properties/PublishProfiles/*.pubxml
 /ActivityReservation/Properties/PublishProfiles/*.user
-/ActivityReservation/*/*.user
+/ActivityReservation/*.user
+/libs
