@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace ActivityReservation.Helpers
 {
@@ -11,5 +13,23 @@ namespace ActivityReservation.Helpers
         public List<T> Data { get; set; }
 
         public PagerModel Pager { get; set; }
+    }
+
+    public static class Extensions
+    {
+        public static PagedList<T> ToPagedList<T>(this IEnumerable<T> data)
+        {
+            return new PagedList<T>(data);
+        }
+
+        public static PagedList<T> ToPagedList<T>(this IEnumerable<T> data,PagerModel pager)
+        {
+            return new PagedList<T>(data,pager);
+        }
+
+        public static PagedList<T> ToPagedList<T>(this IEnumerable<T> data,int pageIndex,int pageSize,int totalCount)
+        {
+            return new PagedList<T>(data,new PagerModel(pageIndex,pageSize,totalCount));
+        }
     }
 }

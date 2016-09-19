@@ -32,4 +32,4 @@
         }
     </tbody>
 </table>
-@Html.Pager(Model.Pager)
+@Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded);

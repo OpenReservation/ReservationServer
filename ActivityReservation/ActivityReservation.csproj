@@ -425,10 +425,11 @@
     <Content Include="Views\Home\ReservationList.cshtml" />
     <Content Include="Views\Home\Reservate.cshtml" />
     <Content Include="Views\Home\Check.cshtml" />
-    <Content Include="Views\Shared\_PagerPartial.cshtml" />
     <Content Include="Views\Home\Notice.cshtml" />
     <Content Include="Views\Home\NoticeList.cshtml" />
     <Content Include="Views\Home\NoticeDetails.cshtml" />
+    <Content Include="Views\Shared\PagerPartial.cshtml" />
+    <Content Include="Views\Shared\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
