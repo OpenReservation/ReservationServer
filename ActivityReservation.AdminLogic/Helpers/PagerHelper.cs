@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 
@@ -41,7 +40,7 @@ namespace ActivityReservation.Helpers
                 sbHtmlText.AppendFormat("<li><a href=\"javascript:loadData({0})\" aria-label=\"Next\"><span aria-hidden=\"true\">&raquo;</span></a></li>", pager.PageIndex + 1);
             }
             sbHtmlText.Append("</ul></nav>");
-            sbHtmlText.AppendFormat("<div><span>每页有<strong>{0}</strong>条数据，一共有<strong>{1}</strong>页，总计<strong>{2}</strong>条数据</span></div></div>", pager.PageSize, pager.PageCount, pager.TotalCount);            
+            sbHtmlText.AppendFormat("<div><span>每页有<strong>{0}</strong>条数据，一共有<strong>{1}</strong>页，总计<strong>{2}</strong>条数据</span></div></div>", pager.PageSize, pager.PageCount, pager.TotalCount);
             return MvcHtmlString.Create(sbHtmlText.ToString());
         }
 
@@ -80,6 +79,15 @@ namespace ActivityReservation.Helpers
             return MvcHtmlString.Create(sbHtmlText.ToString());
         }
 
+        /// <summary>
+        /// Pager V3.0
+        /// </summary>
+        /// <param name="helper">HtmlHelper</param>
+        /// <param name="pager">分页信息</param>
+        /// <param name="onPageChange">翻页地址或事件</param>
+        /// <param name="pagerViewName">分页分部视图名称</param>
+        /// <param name="displayMode">分页显示模式</param>
+        /// <returns></returns>
         public static MvcHtmlString Pager(this HtmlHelper helper, PagerModel pager, Func<int, string> onPageChange, string pagerViewName, PagingDisplayMode displayMode = PagingDisplayMode.Always)
         {
             pager.OnPageChange = onPageChange;
@@ -91,7 +99,7 @@ namespace ActivityReservation.Helpers
     /// <summary>
     /// PagerModel 分页数据模型
     /// </summary>
-    public class PagerModel: IPagerModel
+    public class PagerModel : IPagerModel
     {
         public PagingDisplayMode PagingDisplayMode { get; set; }
         public int PageIndex { get; set; }
@@ -108,7 +116,7 @@ namespace ActivityReservation.Helpers
             PageSize = pageSize;
             TotalCount = totalCount;
             PageCount = Convert.ToInt32(Math.Ceiling(TotalCount * 1.0 / PageSize));
-        } 
+        }
 
         public bool IsFirstPage { get { return PageIndex <= 1; } }
 
@@ -118,7 +126,7 @@ namespace ActivityReservation.Helpers
 
         public bool HasNextPage { get { return PageIndex < PageCount; } }
 
-        public int FirstItem { get {  return (PageIndex - 1) * PageSize + 1; } }
+        public int FirstItem { get { return (PageIndex - 1) * PageSize + 1; } }
 
         public int LastItem
         {
@@ -126,7 +134,7 @@ namespace ActivityReservation.Helpers
             {
                 if (IsLastPage)
                 {
-                    return FirstItem + (TotalCount -1)%PageSize;
+                    return FirstItem + (TotalCount - 1) % PageSize;
                 }
                 else
                 {
@@ -136,8 +144,8 @@ namespace ActivityReservation.Helpers
         }
 
         public Func<int, string> OnPageChange { get; set; }
-
     }
+
     public interface IPagerModel
     {
         PagingDisplayMode PagingDisplayMode { get; set; }
@@ -152,7 +160,7 @@ namespace ActivityReservation.Helpers
 
         int LastItem { get; }
 
-        bool IsFirstPage { get;}
+        bool IsFirstPage { get; }
 
         bool IsLastPage { get; }
 
@@ -162,9 +170,14 @@ namespace ActivityReservation.Helpers
 
         Func<int, string> OnPageChange { get; set; }
     }
+    /// <summary>
+    /// 分页显示模式
+    /// Always:总是显示
+    /// IfNeeded:页码大于2时才显示，没有数据或只有一页数据不显示
+    /// </summary>
     public enum PagingDisplayMode
     {
         Always = 0,
-        IfNeeded =1        
+        IfNeeded = 1
     }
 }

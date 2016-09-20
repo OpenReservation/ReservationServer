@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Security;
 
@@ -18,7 +16,7 @@ namespace ActivityReservation.Helpers
         private const string LoginCookieName = "LoginCookieName";        
 
         /// <summary>
-        /// 登录成功
+        /// 登录成功，保存用户登录信息
         /// </summary>
         /// <param name="loginName">登录名</param>
         /// <param name="rememberMe">是否保存cookie</param>
@@ -38,7 +36,6 @@ namespace ActivityReservation.Helpers
         public static bool TryAutoLogin()
         {
             HttpCookie cookie = HttpContext.Current.Request.Cookies[LoginCookieName];
-            //if (cookie != null && cookie.Expires > DateTime.Now)
             if (cookie != null)
             {
                 string cookieValue = cookie.Value;
@@ -58,18 +55,18 @@ namespace ActivityReservation.Helpers
         }
 
         /// <summary>
-        /// 退出登录
+        /// 退出登录 logout
         /// </summary>
         public static void Logout()
         {
-            //remove session
-            HttpContext.Current.Session.Abandon();
-            //set cookie expires            
-            HttpContext.Current.Request.Cookies.Remove(LoginCookieName);
-            HttpCookie cookie = new HttpCookie(LoginCookieName) { Expires = DateTime.Now.AddDays(-1) };
-            HttpContext.Current.Response.Cookies.Add(cookie);
             //sign out
             FormsAuthentication.SignOut();
+            //remove and set cookie expires  
+            //remove first,and then set expires,or you will still have the cookie,can not log out
+            HttpContext.Current.Response.Cookies.Remove(LoginCookieName);
+            HttpContext.Current.Response.Cookies[LoginCookieName].Expires = DateTime.Now.AddDays(-1);
+            //remove session
+            HttpContext.Current.Session.Abandon();
         }
     }
 }
