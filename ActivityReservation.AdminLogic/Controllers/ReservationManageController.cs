@@ -150,7 +150,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             //load data
             List<Models.Reservation> list = BusinessHelper.ReservationHelper.GetReservationList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
-            PagedListModel<Models.Reservation> dataList = new PagedListModel<Models.Reservation>() { Data = list, Pager = pager };
+            PagedListModel<Models.Reservation> dataList = list.ToPagedList(pager);
             return View(dataList);
         }
 

@@ -41,7 +41,7 @@ namespace ActivityReservation.Controllers
             //load data
             List<Models.Reservation> list = new Business.BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out rowsCount,whereLambda, m=>m.ReservationForDate, m=>m.ReservationTime,false,false);
             PagerModel pager = new PagerModel(search.PageIndex,search.PageSize, rowsCount);
-            PagedListModel<Models.Reservation> dataList = new PagedListModel<Models.Reservation>() { Data = list, Pager = pager };
+            PagedListModel<Models.Reservation> dataList = list.ToPagedList(pager);
             return View(dataList);
         }       
         /// <summary>
@@ -190,7 +190,7 @@ namespace ActivityReservation.Controllers
                 int count = 0;
                 var noticeList = new Business.BLLNotice().GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba, n => n.NoticePublishTime, false);
                 PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, count);
-                PagedListModel<Models.Notice> data = new PagedListModel<Models.Notice> { Data = noticeList, Pager = pager };
+                PagedListModel<Models.Notice> data = noticeList.ToPagedList(pager);
                 return View(data);
             }
             catch (Exception ex)

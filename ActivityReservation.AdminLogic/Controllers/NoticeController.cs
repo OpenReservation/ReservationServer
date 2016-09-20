@@ -35,10 +35,11 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 List<Models.Notice> list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba, n => n.NoticePublishTime, false);
                 PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, count);
-                return View(new PagedListModel<Models.Notice>() { Pager = pager,Data = list});
+                return View(list.ToPagedList(pager));
             }
             catch (Exception ex)
             {
+                logger.Error(ex);
                 throw;
             }
         }

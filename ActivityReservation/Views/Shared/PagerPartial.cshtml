@@ -12,7 +12,7 @@
                 @if (Model.HasPreviousPage)
                 {
                     <li><a href='@Model.OnPageChange(Model.PageIndex - 1)' aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li><a href='@Model.OnPageChange(Model.PageIndex - 1)'> @Model.PageIndex-1 </a></li>
+                    <li><a href='@Model.OnPageChange(Model.PageIndex - 1)'> @(Model.PageIndex-1) </a></li>
                 }
                 else
                 {
@@ -21,7 +21,7 @@
                 <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
                 @if (Model.HasNextPage)
                 {
-                    <li><a href='@Model.OnPageChange(Model.PageIndex + 1)'> @Model.PageIndex+1 </a></li>
+                    <li><a href='@Model.OnPageChange(Model.PageIndex + 1)'> @(Model.PageIndex+1) </a></li>
                     <li><a href='@Model.OnPageChange(Model.PageIndex + 1)' aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                 }
                 else

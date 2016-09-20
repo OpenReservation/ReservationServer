@@ -40,7 +40,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             List<Models.SystemSettings> settingsList = BusinessHelper.SettingsHelper.GetPagedList(search.PageIndex,search.PageSize,out rowsCount,whereLambda,s=>s.SettingName);
             PagerModel pager = new PagerModel(search.PageIndex, search.PageSize,rowsCount);
-            PagedListModel<Models.SystemSettings> data = new PagedListModel<Models.SystemSettings>() { Pager = pager, Data = settingsList };
+            PagedListModel<Models.SystemSettings> data = settingsList.ToPagedList(pager);
             return View(data);
         }
 

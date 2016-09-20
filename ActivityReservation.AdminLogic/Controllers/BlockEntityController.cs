@@ -58,7 +58,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 List<Models.BlockEntity> blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, b => b.BlockTime, false);
                 PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
-                PagedListModel<Models.BlockEntity> dataList = new PagedListModel<Models.BlockEntity>() { Pager = pager, Data = blockList };
+                PagedListModel<Models.BlockEntity> dataList = blockList.ToPagedList(pager);
                 return View(dataList);
             }
             catch (Exception ex)
