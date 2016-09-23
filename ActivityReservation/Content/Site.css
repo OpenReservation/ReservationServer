@@ -27,6 +27,11 @@ footer {
     text-align:center;
 }
 /* custome styles for */
+.nodata-tip {
+    padding:1em;
+    font-size:1.2em;
+    text-align:center;
+}
 #div_main {
     width:100%;
     overflow:auto;
