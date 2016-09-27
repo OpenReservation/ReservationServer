@@ -24,7 +24,7 @@ namespace ActivityReservation.Helpers
         {
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(loginName+EncryptString, rememberMe, 30);
             string cookieVal = FormsAuthentication.Encrypt(ticket);
-            HttpCookie cookie = new HttpCookie(LoginCookieName, cookieVal) { Expires = DateTime.Now.AddDays(1)};    
+            HttpCookie cookie = new HttpCookie(LoginCookieName, cookieVal) { Expires = DateTime.Now.AddDays(1),HttpOnly = true};    
             FormsAuthentication.SetAuthCookie(loginName, rememberMe);
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
@@ -46,6 +46,7 @@ namespace ActivityReservation.Helpers
                 {
                     HttpContext.Current.Session["User"] = user;
                     cookie.Expires = DateTime.Now.AddDays(1);
+                    cookie.HttpOnly = true;
                     HttpContext.Current.Response.Cookies.Add(cookie);
                     FormsAuthentication.SetAuthCookie(loginName, true);
                     return true;
