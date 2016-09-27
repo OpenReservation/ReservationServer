@@ -3,10 +3,12 @@
 活动室预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
 修改为线上预约+线下盖章审批的方式来预约学校的活动室。
 
-原本是用 ASP.NET WebForm 写的，最近打算用 ASP.NET MVC 重写一下。
+原本是用 ASP.NET WebForm 写的，最近打算用 ASP.NET MVC 重写一下并增加一些功能。
 
-演示地址：http://reservation.weihanli.xyz/
-后台登录地址： http://reservation.weihanli.xyz/Admin/Account/Login
+演示地址：<http://reservation.weihanli.xyz>
+
+后台登录地址： <http://reservation.weihanli.xyz/Admin/Account/Login>
+
 后台登录账号：管理员用户名:admin ,密码:Admin888
 
 ## Architecture
