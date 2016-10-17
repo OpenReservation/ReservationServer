@@ -55,7 +55,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 List<Models.OperationLog> logList = BusinessHelper.OperLogHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
                 PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
-                PagedListModel<Models.OperationLog> dataList = logList.ToPagedList(pager);
+                IPagedListModel<Models.OperationLog> dataList = logList.ToPagedList(pager);
                 return View(dataList);
             }
             catch (Exception ex)

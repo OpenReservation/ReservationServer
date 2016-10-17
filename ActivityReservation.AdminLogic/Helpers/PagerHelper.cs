@@ -16,7 +16,7 @@ namespace ActivityReservation.Helpers
         /// <param name="helper">HtmlHelper</param>
         /// <param name="pager"></param>
         /// <returns></returns>
-        public static MvcHtmlString Pager(this HtmlHelper helper, PagerModel pager)
+        public static MvcHtmlString Pager(this HtmlHelper helper, IPagerModel pager)
         {
             StringBuilder sbHtmlText = new StringBuilder();
             sbHtmlText.Append("<div style=\"text-align:center\"><nav><ul  class=\"pagination\">");
@@ -51,7 +51,7 @@ namespace ActivityReservation.Helpers
         /// <param name="pager"></param>
         /// <param name="onPageChange"></param>
         /// <returns></returns>
-        public static MvcHtmlString Pager(this HtmlHelper helper, PagerModel pager, Func<int, string> onPageChange)
+        public static MvcHtmlString Pager(this HtmlHelper helper, IPagerModel pager, Func<int, string> onPageChange)
         {
             StringBuilder sbHtmlText = new StringBuilder();
             sbHtmlText.Append("<div style=\"text-align:center\"><nav><ul  class=\"pagination\">");
@@ -88,7 +88,7 @@ namespace ActivityReservation.Helpers
         /// <param name="pagerViewName">分页分部视图名称</param>
         /// <param name="displayMode">分页显示模式</param>
         /// <returns></returns>
-        public static MvcHtmlString Pager(this HtmlHelper helper, PagerModel pager, Func<int, string> onPageChange, string pagerViewName, PagingDisplayMode displayMode = PagingDisplayMode.Always)
+        public static MvcHtmlString Pager(this HtmlHelper helper, IPagerModel pager, Func<int, string> onPageChange, string pagerViewName, PagingDisplayMode displayMode = PagingDisplayMode.Always)
         {
             pager.OnPageChange = onPageChange;
             pager.PagingDisplayMode = displayMode;
