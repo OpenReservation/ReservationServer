@@ -1,4 +1,5 @@
 ﻿using ActivityReservation.Helpers;
+using MvcSimplePager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,8 +35,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 List<Models.Notice> list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba, n => n.NoticePublishTime, false);
-                PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, count);
-                return View(list.ToPagedList(pager));
+                return View(list.ToPagedList(search.PageIndex , search.PageSize , count));
             }
             catch (Exception ex)
             {

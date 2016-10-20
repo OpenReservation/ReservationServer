@@ -1,27 +1,45 @@
-﻿@model PagerModel    
+﻿@model IPagerModel
 
-<div style="text-align:center">
-    @if (Model.PageCount < 2 && Model.PagingDisplayMode == PagingDisplayMode.IfNeeded)
+@if (Model.PageCount < 2 && Model.PagingDisplayMode == PagingDisplayMode.IfNeeded)
+{
+    if (Model.TotalCount < 1)
     {
-
+        <div style="text-align:center;padding:15px 0 10px" class="nodata_tip">
+            暂时没有数据
+        </div>
     }
-    else
-    {
+}
+else
+{
+    int pageStart = Model.PageIndex - Model.GroupSize / 2, curPage = 0;
+    <div style="text-align:center">
         <nav>
             <ul class="pagination">
                 @if (Model.HasPreviousPage)
                 {
                     <li><a href='@Model.OnPageChange(Model.PageIndex - 1)' aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                    <li><a href='@Model.OnPageChange(Model.PageIndex - 1)'> @(Model.PageIndex-1) </a></li>
                 }
                 else
                 {
                     <li class="disabled"><a href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
                 }
-                <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                @for (int i = 0; i <= Model.GroupSize; i++)
+                {
+                    curPage = pageStart + i;
+                    if ((curPage >= 1) && (curPage <= Model.PageCount))
+                    {
+                        if (curPage == Model.PageIndex)
+                        {
+                            <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                        }
+                        else
+                        {
+                            <li><a href='@Model.OnPageChange(curPage)'> @(curPage.ToString()) <span class="sr-only">@(curPage.ToString())</a></li>
+                        }
+                    }
+                }
                 @if (Model.HasNextPage)
                 {
-                    <li><a href='@Model.OnPageChange(Model.PageIndex + 1)'> @(Model.PageIndex+1) </a></li>
                     <li><a href='@Model.OnPageChange(Model.PageIndex + 1)' aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
                 }
                 else
@@ -33,5 +51,5 @@
         <div>
             <span>每页有<strong>@Model.PageSize</strong>条数据，一共有<strong>@Model.PageCount</strong>页，总计<strong>@Model.TotalCount</strong>条数据</span>
         </div>
-    }        
-</div>
+    </div>
+}

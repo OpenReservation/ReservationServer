@@ -1,4 +1,5 @@
 ﻿using ActivityReservation.Helpers;
+using MvcSimplePager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +40,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
             }
             List<Models.SystemSettings> settingsList = BusinessHelper.SettingsHelper.GetPagedList(search.PageIndex,search.PageSize,out rowsCount,whereLambda,s=>s.SettingName);
-            PagerModel pager = new PagerModel(search.PageIndex, search.PageSize,rowsCount);
-            IPagedListModel<Models.SystemSettings> data = settingsList.ToPagedList(pager);
+            IPagedListModel<Models.SystemSettings> data = settingsList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
             return View(data);
         }
 

@@ -39,6 +39,10 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MvcSimplePager, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSimplePager.1.1.2\lib\net45\MvcSimplePager.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -75,8 +79,6 @@
     <Compile Include="Helpers\AuthFormService.cs" />
     <Compile Include="Helpers\BusinessHelper.cs" />
     <Compile Include="Helpers\OperLogHelper.cs" />
-    <Compile Include="Helpers\PagedListModel.cs" />
-    <Compile Include="Helpers\PagerHelper.cs" />
     <Compile Include="Helpers\ReservationHelper.cs" />
     <Compile Include="Helpers\SearchHelperModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +104,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

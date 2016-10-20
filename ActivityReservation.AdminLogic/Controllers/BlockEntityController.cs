@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using Business;
+using MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -57,8 +58,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 List<Models.BlockEntity> blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, b => b.BlockTime, false);
-                PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
-                IPagedListModel<Models.BlockEntity> dataList = blockList.ToPagedList(pager);
+                IPagedListModel<Models.BlockEntity> dataList = blockList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
                 return View(dataList);
             }
             catch (Exception ex)

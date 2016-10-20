@@ -1,4 +1,5 @@
 ﻿using ActivityReservation.Helpers;
+using MvcSimplePager;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -149,8 +150,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             //load data
             List<Models.Reservation> list = BusinessHelper.ReservationHelper.GetReservationList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
-            PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
-            IPagedListModel<Models.Reservation> dataList = list.ToPagedList(pager);
+            IPagedListModel<Models.Reservation> dataList = list.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
             return View(dataList);
         }
 

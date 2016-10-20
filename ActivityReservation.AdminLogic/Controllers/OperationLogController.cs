@@ -1,4 +1,5 @@
 ﻿using ActivityReservation.Helpers;
+using MvcSimplePager;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -54,8 +55,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 List<Models.OperationLog> logList = BusinessHelper.OperLogHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
-                PagerModel pager = new PagerModel(search.PageIndex, search.PageSize, rowsCount);
-                IPagedListModel<Models.OperationLog> dataList = logList.ToPagedList(pager);
+                IPagedListModel<Models.OperationLog> dataList = logList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
                 return View(dataList);
             }
             catch (Exception ex)
