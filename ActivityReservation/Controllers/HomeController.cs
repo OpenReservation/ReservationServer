@@ -26,13 +26,13 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult ReservationList(SearchHelperModel search)
         {
-            Expression<Func<Models.Reservation, bool>> whereLambda = (m => System.Data.Entity.DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 && System.Data.Entity.DbFunctions.DiffDays(DateTime.Today,m.ReservationForDate) >= 0);
+            Expression<Func<Models.Reservation , bool>> whereLambda = (m => System.Data.Entity.DbFunctions.DiffDays(DateTime.Today , m.ReservationForDate) <= 7 && System.Data.Entity.DbFunctions.DiffDays(DateTime.Today , m.ReservationForDate) >= 0);
             int rowsCount = 0;
             //补充查询条件
             //根据预约日期查询
             if (!String.IsNullOrEmpty(search.SearchItem0))
             {
-                whereLambda = (m => System.Data.Entity.DbFunctions.DiffDays(DateTime.Parse(search.SearchItem0), m.ReservationForDate) == 0);
+                whereLambda = (m => System.Data.Entity.DbFunctions.DiffDays(DateTime.Parse(search.SearchItem0) , m.ReservationForDate) == 0);
             }
             //根据预约人联系方式查询
             if (!String.IsNullOrEmpty(search.SearchItem1))
@@ -40,17 +40,17 @@ namespace ActivityReservation.Controllers
                 whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
             }
             //load data
-            List<Models.Reservation> list = new Business.BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out rowsCount,whereLambda, m=>m.ReservationForDate, m=>m.ReservationTime,false,false);
+            List<Models.Reservation> list = new Business.BLLReservation().GetReservationList(search.PageIndex , search.PageSize , out rowsCount , whereLambda , m => m.ReservationForDate , m => m.ReservationTime , false , false);
             IPagedListModel<Models.Reservation> dataList = list.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
             return View(dataList);
-        }       
+        }
         /// <summary>
         /// 预约页面
         /// </summary>
         /// <returns></returns>
         public ActionResult Reservate()
         {
-            List<Models.ReservationPlace> places = new Business.BLLReservationPlace().GetAll(s=>s.PlaceName,true);
+            List<Models.ReservationPlace> places = new Business.BLLReservationPlace().GetAll(s => s.PlaceName , true);
             return View(places);
         }
         /// <summary>
@@ -59,9 +59,9 @@ namespace ActivityReservation.Controllers
         /// <param name="dt">预约日期</param>
         /// <param name="placeId">预约地点id</param>
         /// <returns></returns>
-        public ActionResult GetAvailablePeriods(DateTime dt,Guid placeId)
+        public ActionResult GetAvailablePeriods(DateTime dt , Guid placeId)
         {
-            bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(dt, placeId);
+            bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(dt , placeId);
             return Json(periodsStatus);
         }
         /// <summary>
@@ -69,8 +69,10 @@ namespace ActivityReservation.Controllers
         /// </summary>
         /// <param name="model">预约信息实体</param>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult MakeReservation(ViewModels.ReservationViewModel model)
         {
+            HelperModels.JsonResultModel result = new HelperModels.JsonResultModel() { Data = false , Status = HelperModels.JsonResultStatus.RequestError };
             try
             {
                 if (ModelState.IsValid)
@@ -81,40 +83,43 @@ namespace ActivityReservation.Controllers
                     if (!ReservationHelper.IsReservationForDateAvailabel(model.ReservationForDate))
                     {
                         //预约日期不可用
-                        return Json(false);
+                        result.Msg = "预约日期不在可预约范围内";
+                        return Json(result);
                     }
                     //2.对预约时间段判断，判断该时间段是否被预约
-                    bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(model.ReservationForDate, model.ReservationPlaceId);
+                    bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(model.ReservationForDate , model.ReservationPlaceId);
                     foreach (string item in periodIds)
                     {
                         int index = Convert.ToInt32(item);
-                        if (!periodsStatus[index-1])
+                        if (!periodsStatus[index - 1])
                         {
                             //预约时间段冲突
-                            return Json(false);
+                            result.Msg = "预约时间段冲突，请重新预约";
+                            return Json(result);
                         }
                     }
                     //3.对预约人信息进行判断是否在黑名单中
                     if (ReservationHelper.IsInBlockList(model))
                     {
                         //预约人信息在黑名单中
-                        return Json(false);
-                    }                                    
+                        result.Msg = "预约人信息已被拉入黑名单，请联系网站负责人";
+                        return Json(result);
+                    }
                     Models.Reservation reservation = new Models.Reservation()
                     {
-                        ReservationForDate = model.ReservationForDate,
-                        ReservationForTime = model.ReservationForTime,
-                        ReservationPlaceId = model.ReservationPlaceId,
+                        ReservationForDate = model.ReservationForDate ,
+                        ReservationForTime = model.ReservationForTime ,
+                        ReservationPlaceId = model.ReservationPlaceId ,
 
-                        ReservationUnit = model.ReservationUnit,
-                        ReservationActivityContent = model.ReservationActivityContent,
-                        ReservationPersonName = model.ReservationPersonName,
-                        ReservationPersonPhone = model.ReservationPersonPhone,
+                        ReservationUnit = model.ReservationUnit ,
+                        ReservationActivityContent = model.ReservationActivityContent ,
+                        ReservationPersonName = model.ReservationPersonName ,
+                        ReservationPersonPhone = model.ReservationPersonPhone ,
 
-                        ReservationFromIp = HttpContext.Request.UserHostAddress,//记录预约人IP地址
+                        ReservationFromIp = HttpContext.Request.UserHostAddress ,//记录预约人IP地址
 
-                        UpdateBy = model.ReservationPersonName,
-                        UpdateTime =DateTime.Now,
+                        UpdateBy = model.ReservationPersonName ,
+                        UpdateTime = DateTime.Now ,
                         ReservationId = Guid.NewGuid()
                     };
                     foreach (string item in periodIds)
@@ -147,14 +152,19 @@ namespace ActivityReservation.Controllers
                         }
                     }
                     new Business.BLLReservation().Add(reservation);
-                    return Json(true);
+                    result.Data = true;
+                    result.Msg = "预约成功";
+                    result.Status = HelperModels.JsonResultStatus.Success;
+                    return Json(result);
                 }
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
+                result.Status = HelperModels.JsonResultStatus.ProcessFail;
+                result.Msg = ex.Message;
             }
-            return Json(false);
+            return Json(result);
         }
         /// <summary>
         /// Print
@@ -180,7 +190,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult NoticeList(SearchHelperModel search)
         {
-            Expression<Func<Models.Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
+            Expression<Func<Models.Notice , bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLamdba = (n => n.CheckStatus && !n.IsDeleted && n.NoticeTitle.Contains(search.SearchItem1));
@@ -188,7 +198,7 @@ namespace ActivityReservation.Controllers
             try
             {
                 int count = 0;
-                var noticeList = new Business.BLLNotice().GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba, n => n.NoticePublishTime, false);
+                var noticeList = new Business.BLLNotice().GetPagedList(search.PageIndex , search.PageSize , out count , whereLamdba , n => n.NoticePublishTime , false);
                 IPagedListModel<Models.Notice> data = noticeList.ToPagedList(search.PageIndex , search.PageSize , count);
                 return View(data);
             }
@@ -196,7 +206,7 @@ namespace ActivityReservation.Controllers
             {
                 logger.Error(ex);
                 throw;
-            }            
+            }
         }
         /// <summary>
         /// 公告详情

@@ -197,11 +197,11 @@
                 $http.post("/Admin/ReservationManage/MakeReservation", $scope.reservationModel)
                 .success(function (response) {
                     //console.log(response);
-                    if (response) {
+                    if (response.Status == 200 && response.Data) {
                         layer.msg('预约成功！');
                         location.href = "/Admin/ReservationManage/Index";
                     } else {
-                        layer.msg("预约失败，请重新预约");
+                        layer.msg(response.Msg);
                         $scope.isSubmit = false;
                     }
                 })

@@ -72,6 +72,10 @@
         $("#btnSearch").on("click", function () {
             loadData();
         });
+        //
+        $("input[name='blockTypes']").on("change", function () {
+            loadData();
+        });
         //添加黑名单
         $("#btnAdd").on("click", function () {
             layer.open({
