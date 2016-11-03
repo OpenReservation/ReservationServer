@@ -11,35 +11,32 @@ namespace Common
     public class SecurityHelper
     {
 
-        public static byte[] MD5_Hash(byte[] sourceBytes)
-        {
-            return HashHelper.GetHashedBytes(HashType.MD5, sourceBytes);
-        }
+        public static byte[] MD5_Hash(byte[] sourceBytes) => HashHelper.GetHashedBytes(HashType.MD5 , sourceBytes);
 
         /// <summary>
         /// MD5加密
         /// </summary>
         /// <param name="sourceString">原字符串</param>
         /// <returns>加密后字符串</returns>
-        public static string MD5_Encrypt(string sourceString, bool isLower = false)
+        public static string MD5_Encrypt(string sourceString , bool isLower = false)
         {
             if (String.IsNullOrEmpty(sourceString))
             {
                 return "";
             }
-            return HashHelper.GetHashedString(HashType.MD5, sourceString, isLower);
+            return HashHelper.GetHashedString(HashType.MD5 , sourceString , isLower);
         }
 
         /// <summary>
         /// use sha1 to encrypt string
         /// </summary>
-        public static string SHA1_Encrypt(string sourceString, bool isLower = false)
+        public static string SHA1_Encrypt(string sourceString , bool isLower = false)
         {
             if (String.IsNullOrEmpty(sourceString))
             {
                 return "";
             }
-            return HashHelper.GetHashedString(HashType.MD5, sourceString, isLower);
+            return HashHelper.GetHashedString(HashType.SHA1 , sourceString , isLower);
         }
 
         /// <summary>
@@ -47,13 +44,13 @@ namespace Common
         /// </summary>
         /// <param name="sourceString"></param>
         /// <returns></returns>
-        public static string SHA256_Encrypt(string sourceString, bool isLower = false)
+        public static string SHA256_Encrypt(string sourceString , bool isLower = false)
         {
             if (String.IsNullOrEmpty(sourceString))
             {
                 return "";
             }
-            return HashHelper.GetHashedString(HashType.MD5, sourceString, isLower);
+            return HashHelper.GetHashedString(HashType.SHA256 , sourceString , isLower);
         }
 
         /// <summary>
@@ -61,13 +58,13 @@ namespace Common
         /// </summary>
         /// <param name="sourceString"></param>
         /// <returns></returns>
-        public static string SHA384_Encrypt(string sourceString, bool isLower = false)
+        public static string SHA384_Encrypt(string sourceString , bool isLower = false)
         {
             if (String.IsNullOrEmpty(sourceString))
             {
                 return "";
             }
-            return HashHelper.GetHashedString(HashType.MD5, sourceString, isLower);
+            return HashHelper.GetHashedString(HashType.SHA384 , sourceString , isLower);
         }
 
         /// <summary>
@@ -75,13 +72,13 @@ namespace Common
         /// </summary>
         /// <param name="sourceString"></param>
         /// <returns></returns>
-        public static string SHA512_Encrypt(string sourceString, bool isLower = false)
+        public static string SHA512_Encrypt(string sourceString , bool isLower = false)
         {
             if (String.IsNullOrEmpty(sourceString))
             {
                 return "";
             }
-            return HashHelper.GetHashedString(HashType.MD5, sourceString, isLower);
+            return HashHelper.GetHashedString(HashType.SHA512 , sourceString , isLower);
         }
 
         /// <summary>
@@ -89,10 +86,7 @@ namespace Common
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static string MulEncrypt(string str)
-        {
-            return SHA384_Encrypt(MD5_Encrypt(str));
-        }
+        public static string MulEncrypt(string str) => SHA256_Encrypt(MD5_Encrypt(str));
 
         #region 1.0 使用 票据对象 将 用户数据 加密成字符串 +string EncryptUserInfo(string userInfo)
         /// <summary>
@@ -103,7 +97,7 @@ namespace Common
         public static string EncryptUserInfo(string userInfo)
         {
             //1.1 将用户数据 存入 票据对象
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1, "哈哈", DateTime.Now, DateTime.Now, true, userInfo);
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1 , "哈哈" , DateTime.Now , DateTime.Now , true , userInfo);
             //1.2 将票据对象 加密成字符串（可逆）
             string strData = FormsAuthentication.Encrypt(ticket);
             return strData;
@@ -134,7 +128,7 @@ namespace Common
             // 产生6位随机字符
             string strValidCode = GetValidCode(6);
             //定义宽120像素，高40像素的数据定义的图像对象
-            Bitmap image = new Bitmap(140, 40);
+            Bitmap image = new Bitmap(140 , 40);
             //绘制图片                                                     
             Graphics g = Graphics.FromImage(image);
             try
@@ -170,21 +164,21 @@ namespace Common
                             p = p2;
                             break;
                     }
-                    g.DrawLine(p, x1, y1, x2, y2);
+                    g.DrawLine(p , x1 , y1 , x2 , y2);
                 }
                 //设置图片字体风格
-                Font font = new System.Drawing.Font("微软雅黑", 20, (System.Drawing.FontStyle.Bold));
-                LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, image.Width, image.Height), Color.Blue, Color.DarkRed, 3, true);//设置画笔类型
+                Font font = new System.Drawing.Font("微软雅黑" , 20 , (System.Drawing.FontStyle.Bold));
+                LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0 , 0 , image.Width , image.Height) , Color.Blue , Color.DarkRed , 3 , true);//设置画笔类型
                 //绘制随机字符
-                g.DrawString(strValidCode, font, brush, 5, 2);
+                g.DrawString(strValidCode , font , brush , 5 , 2);
                 //绘制图片的前景噪点
-                g.DrawRectangle(new Pen(Color.LightBlue), 0, 0, image.Width - 1, image.Height - 1);
+                g.DrawRectangle(new Pen(Color.LightBlue) , 0 , 0 , image.Width - 1 , image.Height - 1);
 
                 //建立存储区为内存的流
                 using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
                 {
                     //将图像对象储存为内存流        
-                    image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    image.Save(ms , System.Drawing.Imaging.ImageFormat.Png);
                     return ms.ToArray();
                 }
             }
@@ -205,7 +199,7 @@ namespace Common
             // 验证码字串
             string strValidCode = content;
             //定义宽120像素，高40像素的数据定义的图像对象
-            Bitmap image = new Bitmap(140, 40);
+            Bitmap image = new Bitmap(140 , 40);
             //绘制图片                                                     
             Graphics g = Graphics.FromImage(image);
             try
@@ -224,21 +218,21 @@ namespace Common
                     int y1 = random.Next(image.Height);
                     int y2 = random.Next(image.Height);
                     //画线
-                    g.DrawLine(p, x1, y1, x2, y2);
+                    g.DrawLine(p , x1 , y1 , x2 , y2);
                 }
                 //设置图片字体风格
-                Font font = new System.Drawing.Font("微软雅黑", 20, (System.Drawing.FontStyle.Bold));
-                LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, image.Width, image.Height), Color.Blue, Color.DarkRed, 3, true);//设置画笔类型
+                Font font = new System.Drawing.Font("微软雅黑" , 20 , (System.Drawing.FontStyle.Bold));
+                LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0 , 0 , image.Width , image.Height) , Color.Blue , Color.DarkRed , 3 , true);//设置画笔类型
                 //绘制随机字符
-                g.DrawString(strValidCode, font, brush, 5, 2);
+                g.DrawString(strValidCode , font , brush , 5 , 2);
                 //绘制图片的前景噪点
-                g.DrawRectangle(new Pen(Color.LightBlue), 0, 0, image.Width - 1, image.Height - 1);
+                g.DrawRectangle(new Pen(Color.LightBlue) , 0 , 0 , image.Width - 1 , image.Height - 1);
 
                 //建立存储区为内存的流
                 using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
                 {
                     //将图像对象储存为内存流        
-                    image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    image.Save(ms , System.Drawing.Imaging.ImageFormat.Png);
                     return ms.ToArray();
                 }
             }
@@ -266,7 +260,7 @@ namespace Common
             for (int i = 0; i < num; i++)
             {
                 //随机获取一个字符
-                char a = strRandomCode[rnd.Next(0, strRandomCode.Length)];
+                char a = strRandomCode[rnd.Next(0 , strRandomCode.Length)];
                 //拼接字符
                 sbValidCode.Append(a);
             }
@@ -289,7 +283,7 @@ namespace Common
             //将字符串保存到Session中，以便需要时进行验证
             context.Session["ValidCode"] = strValidCode;
             //定义宽120像素，高30像素的数据定义的图像对象
-            Bitmap image = new Bitmap(120, 40);
+            Bitmap image = new Bitmap(120 , 40);
             //绘制图片                                                     
             Graphics g = Graphics.FromImage(image);
             try
@@ -305,19 +299,19 @@ namespace Common
                     int x2 = random.Next(image.Width);
                     int y1 = random.Next(image.Height);
                     int y2 = random.Next(image.Height);
-                    g.DrawLine(new Pen(Color.Silver), x1, y1, x2, y2);
+                    g.DrawLine(new Pen(Color.Silver) , x1 , y1 , x2 , y2);
                 }
                 //设置图片字体风格
-                Font font = new System.Drawing.Font("微软雅黑", 20, (System.Drawing.FontStyle.Bold));
-                LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0, 0, image.Width, image.Height), Color.Blue, Color.DarkRed, 3, true);//设置画笔类型
+                Font font = new System.Drawing.Font("微软雅黑" , 20 , (System.Drawing.FontStyle.Bold));
+                LinearGradientBrush brush = new LinearGradientBrush(new Rectangle(0 , 0 , image.Width , image.Height) , Color.Blue , Color.DarkRed , 3 , true);//设置画笔类型
                 //绘制随机字符
-                g.DrawString(strValidCode, font, brush, 5, 2);
+                g.DrawString(strValidCode , font , brush , 5 , 2);
                 //绘制图片的前景噪点
-                g.DrawRectangle(new Pen(Color.Silver), 0, 0, image.Width - 1, image.Height - 1);
+                g.DrawRectangle(new Pen(Color.Silver) , 0 , 0 , image.Width - 1 , image.Height - 1);
                 //建立存储区为内存的流
                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
                 //将图像对象储存为内存流        
-                image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                image.Save(ms , System.Drawing.Imaging.ImageFormat.Png);
                 //清除当前缓冲区流中的所有内容      
                 context.Response.ClearContent();
                 //设置输出流的MIME类型
@@ -339,7 +333,7 @@ namespace Common
         /// <param name="code">用户输入的验证码</param>
         /// <param name="context">HttpContextBase对象</param>
         /// <returns>是否正确,<code>true</code>用户输入的验证码正确，<code>false</code>用户输入的验证码不正确</returns>
-        public static bool ValidCode(string code, HttpContextBase context)
+        public static bool ValidCode(string code , HttpContextBase context)
         {
             bool isValid = false;
             if (code.ToUpper() == context.Session["ValidCode"].ToString().ToUpper())
@@ -360,7 +354,7 @@ namespace Common
         /// <param name="type">hash类型</param>
         /// <param name="str">要hash的字符串</param>
         /// <returns>hash过的字节数组</returns>
-        public static byte[] GetHashedBytes(HashType type, string str) => GetHashedBytes(type, str, Encoding.UTF8);
+        public static byte[] GetHashedBytes(HashType type , string str) => GetHashedBytes(type , str , Encoding.UTF8);
 
         /// <summary>
         /// 计算字符串Hash值
@@ -369,19 +363,19 @@ namespace Common
         /// <param name="str">要hash的字符串</param>
         /// <param name="encoding">编码类型</param>
         /// <returns>hash过的字节数组</returns>
-        public static byte[] GetHashedBytes(HashType type, string str, Encoding encoding)
+        public static byte[] GetHashedBytes(HashType type , string str , Encoding encoding)
         {
             byte[] bytes = encoding.GetBytes(str);
-            return GetHashedBytes(type, bytes);
+            return GetHashedBytes(type , bytes);
         }
 
-        public static string GetHashedString(HashType type, string str) => GetHashedString(type, str, Encoding.UTF8);
+        public static string GetHashedString(HashType type , string str) => GetHashedString(type , str , Encoding.UTF8);
 
-        public static string GetHashedString(HashType type, string str, bool isLower) => GetHashedString(type, str, Encoding.UTF8, isLower);
+        public static string GetHashedString(HashType type , string str , bool isLower) => GetHashedString(type , str , Encoding.UTF8 , isLower);
 
-        public static string GetHashedString(HashType type, string str, Encoding encoding, bool isLower = false)
+        public static string GetHashedString(HashType type , string str , Encoding encoding , bool isLower = false)
         {
-            byte[] hashedBytes = GetHashedBytes(type, str, encoding);
+            byte[] hashedBytes = GetHashedBytes(type , str , encoding);
             StringBuilder sbText = new StringBuilder();
             if (isLower)
             {
@@ -406,7 +400,7 @@ namespace Common
         /// <param name="type">哈希类型</param>
         /// <param name="bytes">原字节数组</param>
         /// <returns></returns>
-        public static byte[] GetHashedBytes(HashType type, byte[] bytes)
+        public static byte[] GetHashedBytes(HashType type , byte[] bytes)
         {
             HashAlgorithm algorithm;
             switch (type)
