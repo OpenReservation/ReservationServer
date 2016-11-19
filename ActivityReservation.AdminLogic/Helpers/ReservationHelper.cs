@@ -14,20 +14,20 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public static bool IsInBlockList(ViewModels.ReservationViewModel reservation)
         {
-            List<Models.BlockEntity> blockList = new Business.BLLBlockEntity().GetAll();
+            List<Models.BlockEntity> blockList = new Business.BLLBlockEntity().GetAll(b=>b.IsActive);
             //预约人手机号
-            if (blockList.Where(b=>b.BlockValue.Equals(reservation.ReservationPersonPhone)).Count()>0)
+            if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonPhone)))
             {
                 return true;
             }
             //预约人IP地址
             string ip = HttpContext.Current.Request.UserHostAddress;
-            if (blockList.Where(b=>b.BlockValue.Contains(ip)).Count()>0)
+            if (blockList.Any(b => b.BlockValue.Equals(ip)))
             {
                 return true;
             }
             //预约人姓名
-            if (blockList.Where(b => b.BlockValue.Contains(reservation.ReservationPersonName)).Count() > 0)
+            if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonName)))
             {
                 return true;
             }
