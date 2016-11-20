@@ -401,6 +401,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\404.png" />
     <Content Include="Images\loading.gif" />
+    <Content Include="robots.txt" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
