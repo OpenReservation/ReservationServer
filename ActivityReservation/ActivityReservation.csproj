@@ -436,6 +436,7 @@
     </Content>
     <None Include="Properties\PublishProfiles\ActivityReservation - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\ActivityReservation - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\local.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -491,6 +492,14 @@
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj">
       <Project>{bc7ecc0b-dfda-4090-a5d0-ae536f9b14d5}</Project>
       <Name>ActivityReservation.AdminLogic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj">
+      <Project>{5848d1b2-49a2-4d82-afaa-b4e6a8079ff0}</Project>
+      <Name>ActivityReservation.Helper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ActivityReservation.WechatAPI\ActivityReservation.WechatAPI.csproj">
+      <Project>{47febe19-41f7-44b2-94a9-00e2c31aa626}</Project>
+      <Name>ActivityReservation.WechatAPI</Name>
     </ProjectReference>
     <ProjectReference Include="..\Business\Business.csproj">
       <Project>{3f550118-51bb-4782-bb3f-3983fc56f2cc}</Project>

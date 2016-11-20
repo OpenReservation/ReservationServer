@@ -170,6 +170,7 @@ namespace ActivityReservation.Controllers
         /// Print
         /// </summary>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult Check(Guid id)
         {
             Models.Reservation r = new Business.BLLReservation().GetOne(re => re.ReservationId == id);
