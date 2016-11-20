@@ -399,6 +399,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="google658b73f0fd392f13.html" />
     <Content Include="Images\404.png" />
     <Content Include="Images\loading.gif" />
     <Content Include="robots.txt" />
