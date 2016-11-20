@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web.Mvc;
 
 namespace ActivityReservation.WechatAPI.Filters
@@ -21,15 +22,21 @@ namespace ActivityReservation.WechatAPI.Filters
                 model.MsgSignature = filterContext.HttpContext.Request.QueryString["signature"];
             }
             //验证
-            if (CheckSignature(model))
+            if (!CheckSignature(model))
             {
-                base.OnActionExecuting(filterContext);
+                //这种方式会导致处理异常，不能在拦截器里 Response.End() 
+                //filterContext.HttpContext.Response.Write("微信请求验证失败");
+                //filterContext.HttpContext.Response.End();//停止处理结束响应
+
+                ContentResult result = new ContentResult()
+                {
+                    Content = "微信请求验证失败" ,
+                    ContentEncoding = Encoding.UTF8 ,
+                    ContentType = "text/plain"
+                };
+                filterContext.Result = result;
             }
-            else
-            {
-                filterContext.HttpContext.Response.Write("微信请求验证失败");
-                filterContext.HttpContext.Response.End();//停止处理结束响应
-            }
+            base.OnActionExecuting(filterContext);
         }
 
         private bool CheckSignature(Model.WechatMsgRequestModel model)
