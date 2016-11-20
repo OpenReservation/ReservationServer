@@ -1,15 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ActivityReservation.WechatAPI.Model
+﻿namespace ActivityReservation.WechatAPI.Model
 {
+    /// <summary>
+    /// 微信响应消息
+    /// </summary>
+    public interface IWechatReply
+    {
+        /// <summary>
+        /// 消息接收人
+        /// </summary>
+        string ToUserName { get; set; }
+
+        /// <summary>
+        /// 消息发送人【公共号id】
+        /// </summary>
+        string FromUserName { get; set; }
+
+        /// <summary>
+        /// 消息类型
+        /// </summary>
+        string MsgType { get; }
+
+        /// <summary>
+        /// 消息创建时间
+        /// </summary>
+        long CreateTime { get; set; }
+    }
+
     /// <summary>
     /// 文本消息模型
     /// </summary>
-    public class WeChatResponseTextMsgModel
+    public class WechatResponseTextMsgModel: IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -39,7 +59,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 图片消息模型
     /// </summary>
-    public class WeChatResponseImageMsgModel
+    public class WechatResponseImageMsgModel: IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -69,7 +89,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 语音消息模型
     /// </summary>
-    public class WeChatResponseVoiceMsgModel
+    public class WechatResponseVoiceMsgModel : IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -95,11 +115,11 @@ namespace ActivityReservation.WechatAPI.Model
         /// </summary>
         public string MediaId { get; set; }
     }
-    
+
     /// <summary>
     /// 音乐消息模型
     /// </summary>
-    public class WeChatReponseMusicMsgModel
+    public class WechatReponseMusicMsgModel : IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -149,7 +169,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 视频消息模型
     /// </summary>
-    public class WeChatReponseVideoMsgModel
+    public class WechatReponseVideoMsgModel : IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -174,7 +194,7 @@ namespace ActivityReservation.WechatAPI.Model
         /// 通过上传多媒体文件得到的id
         /// </summary>
         public string MediaId { get; set; }
-        
+
         /// <summary>
         /// 视频消息标题
         /// </summary>
@@ -189,7 +209,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 图文消息模型
     /// </summary>
-    public class WeChatResponseNewsMsgModel
+    public class WechatResponseNewsMsgModel : IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -223,13 +243,13 @@ namespace ActivityReservation.WechatAPI.Model
         /// <summary>
         /// 多条图文消息，默认第一条为大图，不能超过10条
         /// </summary>
-        public WeChatResponseSingleArticleModel[] Articles { get; set; }
+        public WechatResponseSingleArticleModel[] Articles { get; set; }
     }
 
     /// <summary>
     /// 单个Article模型
     /// </summary>
-    public class WeChatResponseSingleArticleModel
+    public class WechatResponseSingleArticleModel
     {
         /// <summary>
         /// 图文消息标题（可选）

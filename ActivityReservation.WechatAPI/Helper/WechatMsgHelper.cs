@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Common;
+using System;
 using System.Xml;
-using Common;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
-    public class WechatMsgHelper
+    /// <summary>
+    /// 微信消息处理帮助类
+    /// </summary>
+    internal class WechatMsgHelper
     {
         private static LogHelper logger = new LogHelper(typeof(WechatMsgHelper));
-        public string ReturnMessage(string postStr)
+
+        public static string ReturnMessage(string postStr)
         {
             string responseContent = "";
             try
@@ -19,6 +19,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 XmlDocument xmldoc = new XmlDocument();
                 xmldoc.LoadXml(postStr);
                 XmlNode MsgType = xmldoc.SelectSingleNode("/xml/MsgType");
+                XmlNode formUser = xmldoc.SelectSingleNode("/xml/FromUserName");
                 if (MsgType != null)
                 {
                     switch (MsgType.InnerText)
@@ -26,15 +27,19 @@ namespace ActivityReservation.WechatAPI.Helper
                         case "event":
                             responseContent = EventHandle(xmldoc);//事件处理
                             break;
+
                         case "text":
                             responseContent = TextMsgHandle(xmldoc);//接受文本消息处理
                             break;
+
                         case "image":
                             responseContent = ImageMsgHandle(xmldoc);//图片消息
                             break;
+
                         case "voice":
                             responseContent = VoiceMsgHandle(xmldoc);//语音消息
                             break;
+
                         default:
                             break;
                     }
@@ -47,9 +52,9 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private string VoiceMsgHandle(XmlDocument xmldoc)
+        private static string VoiceMsgHandle(XmlDocument xmldoc)
         {
-            string responseContent = "", reply=null;
+            string responseContent = "", reply = null;
             XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
             XmlNode FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
             XmlNode Content = xmldoc.SelectSingleNode("/xml/Recognition");
@@ -59,18 +64,17 @@ namespace ActivityReservation.WechatAPI.Helper
                 reply = Content.InnerText;
                 if (reply == "网络异常") reply = "The service is not available now,please retry later";
                 //reply = "这是回复";
-                responseContent = string.Format(ReplyMessageType.Message_Text,
-                    FromUserName.InnerText,
-                    ToUserName.InnerText,
-                    DateTime.Now.Ticks,
-                    //"您发送的消息是："+Content.InnerText+"\r\n 我的回复："+reply + "\r\n<a href=\"http://private.chinacloudsites.cn/\">点击进入我们官网</a>"
-                    String.IsNullOrEmpty(reply)?"Sorry,I can not follow you." :reply);
+                responseContent = string.Format(ReplyMessageType.Message_Text ,
+                    FromUserName.InnerText ,
+                    ToUserName.InnerText ,
+                    DateTime.Now.Ticks ,
+                    String.IsNullOrEmpty(reply) ? "Sorry,I can not follow you." : reply);
             }
-            logger.Debug("接受的消息："+Content.InnerText + "\r\n 发送的消息：" + reply);
+            logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 
-        private string ImageMsgHandle(XmlDocument xmldoc)
+        private static string ImageMsgHandle(XmlDocument xmldoc)
         {
             string responseContent = "";
             XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
@@ -79,10 +83,10 @@ namespace ActivityReservation.WechatAPI.Helper
             if (MediaId != null)
             {
                 //reply = "这是回复";
-                responseContent = string.Format(ReplyMessageType.Message_Image,
-                    FromUserName.InnerText,
-                    ToUserName.InnerText,
-                    DateTime.Now.Ticks,
+                responseContent = string.Format(ReplyMessageType.Message_Image ,
+                    FromUserName.InnerText ,
+                    ToUserName.InnerText ,
+                    DateTime.Now.Ticks ,
                     //"您发送的消息是："+Content.InnerText+"\r\n 我的回复："+reply + "\r\n<a href=\"http://private.chinacloudsites.cn/\">点击进入我们官网</a>"
                     MediaId.InnerText
                     );
@@ -90,9 +94,9 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private string TextMsgHandle(XmlDocument xmldoc)
+        private static string TextMsgHandle(XmlDocument xmldoc)
         {
-            string responseContent = "",reply="";
+            string responseContent = "", reply = "";
             XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
             XmlNode FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
             XmlNode Content = xmldoc.SelectSingleNode("/xml/Content");
@@ -102,17 +106,17 @@ namespace ActivityReservation.WechatAPI.Helper
                 reply = Content.InnerText;
                 if (reply == "网络异常") reply = "The service is not available now,please retry later";
                 //reply = "这是回复";
-                responseContent = string.Format(ReplyMessageType.Message_Text,
-                    FromUserName.InnerText,
-                    ToUserName.InnerText,
-                    DateTime.Now.Ticks,
+                responseContent = string.Format(ReplyMessageType.Message_Text ,
+                    FromUserName.InnerText ,
+                    ToUserName.InnerText ,
+                    DateTime.Now.Ticks ,
                     reply);
             }
             logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 
-        private string EventHandle(XmlDocument xmldoc)
+        private static string EventHandle(XmlDocument xmldoc)
         {
             string responseContent = "";
             XmlNode Event = xmldoc.SelectSingleNode("/xml/Event");
@@ -126,35 +130,35 @@ namespace ActivityReservation.WechatAPI.Helper
                 {
                     if (EventKey.InnerText.Equals("click_one"))//click_one
                     {
-                        responseContent = string.Format(ReplyMessageType.Message_Text,
-                            FromUserName.InnerText,
-                            ToUserName.InnerText,
-                            DateTime.Now.Ticks,
+                        responseContent = string.Format(ReplyMessageType.Message_Text ,
+                            FromUserName.InnerText ,
+                            ToUserName.InnerText ,
+                            DateTime.Now.Ticks ,
                             "你点击的是click_one");
                     }
                     else if (EventKey.InnerText.Equals("click_two"))//click_two
                     {
-                        responseContent = string.Format(ReplyMessageType.Message_News_Main,
-                            FromUserName.InnerText,
-                            ToUserName.InnerText,
-                            DateTime.Now.Ticks,
-                            "2",
-                             string.Format(ReplyMessageType.Message_News_Item, "我要寄件", "",
-                             "http://www.soso.com/orderPlace.jpg",
+                        responseContent = string.Format(ReplyMessageType.Message_News_Main ,
+                            FromUserName.InnerText ,
+                            ToUserName.InnerText ,
+                            DateTime.Now.Ticks ,
+                            "2" ,
+                             string.Format(ReplyMessageType.Message_News_Item , "我要寄件" , "" ,
+                             "http://www.soso.com/orderPlace.jpg" ,
                              "http://www.soso.com/") +
-                             string.Format(ReplyMessageType.Message_News_Item, "订单管理", "",
-                             "http://www.soso.com/orderManage.jpg",
+                             string.Format(ReplyMessageType.Message_News_Item , "订单管理" , "" ,
+                             "http://www.soso.com/orderManage.jpg" ,
                              "http://www.soso.com/"));
                     }
                     else if (EventKey.InnerText.Equals("click_three"))//click_three
                     {
-                        responseContent = string.Format(ReplyMessageType.Message_News_Main,
-                            FromUserName.InnerText,
-                            ToUserName.InnerText,
-                            DateTime.Now.Ticks,
-                            "1",
-                             string.Format(ReplyMessageType.Message_News_Item, "标题", "摘要",
-                             "http://www.soso.com/jieshao.jpg",
+                        responseContent = string.Format(ReplyMessageType.Message_News_Main ,
+                            FromUserName.InnerText ,
+                            ToUserName.InnerText ,
+                            DateTime.Now.Ticks ,
+                            "1" ,
+                             string.Format(ReplyMessageType.Message_News_Item , "标题" , "摘要" ,
+                             "http://www.soso.com/jieshao.jpg" ,
                              "http://www.soso.com/"));
                     }
                 }
@@ -186,7 +190,7 @@ namespace ActivityReservation.WechatAPI.Helper
         public static string Message_News_Main
         {
             get
-                {
+            {
                 return @"<xml>
                             <ToUserName><![CDATA[{0}]]></ToUserName>
                             <FromUserName><![CDATA[{1}]]></FromUserName>
@@ -206,9 +210,9 @@ namespace ActivityReservation.WechatAPI.Helper
         public static string Message_News_Item
         {
             get
-                {
+            {
                 return @"<item>
-                            <Title><![CDATA[{0}]]></Title> 
+                            <Title><![CDATA[{0}]]></Title>
                             <Description><![CDATA[{1}]]></Description>
                             <PicUrl><![CDATA[{2}]]></PicUrl>
                             <Url><![CDATA[{3}]]></Url>

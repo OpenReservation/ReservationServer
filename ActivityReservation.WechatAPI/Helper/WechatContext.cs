@@ -1,15 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ActivityReservation.WechatAPI.Helper
+﻿namespace ActivityReservation.WechatAPI.Helper
 {
-    abstract class WechatContext
+    internal class WechatContext
     {
-        protected string UserId { get; set; }
+        private readonly WechatSecurityHelper securityHelper;
+        private readonly string requestMessage;
 
-        protected abstract string GetResponse(string encryptMessage, Model.WeChatMsgRequestModel request);
+        public WechatContext(Model.WechatMsgRequestModel request , string msg)
+        {
+            securityHelper = new WechatSecurityHelper(request.MsgSignature , request.Timestamp , request.Nonce);
+            requestMessage = msg;
+        }
+
+        /// <summary>
+        /// 发送消息用户id
+        /// </summary>
+        public string FromUserId { get; private set; }
+
+        public string GetResponse()
+        {
+            string msg = securityHelper.DecryptMsg(requestMessage);
+            string response = WechatMsgHelper.ReturnMessage(msg);
+            return securityHelper.EncryptMsg(response);
+        }
     }
 }

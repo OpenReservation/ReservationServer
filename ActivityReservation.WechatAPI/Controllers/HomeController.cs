@@ -1,23 +1,19 @@
 ﻿using ActivityReservation.WechatAPI.Helper;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    public class HomeController:Controller
+    public class HomeController : Controller
     {
         /// <summary>
         /// 日志助手
         /// </summary>
         private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
 
-        [Filters.WeChatRequestValid]
-        public void Valid(Model.WeChatMsgRequestModel model)
+        [Filters.WechatRequestValid]
+        public void Index(Model.WechatMsgRequestModel model)
         {
             if (ModelState.IsValid)
             {
@@ -39,6 +35,18 @@ namespace ActivityReservation.WechatAPI.Controllers
                             Handle(postString , model);
                         }
                     }
+                    else
+                    {
+                        //GET微信验证，获取 echostr 参数并返回
+                        string echoStr = HttpContext.Request.QueryString["echostr"];
+                        if (!string.IsNullOrEmpty(echoStr))
+                        {
+                            //将随机生成的 echostr 参数 原样输出
+                            Response.Write(echoStr);
+                            //截止输出流
+                            Response.End();
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -47,13 +55,10 @@ namespace ActivityReservation.WechatAPI.Controllers
             }
         }
 
-        private void Handle(string postStr , Model.WeChatMsgRequestModel model)
+        private void Handle(string postStr , Model.WechatMsgRequestModel model)
         {
-            WechatMsgHelper msgHelper = new WechatMsgHelper();
-            //消息加密、解密
-            WechatSecurityHelper securityHelper = new WechatSecurityHelper(model.msg_signature , model.timestamp , model.nonce);
-            string responseContent = msgHelper.ReturnMessage(securityHelper.DecryptMsg(postStr));
-            responseContent = securityHelper.EncryptMsg(responseContent);
+            WechatContext context = new WechatContext(model , postStr);
+            string responseContent = context.GetResponse();
             //设置输出编码
             HttpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
             //输出响应文本

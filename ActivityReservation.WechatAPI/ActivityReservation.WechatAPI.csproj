@@ -35,6 +35,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -70,15 +71,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Filters\WeChatRequestValidAttribute.cs" />
+    <Compile Include="Filters\WechatRequestValidAttribute.cs" />
     <Compile Include="Helper\WechatContext.cs" />
     <Compile Include="Helper\Tencent\Cryptography.cs" />
     <Compile Include="Helper\WechatMsgHelper.cs" />
     <Compile Include="Helper\WechatSecurityHelper.cs" />
     <Compile Include="Helper\Tencent\WXBizMsgCrypt.cs" />
-    <Compile Include="Model\WeChatRequestModel.cs" />
-    <Compile Include="Model\WeChatRequestMsgModel.cs" />
-    <Compile Include="Model\WeChatResponseMsgModel.cs" />
+    <Compile Include="Model\WechatMsgRequestModel.cs" />
+    <Compile Include="Model\WechatRequestMsgModel.cs" />
+    <Compile Include="Model\WechatResponseMsgModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WechatAPIAreaRegistration.cs" />
   </ItemGroup>

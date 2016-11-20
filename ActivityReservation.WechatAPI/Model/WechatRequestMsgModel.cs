@@ -1,15 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ActivityReservation.WechatAPI.Model
+﻿namespace ActivityReservation.WechatAPI.Model
 {
+    public interface IWechatMsg
+    {
+        /// <summary>
+        /// 消息id
+        /// </summary>
+        long MsgId { get; set; }
+
+        /// <summary>
+        /// 发送消息用户id
+        /// </summary>
+        string FromUserName { get; set; }
+
+        /// <summary>
+        /// 消息类型
+        /// </summary>
+        string MsgType { get; }
+
+        /// <summary>
+        /// 返回微信消息
+        /// </summary>
+        //IWechatReply ReplyMsgReply { get; set; }
+    }
+
     /// <summary>
     /// 文本消息模型
     /// </summary>
-    public class WeChatRequestTextMsgModel
+    public class WechatRequestTextMsgModel: IWechatMsg
     {
         /// <summary>
         /// 开发者微信号
@@ -25,7 +42,7 @@ namespace ActivityReservation.WechatAPI.Model
         /// 消息创建时间，整型
         /// </summary>
         public long CreateTime { get; set; }
-        
+
         /// <summary>
         /// 消息类型
         public string MsgType { get { return "text"; } }
@@ -34,7 +51,7 @@ namespace ActivityReservation.WechatAPI.Model
         /// 文本消息内容
         /// </summary>
         public string Content { get; set; }
-        
+
         /// <summary>
         /// 消息id
         /// </summary>
@@ -44,7 +61,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 图片消息模型
     /// </summary>
-    public class WeChatRequestImageMsgModel
+    public class WechatRequestImageMsgModel
     {
         /// <summary>
         /// 开发者微信号
@@ -84,7 +101,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 语音消息模型
     /// </summary>
-    public class WeChatRequestVoiceMsgModel
+    public class WechatRequestVoiceMsgModel
     {
         /// <summary>
         /// 开发者微信号
@@ -129,7 +146,7 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 视频消息模型
     /// </summary>
-    public class WeChatRequestVideoMsgModel
+    public class WechatRequestVideoMsgModel
     {
         /// <summary>
         /// 开发者微信号
@@ -169,9 +186,9 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 位置信息模型
     /// </summary>
-    public class WeChatRequestLocationMsgModel
+    public class WechatRequestLocationMsgModel
     {
-         /// <summary>
+        /// <summary>
         /// 开发者微信号
         /// </summary>
         public string ToUserName { get; set; }
@@ -219,9 +236,9 @@ namespace ActivityReservation.WechatAPI.Model
     /// <summary>
     /// 链接消息模型
     /// </summary>
-    public class WeChatRequestLinkMsgModel
+    public class WechatRequestLinkMsgModel
     {
-         /// <summary>
+        /// <summary>
         /// 开发者微信号
         /// </summary>
         public string ToUserName { get; set; }
