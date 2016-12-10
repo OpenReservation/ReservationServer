@@ -12,8 +12,6 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 系统设置
     /// </summary>
-    [Authorize]
-    [Filters.AdminPermissionRequired]
     public class SystemSettingsController : BaseAdminController
     {
         /// <summary>

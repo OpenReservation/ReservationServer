@@ -10,8 +10,9 @@ using System.Web.Mvc;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
-    [Authorize]
-    [Filters.PermissionRequired]
+    /// <summary>
+    /// 公告管理
+    /// </summary>
     public class NoticeController:BaseAdminController
     {
         public ActionResult Index()

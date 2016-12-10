@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.Filters;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
-    [Authorize]
     public class AccountController : BaseAdminController
     {
         /// <summary>
@@ -16,6 +16,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
+        [Filters.NoPermissionRequired]
         [HttpGet]
         public ActionResult Login(string ReturnUrl)
         {
@@ -35,6 +36,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns>登录结果</returns>
         [AllowAnonymous]
+        [Filters.NoPermissionRequired]
         [HttpPost]
         public ActionResult LogOn(ViewModels.LoginViewModel model)
         {
@@ -57,7 +59,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// 账户首页
         /// </summary>
         /// <returns></returns>
-        [Filters.PermissionRequired]
         public ActionResult Index()
         {
             Models.User u = Session["User"] as Models.User;
@@ -69,6 +70,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
+        [NoPermissionRequired]
         public ActionResult ImageValidCode()
         {
             return null;
@@ -80,6 +82,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="code">验证码</param>
         /// <returns></returns>
         [AllowAnonymous]
+        [NoPermissionRequired]
         public ActionResult ValidCode(string code)
         {
             return Json(false);
@@ -103,7 +106,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">修改密码实体</param>
         /// <returns></returns>
         [HttpPost]
-        [Filters.PermissionRequired]
         public ActionResult ModifyPassword(ViewModels.ModifyPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -146,7 +148,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="email">邮箱</param>
         /// <returns></returns>
-        [Filters.PermissionRequired]
+        [HttpPost]
         public ActionResult ModifyEmail(string email)
         {
             if (String.IsNullOrEmpty(email))
@@ -284,6 +286,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </returns>
         [HttpPost]
         [AllowAnonymous]
+        [NoPermissionRequired]
         public ActionResult ValidUsername(string userName)
         {
             Models.User u = BusinessHelper.UserHelper.GetOne(s=>s.UserName == userName);
@@ -303,7 +306,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="userMail">用户邮箱</param>
         /// <returns></returns>
         [HttpPost]
-        [AllowAnonymous]
         public ActionResult ValidUserMail(string userMail)
         {
             Models.User u = BusinessHelper.UserHelper.GetOne(s => s.UserMail == userMail);

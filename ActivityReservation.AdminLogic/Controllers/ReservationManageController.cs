@@ -10,8 +10,6 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 预约管理
     /// </summary>
-    [Authorize]
-    [Filters.PermissionRequired]
     public class ReservationManageController : BaseAdminController
     {
         public ActionResult Index()

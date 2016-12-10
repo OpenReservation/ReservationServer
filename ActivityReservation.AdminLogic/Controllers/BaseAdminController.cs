@@ -1,17 +1,16 @@
 ﻿using ActivityReservation.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ActivityReservation.AdminLogic.Controllers
-{    
-    public class BaseAdminController:Controller
+{
+    [Authorize]
+    [Filters.PermissionRequired]
+    public class BaseAdminController : Controller
     {
         #region BusinessHelper 提供对Business层的访问对象
+
         private IBusinessHelper businessHelper;
+
         protected IBusinessHelper BusinessHelper
         {
             get
@@ -23,15 +22,16 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return businessHelper;
             }
         }
-        #endregion
+
+        #endregion BusinessHelper 提供对Business层的访问对象
 
         /// <summary>
-        /// logger
+        /// logger 
         /// </summary>
         protected static Common.LogHelper logger = new Common.LogHelper(typeof(BaseAdminController));
 
         /// <summary>
-        /// 管理员姓名
+        /// 管理员姓名 
         /// </summary>
         public string Username
         {
@@ -47,8 +47,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
             }
         }
+
         /// <summary>
-        /// 当前用户
+        /// 当前用户 
         /// </summary>
         public Models.User CurrentUser
         {
@@ -56,6 +57,6 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 return (Session["User"] as Models.User);
             }
-        }        
+        }
     }
 }

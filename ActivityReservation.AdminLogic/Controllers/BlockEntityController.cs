@@ -13,8 +13,6 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 黑名单
     /// </summary>
-    [Authorize]
-    [Filters.PermissionRequired]
     public class BlockEntityController : BaseAdminController
     {
 

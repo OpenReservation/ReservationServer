@@ -10,8 +10,6 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 操作日志
     /// </summary>
-    [Authorize]
-    [Filters.AdminPermissionRequired]
     public class OperationLogController : BaseAdminController
     {
         /// <summary>

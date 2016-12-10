@@ -32,9 +32,14 @@ namespace Models
         private string updateBy;
 
         /// <summary>
+        /// 是否启用
+        /// </summary>
+        private bool isActive = true;
+
+        /// <summary>
         /// 是否删除
         /// </summary>
-        private bool isDel = false; 
+        private bool isDel; 
         #endregion
 
         /// <summary>
@@ -104,6 +109,15 @@ namespace Models
             {
                 updateBy = value;
             }
+        }
+
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool IsActive
+        {
+            get { return isActive; }
+            set { isActive = value; }
         }
 
         /// <summary>

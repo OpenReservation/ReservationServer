@@ -9,8 +9,6 @@ using System.Web.Script.Serialization;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
-    [Authorize]
-    [Filters.PermissionRequired]
     public class HomeController : BaseAdminController
     {
         private static string siteUrl = "";

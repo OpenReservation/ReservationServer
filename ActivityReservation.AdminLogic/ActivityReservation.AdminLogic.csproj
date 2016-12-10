@@ -72,6 +72,7 @@
     <Compile Include="Controllers\NoticeController.cs" />
     <Compile Include="Controllers\OperationLogController.cs" />
     <Compile Include="Controllers\ReservationManageController.cs" />
+    <Compile Include="Controllers\ReservationPlaceController.cs" />
     <Compile Include="Controllers\SystemSettingsController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BlockEntityViewModel.cs" />

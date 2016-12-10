@@ -436,6 +436,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Admin\Views\ReservationPlace\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ReservationPlace\List.cshtml" />
     <None Include="Properties\PublishProfiles\ActivityReservation - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\ActivityReservation - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />

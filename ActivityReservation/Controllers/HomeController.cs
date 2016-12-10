@@ -50,7 +50,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult Reservate()
         {
-            List<Models.ReservationPlace> places = new Business.BLLReservationPlace().GetAll(s => s.PlaceName , true);
+            List<Models.ReservationPlace> places = new Business.BLLReservationPlace().GetAll(s => s.IsDel == false && s.IsActive,s=>s.PlaceName,true);
             return View(places);
         }
         /// <summary>
