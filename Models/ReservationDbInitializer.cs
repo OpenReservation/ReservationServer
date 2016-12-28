@@ -50,13 +50,13 @@ namespace Models
                 //Places init
                 List<ReservationPlace> places = new List<ReservationPlace>()
                 {
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="小礼堂"},
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第一多功能厅"},
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第二多功能厅"},
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第一排练厅"},
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="宣传制作室"},
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第一会议室"},
-                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第二会议室"}
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="小礼堂",UpdateBy = "System"},
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第一多功能厅",UpdateBy = "System"},
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第二多功能厅",UpdateBy = "System"},
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第一排练厅",UpdateBy = "System"},
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="宣传制作室",UpdateBy = "System"},
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第一会议室",UpdateBy = "System"},
+                    new ReservationPlace() { PlaceId = Guid.NewGuid(),PlaceName="第二会议室",UpdateBy = "System"}
                 };
                 context.ReservationPlaces.AddRange(places);
                 //sys settings init
