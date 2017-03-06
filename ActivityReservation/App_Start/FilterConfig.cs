@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.Filters;
 
 namespace ActivityReservation
 {
@@ -7,7 +8,10 @@ namespace ActivityReservation
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new ErrorHandler.AiHandleErrorAttribute());
+            //disable applicationinsights
+            //filters.Add(new ErrorHandler.AiHandleErrorAttribute());
+            //custom filter
+            filters.Add(new ErrorHandlerAttribute());//
         }
     }
 }

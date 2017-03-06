@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Exceptionless;
 
 namespace ActivityReservation
 {
@@ -17,6 +18,9 @@ namespace ActivityReservation
             SystemSettingsConfig.RegisterSystemSettings();
             //log4net init
             Common.LogHelper.LogInit(Server.MapPath("log4net.config"));
+            //
+            ExceptionlessClient.Default.Configuration.UseTraceLogger();
+            ExceptionlessClient.Default.Configuration.UseReferenceIds();
         }
     }
 }

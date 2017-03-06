@@ -1,55 +1,140 @@
 ﻿@model IPagerModel
 
-@if (Model.PageCount < 2 && Model.PagingDisplayMode == PagingDisplayMode.IfNeeded)
+@if (Model.TotalCount > 0)
 {
-    if (Model.TotalCount < 1)
+    if (Model.PageCount < 2 && Model.PagingDisplayMode == PagingDisplayMode.IfNeeded)
     {
-        <div style="text-align:center;padding:15px 0 10px" class="nodata_tip">
-            暂时没有数据
-        </div>
+
     }
-}
-else
-{
-    int pageStart = Model.PageIndex - Model.GroupSize / 2, curPage = 0;
-    <div style="text-align:center">
-        <nav>
-            <ul class="pagination">
-                @if (Model.HasPreviousPage)
-                {
-                    <li><a href='@Model.OnPageChange(Model.PageIndex - 1)' aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                }
-                else
-                {
-                    <li class="disabled"><a href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                }
-                @for (int i = 0; i <= Model.GroupSize; i++)
-                {
-                    curPage = pageStart + i;
-                    if ((curPage >= 1) && (curPage <= Model.PageCount))
+    else
+    {
+        int offset = (Model.GroupSize) / 2, temp = 0;
+        int pageStart = Model.PageIndex - offset, pageEnd = Model.PageIndex + offset, curPage = 0;
+        <div style="text-align:center">
+            <nav>
+                <ul class="pagination">
+                    @if (Model.HasPreviousPage)
                     {
-                        if (curPage == Model.PageIndex)
+                        <li><a href='@Model.OnPageChange(Model.PageIndex - 1)' aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    }
+                    else
+                    {
+                        <li class="disabled"><a href="javascript:void(0)" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                    }
+                    @if (pageStart <= 1 && pageEnd >= Model.PageCount)
+                    {
+                        for (int i = 0; i <= Model.GroupSize; i++)
                         {
-                            <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                            curPage = pageStart + i;
+                            if ((curPage >= 1) && (curPage <= Model.PageCount))
+                            {
+                                if (curPage == Model.PageIndex)
+                                {
+                                    <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                                }
+                                else
+                                {
+                                    <li><a href='@Model.OnPageChange(curPage)'> @curPage <span class="sr-only"> @curPage </span></a> </li>
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (pageStart > 1)
+                        {
+                            <li><a href='@Model.OnPageChange(1)'>1<span class="sr-only">1</span></a></li>
+                            <li><a href='@Model.OnPageChange(2)'>2<span class="sr-only">1</span></a></li>
+                            <li class="disbaled"><a href="javascript:void(0)">...<span class="sr-only">...</span></a></li>
+                            temp = Model.PageIndex - offset / 2;
+                            curPage = temp;
+                            for (int i = 0; i <= offset / 2 + 1; i++)
+                            {
+                                curPage = temp + i;
+                                if ((curPage >= 1) && (curPage <= Model.PageCount))
+                                {
+                                    if (curPage == Model.PageIndex)
+                                    {
+                                        <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        <li><a href='@Model.OnPageChange(curPage)'> @curPage <span class="sr-only"> @curPage </span></a> </li>
+                                    }
+                                }
+                            }
                         }
                         else
                         {
-                            <li><a href='@Model.OnPageChange(curPage)'> @(curPage.ToString()) <span class="sr-only">@(curPage.ToString())</a></li>
+                            for (int i = 0; i <= offset; i++)
+                            {
+                                curPage = pageStart + i;
+                                if ((curPage >= 1) && (curPage <= Model.PageCount))
+                                {
+                                    if (curPage == Model.PageIndex)
+                                    {
+                                        <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        <li><a href='@Model.OnPageChange(curPage)'> @curPage <span class="sr-only"> @curPage </span></a> </li>
+                                    }
+                                }
+                            }
+                        }
+                        if (pageEnd < Model.PageCount)
+                        {
+                            temp = Model.PageIndex + 1;
+                            curPage = temp;
+                            for (int i = 0; i <= offset / 2 && curPage <= Model.PageCount; i++)
+                            {
+                                curPage = temp + i;
+                                if ((curPage >= 1) && (curPage <= Model.PageCount))
+                                {
+                                    <li><a href='@Model.OnPageChange(curPage)'> @curPage <span class="sr-only"> @curPage </span></a> </li>
+                                }
+                            }
+                            <li class="disbaled"><a href="javascript:void(0)">...<span class="sr-only">...</span></a></li>
+                            <li><a href='@Model.OnPageChange(Model.PageCount - 1)'>@(Model.PageCount - 1)<span class="sr-only">@(Model.PageCount - 1)</span></a></li>
+                            <li><a href='@Model.OnPageChange(Model.PageCount)'>@Model.PageCount<span class="sr-only">@Model.PageCount</span></a></li>
+                        }
+                        else
+                        {
+                            curPage = Model.PageIndex;
+                            for (int i = 0; i <= offset && curPage <= Model.PageCount; i++)
+                            {
+                                curPage++;
+                                if ((curPage >= 1) && (curPage <= Model.PageCount))
+                                {
+                                    if (curPage == Model.PageIndex)
+                                    {
+                                        <li class="active"><a href="javascript:void(0)">@Model.PageIndex<span class="sr-only">(current)</span></a></li>
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        <li><a href='@Model.OnPageChange(curPage)'> @curPage <span class="sr-only"> @curPage </span></a> </li>
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-                @if (Model.HasNextPage)
-                {
-                    <li><a href='@Model.OnPageChange(Model.PageIndex + 1)' aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                }
-                else
-                {
-                    <li class="disabled"><a href="javascript:void(0)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-                }
-            </ul>
-        </nav>
-        <div>
-            <span>每页有<strong>@Model.PageSize</strong>条数据，一共有<strong>@Model.PageCount</strong>页，总计<strong>@Model.TotalCount</strong>条数据</span>
+
+                    @if (Model.HasNextPage)
+                    {
+                        <li><a href='@Model.OnPageChange(Model.PageIndex + 1)' aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    }
+                    else
+                    {
+                        <li class="disabled"><a href="javascript:void(0)" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                    }
+                </ul>
+            </nav>
+            <div>
+                <span>每页有<strong>@Model.PageSize</strong>条数据，一共有<strong>@Model.PageCount</strong>页，总计<strong>@Model.TotalCount</strong>条数据</span>
+            </div>
         </div>
-    </div>
+    }
 }
