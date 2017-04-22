@@ -17,6 +17,7 @@ namespace Common
         /// MD5加密
         /// </summary>
         /// <param name="sourceString">原字符串</param>
+        /// <param name="isLower">是否使用小写形式</param>
         /// <returns>加密后字符串</returns>
         public static string MD5_Encrypt(string sourceString , bool isLower = false)
         {
@@ -42,7 +43,8 @@ namespace Common
         /// <summary>
         /// SHA256 加密
         /// </summary>
-        /// <param name="sourceString"></param>
+        /// <param name="sourceString">原字符串</param>
+        /// <param name="isLower">是否使用小写形式</param>
         /// <returns></returns>
         public static string SHA256_Encrypt(string sourceString , bool isLower = false)
         {
@@ -56,7 +58,8 @@ namespace Common
         /// <summary>
         /// SHA384 加密
         /// </summary>
-        /// <param name="sourceString"></param>
+        /// <param name="sourceString">原字符串</param>
+        /// <param name="isLower">是否使用小写形式</param>
         /// <returns></returns>
         public static string SHA384_Encrypt(string sourceString , bool isLower = false)
         {
@@ -70,7 +73,8 @@ namespace Common
         /// <summary>
         /// SHA512_加密
         /// </summary>
-        /// <param name="sourceString"></param>
+        /// <param name="sourceString">原字符串</param>
+        /// <param name="isLower">是否使用小写形式</param>
         /// <returns></returns>
         public static string SHA512_Encrypt(string sourceString , bool isLower = false)
         {
@@ -84,7 +88,7 @@ namespace Common
         /// <summary>
         /// 多重加密
         /// </summary>
-        /// <param name="str"></param>
+        /// <param name="str">原字符串</param>
         /// <returns></returns>
         public static string MulEncrypt(string str) => SHA256_Encrypt(MD5_Encrypt(str));
 
