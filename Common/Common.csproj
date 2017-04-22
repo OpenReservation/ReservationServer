@@ -74,7 +74,7 @@
   <ItemGroup>
     <Compile Include="ConfigurationHelper.cs" />
     <Compile Include="ConverterHelper.cs" />
-    <Compile Include="GreatestHelper.cs" />
+    <Compile Include="GeetestHelper.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="PathHelper.cs" />
