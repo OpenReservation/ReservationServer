@@ -6,6 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using Common;
 
 namespace ActivityReservation.Controllers
 {
@@ -241,6 +242,44 @@ namespace ActivityReservation.Controllers
         public ActionResult About()
         {
             return View();
+        }
+
+        /// <summary>
+        /// 获取Geetest验证码
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult GetGeetestValidCode()
+        {
+            GeetestHelper helper = new GeetestHelper(GeetestConsts.publicKey,GeetestConsts.privateKey);
+            string userID = RequestHelper.GetRequestIP();
+            byte gtServerStatus = helper.preProcess(userID);
+            Session[GeetestConsts.GtServerStatusSessionKey] = gtServerStatus;
+            Session["userID"] = userID;
+            return Json(helper.Response,JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 验证Geetest验证码
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult ValidateGeetestCode()
+        {
+            GeetestHelper helper = new GeetestHelper(GeetestConsts.publicKey, GeetestConsts.privateKey);
+            byte gt_server_status_code = (byte)Session[GeetestConsts.GtServerStatusSessionKey];
+            string userID = Session["userID"]?.ToString();
+            int result = 0;
+            string challenge = Request[GeetestConsts.fnGeetestChallenge];
+            string validate = Request[GeetestConsts.fnGeetestValidate];
+            string seccode = Request[GeetestConsts.fnGeetestSeccode];
+            if (gt_server_status_code == 1)
+            {
+                result = helper.enhencedValidateRequest(challenge, validate, seccode, userID);
+            }
+            else
+            {
+                result = helper.failbackValidateRequest(challenge, validate, seccode);
+            }
+            return result == 1 ? Json(true) : Json(false);
         }
     }
 }

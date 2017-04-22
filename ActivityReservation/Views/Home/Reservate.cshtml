@@ -50,7 +50,7 @@
                             {
                                 <li>
                                     <label>
-                                        <input type="radio" value="@place.PlaceId" ng-click="nextStep()" name="place" />@place.PlaceName
+                                        <input type="radio" value="@place.PlaceId" ng-click="nextStep()" name="place"/>@place.PlaceName
                                     </label>
                                 </li>
                             }
@@ -62,41 +62,41 @@
             <section id="secPickTimePeriod" ng-class="{'show':step==2}">
                 <p class="lead">选择预约时间段</p>
                 <div>
-                    <label><input type="checkbox" value="1" name="cbPeriod" id="cb1" />08:00~09:50</label> <br />
-                    <label><input type="checkbox" value="2" name="cbPeriod" id="cb2" />10:00~11:50</label> <br />
-                    <label><input type="checkbox" value="3" name="cbPeriod" id="cb3" />12:00~14:20</label> <br />
-                    <label><input type="checkbox" value="4" name="cbPeriod" id="cb4" />14:30~16:40</label> <br />
-                    <label><input type="checkbox" value="5" name="cbPeriod" id="cb5" />16:50~18:50</label> <br />
-                    <label><input type="checkbox" value="6" name="cbPeriod" id="cb6" />19:00~20:50</label> <br />
-                    <label><input type="checkbox" value="7" name="cbPeriod" id="cb7" />21:00~22:30</label> <br />
+                    <label><input type="checkbox" value="1" name="cbPeriod" id="cb1"/>08:00~09:50</label> <br/>
+                    <label><input type="checkbox" value="2" name="cbPeriod" id="cb2"/>10:00~11:50</label> <br/>
+                    <label><input type="checkbox" value="3" name="cbPeriod" id="cb3"/>12:00~14:20</label> <br/>
+                    <label><input type="checkbox" value="4" name="cbPeriod" id="cb4"/>14:30~16:40</label> <br/>
+                    <label><input type="checkbox" value="5" name="cbPeriod" id="cb5"/>16:50~18:50</label> <br/>
+                    <label><input type="checkbox" value="6" name="cbPeriod" id="cb6"/>19:00~20:50</label> <br/>
+                    <label><input type="checkbox" value="7" name="cbPeriod" id="cb7"/>21:00~22:30</label> <br/>
                 </div>
             </section>
             @* 填写预约人信息 *@
             <section id="secFillPersonInfo" ng-class="{'show':step==3}">
                 <p class="lead">填写预约人信息</p>
-                <div class="form" style="text-align:left;padding-left:5em">
+                <div class="form" style="text-align: left; padding-left: 5em">
                     <div class="form-group">
                         <label for="txtUnit">预约单位</label>
-                        <input type="text" class="form-control" value="" ng-minlength="3" ng-maxlength="30" id="txtUnit" placeholder="预约单位" required="required" />
+                        <input type="text" class="form-control" value="" ng-minlength="3" ng-maxlength="30" id="txtUnit" placeholder="预约单位" required="required"/>
                     </div>
                     <div class="form-group">
                         <label for="txtActivity">预约活动内容</label>
-                        <input type="text" class="form-control" value="" id="txtActivity" placeholder="活动内容"  required="required" />
+                        <input type="text" class="form-control" value="" id="txtActivity" placeholder="活动内容" required="required"/>
                     </div>
                     <div class="form-group">
                         <label for="txtUsername">预约人姓名</label>
-                        <input type="text" value="" class="form-control" id="txtUsername" required="required" placeholder="姓名" />
+                        <input type="text" value="" class="form-control" id="txtUsername" required="required" placeholder="姓名"/>
                     </div>
                     <div class="form-group">
                         <label for="txtPhone">预约人联系方式</label>
-                        <input type="text" class="form-control" value="" id="txtPhone" placeholder="联系方式" required="required" />
+                        <input type="text" class="form-control" value="" id="txtPhone" placeholder="联系方式" required="required"/>
                     </div>
                 </div>
             </section>
             @* 确认预约信息 *@
-            <section id="secConfirmInfo" ng-class="{'show':step==4}">                
+            <section id="secConfirmInfo" ng-class="{'show':step==4}">
                 <p class="lead">确认预约信息</p>
-                <table class="table table-striped" ng-class="{'hidden':!isModelValid()}">
+                <table class="table table-striped">
                     <tr>
                         <td>预约日期</td>
                         <td>{{ reservationModel.ReservationForDate }}</td>
@@ -126,11 +126,12 @@
                         <td>{{ reservationModel.ReservationPersonPhone }}</td>
                     </tr>
                 </table>
+                <div id="geetestCaptcha"></div>
             </section>
             <footer class="container">
-                    <button id="btnPreviousStep" ng-class="{'show-inline':step!=0}" type="button" ng-click="previousStep()" class="btn btn-default">上一步</button>
-                    <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'show-inline':step!=4}" id="btnNext">下一步</button>
-                    <button ng-click="submitForm()" type="button" ng-disabled="isSubmit" class="btn btn-default" ng-class="{'show-inline':step==4,'disabled':!isModelValid()}">提&emsp;交</button>
+                <button id="btnPreviousStep" ng-class="{'show-inline':step!=0}" type="button" ng-click="previousStep()" class="btn btn-default">上一步</button>
+                <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'show-inline':step!=4}" id="btnNext">下一步</button>
+                <button ng-click="submitForm()" type="button" ng-disabled="isSubmit || !isCodeValid" class="btn btn-default" ng-class="{'show-inline':step==4,'disabled':!isModelValid()}">提&emsp;交</button>
             </footer>
         </form>
     </div>
@@ -138,14 +139,16 @@
 @section scripts{
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/angular")
+    <script src="http://static.geetest.com/static/tools/gt.js"></script>
     <script>
         var phoneRegExp = /^\d{11}$/;
         var pNameRegExp = /^[\u4e00-\u9fa5]{2,4}$/;
-        Date.prototype.addDays = function (number) {
+        Date.prototype.addDays = function(number) {
             var adjustDate = new Date(this.getTime() + 24 * 60 * 60 * 1000 * number);
             return adjustDate;
         }
-        $(function () {
+
+        $(function() {
             $("#datepicker").datepicker({
                 dateFormat: "yy-mm-dd",
                 minDate: new Date(),
@@ -155,67 +158,121 @@
         });
         //angular
         angular.module("ReservationApp", [])
-        .controller("ReservateCtrl", function ($scope,$http) {
-            //model
-            $scope.reservationModel = {
-                ReservationUnit: "",
-                ReservationActivityContent: "",
-                ReservationPersonName: "",
-                ReservationPersonPhone: "",
-                ReservationPlaceId: "",
-                ReservationForDate: "",
-                ReservationForTime: "",
-                ReservationForTimeIds: "",
-                ReservationPlaceName: ""
-            };
-            //是否已经提交，避免客户端重复提交
-            $scope.isSubmit = false;
-            //判断数据是否通过验证
-            $scope. isModelValid=function() {
-                //所有属性均不能为空
-                for (var o in $scope.reservationModel) {
-                    if ($scope.reservationModel) {
-                        continue;
-                    } else {
+            .controller("ReservateCtrl", function($scope, $http) {
+                //model
+                $scope.reservationModel = {
+                    ReservationUnit: "",
+                    ReservationActivityContent: "",
+                    ReservationPersonName: "",
+                    ReservationPersonPhone: "",
+                    ReservationPlaceId: "",
+                    ReservationForDate: "",
+                    ReservationForTime: "",
+                    ReservationForTimeIds: "",
+                    ReservationPlaceName: ""
+                };
+                //是否已经提交，避免客户端重复提交
+                $scope.isSubmit = false;
+                //geetest code
+                $scope.isCodeValid = false;
+                $scope.loadGeetestCode = function() {
+                    $.ajax({
+                        // 获取id，challenge，success（是否启用failback）
+                        url: "/Home/GetGeetestValidCode",
+                        type: "get",
+                        dataType: "json", // 使用jsonp格式
+                        success: function(data) {
+                            // 使用initGeetest接口
+                            // 参数1：配置参数，与创建Geetest实例时接受的参数一致
+                            // 参数2：回调，回调的第一个参数验证码对象，之后可以使用它做appendTo之类的事件
+                            initGeetest({
+                                gt: data.gt,
+                                challenge: data.challenge,
+                                //product: "float", // 产品形式，值可以是 float 或者 popup。默认值 popup
+                                offline: !data.success
+                            }, function(captchaObj) {
+                                // 将验证码加到id为captcha的元素里
+                                $("#geetestCaptcha").html('');//清空元素
+                                //使用 $scope.$apply 刷新 $scope.isCodeValid 的值
+                                $scope.$apply(function () {
+                                    $scope.isCodeValid = false;
+                                });
+                                captchaObj.appendTo("#geetestCaptcha");
+
+                                // success
+                                captchaObj.onSuccess(function() {
+                                    var result = captchaObj.getValidate();
+                                    $.ajax({
+                                        url: "/Home/ValidateGeetestCode",
+                                        method: "post",
+                                        async: false,
+                                        data: {
+                                            geetest_challenge: result.geetest_challenge,
+                                            geetest_validate: result.geetest_validate,
+                                            geetest_seccode: result.geetest_seccode
+                                        },
+                                        success: function(data) {
+                                            if (data) {
+                                                //使用 $scope.$apply 刷新 $scope.isCodeValid 的值
+                                                $scope.$apply(function() {
+                                                    $scope.isCodeValid = true;
+                                                });
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                        }
+                    });
+                };
+                //判断数据是否通过验证
+                $scope.isModelValid = function() {
+                    //所有属性均不能为空
+                    for (var o in $scope.reservationModel) {
+                        if ($scope.reservationModel) {
+                            continue;
+                        } else {
+                            return false;
+                        }
+                    }
+                    //特殊字段判断
+                    //联系人姓名
+                    if (!$scope.reservationModel.ReservationPersonName.match(pNameRegExp)) {
                         return false;
                     }
-                }
-                //特殊字段判断
-                //联系人姓名
-                if (!$scope.reservationModel.ReservationPersonName.match(pNameRegExp)) {
-                    return false;
-                }
-                //联系方式
-                if (!$scope.reservationModel.ReservationPersonPhone.match(phoneRegExp)) {
-                    return false;    
-                }
-                return true;
-            }
-            //current step
-            $scope.step = 0;
-            //submit
-            $scope.submitForm = function () {
-                $scope.isSubmit = true;
-                $http.post("/Home/MakeReservation", $scope.reservationModel)
-                .success(function (response) {
-                    //console.log(response);
-                    if (response.Status == 200 && response.Data) {
-                        layer.msg('预约成功！');
-                        location.href = "/";
-                    } else {
-                        layer.msg(response.Msg);
-                        $scope.isSubmit = false;
+                    //联系方式
+                    if (!$scope.reservationModel.ReservationPersonPhone.match(phoneRegExp)) {
+                        return false;
                     }
-                })
-                .error(function (response) {
-                    layer.msg('预约失败，请稍后重试！');
-                    $scope.isSubmit = false;
-                    //console.log(response);
-                });
-            };
-            //next
-            $scope.nextStep = function () {
-                switch ($scope.step) {
+                    return true;
+                }
+                //current step
+                $scope.step = 0;
+                //submit
+                $scope.submitForm = function() {
+                    $scope.isSubmit = true;
+                    $http.post("/Home/MakeReservation", $scope.reservationModel)
+                        .success(function(response) {
+                            //console.log(response);
+                            if (response.Status == 200 && response.Data) {
+                                layer.msg('预约成功！');
+                                location.href = "/";
+                            } else {
+                                layer.msg(response.Msg);
+                                //重新加载验证码
+                                $scope.loadGeetestCode();
+                                $scope.isSubmit = false;
+                            }
+                        })
+                        .error(function(response) {
+                            layer.msg('预约失败，请稍后重试！');
+                            $scope.isSubmit = false;
+                            //console.log(response);
+                        });
+                };
+                //next
+                $scope.nextStep = function() {
+                    switch ($scope.step) {
                     case 0:
                         //预约日期判断处理
                         var date = $("#datepicker").val();
@@ -232,14 +289,14 @@
                     case 1:
                         //预约地点 判断
                         var place = $("input[name='place']:radio:checked").val();
-                        if (place) {                            
+                        if (place) {
                             $scope.reservationModel.ReservationPlaceId = $("input[name='place']:radio:checked").val();
                             $scope.reservationModel.ReservationPlaceName = $("input[name='place']:radio:checked").parent().text().trim();
                             //请求服务器端接口，判断可用预约时间段
-                            $http.post("/Home/GetAvailablePeriods", { "dt": $scope.reservationModel.ReservationForDate, "placeId": $scope.reservationModel.ReservationPlaceId }).success(function (response) {
+                            $http.post("/Home/GetAvailablePeriods", { "dt": $scope.reservationModel.ReservationForDate, "placeId": $scope.reservationModel.ReservationPlaceId }).success(function(response) {
                                 var statusArray = response;
                                 //console.log(statusArray);
-                                $("input:checkbox[name='cbPeriod']").each(function (index, ele) {
+                                $("input:checkbox[name='cbPeriod']").each(function(index, ele) {
                                     $(ele).removeAttr("checked");
                                     if (!statusArray[index]) {
                                         $(ele).attr("disabled", "disabled");
@@ -249,7 +306,7 @@
                                         $(ele).removeClass("disabled");
                                     }
                                 });
-                            }).error(function (res) {
+                            }).error(function(res) {
                                 console.error(res);
                             });
                         } else {
@@ -260,21 +317,21 @@
                         break;
                     case 2:
                         //预约时间段
-                        var periods = [];                                                
-                        $("input:checkbox:checked").each(function (index, ele) {
+                        var periods = [];
+                        $("input:checkbox[name='cbPeriod']:checked").each(function(index, ele) {
                             periods.push(ele);
                         });
-                        if (!periods||periods.length<=0) {
+                        if (!periods || periods.length <= 0) {
                             layer.msg('请选择预约时间段');
                             console.log('请选择预约时间段');
                             return;
                         }
-                        if (periods.length>2) {
+                        if (periods.length > 2) {
                             layer.msg('预约时间段不能超过两个');
                             console.log('预约时间段不能超过两个');
                             return;
                         }
-                        var tempPeriods = [], tempPeriodIds=[];
+                        var tempPeriods = [], tempPeriodIds = [];
                         for (var i in periods) {
                             tempPeriodIds.push($(periods[i]).val());
                             tempPeriods.push($(periods[i]).parent().text());
@@ -303,19 +360,20 @@
                             layer.msg("预约信息填写不完整！");
                             return;
                         }
+                        $scope.loadGeetestCode();
                         break;
                     case 4:
-                        //预约信息确认
+                    //预约信息确认                        
                     default:
                         break;
-                }
-                //step
-                $scope.step = $scope.step + 1;
-            };
-            //previous
-            $scope.previousStep = function () {
-                $scope.step = $scope.step - 1;
-            };            
-        });
+                    }
+                    //step
+                    $scope.step = $scope.step + 1;
+                };
+                //previous
+                $scope.previousStep = function() {
+                    $scope.step = $scope.step - 1;
+                };
+            });
     </script>
 }
