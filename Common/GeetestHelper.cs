@@ -51,23 +51,18 @@ namespace Common
         /// <returns>初始化结果</returns>
         public Byte preProcess(string userID)
         {
-            if (this.captchaID == null)
-            {
-                Console.WriteLine("publicKey is null!");
-            }
-            else
+            if (this.captchaID != null)
             {
                 this.userID = userID;
                 string challenge = this.registerChallenge();
                 if (challenge.Length == 32)
                 {
-                    this.getSuccessPreProcessRes(challenge);
+                    getSuccessPreProcessRes(challenge);
                     return 1;
                 }
                 else
                 {
-                    this.getFailPreProcessRes();
-                    Console.WriteLine("Server regist challenge failed!");
+                    getFailPreProcessRes();
                 }
             }
             return 0;
@@ -88,9 +83,6 @@ namespace Common
             string md5Str1 = Encode(rand1.ToString() + "");
             string md5Str2 = Encode(rand2.ToString() + "");
             string challenge = md5Str1 + md5Str2.Substring(0, 2);
-            //this.responseStr = "{" + string.Format(
-            //     "\"success\":{0},\"gt\":\"{1}\",\"challenge\":\"{2}\"", 0,
-            //    this.captchaID, challenge) + "}";
             response.success = 0;
             response.challenge = challenge;
         }
@@ -99,10 +91,7 @@ namespace Common
         /// </summary>
         private void getSuccessPreProcessRes(string challenge)
         {
-            challenge = this.Encode(challenge + this.privateKey);
-            //this.responseStr = "{" + string.Format(
-            //    "\"success\":{0},\"gt\":\"{1}\",\"challenge\":\"{2}\"", 1,
-            //    captchaID, challenge) + "}";
+            challenge = Encode(challenge + this.privateKey);
             response.success = 1;
             response.challenge = challenge;
         }
@@ -115,15 +104,18 @@ namespace Common
         /// <returns>验证结果</returns>
         public int failbackValidateRequest(string challenge, string validate, string seccode)
         {
-            if (!this.requestIsLegal(challenge, validate, seccode)) return GeetestConsts.FailResult;
+            if (!this.requestIsLegal(challenge, validate, seccode))
+            {
+                return GeetestConsts.FailResult;
+            }
             string[] validateStr = validate.Split('_');
             string encodeAns = validateStr[0];
             string encodeFullBgImgIndex = validateStr[1];
             string encodeImgGrpIndex = validateStr[2];
-            int decodeAns = this.DecodeResponse(challenge, encodeAns);
-            int decodeFullBgImgIndex = this.DecodeResponse(challenge, encodeFullBgImgIndex);
-            int decodeImgGrpIndex = this.DecodeResponse(challenge, encodeImgGrpIndex);
-            int validateResult = this.validateFailImage(decodeAns, decodeFullBgImgIndex, decodeImgGrpIndex);
+            int decodeAns = DecodeResponse(challenge, encodeAns);
+            int decodeFullBgImgIndex = DecodeResponse(challenge, encodeFullBgImgIndex);
+            int decodeImgGrpIndex = DecodeResponse(challenge, encodeImgGrpIndex);
+            int validateResult = validateFailImage(decodeAns, decodeFullBgImgIndex, decodeImgGrpIndex);
             return validateResult;
         }
         private int validateFailImage(int ans, int full_bg_index, int img_grp_index)
@@ -141,12 +133,18 @@ namespace Common
             int x_int = Convert.ToInt32(x_decode, 16);
             int result = x_int % 200;
             if (result < 40) result = 40;
-            if (Math.Abs(ans - result) < thread) return GeetestConsts.SuccessResult;
-            else return GeetestConsts.FailResult;
+            if (Math.Abs(ans - result) < thread)
+            {
+                return GeetestConsts.SuccessResult;
+            }
+            return GeetestConsts.FailResult;
         }
         private bool requestIsLegal(string challenge, string validate, string seccode)
         {
-            if (challenge.Equals(string.Empty) || validate.Equals(string.Empty) || seccode.Equals(string.Empty)) return false;
+            if (String.IsNullOrEmpty(challenge) || String.IsNullOrEmpty(validate) || String.IsNullOrEmpty(seccode))
+            {
+                return false;
+            }
             return true;
         }
 
@@ -159,7 +157,10 @@ namespace Common
         /// <returns>二次验证结果</returns>
         public int enhencedValidateRequest(string challenge, string validate, string seccode, string userID)
         {
-            if (!this.requestIsLegal(challenge, validate, seccode)) return GeetestConsts.FailResult;
+            if (!this.requestIsLegal(challenge, validate, seccode))
+            {
+                return GeetestConsts.FailResult;
+            }
             if (validate.Length > 0 && checkResultByPrivate(challenge, validate))
             {
                 string query = "seccode=" + seccode + "&user_id=" + userID + "&sdk=csharp_" + GeetestConsts.Version;
