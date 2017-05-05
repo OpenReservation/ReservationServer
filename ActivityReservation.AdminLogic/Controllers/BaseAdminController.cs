@@ -5,6 +5,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 {
     [Authorize]
     [Filters.PermissionRequired]
+    [RequireHttps]
     public class BaseAdminController : Controller
     {
         #region BusinessHelper 提供对Business层的访问对象
