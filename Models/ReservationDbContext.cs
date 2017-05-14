@@ -17,5 +17,7 @@ namespace Models
         public virtual DbSet<ReservationPlace> ReservationPlaces { get; set; }
         public virtual DbSet<SystemSettings> SystemSettings { get; set; }
         public virtual DbSet<Notice> Notices { get; set; }
+
+        public virtual DbSet<DisabledPeriod> DisabledPeriods { get; set; }
     }
 }

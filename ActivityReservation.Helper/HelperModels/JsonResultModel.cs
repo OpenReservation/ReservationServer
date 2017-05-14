@@ -9,6 +9,15 @@
         public object Data { get; set; }
     }
 
+    public class JsonResultModel<T>
+    {
+        public JsonResultStatus Status { get; set; }
+
+        public string Msg { get; set; }
+
+        public T Data { get; set; }
+    }
+
     public enum JsonResultStatus
     {
         Success = 200,

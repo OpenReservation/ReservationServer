@@ -52,7 +52,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             int rowsCount = 0;
             try
             {
-                List<Models.OperationLog> logList = BusinessHelper.OperLogHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
+                List<Models.OperationLog> logList = BusinessHelper.OperationLogHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
                 IPagedListModel<Models.OperationLog> dataList = logList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
                 return View(dataList);
             }

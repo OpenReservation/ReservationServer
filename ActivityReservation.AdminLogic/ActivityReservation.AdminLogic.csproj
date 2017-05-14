@@ -39,8 +39,8 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MvcSimplePager, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvcSimplePager.1.1.5\lib\net45\MvcSimplePager.dll</HintPath>
+    <Reference Include="MvcSimplePager, Version=1.1.5.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvcSimplePager.1.1.5.1\lib\net45\MvcSimplePager.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -68,6 +68,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseAdminController.cs" />
     <Compile Include="Controllers\BlockEntityController.cs" />
+    <Compile Include="Controllers\DisabledPeriodController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\NoticeController.cs" />
     <Compile Include="Controllers\OperationLogController.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BlockEntityViewModel.cs" />
     <Compile Include="ViewModels\CreateAccountViewModel.cs" />
+    <Compile Include="ViewModels\DisabledPeriodViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ModifyPasswordViewModel.cs" />
     <Compile Include="ViewModels\NoticeViewModel.cs" />
@@ -100,6 +102,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

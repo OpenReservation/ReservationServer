@@ -36,34 +36,13 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //预约时间段分割
-                    string[] periodIds = model.ReservationForTimeIds.Split(',');
-                    //1.判断预约日期是否在可预约范围内【0~7】,管理员预约可不受限制                    
-                    //if (!ReservationHelper.IsReservationForDateAvailabel(model.ReservationForDate))
-                    //{
-                    //    //预约日期不可用
-                    //    result.Msg = "预约日期不在可预约范围内";
-                    //    return Json(result);
-                    //}
-                    //2.对预约时间段判断，判断该时间段是否被预约
-                    bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(model.ReservationForDate , model.ReservationPlaceId);
-                    foreach (string item in periodIds)
+                    string msg;
+                    if (!ReservationHelper.IsReservationAvailabel(model, out msg,true))
                     {
-                        int index = Convert.ToInt32(item);
-                        if (!periodsStatus[index - 1])
-                        {
-                            //预约时间段冲突
-                            result.Msg = "预约时间段冲突，请重新预约";
-                            return Json(result);
-                        }
-                    }
-                    //3.对预约人信息进行判断是否在黑名单中
-                    if (ReservationHelper.IsInBlockList(model))
-                    {
-                        //预约人信息在黑名单中
-                        result.Msg = "预约人信息已被拉入黑名单，请查看黑名单详情";
+                        result.Msg = msg;
                         return Json(result);
                     }
+
                     Models.Reservation reservation = new Models.Reservation()
                     {
                         ReservationForDate = model.ReservationForDate ,
@@ -85,7 +64,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         UpdateTime = DateTime.Now ,
                         ReservationId = Guid.NewGuid()
                     };
-                    foreach (string item in periodIds)
+                    foreach (string item in model.ReservationForTimeIds.Split(','))
                     {
                         switch (Convert.ToInt32(item))
                         {

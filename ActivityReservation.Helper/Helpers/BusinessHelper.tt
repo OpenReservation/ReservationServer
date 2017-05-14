@@ -1,0 +1,58 @@
+﻿<#@ template  debug="false" hostSpecific="true" language="C#" #>
+<#@ output extension=".generated.cs" encoding="utf-8" #>
+<#@ Assembly Name="System.Core" #>
+<#
+    string[] types = {
+        "User",
+        "BlockType",
+        "BlockEntity",
+        "OperationLog",
+        "Reservation",
+        "ReservationPlace",
+        "SystemSettings",
+        "Notice",
+        "DisabledPeriod"
+        };
+#>
+using Business;
+namespace ActivityReservation.Helpers
+{
+    public interface IBusinessHelper
+    {
+<# 
+    foreach (var item in types)
+    {
+#>
+        BLL<#= item #> <#= item #>Helper { get; }
+<#		 
+    }
+#>        
+    }
+
+    public class BusinessHelper : IBusinessHelper
+    {
+<# 
+    foreach (var item in types)
+    {
+#>
+        private BLL<#= item #> _<#= item #>Helper;        
+        /// <summary>
+        /// <#= item #>Helper
+        /// </summary>
+	    public BLL<#= item #> <#= item #>Helper
+        {
+            get
+            {
+                if(_<#= item #>Helper == null)
+                {
+                    _<#= item #>Helper = new BLL<#= item #>();
+                }
+                return _<#= item #>Helper;
+            }
+        }
+
+<#		 
+    }
+#>
+    }
+}

@@ -59,4 +59,11 @@ namespace Business
             dbHandler = new DALNotice();
         }
     }
+	public partial class BLLDisabledPeriod : BaseBLL<DisabledPeriod>
+    {
+        protected override void InitDbHandler()
+        {
+            dbHandler = new DALDisabledPeriod();
+        }
+    }
 }

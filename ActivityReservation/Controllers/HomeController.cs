@@ -78,34 +78,13 @@ namespace ActivityReservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    //预约时间段分割
-                    string[] periodIds = model.ReservationForTimeIds.Split(',');
-                    //1.判断预约日期是否在可预约范围内【0~7】                    
-                    if (!ReservationHelper.IsReservationForDateAvailabel(model.ReservationForDate))
+                    string msg;
+                    if (!ReservationHelper.IsReservationAvailabel(model,out msg))
                     {
-                        //预约日期不可用
-                        result.Msg = "预约日期不在可预约范围内";
+                        result.Msg = msg;
                         return Json(result);
                     }
-                    //2.对预约时间段判断，判断该时间段是否被预约
-                    bool[] periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(model.ReservationForDate , model.ReservationPlaceId);
-                    foreach (string item in periodIds)
-                    {
-                        int index = Convert.ToInt32(item);
-                        if (!periodsStatus[index - 1])
-                        {
-                            //预约时间段冲突
-                            result.Msg = "预约时间段冲突，请重新预约";
-                            return Json(result);
-                        }
-                    }
-                    //3.对预约人信息进行判断是否在黑名单中
-                    if (ReservationHelper.IsInBlockList(model))
-                    {
-                        //预约人信息在黑名单中
-                        result.Msg = "预约人信息已被拉入黑名单，请联系网站负责人";
-                        return Json(result);
-                    }
+
                     Models.Reservation reservation = new Models.Reservation()
                     {
                         ReservationForDate = model.ReservationForDate ,
@@ -123,7 +102,7 @@ namespace ActivityReservation.Controllers
                         UpdateTime = DateTime.Now ,
                         ReservationId = Guid.NewGuid()
                     };
-                    foreach (string item in periodIds)
+                    foreach (string item in model.ReservationForTimeIds.Split(','))
                     {
                         switch (Convert.ToInt32(item))
                         {
@@ -152,10 +131,18 @@ namespace ActivityReservation.Controllers
                                 break;
                         }
                     }
-                    new Business.BLLReservation().Add(reservation);
-                    result.Data = true;
-                    result.Msg = "预约成功";
-                    result.Status = HelperModels.JsonResultStatus.Success;
+                    var bValue = new Business.BLLReservation().Add(reservation);
+                    if (bValue > 0)
+                    {
+                        result.Data = true;
+                        result.Msg = "预约成功";
+                        result.Status = HelperModels.JsonResultStatus.Success;
+                    }
+                    else
+                    {
+                        result.Msg = "预约失败";
+                        result.Status = HelperModels.JsonResultStatus.ProcessFail;
+                    }
                     return Json(result);
                 }
             }

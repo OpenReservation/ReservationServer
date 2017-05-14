@@ -10,4 +10,5 @@ namespace DataAccess
 	public partial class DALReservationPlace: BaseDaL<ReservationPlace> { }
 	public partial class DALSystemSettings: BaseDaL<SystemSettings> { }
 	public partial class DALNotice: BaseDaL<Notice> { }
+	public partial class DALDisabledPeriod: BaseDaL<DisabledPeriod> { }
 }

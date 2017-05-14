@@ -37,7 +37,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
             }
-            List<Models.SystemSettings> settingsList = BusinessHelper.SettingsHelper.GetPagedList(search.PageIndex,search.PageSize,out rowsCount,whereLambda,s=>s.SettingName);
+            List<Models.SystemSettings> settingsList = BusinessHelper.SystemSettingsHelper.GetPagedList(search.PageIndex,search.PageSize,out rowsCount,whereLambda,s=>s.SettingName);
             IPagedListModel<Models.SystemSettings> data = settingsList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
             return View(data);
         }
@@ -52,7 +52,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 setting.SettingId = Guid.NewGuid();
-                int count = BusinessHelper.SettingsHelper.Add(setting);
+                int count = BusinessHelper.SystemSettingsHelper.Add(setting);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue), Module.Settings, Username);
@@ -76,7 +76,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                int count = BusinessHelper.SettingsHelper.Update(setting, "SettingValue");
+                int count = BusinessHelper.SystemSettingsHelper.Update(setting, "SettingValue");
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId,setting.SettingName, setting.SettingValue), Module.Settings, (Session["User"] as Models.User).UserName);

@@ -23,6 +23,8 @@ namespace Models
         /// </summary>
         private string logContent;
 
+        private string ipAddress;
+
         /// <summary>
         /// operation by
         /// </summary>
@@ -49,6 +51,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 操作时间
+        /// </summary>
         [Column]
         public DateTime OperTime
         {
@@ -63,6 +68,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 操作描述
+        /// </summary>
         [Column]
         public string LogContent
         {
@@ -77,6 +85,26 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 操作IP
+        /// </summary>
+        [Column]
+        public string IpAddress
+        {
+            get
+            {
+                return ipAddress;
+            }
+
+            set
+            {
+                ipAddress = value;
+            }
+        }
+
+        /// <summary>
+        /// 操作人
+        /// </summary>
         [Column]
         public string OperBy
         {
@@ -91,6 +119,9 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// 日志模块
+        /// </summary>
         [Column]
         public string LogModule
         {
@@ -104,5 +135,6 @@ namespace Models
                 logModule = value;
             }
         }
+
     }
 }

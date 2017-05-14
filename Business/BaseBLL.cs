@@ -50,6 +50,11 @@ namespace Business
             return dbHandler.Delete(t);
         }
 
+        public T Fetch(Expression<Func<T, bool>> whereLambda)
+        {
+            return dbHandler.Fetch(whereLambda);
+        }
+
         public T GetOne(Expression<Func<T, bool>> whereLambda)
         {            
             return dbHandler.GetOne(whereLambda);

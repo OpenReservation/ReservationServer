@@ -32,7 +32,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -40,7 +40,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -446,6 +446,8 @@
     </Content>
     <Content Include="Areas\Admin\Views\ReservationPlace\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ReservationPlace\List.cshtml" />
+    <Content Include="Areas\Admin\Views\DisabledPeriod\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\DisabledPeriod\List.cshtml" />
     <None Include="Properties\PublishProfiles\ActivityReservation - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\ActivityReservation - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\local.pubxml" />

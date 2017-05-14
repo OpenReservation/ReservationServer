@@ -48,6 +48,7 @@ namespace ActivityReservation.Helpers
                     LogId = Guid.NewGuid(),
                     LogContent = logContent,
                     LogModule = logModule,
+                    IpAddress = System.Web.HttpContext.Current.Request.UserHostAddress,
                     OperBy = operBy,
                     OperTime = DateTime.Now
                 };
@@ -99,6 +100,9 @@ namespace ActivityReservation.Helpers
                 case Module.ReservationPlace:
                     moduleName = "活动室管理";
                     break;
+                case Module.DisabledPeriod:
+                    moduleName = "禁用时间段管理";
+                    break;
                 default:
                     break;
             }
@@ -117,5 +121,6 @@ namespace ActivityReservation.Helpers
         Notice = 3,//公告
         Account = 4,//账户管理
         Settings = 5,//系统设置
+        DisabledPeriod = 6,//禁用时间段
     }    
 }

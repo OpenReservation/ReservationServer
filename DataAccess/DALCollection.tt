@@ -13,7 +13,8 @@
 		"Reservation",
 		"ReservationPlace",
 		"SystemSettings",
-		"Notice"
+		"Notice",
+        "DisabledPeriod"
 	};
 #>
 using Models;

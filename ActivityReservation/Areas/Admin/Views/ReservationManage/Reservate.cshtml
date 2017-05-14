@@ -258,7 +258,7 @@
                     case 2:
                         //预约时间段
                         var periods = [];                                                
-                        $("input:checkbox:checked").each(function (index, ele) {
+                        $("input:checkbox[name='cbPeriod']:checked").each(function (index, ele) {
                             periods.push(ele);
                         });
                         if (!periods||periods.length<=0) {

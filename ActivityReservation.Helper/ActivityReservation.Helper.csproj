@@ -82,7 +82,11 @@
     <Compile Include="Filters\PermissionRequireAttribute.cs" />
     <Compile Include="HelperModels\JsonResultModel.cs" />
     <Compile Include="Helpers\AuthFormService.cs" />
-    <Compile Include="Helpers\BusinessHelper.cs" />
+    <Compile Include="Helpers\BusinessHelper.generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BusinessHelper.tt</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\OperLogHelper.cs" />
     <Compile Include="Helpers\ReservationHelper.cs" />
     <Compile Include="Helpers\SearchHelperModel.cs" />
@@ -105,6 +109,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Helpers\BusinessHelper.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BusinessHelper.generated.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -67,6 +67,12 @@ namespace DataAccess
             return db.SaveChanges();
         }
 
+        public T Fetch(Expression<Func<T, bool>> whereLambda)
+        {
+            T t = db.Set<T>().Where(whereLambda).FirstOrDefault();
+            return t;
+        }
+
         public T GetOne(Expression<Func<T, bool>> whereLambda)
         {
             try

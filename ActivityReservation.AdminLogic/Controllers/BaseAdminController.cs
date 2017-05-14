@@ -5,10 +5,12 @@ namespace ActivityReservation.AdminLogic.Controllers
 {
     [Authorize]
     [Filters.PermissionRequired]
+#if RELEASE
     [RequireHttps]
+#endif
     public class BaseAdminController : Controller
     {
-        #region BusinessHelper 提供对Business层的访问对象
+#region BusinessHelper 提供对Business层的访问对象
 
         private IBusinessHelper businessHelper;
 
@@ -24,7 +26,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
         }
 
-        #endregion BusinessHelper 提供对Business层的访问对象
+#endregion BusinessHelper 提供对Business层的访问对象
 
         /// <summary>
         /// logger 
