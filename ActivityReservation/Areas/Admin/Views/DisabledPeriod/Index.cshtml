@@ -179,7 +179,7 @@
                         return;
                     }
                     var loading = layer.load(2);
-                    $.post("AddPeriod", { "StartDate": startDate, "EndDate": endDate, "RepeatYearly": false, "IsActive": $("input[name='add_activeStatus']").eq(0).prop("checked") }, function (data) {
+                    $.post("/Admin/DisabledPeriod/AddPeriod", { "StartDate": startDate, "EndDate": endDate, "RepeatYearly": false, "IsActive": $("input[name='add_activeStatus']").eq(0).prop("checked") }, function (data) {
                         layer.close(loading);
                         if (data.Status == 200) {
                             layer.msg("添加成功");
