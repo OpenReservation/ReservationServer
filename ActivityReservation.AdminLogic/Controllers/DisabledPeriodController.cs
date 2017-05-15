@@ -3,6 +3,7 @@ using ActivityReservation.HelperModels;
 using Models;
 using MvcSimplePager;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 
@@ -65,6 +66,13 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
+                    var list = BusinessHelper.DisabledPeriodHelper.GetAll(p=>!p.IsDeleted && (System.Data.Entity.DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 && System.Data.Entity.DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
+                    if (list != null && list.Any())
+                    {
+                        result.Status = JsonResultStatus.RequestError;
+                        result.Msg = "该时间段已经被禁用，不可重复添加！";
+                        return Json(result);
+                    }
                     var period = new DisabledPeriod
                     {
                         PeriodId = Guid.NewGuid(),
