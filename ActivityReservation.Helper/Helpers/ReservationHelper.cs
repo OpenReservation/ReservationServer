@@ -202,7 +202,7 @@ namespace ActivityReservation.Helpers
                 msg = "预约时间段冲突，请重新选择预约时间段";
                 return false;
             }
-            return IsReservationInfoInBlockList(reservation, out msg);
+            return !IsReservationInfoInBlockList(reservation, out msg);
         }
     }
 }

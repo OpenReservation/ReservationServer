@@ -48,7 +48,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (u != null)
                 {
                     Helpers.AuthFormService.Login(model.UserName, model.RememberMe);
-                    Common.RedisHelper.Set<Models.User>("Admin", u);
+                    Helpers.AuthFormService.SetCurrentUser(u);
                     return Json(true);
                 }
             }            

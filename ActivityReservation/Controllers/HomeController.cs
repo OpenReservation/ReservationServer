@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using Common;
+using System.Threading.Tasks;
 
 namespace ActivityReservation.Controllers
 {
@@ -241,7 +242,7 @@ namespace ActivityReservation.Controllers
             string userID = RequestHelper.GetRequestIP();
             byte gtServerStatus = helper.preProcess(userID);
             Session[GeetestConsts.GtServerStatusSessionKey] = gtServerStatus;
-            Session["userID"] = userID;
+            RedisHelper.Set("geetestUserId", userID,TimeSpan.FromMinutes(3));
             return Json(helper.Response,JsonRequestBehavior.AllowGet);
         }
 
@@ -249,11 +250,11 @@ namespace ActivityReservation.Controllers
         /// 验证Geetest验证码
         /// </summary>
         /// <returns></returns>
-        public JsonResult ValidateGeetestCode()
+        public async Task<JsonResult> ValidateGeetestCode()
         {
             GeetestHelper helper = new GeetestHelper(GeetestConsts.publicKey, GeetestConsts.privateKey);
             byte gt_server_status_code = (byte)Session[GeetestConsts.GtServerStatusSessionKey];
-            string userID = Session["userID"]?.ToString();
+            string userID = RedisHelper.Get("geetestUserId");
             int result = 0;
             string challenge = Request[GeetestConsts.fnGeetestChallenge];
             string validate = Request[GeetestConsts.fnGeetestValidate];
@@ -266,7 +267,12 @@ namespace ActivityReservation.Controllers
             {
                 result = helper.failbackValidateRequest(challenge, validate, seccode);
             }
-            return result == 1 ? Json(true) : Json(false);
+            if(result == 1)
+            {
+                await RedisHelper.RemoveAsync("geetestUserId");
+                return Json(true);
+            }
+            return Json(false);
         }
     }
 }

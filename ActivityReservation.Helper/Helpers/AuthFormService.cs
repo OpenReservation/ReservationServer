@@ -36,7 +36,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public static bool SetCurrentUser(Models.User user)
         {
-            return Common.RedisHelper.Set(AuthCacheKey, user);
+            return Common.RedisHelper.Set(AuthCacheKey, user, TimeSpan.FromDays(1));
         }
 
         /// <summary>
