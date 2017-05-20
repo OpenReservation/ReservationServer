@@ -38,14 +38,14 @@
                     <li>@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">                    
-                    @if (Session["User"] == null)
+                    @if (ActivityReservation.Helpers.AuthFormService.GetCurrentUser() == null)
                     {
                         <li><a href="/Admin/Account/Login">登录</a></li >
                     }
                     else
                     {
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> @((Session["User"] as Models.User).UserName) <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> @(ActivityReservation.Helpers.AuthFormService.GetCurrentUser().UserName) <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li>@Html.ActionLink("我的账户", "Index", "Account")</li>
                                 <li role="separator" class="divider"></li>

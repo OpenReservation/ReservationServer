@@ -51,6 +51,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
         }
 
+        private Models.User currentUser;
         /// <summary>
         /// 当前用户 
         /// </summary>
@@ -58,7 +59,11 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             get
             {
-                return (Session["User"] as Models.User);
+                if(currentUser == null)
+                {
+                    currentUser = Helpers.AuthFormService.GetCurrentUser();
+                }
+                return currentUser;
             }
         }
     }

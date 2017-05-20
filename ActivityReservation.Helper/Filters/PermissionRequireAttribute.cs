@@ -19,16 +19,17 @@ namespace ActivityReservation.Filters
     /// </summary>
     public class PermissionRequiredAttribute : ActionFilterAttribute
     {
-
+        
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            var user = Helpers.AuthFormService.GetCurrentUser();
             if (!filterContext.ActionDescriptor.IsDefined(typeof(NoPermissionRequiredAttribute),true))
             {
-                if (filterContext.HttpContext.Session["User"] == null)
+                if (user == null)
                 {
                     filterContext.Result = new RedirectResult("~/Admin/Account/Login");
                 }
-            }            
+            }
             base.OnActionExecuting(filterContext);
         }
     }
@@ -40,7 +41,8 @@ namespace ActivityReservation.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            if ((filterContext.HttpContext.Session["User"] == null) || !((filterContext.HttpContext.Session["User"] as Models.User).IsSuper))
+            var user = Helpers.AuthFormService.GetCurrentUser();
+            if ((user == null) || !user.IsSuper)
             {
                 filterContext.Result = new RedirectResult("~/Admin/Account/Login");
             }

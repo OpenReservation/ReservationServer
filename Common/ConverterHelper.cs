@@ -63,6 +63,10 @@ namespace Common
         /// <returns>转换后的json字符串</returns>
         public static string ObjectToJson(object obj)
         {
+            if(obj == null)
+            {
+                return "";
+            }
             return JsonConvert.SerializeObject(obj);
         }
 
@@ -74,6 +78,10 @@ namespace Common
         /// <returns>由字符串转换得到的T对象</returns>
         public static T JsonToObject<T>(string jsonString)
         {
+            if(String.IsNullOrEmpty(jsonString))
+            {
+                return default(T);
+            }
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
 

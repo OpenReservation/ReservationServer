@@ -88,7 +88,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count == 1)
                     {
                         //记录日志
-                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), Module.BlockEntity, (Session["User"] as Models.User).UserName);
+                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), Module.BlockEntity, Username);
                         return Json(true);
                     }
                 }
@@ -126,7 +126,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.BlockEntityHelper.Update(entity,"IsActive");
                 if (count>0)
                 {
-                    OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive?"启用":"禁用"), Module.BlockEntity, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive?"启用":"禁用"), Module.BlockEntity, Username);
                     return Json(true);
                 }
             }
@@ -151,7 +151,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (c == 1)
                 {
                     //记录日志
-                    OperLogHelper.AddOperLog(String.Format("删除黑名单 {0}", entityName), Module.BlockEntity, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("删除黑名单 {0}", entityName), Module.BlockEntity,Username);
                     return Json(true);
                 }
             }

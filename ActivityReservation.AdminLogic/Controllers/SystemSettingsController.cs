@@ -79,7 +79,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.SystemSettingsHelper.Update(setting, "SettingValue");
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId,setting.SettingName, setting.SettingValue), Module.Settings, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId,setting.SettingName, setting.SettingValue), Module.Settings, Username);
                     HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
                 }

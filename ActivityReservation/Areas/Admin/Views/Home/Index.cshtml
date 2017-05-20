@@ -11,7 +11,7 @@
             <li class="list-group-item">@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
             <li class="list-group-item">@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
             <li class="list-group-item">@Html.ActionLink("公告管理", "Index", "Notice")</li>
-            @if ((Session["User"] as Models.User).IsSuper)
+            @if (ActivityReservation.Helpers.AuthFormService.GetCurrentUser()!=null && ActivityReservation.Helpers.AuthFormService.GetCurrentUser().IsSuper)
             {
                 <li role="separator" class="list-unstyled"><br /> </li>
                 <li class="list-group-item">@Html.ActionLink("用户管理", "UserList", "Account")</li>

@@ -48,7 +48,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (u != null)
                 {
                     Helpers.AuthFormService.Login(model.UserName, model.RememberMe);
-                    Session["User"] = u;
+                    Common.RedisHelper.Set<Models.User>("Admin", u);
                     return Json(true);
                 }
             }            
@@ -61,7 +61,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            Models.User u = Session["User"] as Models.User;
+            Models.User u = CurrentUser;
             return View(u);
         }
 
@@ -110,19 +110,17 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                //修改密码
-                Models.User u = Session["User"] as Models.User;
-                if (u == null)
+                if (CurrentUser == null)
                 {
                     return Json(false);
                 }
                 try
                 {
                     //判断原密码是否正确，原密码正确的情况才能修改密码
-                    if (u.UserPassword.Equals(Common.SecurityHelper.SHA256_Encrypt(model.OldPassword)))
+                    if (CurrentUser.UserPassword.Equals(Common.SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
-                        u.UserPassword = Common.SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
+                        CurrentUser.UserPassword = Common.SecurityHelper.SHA256_Encrypt(model.NewPassword);
+                        int count = BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword");
                         if (count == 1)
                         {
                             //密码修改成功，需要重新登录
@@ -164,7 +162,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     int count = BusinessHelper.UserHelper.Update(u, "UserMail");
                     if (count == 1)
                     {
-                        Session["User"] = u;
+                        Helpers.AuthFormService.SetCurrentUser(u);
                         return Json(true);
                     }
                 }
@@ -212,7 +210,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     int count = userBLL.Add(u);
                     if (count == 1)
                     {
-                        OperLogHelper.AddOperLog(String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail), Module.Account, (Session["User"] as Models.User).UserName);
+                        OperLogHelper.AddOperLog(String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail), Module.Account, Username);
                         return Json(true);
                     }
                 }
@@ -238,7 +236,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.UserHelper.Delete(u);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), Module.Account, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), Module.Account,Username);
                     return Json(true);
                 }
             }
@@ -265,7 +263,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码",u.UserName), Module.Account, (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码",u.UserName), Module.Account, Username);
                     return Json(true);
                 }
             }

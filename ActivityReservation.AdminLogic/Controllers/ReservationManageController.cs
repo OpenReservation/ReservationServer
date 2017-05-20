@@ -173,7 +173,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count == 1)
                 {
                     //记录操作日志
-                    OperLogHelper.AddOperLog(String.Format("更新 {0}:{1} 预约状态" , reservationId , reservation.ReservationActivityContent) , Module.Reservation , (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("更新 {0}:{1} 预约状态" , reservationId , reservation.ReservationActivityContent) , Module.Reservation , Username);
                     return Json(true);
                 }
             }
@@ -201,7 +201,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.ReservationHelper.Delete(reservation);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("删除预约记录 {0}:{1}" , id , reservation.ReservationActivityContent) , Module.Reservation , (Session["User"] as Models.User).UserName);
+                    OperLogHelper.AddOperLog(String.Format("删除预约记录 {0}:{1}" , id , reservation.ReservationActivityContent) , Module.Reservation , Username);
                     return Json(true);
                 }
             }

@@ -13,7 +13,31 @@ namespace ActivityReservation.Helpers
         /// <summary>
         /// loginCookieName 登录cookie名称
         /// </summary>
-        private const string LoginCookieName = "LoginCookieName";        
+        private const string LoginCookieName = "LoginCookieName";
+
+        /// <summary>
+        /// 授权缓存key
+        /// </summary>
+        private const string AuthCacheKey = "Admin";
+
+        /// <summary>
+        /// 获取当前登录用户
+        /// </summary>
+        /// <returns></returns>
+        public static Models.User GetCurrentUser()
+        {
+            return Common.RedisHelper.Get<Models.User>(AuthCacheKey);
+        }
+
+        /// <summary>
+        /// 设置当前登录用户信息
+        /// </summary>
+        /// <param name="user">用户信息</param>
+        /// <returns></returns>
+        public static bool SetCurrentUser(Models.User user)
+        {
+            return Common.RedisHelper.Set(AuthCacheKey, user);
+        }
 
         /// <summary>
         /// 登录成功，保存用户登录信息
@@ -24,7 +48,7 @@ namespace ActivityReservation.Helpers
         {
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(loginName+EncryptString, rememberMe, 30);
             string cookieVal = FormsAuthentication.Encrypt(ticket);
-            HttpCookie cookie = new HttpCookie(LoginCookieName, cookieVal) { Expires = DateTime.Now.AddDays(1),HttpOnly = true};    
+            HttpCookie cookie = new HttpCookie(LoginCookieName, cookieVal) { Expires = DateTime.Now.AddDays(1),HttpOnly = true };
             FormsAuthentication.SetAuthCookie(loginName, rememberMe);
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
@@ -44,7 +68,7 @@ namespace ActivityReservation.Helpers
                 Models.User user= new Business.BLLUser().GetOne(u => u.UserName == loginName);
                 if (user != null)
                 {
-                    HttpContext.Current.Session["User"] = user;
+                    Common.RedisHelper.Set<Models.User>(AuthCacheKey, user);
                     cookie.Expires = DateTime.Now.AddDays(1);
                     cookie.HttpOnly = true;
                     HttpContext.Current.Response.Cookies.Add(cookie);
@@ -66,6 +90,8 @@ namespace ActivityReservation.Helpers
             //remove first,and then set expires,or you will still have the cookie,can not log out
             HttpContext.Current.Response.Cookies.Remove(LoginCookieName);
             HttpContext.Current.Response.Cookies[LoginCookieName].Expires = DateTime.Now.AddDays(-1);
+            //remove cache
+            Common.RedisHelper.Remove(AuthCacheKey);
             //remove session
             HttpContext.Current.Session.Abandon();
         }
