@@ -14,13 +14,14 @@ namespace ActivityReservation
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            //register system settings
-            SystemSettingsConfig.RegisterSystemSettings();
+
             //log4net init
             Common.LogHelper.LogInit(Server.MapPath("log4net.config"));
-            //
+            //Exceptionless init
             ExceptionlessClient.Default.Configuration.UseTraceLogger();
             ExceptionlessClient.Default.Configuration.UseReferenceIds();
+            //register system settings
+            SystemSettingsConfig.RegisterSystemSettings();
         }
     }
 }
