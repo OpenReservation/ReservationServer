@@ -13,6 +13,6 @@ namespace ActivityReservation.WechatAPI.Model
         [Required]
         public string Nonce { get; set; }
 
-        public string MsgSignature { get; set; }
+        public string Signature { get; set; }
     }
 }

@@ -14,25 +14,17 @@ namespace ActivityReservation.WechatAPI.Filters
             Model.WechatMsgRequestModel model = new Model.WechatMsgRequestModel()
             {
                 Nonce = filterContext.HttpContext.Request.QueryString["nonce"] ,
-                MsgSignature = filterContext.HttpContext.Request.QueryString["msg_signature"] ,
+                Signature = filterContext.HttpContext.Request.QueryString["signature"] ,
                 Timestamp = filterContext.HttpContext.Request.QueryString["timestamp"]
             };
-            if (filterContext.HttpContext.Request.HttpMethod.ToUpperInvariant().Equals("GET"))
-            {
-                model.MsgSignature = filterContext.HttpContext.Request.QueryString["signature"];
-            }
             //验证
             if (!CheckSignature(model))
             {
-                //这种方式会导致处理异常，不能在拦截器里 Response.End() 
-                //filterContext.HttpContext.Response.Write("微信请求验证失败");
-                //filterContext.HttpContext.Response.End();//停止处理结束响应
-
                 ContentResult result = new ContentResult()
                 {
                     Content = "微信请求验证失败" ,
                     ContentEncoding = Encoding.UTF8 ,
-                    ContentType = "text/plain"
+                    ContentType = "text/html"
                 };
                 filterContext.Result = result;
             }
@@ -43,7 +35,7 @@ namespace ActivityReservation.WechatAPI.Filters
         {
             string signature, timestamp, nonce, tempStr;
             //获取请求来的参数
-            signature = model.MsgSignature;
+            signature = model.Signature;
             timestamp = model.Timestamp;
             nonce = model.Nonce;
             //创建数组，将 Token, timestamp, nonce 三个参数加入数组

@@ -13,39 +13,22 @@ namespace ActivityReservation.WechatAPI.Controllers
         private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
 
         [Filters.WechatRequestValid]
-        public void Index(Model.WechatMsgRequestModel model)
+        [HttpGet]
+        [ActionName("Index")]
+        public void Get(Model.WechatMsgRequestModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    //判断是否是POST请求
-                    if (HttpContext.Request.HttpMethod.ToUpperInvariant().Equals("POST"))
+                    //GET微信验证，获取 echostr 参数并返回
+                    string echoStr = HttpContext.Request.QueryString["echostr"];
+                    if (!string.IsNullOrEmpty(echoStr))
                     {
-                        //从请求的数据流中获取请求信息
-                        using (Stream stream = HttpContext.Request.InputStream)
-                        {
-                            //创建 byte数组以接受从流中获取到的消息
-                            byte[] postBytes = new byte[stream.Length];
-                            //将POST请求中的数据流读入 准备好的 byte数组中
-                            stream.Read(postBytes , 0 , (int) stream.Length);
-                            //从数据流中获取到字符串
-                            string postString = System.Text.Encoding.UTF8.GetString(postBytes);
-                            //处理响应
-                            Handle(postString , model);
-                        }
-                    }
-                    else
-                    {
-                        //GET微信验证，获取 echostr 参数并返回
-                        string echoStr = HttpContext.Request.QueryString["echostr"];
-                        if (!string.IsNullOrEmpty(echoStr))
-                        {
-                            //将随机生成的 echostr 参数 原样输出
-                            Response.Write(echoStr);
-                            //截止输出流
-                            Response.End();
-                        }
+                        //将随机生成的 echostr 参数 原样输出
+                        Response.Write(echoStr);
+                        //截止输出流
+                        Response.End();
                     }
                 }
                 catch (Exception ex)
@@ -55,16 +38,33 @@ namespace ActivityReservation.WechatAPI.Controllers
             }
         }
 
-        private void Handle(string postStr , Model.WechatMsgRequestModel model)
+        /// <summary>
+        /// POST
+        /// </summary>
+        /// <param name="model">微信消息</param>
+        [HttpPost]
+        [ActionName("Index")]
+        public void Post(Model.WechatMsgRequestModel model)
         {
-            WechatContext context = new WechatContext(model , postStr);
-            string responseContent = context.GetResponse();
-            //设置输出编码
-            HttpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
-            //输出响应文本
-            HttpContext.Response.Write(responseContent);
-            //截止输出流
-            HttpContext.Response.End();
+            //从请求的数据流中获取请求信息
+            using (Stream stream = HttpContext.Request.InputStream)
+            {
+                //创建 byte数组以接受从流中获取到的消息
+                byte[] postBytes = new byte[stream.Length];
+                //将POST请求中的数据流读入 准备好的 byte数组中
+                stream.Read(postBytes, 0, (int)stream.Length);
+                //从数据流中获取到字符串
+                string postString = System.Text.Encoding.UTF8.GetString(postBytes);
+                //处理响应
+                WechatContext context = new WechatContext(model, postString);
+                string responseContent = context.GetResponse();
+                //设置输出编码
+                HttpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
+                //输出响应文本
+                HttpContext.Response.Write(responseContent);
+                //截止输出流
+                HttpContext.Response.End();
+            }
         }
     }
 }

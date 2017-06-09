@@ -7,7 +7,7 @@
 
         public WechatContext(Model.WechatMsgRequestModel request , string msg)
         {
-            securityHelper = new WechatSecurityHelper(request.MsgSignature , request.Timestamp , request.Nonce);
+            securityHelper = new WechatSecurityHelper(request.Signature , request.Timestamp , request.Nonce);
             requestMessage = msg;
         }
 
