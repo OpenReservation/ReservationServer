@@ -1,6 +1,6 @@
 # ActivityReservation
 ## Build Status
-[![Build Status](https://travis-ci.org/WeihanLi/AccountingApp.svg?branch=master)](https://travis-ci.org/WeihanLi/AccountingApp)
+[![Build status](https://ci.appveyor.com/api/projects/status/4d06b7edjjsx6n8r?svg=true)](https://ci.appveyor.com/project/WeihanLi/activityreservation)
 
 ## Intro
 
