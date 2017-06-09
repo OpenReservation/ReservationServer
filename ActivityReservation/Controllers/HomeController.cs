@@ -39,7 +39,7 @@ namespace ActivityReservation.Controllers
             //根据预约人联系方式查询
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
+                whereLambda=(m => m.ReservationPersonPhone.Contains(search.SearchItem1));
             }
             //load data
             List<Models.Reservation> list = new Business.BLLReservation().GetReservationList(search.PageIndex , search.PageSize , out rowsCount , whereLambda , m => m.ReservationForDate , m => m.ReservationTime , false , false);
@@ -183,7 +183,7 @@ namespace ActivityReservation.Controllers
             Expression<Func<Models.Notice , bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = (n => n.CheckStatus && !n.IsDeleted && n.NoticeTitle.Contains(search.SearchItem1));
+                whereLamdba = whereLamdba.And(n => n.NoticeTitle.Contains(search.SearchItem1));
             }
             try
             {
@@ -242,7 +242,7 @@ namespace ActivityReservation.Controllers
             string userID = RequestHelper.GetRequestIP();
             byte gtServerStatus = helper.preProcess(userID);
             Session[GeetestConsts.GtServerStatusSessionKey] = gtServerStatus;
-            RedisHelper.Set("geetestUserId", userID,TimeSpan.FromMinutes(3));
+            Session["geetestUserId"] = userID;
             return Json(helper.Response,JsonRequestBehavior.AllowGet);
         }
 
@@ -250,11 +250,11 @@ namespace ActivityReservation.Controllers
         /// 验证Geetest验证码
         /// </summary>
         /// <returns></returns>
-        public async Task<JsonResult> ValidateGeetestCode()
+        public JsonResult ValidateGeetestCode()
         {
             GeetestHelper helper = new GeetestHelper(GeetestConsts.publicKey, GeetestConsts.privateKey);
             byte gt_server_status_code = (byte)Session[GeetestConsts.GtServerStatusSessionKey];
-            string userID = RedisHelper.Get("geetestUserId");
+            string userID = Session["geetestUserId"] as string;
             int result = 0;
             string challenge = Request[GeetestConsts.fnGeetestChallenge];
             string validate = Request[GeetestConsts.fnGeetestValidate];
@@ -269,7 +269,7 @@ namespace ActivityReservation.Controllers
             }
             if(result == 1)
             {
-                await RedisHelper.RemoveAsync("geetestUserId");
+                Session.Remove("geetestUserId");
                 return Json(true);
             }
             return Json(false);

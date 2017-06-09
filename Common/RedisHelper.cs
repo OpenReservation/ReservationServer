@@ -10,7 +10,7 @@ namespace Common
     /// <summary>
     /// Redis 帮助类
     /// </summary>
-    public class RedisHelper
+    public static class RedisHelper
     {
         /// <summary>
         /// logger
@@ -22,6 +22,7 @@ namespace Common
         private static readonly int dataBaseIndex = 0;
         private static IDatabase db = null;
         private static object asyncState;
+        private static ISubscriber subscriber;
 
         static RedisHelper()
         {
@@ -32,6 +33,7 @@ namespace Common
             connection.ErrorMessage += (sender, e) => logger.Error(e.Message);
             connection.InternalError += (sender, e) => logger.Error(e.Origin, e.Exception);
             db = connection.GetDatabase(dataBaseIndex, asyncState);
+            subscriber = connection.GetSubscriber(asyncState);
         }
 
         #region Cache
@@ -142,6 +144,142 @@ namespace Common
         public static Task<bool> RemoveAsync(string key, CommandFlags flags) =>
             db.KeyDeleteAsync(key, flags);
         #endregion
-        #endregion     
+        #endregion
+
+        #region PubSub
+        public static void Publish(string channel, string message)
+        {
+            Publish(channel, message, CommandFlags.None);
+        }
+
+        public static void Publish(string channel, string message, CommandFlags flag)
+        {
+            subscriber.Publish(channel, message, flag);
+        }
+
+        public static async Task PublishAsync(string channel, string message)
+        {
+            await PublishAsync(channel, message, CommandFlags.None);
+        }
+
+        public static async Task PublishAsync(string channel, string message, CommandFlags flag)
+        {
+            await subscriber.PublishAsync(channel, message, flag);
+        }
+
+        public static void Subscribe(string channel, string type, Action<RedisSubscribeMessageModel> action)
+        {
+            Subscribe(channel, type, action, CommandFlags.None);
+        }
+
+        public static void Subscribe(string channel, string type, Action<RedisSubscribeMessageModel> action, CommandFlags flag)
+        {
+            subscriber.Subscribe(channel, (channelName, msg) =>
+            {
+                var model = new RedisSubscribeMessageModel
+                {
+                    Channnel = channelName,
+                    SubscribeMessage = msg,
+                    SubscribeType = type
+                };
+                action(model);
+            }, flag);
+        }
+
+        public static async Task SubscribeAsync(string channel, string type, Action<RedisSubscribeMessageModel> action)
+        {
+            await SubscribeAsync(channel, type, action, CommandFlags.None);
+        }
+
+        /// <summary>
+        /// 订阅消息
+        /// </summary>
+        /// <param name="channel">channel</param>
+        /// <param name="type">type</param>
+        /// <param name="action">回掉委托</param>
+        /// <param name="flag"></param>
+        public static async Task SubscribeAsync(string channel, string type, Action<RedisSubscribeMessageModel> action, CommandFlags flag)
+        {
+            await subscriber.SubscribeAsync(channel, (channelName, msg) =>
+            {
+                var model = new RedisSubscribeMessageModel
+                {
+                    Channnel = channelName,
+                    SubscribeMessage = msg,
+                    SubscribeType = type
+                };
+                action(model);
+            }, flag);
+        }
+
+        public static void Unsubscribe(string channel, CommandFlags flag = CommandFlags.None)
+        {
+            subscriber.Unsubscribe(channel, flags: flag);
+        }
+
+        public static void Unsubscribe(string channel, string type, Action<RedisSubscribeMessageModel> action, CommandFlags flag = CommandFlags.None)
+        {
+            subscriber.Unsubscribe(channel, (channelName, msg) =>
+            {
+                var model = new RedisSubscribeMessageModel
+                {
+                    Channnel = channelName,
+                    SubscribeMessage = msg,
+                    SubscribeType = type
+                };
+                action(model);
+            }, flag);
+        }
+
+        public static async Task UnsubscribeAsync(string channel, CommandFlags flag = CommandFlags.None)
+        {
+            await subscriber.UnsubscribeAsync(channel, flags: flag);
+        }
+
+        public static async Task UnsubscribeAsync(string channel, string type, Action<RedisSubscribeMessageModel> action, CommandFlags flag = CommandFlags.None)
+        {
+            await subscriber.UnsubscribeAsync(channel, (channelName, msg) =>
+            {
+                var model = new RedisSubscribeMessageModel
+                {
+                    Channnel = channelName,
+                    SubscribeMessage = msg,
+                    SubscribeType = type
+                };
+                action(model);
+            }, flag);
+        }
+
+        public static void UnsubscribeAll(CommandFlags flag = CommandFlags.None)
+        {
+            subscriber.UnsubscribeAll(flag);
+        }
+
+        public static async Task UnsubscribeAllAsync(CommandFlags flag = CommandFlags.None)
+        {
+            await subscriber.UnsubscribeAllAsync(flag);
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// Redis订阅消息Model
+    /// </summary>
+    public class RedisSubscribeMessageModel
+    {
+        /// <summary>
+        /// channel
+        /// </summary>
+        public string Channnel { get; set; }
+
+        /// <summary>
+        /// 订阅类型
+        /// </summary>
+        public string SubscribeType { get; set; }
+
+        /// <summary>
+        /// 订阅消息
+        /// </summary>
+        public string SubscribeMessage { get; set; }
     }
 }
