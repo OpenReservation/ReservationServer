@@ -81,6 +81,7 @@
     <Compile Include="HttpHelper.cs" />
     <Compile Include="LogHelper.cs" />
     <Compile Include="PathHelper.cs" />
+    <Compile Include="ExpressionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisHelper.cs" />
     <Compile Include="RequestHelper.cs" />
