@@ -1,4 +1,7 @@
 # ActivityReservation
+## Build Status
+[![Build Status](https://travis-ci.org/WeihanLi/AccountingApp.svg?branch=master)](https://travis-ci.org/WeihanLi/AccountingApp)
+
 ## Intro
 
 活动室预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
