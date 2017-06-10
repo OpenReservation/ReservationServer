@@ -15,11 +15,11 @@ namespace ActivityReservation.WechatAPI.Helper
         private const string AppId = "wx7858bf8ff81c0235";
 
         /// <summary>
-        /// 加密密钥
+        /// EncodingAESKey
         /// </summary>
         private const string AESKey = "pvX2KZWRLQSkUAbvArgLSAxCwTtxgFWF3XOnJ9iEUMG";
 
-        private static Tencent.WXBizMsgCrypt wxcpt = new Tencent.WXBizMsgCrypt(Token , AESKey , AppId);
+        private static Tencent.WXBizMsgCrypt wxcpt = new Tencent.WXBizMsgCrypt(Token, AESKey, AppId);
         private readonly string signature, timestamp, nonce;
         private static LogHelper logger = new LogHelper(typeof(WechatSecurityHelper));
 
@@ -41,7 +41,7 @@ namespace ActivityReservation.WechatAPI.Helper
             int result = wxcpt.EncryptMsg(msg , timestamp , nonce , ref encryptMsg);
             if (result != 0)
             {
-                logger.Error("消息加密失败");
+                logger.Error("微信消息加密失败,result:" + result);
             }
             return encryptMsg;
         }

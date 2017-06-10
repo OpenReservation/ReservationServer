@@ -5,6 +5,7 @@ using System.Web.Mvc;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
+    [Filters.WechatRequestValid]
     public class HomeController : Controller
     {
         /// <summary>
@@ -12,7 +13,6 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// </summary>
         private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
 
-        [Filters.WechatRequestValid]
         [HttpGet]
         [ActionName("Index")]
         public void Get(Model.WechatMsgRequestModel model)
@@ -55,6 +55,13 @@ namespace ActivityReservation.WechatAPI.Controllers
                 stream.Read(postBytes, 0, (int)stream.Length);
                 //从数据流中获取到字符串
                 string postString = System.Text.Encoding.UTF8.GetString(postBytes);
+                if(String.IsNullOrEmpty(postString))
+                {
+                    return;
+                }
+                logger.Debug("微信服务器消息："+postString);
+                //
+                model.Signature = Request.QueryString["msg_signature"];
                 //处理响应
                 WechatContext context = new WechatContext(model, postString);
                 string responseContent = context.GetResponse();

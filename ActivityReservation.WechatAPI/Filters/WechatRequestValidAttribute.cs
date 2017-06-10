@@ -6,6 +6,8 @@ namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : ActionFilterAttribute
     {
+        private static Common.LogHelper logger = new Common.LogHelper(typeof(WechatRequestValidAttribute));
+
         private const string Token = "Reservation";
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -17,9 +19,11 @@ namespace ActivityReservation.WechatAPI.Filters
                 Signature = filterContext.HttpContext.Request.QueryString["signature"] ,
                 Timestamp = filterContext.HttpContext.Request.QueryString["timestamp"]
             };
+            logger.Debug("微信请求信息,"+Newtonsoft.Json.JsonConvert.SerializeObject(model));
             //验证
             if (!CheckSignature(model))
             {
+                logger.Error("微信请求签名验证不通过");
                 ContentResult result = new ContentResult()
                 {
                     Content = "微信请求验证失败" ,
@@ -28,7 +32,11 @@ namespace ActivityReservation.WechatAPI.Filters
                 };
                 filterContext.Result = result;
             }
-            base.OnActionExecuting(filterContext);
+            else
+            {
+                logger.Debug("微信请求签名验证通过");
+                base.OnActionExecuting(filterContext);
+            }
         }
 
         private bool CheckSignature(Model.WechatMsgRequestModel model)

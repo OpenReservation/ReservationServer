@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\WechatAppController.cs" />
     <Compile Include="Filters\WechatRequestValidAttribute.cs" />
     <Compile Include="Helper\WechatContext.cs" />
     <Compile Include="Helper\Tencent\Cryptography.cs" />

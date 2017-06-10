@@ -103,6 +103,9 @@ namespace ActivityReservation.Helpers
                 case Module.DisabledPeriod:
                     moduleName = "禁用时间段管理";
                     break;
+                case Module.Wechat:
+                    moduleName = "微信";
+                    break;
                 default:
                     break;
             }
@@ -122,5 +125,6 @@ namespace ActivityReservation.Helpers
         Account = 4,//账户管理
         Settings = 5,//系统设置
         DisabledPeriod = 6,//禁用时间段
+        Wechat = 7,//微信
     }    
 }
