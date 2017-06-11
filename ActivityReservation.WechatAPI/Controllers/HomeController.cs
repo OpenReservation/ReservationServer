@@ -5,13 +5,8 @@ using System.Web.Mvc;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    [Filters.WechatRequestValid]
-    public class HomeController : Controller
+    public class HomeController : WechatBaseController
     {
-        /// <summary>
-        /// 日志助手
-        /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
 
         [HttpGet]
         [ActionName("Index")]
@@ -44,34 +39,39 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public void Post(Model.WechatMsgRequestModel model)
+        public ActionResult Post(Model.WechatMsgRequestModel model)
         {
-            //从请求的数据流中获取请求信息
-            using (Stream stream = HttpContext.Request.InputStream)
+            //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
+            var postModel = new Senparc.Weixin.MP.Entities.Request.PostModel
             {
-                //创建 byte数组以接受从流中获取到的消息
-                byte[] postBytes = new byte[stream.Length];
-                //将POST请求中的数据流读入 准备好的 byte数组中
-                stream.Read(postBytes, 0, (int)stream.Length);
-                //从数据流中获取到字符串
-                string postString = System.Text.Encoding.UTF8.GetString(postBytes);
-                if(String.IsNullOrEmpty(postString))
-                {
-                    return;
-                }
-                logger.Debug("微信服务器消息："+postString);
-                //
-                model.Signature = Request.QueryString["msg_signature"];
-                //处理响应
-                WechatContext context = new WechatContext(model, postString);
-                string responseContent = context.GetResponse();
-                //设置输出编码
-                HttpContext.Response.ContentEncoding = System.Text.Encoding.UTF8;
-                //输出响应文本
-                HttpContext.Response.Write(responseContent);
-                //截止输出流
-                HttpContext.Response.End();
+                Nonce = model.Nonce,
+                Timestamp = model.Timestamp,
+                Signature = model.Signature,
+                Msg_Signature = model.Msg_Signature,
+                AppId = WeChatConsts.AppId,
+                EncodingAESKey = WeChatConsts.AESKey,
+                Token = WeChatConsts.Token,             
+            };
+            model.RequestContent = Request.ContentType;
+            if(String.IsNullOrEmpty(model.RequestContent))
+            {
+                return Content("RequestContent 为空");
             }
+            //var doc = Common.ConverterHelper.ConvertToXDocment(model.RequestContent);
+            //logger.Debug("doc:"+doc.ToString());
+            //var messageHandler = new WechatMsgHandler(doc, postModel);
+            //#region 设置消息去重
+            ///* 如果需要添加消息去重功能，只需打开OmitRepeatedMessage功能，SDK会自动处理。
+            // * 收到重复消息通常是因为微信服务器没有及时收到响应，会持续发送2-5条不等的相同内容的RequestMessage
+            // */
+            //messageHandler.OmitRepeatedMessage = true;//默认已经开启，此处仅作为演示，也可以设置为false在本次请求中停用此功能
+            //#endregion
+            //logger.Debug("收到微信消息：" + Common.ConverterHelper.ObjectToJson(messageHandler.RequestDocument));
+            //messageHandler.Execute();
+            //logger.Debug("返回的消息：" + Common.ConverterHelper.ObjectToJson(messageHandler.ResponseDocument));
+            //return Wechat(messageHandler);
+            var context = new WechatContext(model);
+            return Content(context.GetResponse());
         }
     }
 }

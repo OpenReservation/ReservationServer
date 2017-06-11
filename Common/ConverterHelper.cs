@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Reflection;
-using System.Web.UI;
+using System.Xml.Linq;
 
 namespace Common
 {
@@ -13,48 +13,46 @@ namespace Common
     /// </summary>
     public static class ConverterHelper
     {
-        /// <summary>  
-        /// 利用反射和泛型  
-        /// </summary>  
-        /// <param name="dt">DataTable 对象</param>  
-        /// <returns></returns>  
-        public static List<T> DataTableToList<T>(DataTable dt) where T :class,new ()
-       {  
-           // 定义集合  
-           List<T> ts = new List<T>();  
- 
-           // 获得此模型的类型  
-           Type type = typeof(T);  
-           //定义一个临时变量  
-           string tempName = string.Empty;  
-           //遍历DataTable中所有的数据行  
-           foreach (DataRow dr in dt.Rows)  
-           {  
-               T t = new T();  
-               // 获得此模型的公共属性  
-               PropertyInfo[] propertys = t.GetType().GetProperties();  
-               //遍历该对象的所有属性  
-               foreach (PropertyInfo pi in propertys)  
-               {  
-                   tempName = pi.Name;//将属性名称赋值给临时变量  
-                   //检查DataTable是否包含此列（列名==对象的属性名）    
-                   if (dt.Columns.Contains(tempName))  
-                   {  
-                       
-                       //取值  
-                       object value = dr[tempName];  
-                       //如果非空，则赋给对象的属性  
-                       if (value != DBNull.Value)  
-                           pi.SetValue(t,value,null);  
-                   }  
-               }  
-               //对象添加到泛型集合中  
-               ts.Add(t);  
-           }  
- 
-           return ts;  
- 
-       }
+        /// <summary>
+        /// 利用反射和泛型
+        /// </summary>
+        /// <param name="dt">DataTable 对象</param>
+        /// <returns></returns>
+        public static List<T> DataTableToList<T>(DataTable dt) where T : class, new()
+        {
+            // 定义集合
+            List<T> ts = new List<T>();
+
+            // 获得此模型的类型
+            Type type = typeof(T);
+            //定义一个临时变量
+            string tempName = string.Empty;
+            //遍历DataTable中所有的数据行
+            foreach (DataRow dr in dt.Rows)
+            {
+                T t = new T();
+                // 获得此模型的公共属性
+                PropertyInfo[] propertys = t.GetType().GetProperties();
+                //遍历该对象的所有属性
+                foreach (PropertyInfo pi in propertys)
+                {
+                    tempName = pi.Name;//将属性名称赋值给临时变量
+                                       //检查DataTable是否包含此列（列名==对象的属性名）
+                    if (dt.Columns.Contains(tempName))
+                    {
+                        //取值
+                        object value = dr[tempName];
+                        //如果非空，则赋给对象的属性
+                        if (value != DBNull.Value)
+                            pi.SetValue(t, value, null);
+                    }
+                }
+                //对象添加到泛型集合中
+                ts.Add(t);
+            }
+
+            return ts;
+        }
 
         /// <summary>
         /// 将object对象转换为Json数据
@@ -63,7 +61,7 @@ namespace Common
         /// <returns>转换后的json字符串</returns>
         public static string ObjectToJson(object obj)
         {
-            if(obj == null)
+            if (obj == null)
             {
                 return "";
             }
@@ -78,7 +76,7 @@ namespace Common
         /// <returns>由字符串转换得到的T对象</returns>
         public static T JsonToObject<T>(string jsonString)
         {
-            if(String.IsNullOrEmpty(jsonString))
+            if (String.IsNullOrEmpty(jsonString))
             {
                 return default(T);
             }
@@ -104,5 +102,22 @@ namespace Common
         {
             return (value > 0 ? true : false);
         }
-    }   
+
+        /// <summary>
+        /// xml文本转换为XDocment
+        /// </summary>
+        /// <param name="xmlText">xml文本</param>
+        /// <returns>XDocment</returns>
+        public static XDocument ConvertToXDocment(string xmlText)
+        {
+            if (String.IsNullOrEmpty(xmlText))
+            {
+                return null;
+            }
+            using (TextReader reader = new StringReader(xmlText))
+            {
+                return XDocument.Load(reader);
+            }
+        }
+    }
 }

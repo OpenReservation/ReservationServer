@@ -4,22 +4,8 @@ namespace ActivityReservation.WechatAPI.Helper
 {
     public class WechatSecurityHelper
     {
-        /// <summary>
-        /// 定义Token，与微信公共平台上的Token保持一致
-        /// </summary>
-        private const string Token = "Reservation";
 
-        /// <summary>
-        /// AppId 要与 微信公共平台 上的 AppId 保持一致
-        /// </summary>
-        private const string AppId = "wx7858bf8ff81c0235";
-
-        /// <summary>
-        /// EncodingAESKey
-        /// </summary>
-        private const string AESKey = "pvX2KZWRLQSkUAbvArgLSAxCwTtxgFWF3XOnJ9iEUMG";
-
-        private static Tencent.WXBizMsgCrypt wxcpt = new Tencent.WXBizMsgCrypt(Token, AESKey, AppId);
+        private static Tencent.WXBizMsgCrypt wxcpt = new Tencent.WXBizMsgCrypt(WeChatConsts.Token, WeChatConsts.AESKey, WeChatConsts.AppId);
         private readonly string signature, timestamp, nonce;
         private static LogHelper logger = new LogHelper(typeof(WechatSecurityHelper));
 

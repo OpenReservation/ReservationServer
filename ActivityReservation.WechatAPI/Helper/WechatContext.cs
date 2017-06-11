@@ -1,29 +1,31 @@
-﻿namespace ActivityReservation.WechatAPI.Helper
+﻿using Senparc.Weixin.Context;
+using Senparc.Weixin.MP.Entities;
+
+namespace ActivityReservation.WechatAPI.Helper
 {
-    internal class WechatContext
+    public class WechatContext: MessageContext<IRequestMessageBase, IResponseMessageBase>
     {
         private static Common.LogHelper logger = new Common.LogHelper(typeof(WechatContext));
-        private readonly WechatSecurityHelper securityHelper;
-        private readonly string requestMessage;
+        private WechatSecurityHelper securityHelper;
+        private string requestMessage,responseMessage;
 
-        public WechatContext(Model.WechatMsgRequestModel request , string msg)
+        public WechatContext()
         {
-            logger.Debug("微信服务器消息：" + Newtonsoft.Json.JsonConvert.SerializeObject(request)+","+msg);
-            securityHelper = new WechatSecurityHelper(request.Signature , request.Timestamp , request.Nonce);
-            requestMessage = securityHelper.DecryptMsg(msg);
-            logger.Debug("收到微信消息："+requestMessage);
         }
 
-        /// <summary>
-        /// 发送消息用户id
-        /// </summary>
-        public string FromUserId { get; private set; }
+        public WechatContext(Model.WechatMsgRequestModel request)
+        {
+            logger.Debug("微信服务器消息：" + Newtonsoft.Json.JsonConvert.SerializeObject(request));
+            securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
+            requestMessage = securityHelper.DecryptMsg(request.RequestContent);
+            logger.Debug("收到微信消息：" + requestMessage);
+            responseMessage = WechatMsgHandler.ReturnMessage(requestMessage);
+            logger.Debug("返回消息：" + responseMessage);
+        }
 
         public string GetResponse()
         {
-            string response = WechatMsgHelper.ReturnMessage(requestMessage);
-            logger.Debug("返回消息：" + response);
-            return securityHelper.EncryptMsg(response);
+            return securityHelper.EncryptMsg(responseMessage);
         }
     }
 }

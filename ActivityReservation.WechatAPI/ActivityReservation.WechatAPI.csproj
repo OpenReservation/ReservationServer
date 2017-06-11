@@ -94,10 +94,13 @@
   <ItemGroup>
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\WechatAppController.cs" />
+    <Compile Include="Controllers\WechatBaseController.cs" />
     <Compile Include="Filters\WechatRequestValidAttribute.cs" />
+    <Compile Include="Helper\WeChatConsts.cs" />
     <Compile Include="Helper\WechatContext.cs" />
     <Compile Include="Helper\Tencent\Cryptography.cs" />
-    <Compile Include="Helper\WechatMsgHelper.cs" />
+    <Compile Include="Helper\WechatMsgHandler.cs" />
+    <Compile Include="Helper\WechatResult.cs" />
     <Compile Include="Helper\WechatSecurityHelper.cs" />
     <Compile Include="Helper\Tencent\WXBizMsgCrypt.cs" />
     <Compile Include="Model\WechatMsgRequestModel.cs" />

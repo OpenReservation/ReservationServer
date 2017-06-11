@@ -21,7 +21,7 @@ namespace Common
         private static ConnectionMultiplexer connection;
         private static readonly int dataBaseIndex = 0;
         private static IDatabase db = null;
-        private static object asyncState;
+        private static object asyncState = new object();
         private static ISubscriber subscriber;
 
         static RedisHelper()
