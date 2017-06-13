@@ -54,7 +54,7 @@ namespace Common
         /// <returns>键值对应的值</returns>
         public static string AppSetting(string key)
         {
-            return System.Configuration.ConfigurationManager.AppSettings[key].ToString();
+            return System.Configuration.ConfigurationManager.AppSettings[key]??"";
         }
 
         /// <summary>

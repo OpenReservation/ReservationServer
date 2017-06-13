@@ -57,8 +57,8 @@ namespace ActivityReservation.WechatAPI.Controllers
             {
                 return Content("RequestContent 为空");
             }
-            //var doc = Common.ConverterHelper.ConvertToXDocment(model.RequestContent);
-            //logger.Debug("doc:"+doc.ToString());
+            //var doc = System.Xml.Linq.XDocument.Parse(model.RequestContent);
+            //logger.Debug("doc:" + doc.ToString());
             //var messageHandler = new WechatMsgHandler(doc, postModel);
             //#region 设置消息去重
             ///* 如果需要添加消息去重功能，只需打开OmitRepeatedMessage功能，SDK会自动处理。
@@ -71,7 +71,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             //logger.Debug("返回的消息：" + Common.ConverterHelper.ObjectToJson(messageHandler.ResponseDocument));
             //return Wechat(messageHandler);
             var context = new WechatContext(model);
-            return Content(context.GetResponse());
+            return Wechat(context);
         }
     }
 }

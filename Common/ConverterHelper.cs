@@ -101,23 +101,6 @@ namespace Common
         public static bool ConvertIntToBool(int value)
         {
             return (value > 0 ? true : false);
-        }
-
-        /// <summary>
-        /// xml文本转换为XDocment
-        /// </summary>
-        /// <param name="xmlText">xml文本</param>
-        /// <returns>XDocment</returns>
-        public static XDocument ConvertToXDocment(string xmlText)
-        {
-            if (String.IsNullOrEmpty(xmlText))
-            {
-                return null;
-            }
-            using (TextReader reader = new StringReader(xmlText))
-            {
-                return XDocument.Load(reader);
-            }
-        }
+        }        
     }
 }
