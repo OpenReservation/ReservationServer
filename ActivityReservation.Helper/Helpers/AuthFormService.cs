@@ -26,7 +26,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public static Models.User GetCurrentUser()
         {
-            return Common.RedisHelper.Get<Models.User>(AuthCacheKey);
+            return HttpContext.Current.Session[AuthCacheKey] as Models.User;
         }
 
         /// <summary>
@@ -36,7 +36,8 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public static bool SetCurrentUser(Models.User user)
         {
-            return Common.RedisHelper.Set(AuthCacheKey, user, TimeSpan.FromDays(1));
+            HttpContext.Current.Session[AuthCacheKey]=user;
+            return true;
         }
 
         /// <summary>
@@ -91,7 +92,7 @@ namespace ActivityReservation.Helpers
             HttpContext.Current.Response.Cookies.Remove(LoginCookieName);
             HttpContext.Current.Response.Cookies[LoginCookieName].Expires = DateTime.Now.AddDays(-1);
             //remove cache
-            Common.RedisHelper.Remove(AuthCacheKey);
+            HttpContext.Current.Session.Remove(AuthCacheKey);
             //remove session
             HttpContext.Current.Session.Abandon();
         }
