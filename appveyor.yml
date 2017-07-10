@@ -35,7 +35,7 @@ skip_non_tags: false
 # Skipping commits with particular message or from specific user
 skip_commits:
   message: /Created.*\.(png|jpg|jpeg|bmp|gif)/      # Regex for matching commit message
-  author: weihanli                                # Commit author's username, name, email or regexp maching one of these.
+  # author: weihanli                                # Commit author's username, name, email or regexp maching one of these.
   # Skipping commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
   files:
     - docs/*
@@ -45,7 +45,7 @@ skip_commits:
 # Including commits with particular message or from specific user
 only_commits:
   message: /build/                # Start a new build if message contains 'build'
-  author: weihanli@outlook.com        # Start a new build for commit of user with email jack@company.com
+  # author: weihanli@outlook.com        # Start a new build for commit of user with email jack@company.com
 
 # Including commits affecting specific files (GitHub only). More details here: /docs/appveyor-yml
 #  files:

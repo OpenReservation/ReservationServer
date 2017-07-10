@@ -35,7 +35,7 @@ namespace Common
                 if (!String.IsNullOrEmpty(response))
                 {                 
                     var res = ConverterHelper.JsonToObject<QingyunkeResponseModel>(response);
-                    if (res.result == 0)
+                    if (res!=null && res.result == 0)
                     {
                         return res.content;
                     }
