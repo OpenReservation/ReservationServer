@@ -72,9 +72,11 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = Content.InnerText;
-                if (reply == "网络异常") reply = "The service is not available now,please retry later";
-                //reply = "这是回复";
+                reply = ChatRobotHelper.GetBotReply(Content.InnerText);
+                if (reply == "error")
+                {
+                    reply = Content.InnerText;
+                }
                 responseContent = string.Format(ReplyMessageType.Message_Text,
                     FromUserName.InnerText,
                     ToUserName.InnerText,
@@ -114,16 +116,18 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = Content.InnerText;
-                if (reply == "网络异常") reply = "The service is not available now,please retry later";
-                //reply = "这是回复";
+                reply = ChatRobotHelper.GetBotReply(Content.InnerText);
+                if (reply == "error")
+                {
+                    reply = Content.InnerText;
+                }
                 responseContent = string.Format(ReplyMessageType.Message_Text,
                     FromUserName.InnerText,
                     ToUserName.InnerText,
                     DateTime.Now.Ticks,
                     reply);
             }
-            logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
+            logger.Info("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 

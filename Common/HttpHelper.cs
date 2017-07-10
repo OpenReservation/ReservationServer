@@ -12,6 +12,11 @@ namespace Common
     public class HttpHelper
     {
         /// <summary>
+        /// logger
+        /// </summary>
+        private static LogHelper logger = new LogHelper(typeof(HttpHelper));
+
+        /// <summary>
         /// HTTP GET请求，返回字符串 
         /// </summary>
         /// <param name="url"> url </param>
