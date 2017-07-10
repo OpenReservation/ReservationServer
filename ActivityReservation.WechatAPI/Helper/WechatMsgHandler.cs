@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.Exceptions;
 using Senparc.Weixin.Context;
+using System.Web;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
@@ -72,7 +73,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(Content.InnerText);
+                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -116,7 +117,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(Content.InnerText);
+                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
