@@ -2,6 +2,7 @@
 using System;
 using Exceptionless;
 using Exceptionless.Logging;
+using SharpRaven;
 
 namespace Common
 {
@@ -10,6 +11,11 @@ namespace Common
     /// </summary>
     public class LogHelper
     {
+        /// <summary>
+        /// client
+        /// </summary>
+        private static readonly RavenClient ravenClient = new RavenClient(Common.ConfigurationHelper.AppSetting("SentryClientKey"));
+
         private readonly ILog logger = null;
 
         public LogHelper(Type t)
@@ -72,18 +78,21 @@ namespace Common
         {
             logger.Error(msg);
             ExceptionlessClient.Default.SubmitLog(msg, LogLevel.Error);
+            ravenClient.Capture(new SharpRaven.Data.SentryEvent(new Exception(msg)));
         }
 
         public void Error(string msg, Exception ex)
         {
             logger.Error(msg, ex);
             ExceptionlessClient.Default.SubmitLog(ex.ToString(),msg, LogLevel.Error);
+            ravenClient.Capture(new SharpRaven.Data.SentryEvent(ex));
         }
 
         public void Error(Exception ex)
         {
             logger.Error(ex.Message, ex);
             ExceptionlessClient.Default.SubmitLog(ex.ToString(), ex.Message, LogLevel.Error);
+            ravenClient.Capture(new SharpRaven.Data.SentryEvent(ex));
         }
 
         public void Warn(string msg)
