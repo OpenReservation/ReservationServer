@@ -39,7 +39,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult Post(Model.WechatMsgRequestModel model)
+        public async System.Threading.Tasks.Task<ActionResult> PostAsync(Model.WechatMsgRequestModel model)
         {
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
             var postModel = new Senparc.Weixin.MP.Entities.Request.PostModel
@@ -50,10 +50,10 @@ namespace ActivityReservation.WechatAPI.Controllers
                 Msg_Signature = model.Msg_Signature,
                 AppId = WeChatConsts.AppId,
                 EncodingAESKey = WeChatConsts.AESKey,
-                Token = WeChatConsts.Token,             
+                Token = WeChatConsts.Token,
             };
             model.RequestContent = Request.ContentType;
-            if(String.IsNullOrEmpty(model.RequestContent))
+            if (String.IsNullOrEmpty(model.RequestContent))
             {
                 return Content("RequestContent 为空");
             }
@@ -71,7 +71,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             //logger.Debug("返回的消息：" + Common.ConverterHelper.ObjectToJson(messageHandler.ResponseDocument));
             //return Wechat(messageHandler);
             var context = new WechatContext(model);
-            return Wechat(context);
+            return await WechatAsync(context);
         }
     }
 }

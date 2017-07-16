@@ -47,6 +47,32 @@ namespace Common
             }
             return "error";
         }
+
+        /// <summary>
+        /// 获取机器人回复【异步】
+        /// </summary>
+        /// <param name="request">请求</param>
+        /// <returns>回复信息</returns>
+        public static async Task<string> GetBotReplyAsync(string request)
+        {
+            try
+            {
+                var response = await HttpHelper.HttpGetStringAsync(String.Format(QingyunkeRequestUrlFormat, request));
+                if (!String.IsNullOrEmpty(response))
+                {
+                    var res = ConverterHelper.JsonToObject<QingyunkeResponseModel>(response);
+                    if (res != null && res.result == 0)
+                    {
+                        return res.content;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+            }
+            return "error";
+        }
     }
 
     class QingyunkeResponseModel

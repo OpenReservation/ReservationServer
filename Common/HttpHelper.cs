@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Common
 {
@@ -35,6 +36,34 @@ namespace Common
                     using (var reader = new StreamReader(responseStream))
                     {
                         return reader.ReadToEnd();
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// HTTP GET请求，返回字符串 【异步】
+        /// </summary>
+        /// <param name="url"> url </param>
+        /// <returns></returns>
+        public static async Task<string> HttpGetStringAsync(string url)
+        {
+            Uri uri = new Uri(url, UriKind.Absolute);
+            HttpWebRequest request = WebRequest.CreateHttp(uri);
+            request.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36";
+            request.Method = "GET";
+            using (var response = await request.GetResponseAsync())
+            {
+                Stream responseStream = response.GetResponseStream();
+                if (responseStream != null)
+                {
+                    using (var reader = new StreamReader(responseStream))
+                    {
+                        return await reader.ReadToEndAsync();
                     }
                 }
                 else

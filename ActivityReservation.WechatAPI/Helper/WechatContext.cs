@@ -18,13 +18,13 @@ namespace ActivityReservation.WechatAPI.Helper
             logger.Debug("微信服务器消息：" + Newtonsoft.Json.JsonConvert.SerializeObject(request));
             securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
             requestMessage = securityHelper.DecryptMsg(request.RequestContent);
-            logger.Debug("收到微信消息：" + requestMessage);
-            responseMessage = WechatMsgHandler.ReturnMessage(requestMessage);
-            logger.Debug("返回消息：" + responseMessage);
+            logger.Debug("收到微信消息：" + requestMessage);            
         }
 
-        public string GetResponse()
+        public async System.Threading.Tasks.Task<string> GetResponseAsync()
         {
+            responseMessage = await WechatMsgHandler.ReturnMessage(requestMessage);
+            logger.Debug("返回消息：" + responseMessage);
             return securityHelper.EncryptMsg(responseMessage);
         }
     }
