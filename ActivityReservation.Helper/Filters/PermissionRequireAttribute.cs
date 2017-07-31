@@ -21,10 +21,10 @@ namespace ActivityReservation.Filters
     {
         
         public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            var user = Helpers.AuthFormService.GetCurrentUser();
+        {            
             if (!filterContext.ActionDescriptor.IsDefined(typeof(NoPermissionRequiredAttribute),true))
             {
+                var user = Helpers.AuthFormService.GetCurrentUser();
                 if (user == null)
                 {
                     filterContext.Result = new RedirectResult("~/Admin/Account/Login");
