@@ -24,7 +24,10 @@ namespace DataAccess
 	foreach (var item in types)
     {
 #>
-	public partial class DAL<#= item #>: BaseDaL<<#= item #>> { }
+	public partial interface IDAL<#= item #>: IBaseDAL<<#= item #>> { }
+
+	public partial class DAL<#= item #>: BaseDAL<<#= item #>>,IDAL<#= item #> { }
+	
 <#		 
     } 
 #>

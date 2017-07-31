@@ -25,7 +25,9 @@ namespace Business
 	foreach (var item in types)
     {
 #>
-	public partial class BLL<#= item #> : BaseBLL<<#= item #>>
+	public partial interface IBLL<#= item #>:IBaseBLL<<#= item #>>{}
+
+	public partial class BLL<#= item #> : BaseBLL<<#= item #>>, IBaseBLL<<#= item #>>
     {
         protected override void InitDbHandler()
         {

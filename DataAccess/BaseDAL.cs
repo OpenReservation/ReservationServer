@@ -8,12 +8,12 @@ using System.Linq.Expressions;
 
 namespace DataAccess
 {
-    public class BaseDaL<T> where T : class
+    public class BaseDAL<T>:IBaseDAL<T> where T : class
     {
         /// <summary>
         /// logger
         /// </summary>
-        protected static Common.LogHelper logger = new Common.LogHelper(typeof(BaseDaL<T>));
+        protected static Common.LogHelper logger = new Common.LogHelper(typeof(BaseDAL<T>));
         /// <summary>
         /// db operator
         /// </summary>
