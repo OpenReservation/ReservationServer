@@ -6,13 +6,8 @@ namespace ActivityReservation.Filters
     /// <summary>
     /// 不需要登录即可访问
     /// </summary>
-    public class NoPermissionRequiredAttribute : ActionFilterAttribute
-    {
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            base.OnActionExecuting(filterContext);
-        }
-    }
+    public class NoPermissionRequiredAttribute : ActionFilterAttribute {}
+
 
     /// <summary>
     /// 需要登录才能进行操作
