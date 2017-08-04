@@ -23,7 +23,7 @@ namespace ActivityReservation.Helpers
     foreach (var item in types)
     {
 #>
-        BLL<#= item #> <#= item #>Helper { get; }
+        IBLL<#= item #> <#= item #>Helper { get; }
 <#		 
     }
 #>        
@@ -35,11 +35,11 @@ namespace ActivityReservation.Helpers
     foreach (var item in types)
     {
 #>
-        private BLL<#= item #> _<#= item #>Helper;        
+        private IBLL<#= item #> _<#= item #>Helper;        
         /// <summary>
         /// <#= item #>Helper
         /// </summary>
-	    public BLL<#= item #> <#= item #>Helper
+	    public IBLL<#= item #> <#= item #>Helper
         {
             get
             {

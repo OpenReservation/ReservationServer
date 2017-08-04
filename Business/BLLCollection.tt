@@ -27,7 +27,7 @@ namespace Business
 #>
 	public partial interface IBLL<#= item #>:IBaseBLL<<#= item #>>{}
 
-	public partial class BLL<#= item #> : BaseBLL<<#= item #>>, IBaseBLL<<#= item #>>
+	public partial class BLL<#= item #> : BaseBLL<<#= item #>>,  IBLL<#= item #>
     {
         protected override void InitDbHandler()
         {

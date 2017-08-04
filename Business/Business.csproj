@@ -49,6 +49,8 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="IBaseBLL.cs" />
+    <Compile Include="IBLLReservation.cs" />
+    <Compile Include="IBLLUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

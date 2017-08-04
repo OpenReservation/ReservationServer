@@ -3,25 +3,25 @@ namespace ActivityReservation.Helpers
 {
     public interface IBusinessHelper
     {
-        BLLUser UserHelper { get; }
-        BLLBlockType BlockTypeHelper { get; }
-        BLLBlockEntity BlockEntityHelper { get; }
-        BLLOperationLog OperationLogHelper { get; }
-        BLLReservation ReservationHelper { get; }
-        BLLReservationPlace ReservationPlaceHelper { get; }
-        BLLSystemSettings SystemSettingsHelper { get; }
-        BLLNotice NoticeHelper { get; }
-        BLLDisabledPeriod DisabledPeriodHelper { get; }
+        IBLLUser UserHelper { get; }
+        IBLLBlockType BlockTypeHelper { get; }
+        IBLLBlockEntity BlockEntityHelper { get; }
+        IBLLOperationLog OperationLogHelper { get; }
+        IBLLReservation ReservationHelper { get; }
+        IBLLReservationPlace ReservationPlaceHelper { get; }
+        IBLLSystemSettings SystemSettingsHelper { get; }
+        IBLLNotice NoticeHelper { get; }
+        IBLLDisabledPeriod DisabledPeriodHelper { get; }
         
     }
 
     public class BusinessHelper : IBusinessHelper
     {
-        private BLLUser _UserHelper;        
+        private IBLLUser _UserHelper;        
         /// <summary>
         /// UserHelper
         /// </summary>
-	    public BLLUser UserHelper
+	    public IBLLUser UserHelper
         {
             get
             {
@@ -33,11 +33,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLBlockType _BlockTypeHelper;        
+        private IBLLBlockType _BlockTypeHelper;        
         /// <summary>
         /// BlockTypeHelper
         /// </summary>
-	    public BLLBlockType BlockTypeHelper
+	    public IBLLBlockType BlockTypeHelper
         {
             get
             {
@@ -49,11 +49,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLBlockEntity _BlockEntityHelper;        
+        private IBLLBlockEntity _BlockEntityHelper;        
         /// <summary>
         /// BlockEntityHelper
         /// </summary>
-	    public BLLBlockEntity BlockEntityHelper
+	    public IBLLBlockEntity BlockEntityHelper
         {
             get
             {
@@ -65,11 +65,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLOperationLog _OperationLogHelper;        
+        private IBLLOperationLog _OperationLogHelper;        
         /// <summary>
         /// OperationLogHelper
         /// </summary>
-	    public BLLOperationLog OperationLogHelper
+	    public IBLLOperationLog OperationLogHelper
         {
             get
             {
@@ -81,11 +81,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLReservation _ReservationHelper;        
+        private IBLLReservation _ReservationHelper;        
         /// <summary>
         /// ReservationHelper
         /// </summary>
-	    public BLLReservation ReservationHelper
+	    public IBLLReservation ReservationHelper
         {
             get
             {
@@ -97,11 +97,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLReservationPlace _ReservationPlaceHelper;        
+        private IBLLReservationPlace _ReservationPlaceHelper;        
         /// <summary>
         /// ReservationPlaceHelper
         /// </summary>
-	    public BLLReservationPlace ReservationPlaceHelper
+	    public IBLLReservationPlace ReservationPlaceHelper
         {
             get
             {
@@ -113,11 +113,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLSystemSettings _SystemSettingsHelper;        
+        private IBLLSystemSettings _SystemSettingsHelper;        
         /// <summary>
         /// SystemSettingsHelper
         /// </summary>
-	    public BLLSystemSettings SystemSettingsHelper
+	    public IBLLSystemSettings SystemSettingsHelper
         {
             get
             {
@@ -129,11 +129,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLNotice _NoticeHelper;        
+        private IBLLNotice _NoticeHelper;        
         /// <summary>
         /// NoticeHelper
         /// </summary>
-	    public BLLNotice NoticeHelper
+	    public IBLLNotice NoticeHelper
         {
             get
             {
@@ -145,11 +145,11 @@ namespace ActivityReservation.Helpers
             }
         }
 
-        private BLLDisabledPeriod _DisabledPeriodHelper;        
+        private IBLLDisabledPeriod _DisabledPeriodHelper;        
         /// <summary>
         /// DisabledPeriodHelper
         /// </summary>
-	    public BLLDisabledPeriod DisabledPeriodHelper
+	    public IBLLDisabledPeriod DisabledPeriodHelper
         {
             get
             {

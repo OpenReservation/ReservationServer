@@ -5,7 +5,7 @@ namespace Business
 {
 	public partial interface IBLLUser:IBaseBLL<User>{}
 
-	public partial class BLLUser : BaseBLL<User>, IBaseBLL<User>
+	public partial class BLLUser : BaseBLL<User>,  IBLLUser
     {
         protected override void InitDbHandler()
         {
@@ -14,7 +14,7 @@ namespace Business
     }
 	public partial interface IBLLBlockType:IBaseBLL<BlockType>{}
 
-	public partial class BLLBlockType : BaseBLL<BlockType>, IBaseBLL<BlockType>
+	public partial class BLLBlockType : BaseBLL<BlockType>,  IBLLBlockType
     {
         protected override void InitDbHandler()
         {
@@ -23,7 +23,7 @@ namespace Business
     }
 	public partial interface IBLLBlockEntity:IBaseBLL<BlockEntity>{}
 
-	public partial class BLLBlockEntity : BaseBLL<BlockEntity>, IBaseBLL<BlockEntity>
+	public partial class BLLBlockEntity : BaseBLL<BlockEntity>,  IBLLBlockEntity
     {
         protected override void InitDbHandler()
         {
@@ -32,7 +32,7 @@ namespace Business
     }
 	public partial interface IBLLOperationLog:IBaseBLL<OperationLog>{}
 
-	public partial class BLLOperationLog : BaseBLL<OperationLog>, IBaseBLL<OperationLog>
+	public partial class BLLOperationLog : BaseBLL<OperationLog>,  IBLLOperationLog
     {
         protected override void InitDbHandler()
         {
@@ -41,7 +41,7 @@ namespace Business
     }
 	public partial interface IBLLReservation:IBaseBLL<Reservation>{}
 
-	public partial class BLLReservation : BaseBLL<Reservation>, IBaseBLL<Reservation>
+	public partial class BLLReservation : BaseBLL<Reservation>,  IBLLReservation
     {
         protected override void InitDbHandler()
         {
@@ -50,7 +50,7 @@ namespace Business
     }
 	public partial interface IBLLReservationPlace:IBaseBLL<ReservationPlace>{}
 
-	public partial class BLLReservationPlace : BaseBLL<ReservationPlace>, IBaseBLL<ReservationPlace>
+	public partial class BLLReservationPlace : BaseBLL<ReservationPlace>,  IBLLReservationPlace
     {
         protected override void InitDbHandler()
         {
@@ -59,7 +59,7 @@ namespace Business
     }
 	public partial interface IBLLSystemSettings:IBaseBLL<SystemSettings>{}
 
-	public partial class BLLSystemSettings : BaseBLL<SystemSettings>, IBaseBLL<SystemSettings>
+	public partial class BLLSystemSettings : BaseBLL<SystemSettings>,  IBLLSystemSettings
     {
         protected override void InitDbHandler()
         {
@@ -68,7 +68,7 @@ namespace Business
     }
 	public partial interface IBLLNotice:IBaseBLL<Notice>{}
 
-	public partial class BLLNotice : BaseBLL<Notice>, IBaseBLL<Notice>
+	public partial class BLLNotice : BaseBLL<Notice>,  IBLLNotice
     {
         protected override void InitDbHandler()
         {
@@ -77,7 +77,7 @@ namespace Business
     }
 	public partial interface IBLLDisabledPeriod:IBaseBLL<DisabledPeriod>{}
 
-	public partial class BLLDisabledPeriod : BaseBLL<DisabledPeriod>, IBaseBLL<DisabledPeriod>
+	public partial class BLLDisabledPeriod : BaseBLL<DisabledPeriod>,  IBLLDisabledPeriod
     {
         protected override void InitDbHandler()
         {

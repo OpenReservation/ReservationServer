@@ -185,7 +185,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                Business.BLLUser userBLL = BusinessHelper.UserHelper;
+                Business.IBLLUser userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
                 Models.User u = userBLL.GetOne(s => s.UserName == accountModel.Username);
                 if (u!=null)
