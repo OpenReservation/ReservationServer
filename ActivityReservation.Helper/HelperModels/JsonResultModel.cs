@@ -20,10 +20,10 @@
 
     public enum JsonResultStatus
     {
-        Success = 200,
-        ProcessFail = 500,
+        Success = 200,                
+        RequestError = 400,
         NoPermission = 403,
-        RequestError = 401,
-        ResourceNotFound = 404
+        ResourceNotFound = 404,
+        ProcessFail = 500,
     }
 }
