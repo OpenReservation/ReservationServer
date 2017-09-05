@@ -1,5 +1,5 @@
 ﻿using Models;
-using MvcSimplePager;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 using System;
 using System.Linq.Expressions;
 using System.Web.Mvc;

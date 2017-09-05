@@ -1,7 +1,7 @@
 ﻿using ActivityReservation.AdminLogic.ViewModels;
 using ActivityReservation.HelperModels;
 using Models;
-using MvcSimplePager;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 using System;
 using System.Linq;
 using System.Linq.Expressions;

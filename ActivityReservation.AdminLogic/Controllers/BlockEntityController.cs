@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using Business;
-using MvcSimplePager;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
