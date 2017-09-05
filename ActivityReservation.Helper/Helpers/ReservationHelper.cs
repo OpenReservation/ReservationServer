@@ -74,7 +74,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         private static bool IsReservationForDateDisabled(DateTime dt)
         {
-            var disabledPeriods = new Business.BLLDisabledPeriod().GetAll(p=>!p.IsDeleted && p.IsActive && (System.Data.Entity.DbFunctions.DiffDays(p.StartDate, dt) >= 0 && System.Data.Entity.DbFunctions.DiffDays(p.StartDate, dt) <= 0));
+            var disabledPeriods = new Business.BLLDisabledPeriod().GetAll(p=>!p.IsDeleted && p.IsActive && (System.Data.Entity.DbFunctions.DiffDays(p.StartDate, dt) >= 0 && System.Data.Entity.DbFunctions.DiffDays(dt,p.EndDate) <= 0));
             if (disabledPeriods != null && disabledPeriods.Any())
             {
                 return true;
