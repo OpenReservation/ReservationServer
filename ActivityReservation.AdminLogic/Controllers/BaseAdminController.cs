@@ -5,7 +5,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 {
     [Authorize]
     [Filters.PermissionRequired]
-#if RELEASE
+#if !DEBUG
     [RequireHttps]
 #endif
     public class BaseAdminController : Controller

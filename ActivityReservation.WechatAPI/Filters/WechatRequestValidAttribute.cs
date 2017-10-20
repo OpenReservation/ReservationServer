@@ -42,12 +42,7 @@ namespace ActivityReservation.WechatAPI.Filters
                 logger.Debug("微信请求签名验证通过");
                 base.OnActionExecuting(filterContext);
             }
-        }
-
-        public override void OnActionExecuted(ActionExecutedContext filterContext)
-        {
-            base.OnActionExecuted(filterContext);
-        }
+        }        
 
         private bool CheckSignature(Model.WechatMsgRequestModel model)
         {

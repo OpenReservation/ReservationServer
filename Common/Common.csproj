@@ -90,6 +90,7 @@
     <Compile Include="RequestHelper.cs" />
     <Compile Include="ChatRobotHelper.cs" />
     <Compile Include="SecurityHelper.cs" />
+    <Compile Include="SentryLogProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

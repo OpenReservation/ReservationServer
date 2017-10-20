@@ -13,7 +13,7 @@ namespace Common
         /// <summary>
         /// 网站根路径
         /// </summary>
-        private static string siteroot = System.Web.Hosting.HostingEnvironment.MapPath("~/");
+        private static readonly string siteroot = System.Web.Hosting.HostingEnvironment.MapPath("~/");
 
         /// <summary>
         /// 获取配置文件中AppSetting节点的相对路径对应的绝对路径
@@ -22,12 +22,8 @@ namespace Common
         /// <returns>绝对路径</returns>
         public static string AppSettingMapPath(string key)
         {
-            if (String.IsNullOrEmpty(siteroot))
-            {
-                siteroot = System.Web.Hosting.HostingEnvironment.MapPath("~/");
-            }
             //拼接路径
-            string path = siteroot + System.Configuration.ConfigurationManager.AppSettings[key].ToString();
+            string path = siteroot + ConfigurationManager.AppSettings[key].ToString();
             return path;
         }
 
@@ -38,10 +34,6 @@ namespace Common
         /// <returns>虚拟路径对应的物理路径</returns>
         public static string MapPath(string virtualPath)
         {
-            if (String.IsNullOrEmpty(siteroot))
-            {
-                siteroot = System.Web.Hosting.HostingEnvironment.MapPath("~/");
-            }
             //拼接路径
             string path = siteroot + virtualPath;
             return path;

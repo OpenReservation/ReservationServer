@@ -90,7 +90,7 @@ namespace Common
         /// <returns>字符串中的值</returns>
         public static string GetContent(string content)
         {
-            return (String.IsNullOrEmpty(content) ? null : content);
+            return String.IsNullOrEmpty(content) ? String.Empty : content;
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Common
         /// <returns></returns>
         public static bool ConvertIntToBool(int value)
         {
-            return (value > 0 ? true : false);
+            return value > 0;
         }        
     }
 }
