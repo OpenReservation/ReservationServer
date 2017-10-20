@@ -52,7 +52,21 @@ namespace ActivityReservation.WechatAPI.Controllers
                 EncodingAESKey = WeChatConsts.AESKey,
                 Token = WeChatConsts.Token,
             };
-            model.RequestContent = Request.ContentType;
+            if (model.RequestContent == null)
+            {
+                using (var reader = new StreamReader(Request.InputStream))
+                {
+                    logger.Debug($"Request.InputStream Length:{Request.InputStream.Length}");
+                    Request.InputStream.Position = 0;
+                    model.RequestContent = reader.ReadToEnd();
+                    logger.Debug($"RequestContent from Request.InputStream:{model.RequestContent}");
+                    if (String.IsNullOrWhiteSpace(model.RequestContent))
+                    {
+                        model.RequestContent = Request.ContentType;
+                        logger.Debug($"RequestContent from Request.ContentType:{model.RequestContent}");
+                    }
+                }
+            }
             if (String.IsNullOrEmpty(model.RequestContent))
             {
                 return Content("RequestContent 为空");

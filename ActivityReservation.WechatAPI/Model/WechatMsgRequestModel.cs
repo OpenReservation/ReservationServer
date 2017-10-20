@@ -19,8 +19,5 @@ namespace ActivityReservation.WechatAPI.Model
         public string Msg_Signature { get; set; }
 
         public string RequestContent { get; set; }
-
-        [Newtonsoft.Json.JsonIgnore]
-        public System.IO.Stream RequestStream { get; set; }
     }
 }
