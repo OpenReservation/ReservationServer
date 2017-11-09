@@ -1,5 +1,6 @@
 ﻿using System;
 using Business;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Helpers
 {
@@ -11,7 +12,7 @@ namespace ActivityReservation.Helpers
         /// <summary>
         /// log4net logger 日志记录助手
         /// </summary>
-        private static Common.LogHelper logger = null;
+        private static LogHelper logger = null;
         /// <summary>
         /// 操作日志助手
         /// </summary>

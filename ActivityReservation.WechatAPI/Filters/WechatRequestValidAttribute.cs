@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Text;
 using System.Web.Mvc;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : FilterAttribute, IAuthorizationFilter
     {
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(WechatRequestValidAttribute));
+        private static LogHelper logger = new LogHelper(typeof(WechatRequestValidAttribute));
         Model.WechatMsgRequestModel model = new Model.WechatMsgRequestModel();
 
         public void OnAuthorization(AuthorizationContext filterContext)
@@ -57,7 +58,7 @@ namespace ActivityReservation.WechatAPI.Filters
             //拼接为一个字符串
             tempStr = String.Join("", array);
             //对字符串进行 SHA1加密
-            tempStr = Common.SecurityHelper.SHA1_Encrypt(tempStr);
+            tempStr = SecurityHelper.SHA1_Encrypt(tempStr);
             //判断signature 是否正确
             if (tempStr.Equals(signature.ToUpperInvariant()))
             {

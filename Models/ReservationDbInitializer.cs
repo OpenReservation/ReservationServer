@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using WeihanLi.Common.Helpers;
 
 namespace Models
 {
-    class ReservationDbInitializer : DropCreateDatabaseIfModelChanges<ReservationDbContext>
+    internal class ReservationDbInitializer : DropCreateDatabaseIfModelChanges<ReservationDbContext>
     {
         public override void InitializeDatabase(ReservationDbContext context)
         {
@@ -37,7 +38,7 @@ namespace Models
             try
             {
                 //user init
-                User u = new User() { UserId = Guid.NewGuid(), UserName = "admin", UserPassword = Common.SecurityHelper.SHA256_Encrypt("Admin888"), IsSuper = true };
+                User u = new User() { UserId = Guid.NewGuid(), UserName = "admin", UserPassword = SecurityHelper.SHA256_Encrypt("Admin888"), IsSuper = true };
                 context.Users.Add(u);
                 //block types init
                 List<BlockType> blockTypes = new List<BlockType>()

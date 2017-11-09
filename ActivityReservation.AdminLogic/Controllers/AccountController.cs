@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using ActivityReservation.Filters;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -117,9 +118,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                 try
                 {
                     //判断原密码是否正确，原密码正确的情况才能修改密码
-                    if (CurrentUser.UserPassword.Equals(Common.SecurityHelper.SHA256_Encrypt(model.OldPassword)))
+                    if (CurrentUser.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
-                        CurrentUser.UserPassword = Common.SecurityHelper.SHA256_Encrypt(model.NewPassword);
+                        CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
                         int count = BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword");
                         if (count == 1)
                         {
@@ -202,7 +203,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     UserId = Guid.NewGuid(),
                     UserName = accountModel.Username,
-                    UserPassword = Common.SecurityHelper.SHA256_Encrypt(accountModel.UserPassword),
+                    UserPassword = SecurityHelper.SHA256_Encrypt(accountModel.UserPassword),
                     UserMail = accountModel.UserEmail
                 };
                 try
@@ -259,7 +260,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 //加密
-                u.UserPassword = Common.SecurityHelper.SHA256_Encrypt(u.UserPassword);
+                u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
                 int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
@@ -328,7 +329,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             Models.User u = CurrentUser;
             if (u!=null)
             {
-                if (u.UserPassword.Equals(Common.SecurityHelper.SHA256_Encrypt(password)))
+                if (u.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(password)))
                 {
                     return Json(true);
                 }

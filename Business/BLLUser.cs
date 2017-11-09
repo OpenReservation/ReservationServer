@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WeihanLi.Common.Helpers;
 
 namespace Business
 {
@@ -16,7 +17,7 @@ namespace Business
         /// <returns></returns>
         public Models.User Login(Models.User u)
         {
-            u.UserPassword = Common.SecurityHelper.SHA256_Encrypt(u.UserPassword);
+            u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
             Models.User user = dbHandler.GetOne(m => m.UserName.Equals(u.UserName) && m.UserPassword.Equals(u.UserPassword));
             return user;
         }

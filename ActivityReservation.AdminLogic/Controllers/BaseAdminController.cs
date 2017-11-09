@@ -1,5 +1,6 @@
 ﻿using ActivityReservation.Helpers;
 using System.Web.Mvc;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -31,7 +32,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <summary>
         /// logger 
         /// </summary>
-        protected static Common.LogHelper logger = new Common.LogHelper(typeof(BaseAdminController));
+        protected static LogHelper logger = new LogHelper(typeof(BaseAdminController));
 
         /// <summary>
         /// 管理员姓名 

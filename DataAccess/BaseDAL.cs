@@ -5,6 +5,7 @@ using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
+using WeihanLi.Common.Helpers;
 
 namespace DataAccess
 {
@@ -13,7 +14,7 @@ namespace DataAccess
         /// <summary>
         /// logger
         /// </summary>
-        protected static Common.LogHelper logger = new Common.LogHelper(typeof(BaseDAL<T>));
+        protected static LogHelper logger = new LogHelper(typeof(BaseDAL<T>));
         /// <summary>
         /// db operator
         /// </summary>

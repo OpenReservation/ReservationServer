@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Filters
 {
@@ -10,7 +11,7 @@ namespace ActivityReservation.Filters
             if (filterContext!=null)
             {
                 HttpException httpEx = new HttpException(null, filterContext.Exception);
-                new Common.LogHelper(typeof(ErrorHandlerAttribute)).Error(httpEx);
+                new LogHelper(typeof(ErrorHandlerAttribute)).Error(httpEx);
                 int errorCode = httpEx.GetHttpCode();
                 ViewResult view = null;
                 switch (errorCode)

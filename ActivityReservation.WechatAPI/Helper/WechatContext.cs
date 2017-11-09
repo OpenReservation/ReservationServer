@@ -1,11 +1,12 @@
 ﻿using Senparc.Weixin.Context;
 using Senparc.Weixin.MP.Entities;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
     public class WechatContext: MessageContext<IRequestMessageBase, IResponseMessageBase>
     {
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(WechatContext));
+        private static LogHelper logger = new LogHelper(typeof(WechatContext));
         private WechatSecurityHelper securityHelper;
         private string requestMessage,responseMessage;
 
@@ -21,9 +22,9 @@ namespace ActivityReservation.WechatAPI.Helper
             logger.Debug("收到微信消息：" + requestMessage);            
         }
 
-        public async System.Threading.Tasks.Task<string> GetResponseAsync()
+        public string GetResponseAsync()
         {
-            responseMessage = await WechatMsgHandler.ReturnMessage(requestMessage);
+            responseMessage = WechatMsgHandler.ReturnMessage(requestMessage);
             logger.Debug("返回消息：" + responseMessage);
             return securityHelper.EncryptMsg(responseMessage);
         }

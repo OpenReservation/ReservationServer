@@ -1,6 +1,7 @@
 ﻿using ActivityReservation.WechatAPI.Helper;
 using Senparc.Weixin.MessageHandlers;
 using System.Web.Mvc;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -10,16 +11,16 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <summary>
         /// logger
         /// </summary>
-        protected static Common.LogHelper logger = new Common.LogHelper(typeof(WechatBaseController));
+        protected static LogHelper logger = new LogHelper(typeof(WechatBaseController));
 
         public WechatResult Wechat(IMessageHandlerDocument messageHandlerDocument)
         {
             return new WechatResult(messageHandlerDocument);
         }
 
-        public async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatContext wechatContext)
+        public async System.Threading.Tasks.Task<ContentResult> Wechat(WechatContext wechatContext)
         {
-            return Content(await wechatContext.GetResponseAsync());
+            return Content(wechatContext.GetResponseAsync());
         }
     }
 }

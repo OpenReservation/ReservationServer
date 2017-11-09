@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -10,7 +11,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <summary>
         /// 日志助手
         /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
+        private static LogHelper logger = new LogHelper(typeof(HomeController));
 
     }
 }

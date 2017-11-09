@@ -12,6 +12,7 @@ using Senparc.Weixin.MP;
 using Senparc.Weixin.Exceptions;
 using Senparc.Weixin.Context;
 using System.Web;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
@@ -24,7 +25,7 @@ namespace ActivityReservation.WechatAPI.Helper
         private static LogHelper logger = new LogHelper(typeof(WechatMsgHandler));
         #region OldMethod
 
-        public static async Task<string> ReturnMessage(string postStr)
+        public static string ReturnMessage(string postStr)
         {
             string responseContent = "";
             try
@@ -42,7 +43,7 @@ namespace ActivityReservation.WechatAPI.Helper
                             break;
 
                         case "text":
-                            responseContent = await TextMsgHandle(xmldoc);//接受文本消息处理
+                            responseContent = TextMsgHandle(xmldoc);//接受文本消息处理
                             break;
 
                         case "image":
@@ -50,7 +51,7 @@ namespace ActivityReservation.WechatAPI.Helper
                             break;
 
                         case "voice":
-                            responseContent = await VoiceMsgHandleAsync(xmldoc);//语音消息
+                            responseContent = VoiceMsgHandleAsync(xmldoc);//语音消息
                             break;
 
                         default:
@@ -65,7 +66,7 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private static async Task<string> VoiceMsgHandleAsync(XmlDocument xmldoc)
+        private static string VoiceMsgHandleAsync(XmlDocument xmldoc)
         {
             string responseContent = "", reply = null;
             XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
@@ -74,7 +75,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = await ChatRobotHelper.GetBotReplyAsync(HttpContext.Current.Server.UrlEncode(Content.InnerText));
+                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -109,7 +110,7 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private static async Task<string> TextMsgHandle(XmlDocument xmldoc)
+        private static string TextMsgHandle(XmlDocument xmldoc)
         {
             string responseContent = "", reply = "";
             XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
@@ -118,7 +119,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = await ChatRobotHelper.GetBotReplyAsync(HttpContext.Current.Server.UrlEncode(Content.InnerText));
+                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
                 if (reply == "error")
                 {
                     reply = Content.InnerText;

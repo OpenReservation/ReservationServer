@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WeihanLi.Common.Helpers;
+using ConvertHelper = WeihanLi.Common.Helpers.ConvertHelper;
 
 namespace Common
 {
@@ -62,12 +64,12 @@ namespace Common
 
         public static T Get<T>(string key, CommandFlags flags = CommandFlags.None)
         {
-            return ConverterHelper.JsonToObject<T>(Get(key, flags));
+            return ConvertHelper.JsonToObject<T>(Get(key, flags));
         }
 
         public static async Task<T> GetAsync<T>(string key, CommandFlags flags = CommandFlags.None)
         {
-            return ConverterHelper.JsonToObject<T>(await GetAsync(key, flags));
+            return ConvertHelper.JsonToObject<T>(await GetAsync(key, flags));
         }
         #endregion
 
@@ -75,7 +77,7 @@ namespace Common
         public static bool Set<T>(string key, T value) =>
             Set(key, value, null);
         public static bool Set<T>(string key, T value, TimeSpan? expiration) =>
-            Set(key, ConverterHelper.ObjectToJson(value), expiration);
+            Set(key, ConvertHelper.ObjectToJson(value), expiration);
 
         public static bool Set(string key, string value) =>
             Set(key, value, null);
@@ -89,7 +91,7 @@ namespace Common
         public static Task<bool> SetAsync<T>(string key, T value) =>
             SetAsync(key, value, null);
         public static Task<bool> SetAsync<T>(string key, T value, TimeSpan? expiration) =>
-            SetAsync(key, ConverterHelper.ObjectToJson(value), expiration);
+            SetAsync(key, ConvertHelper.ObjectToJson(value), expiration);
 
         public static Task<bool> SetAsync(string key, RedisValue value) =>
             SetAsync(key, value, null);

@@ -1,5 +1,4 @@
-﻿using System.Web;
-
+﻿
 namespace Common
 {
     /// <summary>
@@ -12,9 +11,6 @@ namespace Common
         /// </summary>
         /// <returns></returns>
         public static string GetRequestIP()
-        {
-            return HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"] ??
-                   HttpContext.Current.Request.UserHostAddress;
-        }
+            => WeihanLi.Common.Helpers.RequestHelper.GetIP();
     }
 }

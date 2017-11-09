@@ -85,7 +85,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             //logger.Debug("返回的消息：" + Common.ConverterHelper.ObjectToJson(messageHandler.ResponseDocument));
             //return Wechat(messageHandler);
             var context = new WechatContext(model);
-            return await WechatAsync(context);
+            return await Wechat(context);
         }
     }
 }

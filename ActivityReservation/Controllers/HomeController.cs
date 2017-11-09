@@ -8,6 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using Common;
 using System.Threading.Tasks;
+using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
+using RequestHelper = Common.RequestHelper;
 
 namespace ActivityReservation.Controllers
 {
@@ -16,7 +19,7 @@ namespace ActivityReservation.Controllers
         /// <summary>
         /// logger
         /// </summary>
-        private static Common.LogHelper logger = new Common.LogHelper(typeof(HomeController));
+        private static LogHelper logger = new LogHelper(typeof(HomeController));
         public ActionResult Index()
         {
             return View();

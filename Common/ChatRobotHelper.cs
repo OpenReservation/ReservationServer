@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Exceptionless.Json;
+using WeihanLi.Common.Helpers;
 
 namespace Common
 {
@@ -34,10 +36,10 @@ namespace Common
                 var response = HttpHelper.HttpGetString(String.Format(QingyunkeRequestUrlFormat, request));
                 if (!String.IsNullOrEmpty(response))
                 {                 
-                    var res = ConverterHelper.JsonToObject<QingyunkeResponseModel>(response);
-                    if (res!=null && res.result == 0)
+                    var res = ConvertHelper.JsonToObject<QingyunkeResponseModel>(response);
+                    if (res!=null && res.Result == 0)
                     {
-                        return res.content;
+                        return res.Content;
                     }
                 }
             }
@@ -57,13 +59,13 @@ namespace Common
         {
             try
             {
-                var response = await HttpHelper.HttpGetStringAsync(String.Format(QingyunkeRequestUrlFormat, request));
+                var response = HttpHelper.HttpGetString(String.Format(QingyunkeRequestUrlFormat, request));
                 if (!String.IsNullOrEmpty(response))
                 {
-                    var res = ConverterHelper.JsonToObject<QingyunkeResponseModel>(response);
-                    if (res != null && res.result == 0)
+                    var res = ConvertHelper.JsonToObject<QingyunkeResponseModel>(response);
+                    if (res != null && res.Result == 0)
                     {
-                        return res.content;
+                        return res.Content;
                     }
                 }
             }
@@ -80,13 +82,15 @@ namespace Common
         /// <summary>
         /// result
         /// </summary>
-        public int result { get; set; }
+        [JsonProperty("result")]
+        public int Result { get; set; }
 
         private string _content;
         /// <summary>
         /// content
         /// </summary>
-        public string content
+        [JsonProperty("content")]
+        public string Content
         {
             get { return _content; }
             set
