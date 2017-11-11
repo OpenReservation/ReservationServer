@@ -24,6 +24,10 @@ namespace Common
         {
         }
 
+        public void Trace(string msg)
+        {
+        }
+
         public void InfoFormat(string msgFormat, params object[] args)
         {
         }
@@ -38,6 +42,11 @@ namespace Common
 
         public void Debug(string msg, Exception ex)
         {
+        }
+
+        public void Debug(Exception ex)
+        {
+            throw new NotImplementedException();
         }
 
         public void Warn(string msg)

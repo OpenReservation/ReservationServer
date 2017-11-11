@@ -18,6 +18,11 @@ namespace Common
             ExceptionlessClient.Default.SubmitLog(msg, LogLevel.Info);
         }
 
+        public void Trace(string msg)
+        {
+            ExceptionlessClient.Default.SubmitLog(msg, LogLevel.Trace);
+        }
+
         public void InfoFormat(string msgFormat, params object[] args)
             => Info(string.Format(msgFormat, args));
 
@@ -32,6 +37,11 @@ namespace Common
         public void Debug(string msg, Exception ex)
         {
             ExceptionlessClient.Default.SubmitLog(ex.ToString(), msg, LogLevel.Debug);
+        }
+
+        public void Debug(Exception ex)
+        {
+            ExceptionlessClient.Default.SubmitLog(ex.ToString(), ex.Message, LogLevel.Debug);
         }
 
         public void Warn(string msg)

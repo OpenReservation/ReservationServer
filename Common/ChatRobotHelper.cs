@@ -22,7 +22,7 @@ namespace Common
         /// <summary>
         /// logger
         /// </summary>
-        private static LogHelper logger = new LogHelper(typeof(ChatRobotHelper));
+        private static readonly LogHelper Logger = new LogHelper(typeof(ChatRobotHelper));
 
         /// <summary>
         /// 获取机器人回复
@@ -34,18 +34,18 @@ namespace Common
             try
             {
                 var response = HttpHelper.HttpGetString(String.Format(QingyunkeRequestUrlFormat, request));
-                if (!String.IsNullOrEmpty(response))
-                {                 
+                if (!string.IsNullOrEmpty(response))
+                {
                     var res = ConvertHelper.JsonToObject<QingyunkeResponseModel>(response);
-                    if (res!=null && res.Result == 0)
+                    if (res != null && res.Result == 0)
                     {
                         return res.Content;
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return "error";
         }
@@ -59,8 +59,8 @@ namespace Common
         {
             try
             {
-                var response = HttpHelper.HttpGetString(String.Format(QingyunkeRequestUrlFormat, request));
-                if (!String.IsNullOrEmpty(response))
+                var response = await HttpHelper.HttpGetStringAsync(String.Format(QingyunkeRequestUrlFormat, request));
+                if (!string.IsNullOrEmpty(response))
                 {
                     var res = ConvertHelper.JsonToObject<QingyunkeResponseModel>(response);
                     if (res != null && res.Result == 0)
@@ -71,7 +71,7 @@ namespace Common
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return "error";
         }
@@ -92,12 +92,12 @@ namespace Common
         [JsonProperty("content")]
         public string Content
         {
-            get { return _content; }
+            get => _content;
             set
             {
-                if (!String.IsNullOrEmpty(value))
+                if (!string.IsNullOrEmpty(value))
                 {
-                    _content = value.Replace("{br}","\n");
+                    _content = value.Replace("{br}", "\n");
                 }
             }
         }
