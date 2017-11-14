@@ -6,10 +6,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
-    public class HomeController : BaseAdminController
+    public class HomeController : AdminBaseController
     {
         private static string siteUrl = "";
         private string SiteUrl

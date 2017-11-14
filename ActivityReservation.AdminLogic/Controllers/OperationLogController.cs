@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 操作日志
     /// </summary>
-    public class OperationLogController : BaseAdminController
+    public class OperationLogController : AdminBaseController
     {
         /// <summary>
         /// 操作日志首页
@@ -58,7 +59,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error("ex");
+                Logger.Error("ex");
                 throw ex;
             }
         }

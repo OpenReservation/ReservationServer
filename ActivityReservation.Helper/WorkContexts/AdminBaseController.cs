@@ -1,17 +1,22 @@
-﻿using ActivityReservation.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using ActivityReservation.Helpers;
 using WeihanLi.Common.Helpers;
 
-namespace ActivityReservation.AdminLogic.Controllers
+namespace ActivityReservation.WorkContexts
 {
     [Authorize]
     [Filters.PermissionRequired]
 #if !DEBUG
     [RequireHttps]
 #endif
-    public class BaseAdminController : Controller
+    public class AdminBaseController:Controller
     {
-#region BusinessHelper 提供对Business层的访问对象
+        #region BusinessHelper 提供对Business层的访问对象
 
         private IBusinessHelper businessHelper;
 
@@ -27,12 +32,12 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
         }
 
-#endregion BusinessHelper 提供对Business层的访问对象
+        #endregion BusinessHelper 提供对Business层的访问对象
 
         /// <summary>
         /// logger 
         /// </summary>
-        protected static LogHelper logger = new LogHelper(typeof(BaseAdminController));
+        protected static LogHelper Logger = new LogHelper(typeof(AdminBaseController));
 
         /// <summary>
         /// 管理员姓名 
@@ -52,7 +57,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
         }
 
-        private Models.User currentUser;
+        private Models.User _currentUser;
         /// <summary>
         /// 当前用户 
         /// </summary>
@@ -60,11 +65,11 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             get
             {
-                if(currentUser == null)
+                if (_currentUser == null)
                 {
-                    currentUser = Helpers.AuthFormService.GetCurrentUser();
+                    _currentUser = Helpers.AuthFormService.GetCurrentUser();
                 }
-                return currentUser;
+                return _currentUser;
             }
         }
     }

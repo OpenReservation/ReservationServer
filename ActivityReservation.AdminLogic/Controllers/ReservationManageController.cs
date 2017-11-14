@@ -4,13 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 预约管理
     /// </summary>
-    public class ReservationManageController : BaseAdminController
+    public class ReservationManageController : AdminBaseController
     {
         public ActionResult Index()
         {
@@ -103,7 +104,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 result.Status = HelperModels.JsonResultStatus.ProcessFail;
                 result.Msg = ex.Message;
             }
@@ -179,7 +180,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error("更新预约状态失败" , ex);
+                Logger.Error("更新预约状态失败" , ex);
             }
             return Json(false);
         }
@@ -207,7 +208,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error("删除预约记录出错" , ex);
+                Logger.Error("删除预约记录出错" , ex);
             }
             return Json(false);
         }

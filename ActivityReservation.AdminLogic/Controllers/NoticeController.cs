@@ -7,13 +7,14 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 公告管理
     /// </summary>
-    public class NoticeController:BaseAdminController
+    public class NoticeController: AdminBaseController
     {
         public ActionResult Index()
         {
@@ -40,7 +41,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 throw;
             }
         }
@@ -112,7 +113,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 throw;
             }
         }
@@ -145,7 +146,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 throw;
             }
         }

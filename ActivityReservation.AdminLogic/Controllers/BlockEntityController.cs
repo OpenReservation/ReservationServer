@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.WorkContexts;
 using Business;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 
@@ -13,7 +14,7 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 黑名单
     /// </summary>
-    public class BlockEntityController : BaseAdminController
+    public class BlockEntityController : AdminBaseController
     {
 
         // GET: Admin/BlockEntity
@@ -61,7 +62,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 throw;
             }
         }
@@ -94,7 +95,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    Logger.Error(ex);
                 }
                 return Json(false);
             }
@@ -132,7 +133,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return Json(false);
         }
@@ -157,7 +158,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return Json(false);
         }

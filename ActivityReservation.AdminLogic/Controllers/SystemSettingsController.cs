@@ -6,13 +6,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 系统设置
     /// </summary>
-    public class SystemSettingsController : BaseAdminController
+    public class SystemSettingsController : AdminBaseController
     {
         /// <summary>
         /// 系统设置首页
@@ -62,7 +63,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return Json(false);
         }
@@ -86,7 +87,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return Json(false);
         }

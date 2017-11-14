@@ -4,6 +4,7 @@ using System;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using ActivityReservation.Helpers;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -11,7 +12,7 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// 预约活动室管理 
     /// </summary>
 
-    public class ReservationPlaceController : BaseAdminController
+    public class ReservationPlaceController : AdminBaseController
     {
         /// <summary>
         /// 活动室管理首页 
@@ -73,7 +74,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 return Json("更新活动室名称失败，发生异常：" + ex.Message);
             }
         }
@@ -105,7 +106,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    Logger.Error(ex);
                     return Json("添加失败，出现异常："+ex.Message);
                 }
             }
@@ -139,7 +140,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 return Json("删除活动室失败，发生异常："+ex.Message);
             };
         }
@@ -170,7 +171,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
                 return Json("修改活动室状态失败，发生异常：" + ex.Message);
             };
         }

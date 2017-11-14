@@ -6,11 +6,12 @@ using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using ActivityReservation.Filters;
+using ActivityReservation.WorkContexts;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
-    public class AccountController : BaseAdminController
+    public class AccountController : AdminBaseController
     {
         /// <summary>
         /// 管理员登录页面
@@ -95,6 +96,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult Logout()
         {
+            Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
             Helpers.AuthFormService.Logout();
             //redirect to login page
@@ -121,9 +123,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (CurrentUser.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        int count = BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword");
-                        if (count == 1)
+                        if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword")>0)
                         {
+                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",Module.Account,Username);
+
+                            Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+
                             //密码修改成功，需要重新登录
                             AuthFormService.Logout();
                             return Json(true);
@@ -136,7 +141,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    Logger.Error(ex);
                 }                
             }            
             return Json(false);
@@ -163,13 +168,14 @@ namespace ActivityReservation.AdminLogic.Controllers
                     int count = BusinessHelper.UserHelper.Update(u, "UserMail");
                     if (count == 1)
                     {
+                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}", Module.Account, Username);
                         Helpers.AuthFormService.SetCurrentUser(u);
                         return Json(true);
                     }
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    Logger.Error(ex);
                 }
             }            
             return Json(false);
@@ -217,7 +223,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(ex);
+                    Logger.Error(ex);
                 }
             }
             return Json(false);
@@ -243,7 +249,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return Json(false);
         }
@@ -270,7 +276,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                Logger.Error(ex);
             }
             return Json(false);
         }

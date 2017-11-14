@@ -6,13 +6,14 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.WorkContexts;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 禁用预约时间段管理 
     /// </summary>
-    public class DisabledPeriodController : BaseAdminController
+    public class DisabledPeriodController : AdminBaseController
     {
         /// <summary>
         /// 禁用预约时间段首页 
