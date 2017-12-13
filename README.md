@@ -9,9 +9,9 @@
 
 原本是用 ASP.NET WebForm 写的，最近打算用 ASP.NET MVC 重写一下并增加一些功能。
 
-演示地址：<http://reservation.weihanli.xyz>
+演示地址：<https://reservation.weihanli.xyz>
 
-后台登录地址： <http://reservation.weihanli.xyz/Admin/Account/Login>
+后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
 
 后台登录账号：管理员用户名:admin ,密码:Admin888
 
@@ -34,8 +34,9 @@
 
 ## Todo
 
-1. 微信小程序预约
-2. 微信公共号预约
+- [ ] 预约时间段修改，与所要预约的活动室进行关联
+- [ ] 微信小程序预约
+- [ ] 微信公共号预约
 
 
 ## Summary
