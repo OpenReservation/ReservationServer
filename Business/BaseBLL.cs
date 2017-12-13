@@ -6,7 +6,7 @@ namespace Business
 {
     public abstract class BaseBLL<T>:IBaseBLL<T> where T : class
     {
-        protected DataAccess.BaseDAL<T> dbHandler = null;
+        protected DataAccess.IBaseDAL<T> dbHandler = null;
 
         public BaseBLL()
         {
@@ -53,12 +53,7 @@ namespace Business
         public T Fetch(Expression<Func<T, bool>> whereLambda)
         {
             return dbHandler.Fetch(whereLambda);
-        }
-
-        public T GetOne(Expression<Func<T, bool>> whereLambda)
-        {            
-            return dbHandler.GetOne(whereLambda);
-        }
+        }        
 
         public List<T> GetAll()
         {

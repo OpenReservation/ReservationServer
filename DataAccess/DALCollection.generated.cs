@@ -1,4 +1,5 @@
 ﻿ 
+using Autofac;
 using Models;
 namespace DataAccess
 {
@@ -38,4 +39,21 @@ namespace DataAccess
 
 	public partial class DALDisabledPeriod: BaseDAL<DisabledPeriod>,IDALDisabledPeriod { }
 	
+
+    // DataAccessModule
+    public class DataAccessModule : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+                builder.RegisterType<DALUser>().As<IDALUser>();
+                builder.RegisterType<DALBlockType>().As<IDALBlockType>();
+                builder.RegisterType<DALBlockEntity>().As<IDALBlockEntity>();
+                builder.RegisterType<DALOperationLog>().As<IDALOperationLog>();
+                builder.RegisterType<DALReservation>().As<IDALReservation>();
+                builder.RegisterType<DALReservationPlace>().As<IDALReservationPlace>();
+                builder.RegisterType<DALSystemSettings>().As<IDALSystemSettings>();
+                builder.RegisterType<DALNotice>().As<IDALNotice>();
+                builder.RegisterType<DALDisabledPeriod>().As<IDALDisabledPeriod>();
+        }
+    }
 }

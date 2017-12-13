@@ -116,7 +116,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         public JsonResult UpdatePeriodStatus(Guid periodId, int status)
         {
             JsonResultModel<bool> result = new JsonResultModel<bool>();
-            var period = BusinessHelper.DisabledPeriodHelper.GetOne(p => p.PeriodId == periodId);
+            var period = BusinessHelper.DisabledPeriodHelper.Fetch(p => p.PeriodId == periodId);
             if (period == null)
             {
                 result.Msg = "时间段不存在，请求参数异常";

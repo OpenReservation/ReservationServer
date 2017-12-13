@@ -56,7 +56,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.SystemSettingsHelper.Add(setting);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue), Module.Settings, Username);
+                    OperLogHelper.AddOperLog(String.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue), OperLogModule.Settings, Username);
                     HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
                 }
@@ -80,7 +80,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.SystemSettingsHelper.Update(setting, "SettingValue");
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId,setting.SettingName, setting.SettingValue), Module.Settings, Username);
+                    OperLogHelper.AddOperLog(String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId,setting.SettingName, setting.SettingValue), OperLogModule.Settings, Username);
                     HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
                 }

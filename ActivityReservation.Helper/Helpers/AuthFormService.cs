@@ -66,7 +66,7 @@ namespace ActivityReservation.Helpers
                 string cookieValue = cookie.Value;
                 var ticket = FormsAuthentication.Decrypt(cookieValue);
                 string loginName = ticket.Name.Substring(0,ticket.Name.IndexOf(EncryptString));
-                Models.User user= new Business.BLLUser().GetOne(u => u.UserName == loginName);
+                Models.User user= new Business.BLLUser().Fetch(u => u.UserName == loginName);
                 if (user != null)
                 {
                     Common.RedisHelper.Set<Models.User>(AuthCacheKey, user);

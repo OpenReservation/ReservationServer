@@ -172,7 +172,7 @@ namespace ActivityReservation.Controllers
         [HttpPost]
         public ActionResult Check(Guid id)
         {
-            Models.Reservation r = new Business.BLLReservation().GetOne(re => re.ReservationId == id);
+            Models.Reservation r = new Business.BLLReservation().Fetch(re => re.ReservationId == id);
             return View(r);
         }
 
@@ -224,7 +224,7 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var notice = new Business.BLLNotice().GetOne(n => n.NoticePath == path);
+                var notice = new Business.BLLNotice().Fetch(n => n.NoticePath == path);
                 if (notice != null)
                 {
                     return View(notice);

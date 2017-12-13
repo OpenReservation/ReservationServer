@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using Business;
 
 namespace ActivityReservation
 {
@@ -9,7 +11,7 @@ namespace ActivityReservation
     {
         public static void RegisterSystemSettings()
         {
-            List<Models.SystemSettings> settings = new Business.BLLSystemSettings().GetAll();
+            var settings = DependencyResolver.Current.GetService<IBLLSystemSettings>().GetAll();
             foreach (Models.SystemSettings item in settings)
             {
                 HttpContext.Current.Application[item.SettingName] = item.SettingValue;

@@ -1,5 +1,6 @@
 ﻿using System;
 using Business;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Helpers
@@ -13,25 +14,6 @@ namespace ActivityReservation.Helpers
         /// log4net logger 日志记录助手
         /// </summary>
         private static LogHelper logger = null;
-        /// <summary>
-        /// 操作日志助手
-        /// </summary>
-        private static BLLOperationLog handler = null;
-
-        /// <summary>
-        /// 操作日志助手
-        /// </summary>
-        private static BLLOperationLog Handler
-        {
-            get
-            {
-                if (handler == null)
-                {
-                    handler = new BLLOperationLog();
-                }
-                return handler;
-            }
-        }
 
         /// <summary>
         /// 添加操作日志
@@ -53,7 +35,7 @@ namespace ActivityReservation.Helpers
                     OperBy = operBy,
                     OperTime = DateTime.Now
                 };
-                return Handler.Add(log) == 1;
+                return DependencyResolver.Current.GetService<IBLLOperationLog>().Add(log) == 1;
             }
             catch (Exception ex)
             {
@@ -69,7 +51,7 @@ namespace ActivityReservation.Helpers
         /// <param name="logModule">日志模块</param>
         /// <param name="operBy">操作人</param>
         /// <returns>是否添加成功</returns>
-        public static bool AddOperLog(string logContent, Module logModule, string operBy)
+        public static bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
         {
             return AddOperLog(logContent, GetModuleName(logModule), operBy);
         }
@@ -79,32 +61,32 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="module"></param>
         /// <returns></returns>
-        public static string GetModuleName(Module module)
+        public static string GetModuleName(OperLogModule module)
         {
             string moduleName = "预约管理";
             switch (module) 
             {
-                case Module.Reservation:
+                case OperLogModule.Reservation:
                     break;
-                case Module.BlockEntity:
+                case OperLogModule.BlockEntity:
                     moduleName = "黑名单管理";
                     break;
-                case Module.Notice:
+                case OperLogModule.Notice:
                     moduleName = "公告管理";
                     break;
-                case Module.Account:
+                case OperLogModule.Account:
                     moduleName = "账户管理";
                     break;
-                case Module.Settings:
+                case OperLogModule.Settings:
                     moduleName = "设置管理";
                     break;
-                case Module.ReservationPlace:
+                case OperLogModule.ReservationPlace:
                     moduleName = "活动室管理";
                     break;
-                case Module.DisabledPeriod:
+                case OperLogModule.DisabledPeriod:
                     moduleName = "禁用时间段管理";
                     break;
-                case Module.Wechat:
+                case OperLogModule.Wechat:
                     moduleName = "微信";
                     break;
                 default:
@@ -117,7 +99,7 @@ namespace ActivityReservation.Helpers
     /// <summary>
     /// 操作模块分类
     /// </summary>
-    public enum Module
+    public enum OperLogModule
     {
         Reservation = 0,//预约
         BlockEntity = 1,//黑名单

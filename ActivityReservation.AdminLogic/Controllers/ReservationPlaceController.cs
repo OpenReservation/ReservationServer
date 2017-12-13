@@ -69,7 +69,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 BusinessHelper.ReservationPlaceHelper.Update(new ReservationPlace() {PlaceId = placeId,PlaceName = newName,UpdateBy = Username,UpdateTime = DateTime.Now},"PlaceName", "UpdateBy", "UpdateTime");
-                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}", Module.ReservationPlace, Username);
+                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}", OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
             catch (Exception ex)
@@ -101,7 +101,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     BusinessHelper.ReservationPlaceHelper.Add(place);
                     //记录日志
-                    OperLogHelper.AddOperLog(String.Format("新增活动室：{0}",placeName), Module.ReservationPlace, place.UpdateBy);
+                    OperLogHelper.AddOperLog(String.Format("新增活动室：{0}",placeName), OperLogModule.ReservationPlace, place.UpdateBy);
                     return Json("");
                 }
                 catch (Exception ex)
@@ -135,7 +135,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 BusinessHelper.ReservationPlaceHelper.Update(new ReservationPlace() { PlaceId = placeId,IsDel = true,UpdateBy = Username},"IsDel", "UpdateBy", "UpdateTime");
-                OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", Module.ReservationPlace, Username);
+                OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
             catch (Exception ex)
@@ -166,7 +166,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 bool bStatus = (status > 0);
                 BusinessHelper.ReservationPlaceHelper.Update(new ReservationPlace() { PlaceId = placeId,UpdateBy = Username, IsActive = bStatus }, "IsActive","UpdateBy","UpdateTime");
-                OperLogHelper.AddOperLog(String.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(),placeName,(status > 0)?"启用":"禁用"), Module.ReservationPlace, Username);
+                OperLogHelper.AddOperLog(String.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(),placeName,(status > 0)?"启用":"禁用"), OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
             catch (Exception ex)

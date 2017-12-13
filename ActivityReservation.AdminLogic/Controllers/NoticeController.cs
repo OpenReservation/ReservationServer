@@ -103,7 +103,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int c = BusinessHelper.NoticeHelper.Add(n);
                 if (c == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("{0}添加新公告，{1}", Username, n.NoticeTitle), Module.Notice, Username);
+                    OperLogHelper.AddOperLog(String.Format("{0}添加新公告，{1}", Username, n.NoticeTitle), OperLogModule.Notice, Username);
                     return RedirectToAction("Index");
                 }
                 else

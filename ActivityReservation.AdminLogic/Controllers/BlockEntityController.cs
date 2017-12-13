@@ -16,7 +16,6 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// </summary>
     public class BlockEntityController : AdminBaseController
     {
-
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
@@ -32,7 +31,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             //默认查询全部
-            Expression<Func<Models.BlockEntity, bool>> whereLambda = (b => 1==1);
+            Expression<Func<Models.BlockEntity, bool>> whereLambda = (b => true);
             //判断查询条件
             if (!String.IsNullOrEmpty(search.SearchItem1) && !("0".Equals(search.SearchItem1)))
             {
@@ -43,11 +42,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    whereLambda = (b => b.BlockTypeId == id);                    
+                    whereLambda = (b => b.BlockTypeId == id);
                 }
             }
             else
-            {                
+            {
                 if (!String.IsNullOrEmpty(search.SearchItem2))
                 {
                     whereLambda = (b => b.BlockValue.Contains(search.SearchItem2));
@@ -57,7 +56,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 List<Models.BlockEntity> blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, b => b.BlockTime, false);
-                IPagedListModel<Models.BlockEntity> dataList = blockList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
+                IPagedListModel<Models.BlockEntity> dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
                 return View(dataList);
             }
             catch (Exception ex)
@@ -72,7 +71,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="model">黑名单model</param>
         /// <returns></returns>
-        public ActionResult AddEntity(Guid typeId,string blockValue)
+        public ActionResult AddEntity(Guid typeId, string blockValue)
         {
             if (ModelState.IsValid)
             {
@@ -89,7 +88,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count == 1)
                     {
                         //记录日志
-                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), Module.BlockEntity, Username);
+                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity, Username);
                         return Json(true);
                     }
                 }
@@ -124,10 +123,10 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                int count = BusinessHelper.BlockEntityHelper.Update(entity,"IsActive");
-                if (count>0)
+                int count = BusinessHelper.BlockEntityHelper.Update(entity, "IsActive");
+                if (count > 0)
                 {
-                    OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive?"启用":"禁用"), Module.BlockEntity, Username);
+                    OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive ? "启用" : "禁用"), OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
             }
@@ -144,7 +143,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="entityId">黑名单数据id</param>
         /// <param name="entityName">黑名单数据名称</param>
         /// <returns></returns>
-        public ActionResult DeleteEntity(Guid entityId,string entityName)
+        public ActionResult DeleteEntity(Guid entityId, string entityName)
         {
             try
             {
@@ -152,7 +151,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (c == 1)
                 {
                     //记录日志
-                    OperLogHelper.AddOperLog(String.Format("删除黑名单 {0}", entityName), Module.BlockEntity,Username);
+                    OperLogHelper.AddOperLog(String.Format("删除黑名单 {0}", entityName), OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
             }

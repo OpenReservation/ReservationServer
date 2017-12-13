@@ -125,7 +125,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
                         if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword")>0)
                         {
-                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",Module.Account,Username);
+                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",OperLogModule.Account,Username);
 
                             Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
 
@@ -168,7 +168,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     int count = BusinessHelper.UserHelper.Update(u, "UserMail");
                     if (count == 1)
                     {
-                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}", Module.Account, Username);
+                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}", OperLogModule.Account, Username);
                         Helpers.AuthFormService.SetCurrentUser(u);
                         return Json(true);
                     }
@@ -194,13 +194,13 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 Business.IBLLUser userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
-                Models.User u = userBLL.GetOne(s => s.UserName == accountModel.Username);
+                Models.User u = userBLL.Fetch(s => s.UserName == accountModel.Username);
                 if (u!=null)
                 {
                     return Json(false);
                 }
                 //验证用户邮箱唯一
-                u = userBLL.GetOne(s => s.UserMail == accountModel.UserEmail);
+                u = userBLL.Fetch(s => s.UserMail == accountModel.UserEmail);
                 if (u != null)
                 {
                     return Json(false);
@@ -217,7 +217,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     int count = userBLL.Add(u);
                     if (count == 1)
                     {
-                        OperLogHelper.AddOperLog(String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail), Module.Account, Username);
+                        OperLogHelper.AddOperLog(String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail), OperLogModule.Account, Username);
                         return Json(true);
                     }
                 }
@@ -243,7 +243,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.UserHelper.Delete(u);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), Module.Account,Username);
+                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), OperLogModule.Account,Username);
                     return Json(true);
                 }
             }
@@ -270,7 +270,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码",u.UserName), Module.Account, Username);
+                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码",u.UserName), OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -294,7 +294,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [NoPermissionRequired]
         public ActionResult ValidUsername(string userName)
         {
-            Models.User u = BusinessHelper.UserHelper.GetOne(s=>s.UserName == userName);
+            Models.User u = BusinessHelper.UserHelper.Fetch(s=>s.UserName == userName);
             if (u == null)
             {
                 return Json(true);
@@ -313,7 +313,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ValidUserMail(string userMail)
         {
-            Models.User u = BusinessHelper.UserHelper.GetOne(s => s.UserMail == userMail);
+            Models.User u = BusinessHelper.UserHelper.Fetch(s => s.UserMail == userMail);
             if (u == null)
             {
                 return Json(true);

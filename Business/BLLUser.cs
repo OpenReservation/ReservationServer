@@ -18,7 +18,7 @@ namespace Business
         public Models.User Login(Models.User u)
         {
             u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
-            Models.User user = dbHandler.GetOne(m => m.UserName.Equals(u.UserName) && m.UserPassword.Equals(u.UserPassword));
+            Models.User user = dbHandler.Fetch(m => m.UserName.Equals(u.UserName) && m.UserPassword.Equals(u.UserPassword));
             return user;
         }
     }

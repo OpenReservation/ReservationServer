@@ -95,7 +95,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         }
                     }
                     BusinessHelper.ReservationHelper.Add(reservation);
-                    OperLogHelper.AddOperLog(String.Format("管理员 {0} 后台预约 {1}：{2}" , Username , reservation.ReservationId , reservation.ReservationActivityContent) , Module.Reservation , Username);
+                    OperLogHelper.AddOperLog(String.Format("管理员 {0} 后台预约 {1}：{2}" , Username , reservation.ReservationId , reservation.ReservationActivityContent) , OperLogModule.Reservation , Username);
                     result.Data = true;
                     result.Msg = "预约成功";
                     result.Status = HelperModels.JsonResultStatus.Success;
@@ -157,7 +157,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                Models.Reservation reservation = BusinessHelper.ReservationHelper.GetOne(r => r.ReservationId == reservationId);
+                Models.Reservation reservation = BusinessHelper.ReservationHelper.Fetch(r => r.ReservationId == reservationId);
                 if (reservation == null)
                 {
                     return Json(false);
@@ -174,7 +174,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count == 1)
                 {
                     //记录操作日志
-                    OperLogHelper.AddOperLog(String.Format("更新 {0}:{1} 预约状态" , reservationId , reservation.ReservationActivityContent) , Module.Reservation , Username);
+                    OperLogHelper.AddOperLog(String.Format("更新 {0}:{1} 预约状态" , reservationId , reservation.ReservationActivityContent) , OperLogModule.Reservation , Username);
                     return Json(true);
                 }
             }
@@ -194,7 +194,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                Models.Reservation reservation = BusinessHelper.ReservationHelper.GetOne(r => r.ReservationId == id);
+                Models.Reservation reservation = BusinessHelper.ReservationHelper.Fetch(r => r.ReservationId == id);
                 if (reservation == null)
                 {
                     return Json(false);
@@ -202,7 +202,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.ReservationHelper.Delete(reservation);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("删除预约记录 {0}:{1}" , id , reservation.ReservationActivityContent) , Module.Reservation , Username);
+                    OperLogHelper.AddOperLog(String.Format("删除预约记录 {0}:{1}" , id , reservation.ReservationActivityContent) , OperLogModule.Reservation , Username);
                     return Json(true);
                 }
             }

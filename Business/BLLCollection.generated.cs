@@ -1,6 +1,9 @@
 ﻿ 
+using Autofac;
 using DataAccess;
 using Models;
+using WeihanLi.Common;
+
 namespace Business
 {
 	public partial interface IBLLUser:IBaseBLL<User>{}
@@ -9,7 +12,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALUser();
+            dbHandler = DependencyResolver.Current.GetService<IDALUser>();
         }
     }
 	public partial interface IBLLBlockType:IBaseBLL<BlockType>{}
@@ -18,7 +21,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALBlockType();
+            dbHandler = DependencyResolver.Current.GetService<IDALBlockType>();
         }
     }
 	public partial interface IBLLBlockEntity:IBaseBLL<BlockEntity>{}
@@ -27,7 +30,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALBlockEntity();
+            dbHandler = DependencyResolver.Current.GetService<IDALBlockEntity>();
         }
     }
 	public partial interface IBLLOperationLog:IBaseBLL<OperationLog>{}
@@ -36,7 +39,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALOperationLog();
+            dbHandler = DependencyResolver.Current.GetService<IDALOperationLog>();
         }
     }
 	public partial interface IBLLReservation:IBaseBLL<Reservation>{}
@@ -45,7 +48,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALReservation();
+            dbHandler = DependencyResolver.Current.GetService<IDALReservation>();
         }
     }
 	public partial interface IBLLReservationPlace:IBaseBLL<ReservationPlace>{}
@@ -54,7 +57,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALReservationPlace();
+            dbHandler = DependencyResolver.Current.GetService<IDALReservationPlace>();
         }
     }
 	public partial interface IBLLSystemSettings:IBaseBLL<SystemSettings>{}
@@ -63,7 +66,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALSystemSettings();
+            dbHandler = DependencyResolver.Current.GetService<IDALSystemSettings>();
         }
     }
 	public partial interface IBLLNotice:IBaseBLL<Notice>{}
@@ -72,7 +75,7 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALNotice();
+            dbHandler = DependencyResolver.Current.GetService<IDALNotice>();
         }
     }
 	public partial interface IBLLDisabledPeriod:IBaseBLL<DisabledPeriod>{}
@@ -81,7 +84,23 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DALDisabledPeriod();
+            dbHandler = DependencyResolver.Current.GetService<IDALDisabledPeriod>();
+        }
+    }
+
+    public class BusinessModule : Autofac.Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+                builder.RegisterType<BLLUser>().As<IBLLUser>();
+                builder.RegisterType<BLLBlockType>().As<IBLLBlockType>();
+                builder.RegisterType<BLLBlockEntity>().As<IBLLBlockEntity>();
+                builder.RegisterType<BLLOperationLog>().As<IBLLOperationLog>();
+                builder.RegisterType<BLLReservation>().As<IBLLReservation>();
+                builder.RegisterType<BLLReservationPlace>().As<IBLLReservationPlace>();
+                builder.RegisterType<BLLSystemSettings>().As<IBLLSystemSettings>();
+                builder.RegisterType<BLLNotice>().As<IBLLNotice>();
+                builder.RegisterType<BLLDisabledPeriod>().As<IBLLDisabledPeriod>();
         }
     }
 }

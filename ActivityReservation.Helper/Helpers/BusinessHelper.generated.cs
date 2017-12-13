@@ -1,4 +1,7 @@
-﻿using Business;
+﻿using Autofac;
+using Business;
+using System.Web.Mvc;
+
 namespace ActivityReservation.Helpers
 {
     public interface IBusinessHelper
@@ -15,151 +18,78 @@ namespace ActivityReservation.Helpers
         
     }
 
+    public class BusinessHelperModule : Module
+	{
+		protected override void Load(ContainerBuilder builder)
+		{
+			builder.RegisterType<BusinessHelper>().As<IBusinessHelper>().SingleInstance();
+		}
+	}        
+
     public class BusinessHelper : IBusinessHelper
     {
-        private IBLLUser _UserHelper;        
+      
         /// <summary>
         /// UserHelper
         /// </summary>
 	    public IBLLUser UserHelper
-        {
-            get
-            {
-                if(_UserHelper == null)
-                {
-                    _UserHelper = new BLLUser();
-                }
-                return _UserHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLUser>();
 
-        private IBLLBlockType _BlockTypeHelper;        
+      
         /// <summary>
         /// BlockTypeHelper
         /// </summary>
 	    public IBLLBlockType BlockTypeHelper
-        {
-            get
-            {
-                if(_BlockTypeHelper == null)
-                {
-                    _BlockTypeHelper = new BLLBlockType();
-                }
-                return _BlockTypeHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLBlockType>();
 
-        private IBLLBlockEntity _BlockEntityHelper;        
+      
         /// <summary>
         /// BlockEntityHelper
         /// </summary>
 	    public IBLLBlockEntity BlockEntityHelper
-        {
-            get
-            {
-                if(_BlockEntityHelper == null)
-                {
-                    _BlockEntityHelper = new BLLBlockEntity();
-                }
-                return _BlockEntityHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLBlockEntity>();
 
-        private IBLLOperationLog _OperationLogHelper;        
+      
         /// <summary>
         /// OperationLogHelper
         /// </summary>
 	    public IBLLOperationLog OperationLogHelper
-        {
-            get
-            {
-                if(_OperationLogHelper == null)
-                {
-                    _OperationLogHelper = new BLLOperationLog();
-                }
-                return _OperationLogHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLOperationLog>();
 
-        private IBLLReservation _ReservationHelper;        
+      
         /// <summary>
         /// ReservationHelper
         /// </summary>
 	    public IBLLReservation ReservationHelper
-        {
-            get
-            {
-                if(_ReservationHelper == null)
-                {
-                    _ReservationHelper = new BLLReservation();
-                }
-                return _ReservationHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLReservation>();
 
-        private IBLLReservationPlace _ReservationPlaceHelper;        
+      
         /// <summary>
         /// ReservationPlaceHelper
         /// </summary>
 	    public IBLLReservationPlace ReservationPlaceHelper
-        {
-            get
-            {
-                if(_ReservationPlaceHelper == null)
-                {
-                    _ReservationPlaceHelper = new BLLReservationPlace();
-                }
-                return _ReservationPlaceHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLReservationPlace>();
 
-        private IBLLSystemSettings _SystemSettingsHelper;        
+      
         /// <summary>
         /// SystemSettingsHelper
         /// </summary>
 	    public IBLLSystemSettings SystemSettingsHelper
-        {
-            get
-            {
-                if(_SystemSettingsHelper == null)
-                {
-                    _SystemSettingsHelper = new BLLSystemSettings();
-                }
-                return _SystemSettingsHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLSystemSettings>();
 
-        private IBLLNotice _NoticeHelper;        
+      
         /// <summary>
         /// NoticeHelper
         /// </summary>
 	    public IBLLNotice NoticeHelper
-        {
-            get
-            {
-                if(_NoticeHelper == null)
-                {
-                    _NoticeHelper = new BLLNotice();
-                }
-                return _NoticeHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLNotice>();
 
-        private IBLLDisabledPeriod _DisabledPeriodHelper;        
+      
         /// <summary>
         /// DisabledPeriodHelper
         /// </summary>
 	    public IBLLDisabledPeriod DisabledPeriodHelper
-        {
-            get
-            {
-                if(_DisabledPeriodHelper == null)
-                {
-                    _DisabledPeriodHelper = new BLLDisabledPeriod();
-                }
-                return _DisabledPeriodHelper;
-            }
-        }
+        => DependencyResolver.Current.GetService<IBLLDisabledPeriod>();
 
     }
 }

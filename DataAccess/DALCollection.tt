@@ -17,6 +17,7 @@
         "DisabledPeriod"
 	};
 #>
+using Autofac;
 using Models;
 namespace DataAccess
 {
@@ -31,4 +32,20 @@ namespace DataAccess
 <#		 
     } 
 #>
+
+    // DataAccessModule
+    public class DataAccessModule : Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+<# 
+            foreach (var item in types)
+            {
+#>
+                builder.RegisterType<DAL<#= item #>>().As<IDAL<#= item #>>();
+<#		 
+            }
+#>
+        }
+    }
 }

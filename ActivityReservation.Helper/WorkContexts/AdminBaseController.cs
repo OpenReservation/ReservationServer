@@ -14,33 +14,22 @@ namespace ActivityReservation.WorkContexts
 #if !DEBUG
     [RequireHttps]
 #endif
-    public class AdminBaseController:Controller
+    public class AdminBaseController : Controller
     {
         #region BusinessHelper 提供对Business层的访问对象
 
-        private IBusinessHelper businessHelper;
-
-        protected IBusinessHelper BusinessHelper
-        {
-            get
-            {
-                if (businessHelper == null)
-                {
-                    businessHelper = new BusinessHelper();
-                }
-                return businessHelper;
-            }
-        }
+        protected static IBusinessHelper BusinessHelper
+            => DependencyResolver.Current.GetService<IBusinessHelper>();
 
         #endregion BusinessHelper 提供对Business层的访问对象
 
         /// <summary>
-        /// logger 
+        /// logger
         /// </summary>
         protected static LogHelper Logger = new LogHelper(typeof(AdminBaseController));
 
         /// <summary>
-        /// 管理员姓名 
+        /// 管理员姓名
         /// </summary>
         public string Username
         {
@@ -58,8 +47,9 @@ namespace ActivityReservation.WorkContexts
         }
 
         private Models.User _currentUser;
+
         /// <summary>
-        /// 当前用户 
+        /// 当前用户
         /// </summary>
         public Models.User CurrentUser
         {

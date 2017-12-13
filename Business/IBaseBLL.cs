@@ -22,11 +22,9 @@ namespace Business
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        int Delete(T t);
+        int Delete(T t);        
 
         T Fetch(Expression<Func<T, bool>> whereLambda);
-
-        T GetOne(Expression<Func<T, bool>> whereLambda);
 
         List<T> GetAll();
 

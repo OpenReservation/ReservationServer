@@ -17,8 +17,11 @@
         "DisabledPeriod"
 	};
 #>
+using Autofac;
 using DataAccess;
 using Models;
+using WeihanLi.Common;
+
 namespace Business
 {
 <# 
@@ -31,10 +34,25 @@ namespace Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = new DAL<#= item #>();
+            dbHandler = DependencyResolver.Current.GetService<IDAL<#= item #>>();
         }
     }
 <#		 
     } 
 #>
+
+    public class BusinessModule : Autofac.Module
+    {
+        protected override void Load(ContainerBuilder builder)
+        {
+<# 
+            foreach (var item in types)
+            {
+#>
+                builder.RegisterType<BLL<#= item #>>().As<IBLL<#= item #>>();
+<#		 
+            }
+#>
+        }
+    }
 }
