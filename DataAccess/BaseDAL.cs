@@ -15,7 +15,7 @@ namespace DataAccess
         /// <summary>
         /// logger
         /// </summary>
-        protected static LogHelper logger = new LogHelper(typeof(BaseDAL<T>));
+        protected static LogHelper Logger = new LogHelper(typeof(BaseDAL<T>));
 
         /// <summary>
         /// db operator
@@ -24,15 +24,7 @@ namespace DataAccess
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {
-            var t = GetOne(whereLambda);
-            if (t == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return db.Set<T>().AsNoTracking().Any(whereLambda);
         }
 
         /// <summary>
@@ -79,22 +71,8 @@ namespace DataAccess
 
         public T Fetch(Expression<Func<T, bool>> whereLambda)
         {
-            var t = db.Set<T>().Where(whereLambda).FirstOrDefault();
+            var t = db.Set<T>().AsNoTracking().Where(whereLambda).FirstOrDefault();
             return t;
-        }
-
-        public T GetOne(Expression<Func<T, bool>> whereLambda)
-        {
-            try
-            {
-                var t = db.Set<T>().Where(whereLambda).FirstOrDefault();
-                return t;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return null;
-            }
         }
 
         /// <summary>
@@ -103,7 +81,7 @@ namespace DataAccess
         /// <returns></returns>
         public List<T> GetAll()
         {
-            return db.Set<T>().ToList();
+            return db.Set<T>().AsNoTracking().ToList();
         }
 
         /// <summary>
@@ -117,11 +95,11 @@ namespace DataAccess
         {
             if (isAsc)
             {
-                return db.Set<T>().OrderBy(orderBy).ToList();
+                return db.Set<T>().AsNoTracking().OrderBy(orderBy).ToList();
             }
             else
             {
-                return db.Set<T>().OrderByDescending(orderBy).ToList();
+                return db.Set<T>().AsNoTracking().OrderByDescending(orderBy).ToList();
             }
         }
 
@@ -132,7 +110,7 @@ namespace DataAccess
         /// <returns></returns>
         public List<T> GetAll(Expression<Func<T, bool>> whereLambda)
         {
-            return db.Set<T>().Where(whereLambda).AsNoTracking().ToList();
+            return db.Set<T>().AsNoTracking().Where(whereLambda).ToList();
         }
 
         /// <summary>
@@ -148,11 +126,11 @@ namespace DataAccess
         {
             if (isAsc)
             {
-                return db.Set<T>().Where(whereLambda).OrderBy(orderBy).ToList();
+                return db.Set<T>().AsNoTracking().Where(whereLambda).OrderBy(orderBy).ToList();
             }
             else
             {
-                return db.Set<T>().Where(whereLambda).OrderByDescending(orderBy).ToList();
+                return db.Set<T>().AsNoTracking().Where(whereLambda).OrderByDescending(orderBy).ToList();
             }
         }
 
@@ -172,12 +150,12 @@ namespace DataAccess
             // 分页 一定注意： Skip 之前一定要 OrderBy
             if (isAsc)
             {
-                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize)
+                return db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize)
                     .Take(pageSize).ToList();
             }
             else
             {
-                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                return db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
                     .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
         }
@@ -201,23 +179,23 @@ namespace DataAccess
             try
             {
                 //查询总的记录数
-                rowsCount = whereLambda == null ? db.Set<T>().Count() : db.Set<T>().Where(whereLambda).Count();
+                rowsCount = db.Set<T>().AsNoTracking().Where(whereLambda).Count();
                 // 分页 一定注意： Skip 之前一定要 OrderBy
                 if (isAsc)
                 {
-                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy)
+                    return db.Set<T>().AsNoTracking().Where(whereLambda).OrderBy(orderBy)
                         .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
                 else
                 {
-                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                    return db.Set<T>().AsNoTracking().Where(whereLambda).OrderByDescending(orderBy)
                         .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
             }
             catch (Exception ex)
             {
                 rowsCount = -1;
-                logger.Error(ex);
+                Logger.Error(ex);
                 return null;
             }
         }
@@ -243,18 +221,18 @@ namespace DataAccess
             try
             {
                 //查询总的记录数
-                rowsCount = db.Set<T>().Where(whereLambda).Count();
+                rowsCount = db.Set<T>().AsNoTracking().Where(whereLambda).Count();
                 // 分页 一定注意： Skip 之前一定要 OrderBy
                 if (isAsc)
                 {
                     if (isAsc1)
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenBy(orderby1)
+                        return db.Set<T>().AsNoTracking().Where(whereLambda).OrderBy(orderBy).ThenBy(orderby1)
                             .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                     else
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenByDescending(orderby1)
+                        return db.Set<T>().AsNoTracking().Where(whereLambda).OrderBy(orderBy).ThenByDescending(orderby1)
                             .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                 }
@@ -262,12 +240,12 @@ namespace DataAccess
                 {
                     if (isAsc1)
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenBy(orderby1)
+                        return db.Set<T>().AsNoTracking().Where(whereLambda).OrderByDescending(orderBy).ThenBy(orderby1)
                             .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                     else
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                        return db.Set<T>().AsNoTracking().Where(whereLambda).OrderByDescending(orderBy)
                             .ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                 }
@@ -275,7 +253,7 @@ namespace DataAccess
             catch (Exception ex)
             {
                 rowsCount = -1;
-                logger.Error(ex);
+                Logger.Error(ex);
                 return null;
             }
         }

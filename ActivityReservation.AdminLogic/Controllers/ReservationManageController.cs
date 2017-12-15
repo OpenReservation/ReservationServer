@@ -180,20 +180,13 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     return Json(false);
                 }
-                if (status > 0)
-                {
-                    reservation.ReservationStatus = 1;
-                }
-                else
-                {
-                    reservation.ReservationStatus = 2;
-                }
+                reservation.ReservationStatus = status > 0 ? 1 : 2;
                 var count = BusinessHelper.ReservationHelper.Update(reservation, "ReservationStatus");
                 if (count == 1)
                 {
                     //记录操作日志
                     OperLogHelper.AddOperLog(
-                        String.Format("更新 {0}:{1} 预约状态", reservationId, reservation.ReservationActivityContent),
+                        $"更新 {reservationId}:{reservation.ReservationActivityContent} 预约状态",
                         OperLogModule.Reservation, Username);
                     return Json(true);
                 }
@@ -223,7 +216,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(
-                        String.Format("删除预约记录 {0}:{1}", id, reservation.ReservationActivityContent),
+                        $"删除预约记录 {id}:{reservation.ReservationActivityContent}",
                         OperLogModule.Reservation, Username);
                     return Json(true);
                 }
