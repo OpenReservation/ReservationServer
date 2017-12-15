@@ -3,19 +3,21 @@
 }
 <div class="table-wraper">
     <div class="table-header">
-        <h3 class="table-title">系统管理后台首页</h3>                
+        <h3 class="table-title">系统管理后台首页</h3>
     </div>
     <div class="table-body" id="div_main">
         <ul class="list-group">
             <li class="list-group-item">@Html.ActionLink("我的账户", "Index", "Account")</li>
             <li class="list-group-item">@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
+            <li class="list-group-item">@Html.ActionLink("禁用时间段管理", "Index", "DisabledPeriod")</li>
+            <li class="list-group-item">@Html.ActionLink("活动室管理", "Index", "ReservationPlace")</li>
             <li class="list-group-item">@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
             <li class="list-group-item">@Html.ActionLink("公告管理", "Index", "Notice")</li>
-            @if (ActivityReservation.Helpers.AuthFormService.GetCurrentUser()!=null && ActivityReservation.Helpers.AuthFormService.GetCurrentUser().IsSuper)
+            @if (ActivityReservation.Helpers.AuthFormService.GetCurrentUser().IsSuper)
             {
                 <li role="separator" class="list-unstyled"><br /> </li>
                 <li class="list-group-item">@Html.ActionLink("用户管理", "UserList", "Account")</li>
-                <li class="list-group-item">@Html.ActionLink("禁用时间段管理", "Index", "DisabledPeriod")</li>
+
                 <li class="list-group-item">@Html.ActionLink("操作日志查看", "Index", "OperationLog")</li>
                 <li class="list-group-item">@Html.ActionLink("系统设置管理", "Index", "SystemSettings")</li>
             }

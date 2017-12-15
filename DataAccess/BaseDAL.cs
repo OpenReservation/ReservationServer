@@ -9,12 +9,13 @@ using WeihanLi.Common.Helpers;
 
 namespace DataAccess
 {
-    public class BaseDAL<T>:IBaseDAL<T> where T : class
+    public class BaseDAL<T> : IBaseDAL<T> where T : class
     {
         /// <summary>
         /// logger
         /// </summary>
         protected static LogHelper logger = new LogHelper(typeof(BaseDAL<T>));
+
         /// <summary>
         /// db operator
         /// </summary>
@@ -62,10 +63,17 @@ namespace DataAccess
         /// <returns></returns>
         public int Delete(T t)
         {
-            RemoveHoldingEntityInContext(t);
-            db.Set<T>().Attach(t);
-            db.Set<T>().Remove(t);
-            return db.SaveChanges();
+            try
+            {
+                RemoveHoldingEntityInContext(t);
+                db.Set<T>().Attach(t);
+                db.Set<T>().Remove(t);
+                return db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return 1;
+            }
         }
 
         public T Fetch(Expression<Func<T, bool>> whereLambda)
@@ -104,7 +112,7 @@ namespace DataAccess
         /// <param name="orderBy">排序表达式</param>
         /// <param name="isAsc">是否是正序排列</param>
         /// <returns></returns>
-        public List<T> GetAll<TKey>(Expression<Func<T, TKey>> orderBy,bool isAsc)
+        public List<T> GetAll<TKey>(Expression<Func<T, TKey>> orderBy, bool isAsc)
         {
             if (isAsc)
             {
@@ -115,7 +123,7 @@ namespace DataAccess
                 return db.Set<T>().OrderByDescending(orderBy).ToList();
             }
         }
-        
+
         /// <summary>
         /// 查询符合条件的数据集合
         /// </summary>
@@ -125,7 +133,7 @@ namespace DataAccess
         {
             return db.Set<T>().Where(whereLambda).AsNoTracking().ToList();
         }
-        
+
         /// <summary>
         /// 根据指定条件查询数据并按指定项排序
         /// </summary>
@@ -203,7 +211,7 @@ namespace DataAccess
                 rowsCount = -1;
                 logger.Error(ex);
                 return null;
-            }            
+            }
         }
 
         /// <summary>
@@ -220,7 +228,7 @@ namespace DataAccess
         /// <param name="isAsc">首要排序条件的排序顺序，是否正序排列</param>
         /// <param name="isAsc1">次要排序条件的排序顺序，是否正序排列 </param>
         /// <returns>符合条件的数据集合</returns>
-        public virtual List<T> GetPagedList<TKey,TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,Expression<Func<T,TKey1>> orderby1, bool isAsc = true,bool isAsc1=true)
+        public virtual List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true)
         {
             try
             {
@@ -231,12 +239,10 @@ namespace DataAccess
                 {
                     if (isAsc1)
                     {
-
                         return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenBy(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                     else
                     {
-
                         return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                 }
@@ -244,12 +250,10 @@ namespace DataAccess
                 {
                     if (isAsc1)
                     {
-
                         return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenBy(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                     else
                     {
-
                         return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                 }
@@ -308,13 +312,12 @@ namespace DataAccess
             ObjectContext objContext = ((IObjectContextAdapter)db).ObjectContext;
             var objSet = objContext.CreateObjectSet<T>();
             var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
-            object foundEntity;
-            var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
+            var exists = objContext.TryGetObjectByKey(entityKey, out var foundEntity);
             if (exists)
             {
                 objContext.Detach(foundEntity);
             }
-            return (exists);
+            return exists;
         }
     }
 }

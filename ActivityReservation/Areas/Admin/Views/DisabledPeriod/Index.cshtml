@@ -15,6 +15,7 @@
         td > .btn {
             margin-bottom: 4px;
         }
+
         .ui-datepicker {
             z-index: 23333333 !important;
         }
@@ -34,7 +35,7 @@
                     </label>
                     <label>
                         <input type="radio" value="2" name="activeStatus" />禁用
-                    </label>                    
+                    </label>
                 </span>
             </div>
             &nbsp;
@@ -46,8 +47,8 @@
 <div id="div_addPeriod" style="display: none; padding: 1em;">
     <form>
         <div class="input-group">
-            <label for="startDate">开始日期</label> <br/>
-            <input type="text" required="required" class="form-control" value="" id="startDate" placeholder="开始日期"/>
+            <label for="startDate">开始日期</label> <br />
+            <input type="text" required="required" class="form-control" value="" id="startDate" placeholder="开始日期" />
         </div>
         <div class="input-group">
             <label for="endDate">结束日期</label> <br />
@@ -55,7 +56,7 @@
         </div>
         <div class="input-group">
             <label>
-                <input type="checkbox" name="add_activeStatus" checked="checked"/>是否启用
+                <input type="checkbox" name="add_activeStatus" checked="checked" />是否启用
             </label>
         </div>
         <div class="input-group hidden">
@@ -77,7 +78,7 @@
             } else {
                 pageIndex = pIndex;
             }
-            $("#div_main").html('<br /><img src="/images/loading.gif"/> 正在玩命加载中，请稍后...');
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> 正在玩命加载中，请稍后...');
             $.ajax({
                 url: "/Admin/DisabledPeriod/List",
                 data: {
@@ -85,7 +86,7 @@
                     "pageSize": pageSize,
                     "activeStatus": $("input[name='activeStatus']:checked").val()
                 },
-                success: function(data, status) {
+                success: function (data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -102,10 +103,10 @@
                 layer.confirm("将要禁用该时间段，是否继续？", {
                     btn: ["继续", "取消"],
                     title: "确认",
-                    yes: function(index) {
+                    yes: function (index) {
                         if (id && status) {
                             var loading = layer.load(2);
-                            $.post("/Admin/DisabledPeriod/UpdatePeriodStatus", { "periodId": id, "status": status }, function(data) {
+                            $.post("/Admin/DisabledPeriod/UpdatePeriodStatus", { "periodId": id, "status": status }, function (data) {
                                 if (data.Status == 200) {
                                     layer.msg("更新成功");
                                     loadData(pageIndex);
@@ -119,13 +120,13 @@
                         }
                         layer.close(index);
                     },
-                    cancel: function() {
+                    cancel: function () {
 
                     }
                 });
             } else {
                 var loading = layer.load(2);
-                $.post("/Admin/DisabledPeriod/UpdatePeriodStatus", { "periodId": id, "status": status }, function(data) {
+                $.post("/Admin/DisabledPeriod/UpdatePeriodStatus", { "periodId": id, "status": status }, function (data) {
                     if (data.Status == 200) {
                         layer.msg("更新成功");
                         loadData(pageIndex);
@@ -139,36 +140,36 @@
 
         function DeletePeriod(id) {
             layer.confirm("将要删除预约记录，是否继续？", {
-                    btn: ["继续", "取消"],
-                    title: "警告",
-                    yes: function (index) {
-                        var loading = layer.load(2);
-                        $.post("/Admin/DisabledPeriod/DeletePeriod", { "periodId": id }, function (data) {
-                            layer.close(loading);
-                            if (data.status == 200) {
-                                layer.msg("删除成功");
-                                loadData(pageIndex);                                
-                            } else {
-                                layer.msg(data.Msg);
-                            }
-                        });
-                        layer.close(index);
-                    },
-                    cancel: function() {
+                btn: ["继续", "取消"],
+                title: "警告",
+                yes: function (index) {
+                    var loading = layer.load(2);
+                    $.post("/Admin/DisabledPeriod/DeletePeriod", { "periodId": id }, function (data) {
+                        layer.close(loading);
+                        if (!data) {
+                            layer.msg("删除成功");
+                            loadData(pageIndex);
+                        } else {
+                            layer.msg(data);
+                        }
+                    });
+                    layer.close(index);
+                },
+                cancel: function () {
 
-                    }
                 }
+            }
             );
         }
 
         //
-        $("#btnAdd").click(function() {
+        $("#btnAdd").click(function () {
             layer.open({
                 type: 1,
                 content: $("#div_addPeriod"),
                 title: "添加禁用时间段",
                 btn: ["提交", "取消"],
-                yes: function(index) {
+                yes: function (index) {
                     var startDate = $("#startDate").val(), endDate = $("#endDate").val();
                     if (!startDate) {
                         layer.msg("请选择开始日期");
@@ -190,20 +191,20 @@
                     });
                     layer.close(index);
                 },
-                cancel: function() {
+                cancel: function () {
 
                 }
             });
         });
         //
-        $("input[name='activeStatus']:radio").on("change", function() {
+        $("input[name='activeStatus']:radio").on("change", function () {
             loadData();
         });
-        $(function() {
+        $(function () {
             $("#startDate").datepicker({
                 dateFormat: "yy-mm-dd",
                 minDate: 0,
-                onSelect: function(dateText) {
+                onSelect: function (dateText) {
                     $("#endDate").datepicker('option', 'minDate', dateText);
                 }
             });

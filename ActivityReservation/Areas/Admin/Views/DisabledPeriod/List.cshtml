@@ -42,7 +42,7 @@
                         @item.UpdatedTime.ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td>
-                        <button class="btn btn-danger" onclick="DeleteReservation('@item.PeriodId')">删除</button>
+                        <button class="btn btn-danger" onclick="DeletePeriod('@item.PeriodId')">删除</button>
                         @if (item.IsActive)
                         {
                             <button onclick="UpdateStatus('@item.PeriodId',-1)" class="btn btn-warning">禁用</button>
@@ -55,7 +55,6 @@
                 </tr>
             }
         </tbody>
-
     </table>
     @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
 }

@@ -6,7 +6,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>登录 - 后台管理系统</title>
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
 </head>
 <body>
 
@@ -71,11 +71,11 @@
             var username = $("#inputUsername").val();
             var password = $("#inputPassword").val();
             var remember = $("#rememberMe").checked;
-            var returnUrl = GetQueryString("ReturnUrl");
+            var returnUrl = '@ViewData["returnUrl"]';
             $("#btnLogin").text("登录中...");
             $("#btnLogin").attr("disabled", "disabled");
-            $.post("LogOn", {"UserName":username,"Password":password,"RememberMe":remember},function(data,status){
-                if (status == "success") {
+            $.post("LogOn", { "UserName": username, "Password": password, "RememberMe": remember }, function (data, status) {
+                if (status === "success") {
                     if (data) {
                         if (returnUrl) {
                             location.href = returnUrl;

@@ -1,12 +1,11 @@
-﻿using ActivityReservation.Helpers;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+﻿using ActivityReservation.Filters;
+using ActivityReservation.Helpers;
+using ActivityReservation.WorkContexts;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using ActivityReservation.Filters;
-using ActivityReservation.WorkContexts;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -20,16 +19,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         [AllowAnonymous]
         [Filters.NoPermissionRequired]
         [HttpGet]
-        public ActionResult Login(string ReturnUrl)
+        public ActionResult Login(string returnUrl)
         {
-            if (!Url.IsLocalUrl(ReturnUrl))
+            if (!Url.IsLocalUrl(returnUrl))
             {
-                ReturnUrl = "/Admin/Home/Index";
+                returnUrl = "/Admin/Home/Index";
             }
-            if (Helpers.AuthFormService.TryAutoLogin())
-            {
-                return Redirect(ReturnUrl);
-            }
+            ViewData["returnUrl"] = returnUrl;
             return View();
         }
 
@@ -53,7 +49,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     Helpers.AuthFormService.SetCurrentUser(u);
                     return Json(true);
                 }
-            }            
+            }
             return Json(false);
         }
 
@@ -123,9 +119,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (CurrentUser.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword")>0)
+                        if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword") > 0)
                         {
-                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",OperLogModule.Account,Username);
+                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}", OperLogModule.Account, Username);
 
                             Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
 
@@ -142,8 +138,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 catch (Exception ex)
                 {
                     Logger.Error(ex);
-                }                
-            }            
+                }
+            }
             return Json(false);
         }
 
@@ -177,10 +173,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     Logger.Error(ex);
                 }
-            }            
+            }
             return Json(false);
         }
-        
+
         /// <summary>
         /// 创建账户
         /// </summary>
@@ -195,7 +191,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Business.IBLLUser userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
                 Models.User u = userBLL.Fetch(s => s.UserName == accountModel.Username);
-                if (u!=null)
+                if (u != null)
                 {
                     return Json(false);
                 }
@@ -243,7 +239,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.UserHelper.Delete(u);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), OperLogModule.Account,Username);
+                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -270,7 +266,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码",u.UserName), OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -294,7 +290,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [NoPermissionRequired]
         public ActionResult ValidUsername(string userName)
         {
-            Models.User u = BusinessHelper.UserHelper.Fetch(s=>s.UserName == userName);
+            Models.User u = BusinessHelper.UserHelper.Fetch(s => s.UserName == userName);
             if (u == null)
             {
                 return Json(true);
@@ -323,7 +319,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json(false);
             }
         }
-        
+
         /// <summary>
         /// 验证原密码是否正确
         /// </summary>
@@ -333,7 +329,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult ValidOldPassword(string password)
         {
             Models.User u = CurrentUser;
-            if (u!=null)
+            if (u != null)
             {
                 if (u.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(password)))
                 {
@@ -359,8 +355,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 whereLambda = (u => u.UserName.Contains(search.SearchItem1) && u.IsSuper == false);
             }
             int rowsCount = 0;
-            List<Models.User> userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount,whereLambda, u => u.AddTime, false);
-            IPagedListModel<Models.User> data = userList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
+            List<Models.User> userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, u => u.AddTime, false);
+            IPagedListModel<Models.User> data = userList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(data);
         }
     }

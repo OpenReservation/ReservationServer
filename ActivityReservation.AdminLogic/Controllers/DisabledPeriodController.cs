@@ -1,22 +1,23 @@
 ﻿using ActivityReservation.AdminLogic.ViewModels;
 using ActivityReservation.HelperModels;
+using ActivityReservation.Helpers;
+using ActivityReservation.WorkContexts;
 using Models;
-using WeihanLi.AspNetMvc.MvcSimplePager;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using ActivityReservation.WorkContexts;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
-    /// 禁用预约时间段管理 
+    /// 禁用预约时间段管理
     /// </summary>
     public class DisabledPeriodController : AdminBaseController
     {
         /// <summary>
-        /// 禁用预约时间段首页 
+        /// 禁用预约时间段首页
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
@@ -25,7 +26,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         /// <summary>
-        /// 禁用预约时间段列表 
+        /// 禁用预约时间段列表
         /// </summary>
         /// <returns></returns>
         public ActionResult List(int activeStatus, int pageIndex, int pageSize)
@@ -67,7 +68,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    var list = BusinessHelper.DisabledPeriodHelper.GetAll(p=>!p.IsDeleted && (System.Data.Entity.DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 && System.Data.Entity.DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
+                    var list = BusinessHelper.DisabledPeriodHelper.GetAll(p => !p.IsDeleted && (System.Data.Entity.DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 && System.Data.Entity.DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
                     if (list != null && list.Any())
                     {
                         result.Status = JsonResultStatus.RequestError;
@@ -123,7 +124,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 result.Status = JsonResultStatus.RequestError;
                 return Json(result);
             }
-            if ((status > 0 && period.IsActive) || (status<=0 && !period.IsActive))
+            if ((status > 0 && period.IsActive) || (status <= 0 && !period.IsActive))
             {
                 result.Msg = "不需要更新状态";
                 result.Data = true;
@@ -135,6 +136,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                 int count = BusinessHelper.DisabledPeriodHelper.Update(period, "IsActive");
                 if (count > 0)
                 {
+                    OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}",
+                        OperLogModule.DisabledPeriod, Username);
+
                     result.Status = JsonResultStatus.Success;
                     result.Data = true;
                     result.Msg = "更新成功";
@@ -144,15 +148,19 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         /// <summary>
-        /// 删除禁用时间段 
+        /// 删除禁用时间段
         /// </summary>
         /// <param name="periodId">时间段id</param>
         /// <returns></returns>
         public JsonResult DeletePeriod(Guid periodId)
         {
-            JsonResultModel<bool> result = new JsonResultModel<bool>();
-            int count = BusinessHelper.DisabledPeriodHelper.Delete(new DisabledPeriod() {PeriodId = periodId});
-            return Json(result);
+            int count = BusinessHelper.DisabledPeriodHelper.Delete(new DisabledPeriod { PeriodId = periodId });
+            if (count > 0)
+            {
+                OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, Username);
+                return Json("");
+            }
+            return Json("删除失败");
         }
     }
 }

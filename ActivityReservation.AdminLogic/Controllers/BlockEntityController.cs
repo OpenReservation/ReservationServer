@@ -1,12 +1,9 @@
 ﻿using ActivityReservation.Helpers;
+using ActivityReservation.WorkContexts;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
 using System.Web.Mvc;
-using ActivityReservation.WorkContexts;
-using Business;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -151,7 +148,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (c == 1)
                 {
                     //记录日志
-                    OperLogHelper.AddOperLog(String.Format("删除黑名单 {0}", entityName), OperLogModule.BlockEntity, Username);
+                    OperLogHelper.AddOperLog($"删除黑名单 {entityName}", OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
             }
