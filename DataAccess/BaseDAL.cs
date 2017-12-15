@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 
 namespace DataAccess
@@ -20,7 +21,7 @@ namespace DataAccess
         /// <summary>
         /// db operator
         /// </summary>
-        protected ReservationDbContext db = new ReservationDbContext();
+        protected ReservationDbContext db = DependencyResolver.Current.GetService<ReservationDbContext>();
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {

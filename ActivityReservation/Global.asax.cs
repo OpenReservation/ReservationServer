@@ -27,6 +27,9 @@ namespace ActivityReservation
             //register modules
             builder.RegisterAssemblyModules(BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToArray());
 
+            //ReservationDbContext
+            builder.RegisterType<Models.ReservationDbContext>().SingleInstance();
+
             //register controllers
             builder.RegisterControllers(
                 typeof(HomeController).Assembly,
