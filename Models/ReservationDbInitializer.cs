@@ -30,7 +30,7 @@ namespace Models
         }
 
         /// <summary>
-        /// 初始化数据库中数据
+        ///     初始化数据库中数据
         /// </summary>
         /// <param name="context">数据上下文</param>
         private static void InitData(ReservationDbContext context)
@@ -38,7 +38,7 @@ namespace Models
             try
             {
                 //user init
-                var u = new User()
+                var u = new User
                 {
                     UserId = Guid.NewGuid(),
                     UserName = "admin",
@@ -47,62 +47,62 @@ namespace Models
                 };
                 context.Users.Add(u);
                 //block types init
-                var blockTypes = new List<BlockType>()
+                var blockTypes = new List<BlockType>
                 {
-                    new BlockType() {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
-                    new BlockType() {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
-                    new BlockType() {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
+                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
+                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
+                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
                 };
                 context.BlockTypes.AddRange(blockTypes);
                 //Places init
-                var places = new List<ReservationPlace>()
+                var places = new List<ReservationPlace>
                 {
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "小礼堂", UpdateBy = "System"},
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "第一多功能厅", UpdateBy = "System"},
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "第二多功能厅", UpdateBy = "System"},
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "第一排练厅", UpdateBy = "System"},
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "宣传制作室", UpdateBy = "System"},
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "第一会议室", UpdateBy = "System"},
-                    new ReservationPlace() {PlaceId = Guid.NewGuid(), PlaceName = "第二会议室", UpdateBy = "System"}
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "小礼堂", UpdateBy = "System"},
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第一多功能厅", UpdateBy = "System"},
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第二多功能厅", UpdateBy = "System"},
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第一排练厅", UpdateBy = "System"},
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "宣传制作室", UpdateBy = "System"},
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第一会议室", UpdateBy = "System"},
+                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第二会议室", UpdateBy = "System"}
                 };
                 context.ReservationPlaces.AddRange(places);
                 //sys settings init
-                var settings = new List<SystemSettings>()
+                var settings = new List<SystemSettings>
                 {
-                    new SystemSettings()
+                    new SystemSettings
                     {
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemTitle",
                         DisplayName = "系统标题",
                         SettingValue = "活动室预约系统"
                     },
-                    new SystemSettings()
+                    new SystemSettings
                     {
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemKeywords",
                         DisplayName = "系统关键词",
-                        SettingValue = "预约,活动室,河南理工大学"
+                        SettingValue = "预约,活动室,预定,reservation"
                     },
-                    new SystemSettings()
+                    new SystemSettings
                     {
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemDescription",
                         DisplayName = "系统简介",
-                        SettingValue = "河南理工大学活动室预约系统是活动室预约数字化平台，为方便学生预约使用活动室而开发，由河南理工大学大学生网络工作室进行开发并提供技术支持。"
+                        SettingValue = "活动室预约系统是一个基于ASP.NET MVC 开发的一个在线预约系统。"
                     },
-                    new SystemSettings()
+                    new SystemSettings
                     {
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemContactPhone",
                         DisplayName = "系统联系人联系电话",
-                        SettingValue = "0391-3987123"
+                        SettingValue = "15601655489"
                     },
-                    new SystemSettings()
+                    new SystemSettings
                     {
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemContactEmail",
                         DisplayName = "系统联系邮箱",
-                        SettingValue = "lilingjuan@hpu.edu.cn"
+                        SettingValue = "weihanli@outlook.com"
                     }
                 };
                 context.SystemSettings.AddRange(settings);
