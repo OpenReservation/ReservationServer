@@ -8,6 +8,7 @@ namespace Models
     public class OperationLog
     {
         #region Private Field
+
         /// <summary>
         /// logId
         /// </summary>
@@ -33,22 +34,17 @@ namespace Models
         /// <summary>
         /// logModule
         /// </summary>
-        private string logModule; 
-        #endregion
+        private string logModule;
+
+        #endregion Private Field
 
         [Key]
         [Column]
         public Guid LogId
         {
-            get
-            {
-                return logId;
-            }
+            get { return logId; }
 
-            set
-            {
-                logId = value;
-            }
+            set { logId = value; }
         }
 
         /// <summary>
@@ -57,15 +53,9 @@ namespace Models
         [Column]
         public DateTime OperTime
         {
-            get
-            {
-                return operTime;
-            }
+            get { return operTime; }
 
-            set
-            {
-                operTime = value;
-            }
+            set { operTime = value; }
         }
 
         /// <summary>
@@ -74,15 +64,9 @@ namespace Models
         [Column]
         public string LogContent
         {
-            get
-            {
-                return logContent;
-            }
+            get { return logContent; }
 
-            set
-            {
-                logContent = value;
-            }
+            set { logContent = value; }
         }
 
         /// <summary>
@@ -91,15 +75,9 @@ namespace Models
         [Column]
         public string IpAddress
         {
-            get
-            {
-                return ipAddress;
-            }
+            get { return ipAddress; }
 
-            set
-            {
-                ipAddress = value;
-            }
+            set { ipAddress = value; }
         }
 
         /// <summary>
@@ -108,15 +86,9 @@ namespace Models
         [Column]
         public string OperBy
         {
-            get
-            {
-                return operBy;
-            }
+            get { return operBy; }
 
-            set
-            {
-                operBy = value;
-            }
+            set { operBy = value; }
         }
 
         /// <summary>
@@ -125,16 +97,9 @@ namespace Models
         [Column]
         public string LogModule
         {
-            get
-            {
-                return logModule;
-            }
+            get { return logModule; }
 
-            set
-            {
-                logModule = value;
-            }
+            set { logModule = value; }
         }
-
     }
 }

@@ -6,7 +6,8 @@ namespace ActivityReservation
 {
     public class JsonSerializer : ISerializer
     {
-        private static JsonSerializerSettings _settings = new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All };
+        private static JsonSerializerSettings _settings =
+            new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All };
 
         public byte[] Serialize(object data)
         {

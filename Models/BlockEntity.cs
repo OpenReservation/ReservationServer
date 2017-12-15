@@ -8,6 +8,7 @@ namespace Models
     public class BlockEntity
     {
         #region Private Field
+
         /// <summary>
         /// id
         /// </summary>
@@ -31,8 +32,9 @@ namespace Models
         /// <summary>
         /// 是否启用
         /// </summary>
-        private bool isActive = true; 
-        #endregion
+        private bool isActive = true;
+
+        #endregion Private Field
 
         /// <summary>
         /// 黑名单id
@@ -41,15 +43,9 @@ namespace Models
         [Key]
         public Guid BlockId
         {
-            get
-            {
-                return blockId;
-            }
+            get { return blockId; }
 
-            set
-            {
-                blockId = value;
-            }
+            set { blockId = value; }
         }
 
         /// <summary>
@@ -58,15 +54,9 @@ namespace Models
         [Column]
         public Guid BlockTypeId
         {
-            get
-            {
-                return blockTypeId;
-            }
+            get { return blockTypeId; }
 
-            set
-            {
-                blockTypeId = value;
-            }
+            set { blockTypeId = value; }
         }
 
         /// <summary>
@@ -75,15 +65,9 @@ namespace Models
         [Column]
         public string BlockValue
         {
-            get
-            {
-                return blockValue;
-            }
+            get { return blockValue; }
 
-            set
-            {
-                blockValue = value;
-            }
+            set { blockValue = value; }
         }
 
         /// <summary>
@@ -92,15 +76,9 @@ namespace Models
         [Column]
         public DateTime BlockTime
         {
-            get
-            {
-                return blockTime;
-            }
+            get { return blockTime; }
 
-            set
-            {
-                blockTime = value;
-            }
+            set { blockTime = value; }
         }
 
         /// <summary>
@@ -109,15 +87,9 @@ namespace Models
         [Column]
         public bool IsActive
         {
-            get
-            {
-                return isActive;
-            }
+            get { return isActive; }
 
-            set
-            {
-                isActive = value;
-            }
+            set { isActive = value; }
         }
 
         /// <summary>

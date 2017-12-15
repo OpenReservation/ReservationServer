@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Web.Compilation;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -9,13 +8,12 @@ using System.Web.Routing;
 using ActivityReservation.Controllers;
 using Autofac;
 using Autofac.Integration.Mvc;
-using Business;
 using Common;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
         protected void Application_Start()
         {
@@ -40,13 +38,14 @@ namespace ActivityReservation
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));
 
             // set to my own resolver
-            WeihanLi.Common.DependencyResolver.SetDependencyResolver(new WeihanLi.Common.AutofacDependencyResolver(container));
+            WeihanLi.Common.DependencyResolver.SetDependencyResolver(
+                new WeihanLi.Common.AutofacDependencyResolver(container));
 
             //log4net init
             LogHelper.LogInit(Server.MapPath("log4net.config"), new ILogProvider[]
             {
-               new ExceptionlessLogProvider(),
-               new SentryLogProvider()
+                new ExceptionlessLogProvider(),
+                new SentryLogProvider()
             });
 
             //register system settings

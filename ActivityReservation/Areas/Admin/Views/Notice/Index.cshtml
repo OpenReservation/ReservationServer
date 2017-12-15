@@ -3,8 +3,10 @@
 }
 <div class="table-wraper">
     <div class="table-header">
-        <h3 class="table-title">公告列表<small>&nbsp;&nbsp;<a href="/Admin/Notice/Create" role="button" id="btnAdd" class="btn btn-primary btn-sm">添加公告</a></small></h3>
-        <div class="form-inline" style="margin:0.6em 0">
+        <h3 class="table-title">
+            公告列表<small>&nbsp;&nbsp;<a href="/Admin/Notice/Create" role="button" id="btnAdd" class="btn btn-primary btn-sm">添加公告</a></small>
+        </h3>
+        <div class="form-inline" style="margin: 0.6em 0">
             <div class="form-group">
                 <input type="search" value="" id="title" placeholder="通知公告标题" class="form-control" />
             </div>
@@ -15,7 +17,8 @@
 </div>
 @section scripts{
     <script>
-        var pageSize = 10,pageIndex=1;
+        var pageSize = 10, pageIndex = 1;
+
         //加载数据
         function loadData(pIndex) {
             if (!pIndex) {
@@ -23,13 +26,15 @@
             } else {
                 pageIndex = pIndex;
             }
-            $("#div_main").html('<br /><img src="/images/loading.gif"/> 正在玩命加载中，请稍后...');
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> 正在玩命加载中，请稍后...');
             $.ajax({
                 url: "/Admin/Notice/List",
                 data: {
-                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#title").val()
+                    "PageIndex": pageIndex,
+                    "PageSize": pageSize,
+                    "SearchItem1": $("#title").val()
                 },
-                success: function (data, status) {
+                success: function(data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -39,11 +44,13 @@
                 }
             });
         }
+
         //搜索
-        $("#btnSearch").on("click", function () {
-            loadData();
-        });
-        $(function () {
+        $("#btnSearch").on("click",
+            function() {
+                loadData();
+            });
+        $(function() {
             loadData();
         });
     </script>

@@ -1,81 +1,81 @@
 ﻿@model IPagedListModel<Models.Reservation>
-@{ 
+@{
     Layout = null;
 }
 @if (Model.Data.Count() > 0)
 {
     <table class="table table-hover">
         <thead>
-            <tr>
-                <th>活动室名称</th>
-                <th>预约使用日期</th>
-                <th>预约使用时间</th>
-                <th>预约单位</th>
-                <th>活动内容</th>
-                <th>预约人姓名</th>
-                <th>预约人联系方式</th>
-                <th>预约时间</th>
-                <th>审核状态</th>
-                <th></th>
-            </tr>
+        <tr>
+            <th>活动室名称</th>
+            <th>预约使用日期</th>
+            <th>预约使用时间</th>
+            <th>预约单位</th>
+            <th>活动内容</th>
+            <th>预约人姓名</th>
+            <th>预约人联系方式</th>
+            <th>预约时间</th>
+            <th>审核状态</th>
+            <th></th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (Models.Reservation item in Model.Data)
+        @foreach (var item in Model.Data)
+        {
+            string status = "待审核", className = "";
+            switch (item.ReservationStatus)
             {
-                string status = "待审核", className = "";
-                switch (item.ReservationStatus)
-                {
-                    case 0:
-                        status = "待审核";
-                        className = "";
-                        break;
-                    case 1:
-                        status = "审核通过";
-                        className = "bg-success";
-                        break;
-                    case 2:
-                        status = "审核未通过";
-                        className = "bg-danger";
-                        break;
-                    default:
-                        break;
-                }
-                <tr class="@className">
-                    <td>
-                        @item.Place.PlaceName
-                    </td>
-                    <td>
-                        @item.ReservationForDate.ToString("yyyy-MM-dd")
-                    </td>
-                    <td>
-                        @Html.Raw(item.ReservationForTime.Replace(",", "<br/>"))
-                    </td>
-                    <td>
-                        @item.ReservationUnit
-                    </td>
-                    <td>
-                        @item.ReservationActivityContent
-                    </td>
-                    <td>
-                        @item.ReservationPersonName
-                    </td>
-                    <td>
-                        @item.ReservationPersonPhone
-                    </td>
-                    <td>
-                        @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
-                    </td>
-                    <td>
-                        @Html.Raw(status)
-                    </td>
-                    <td>
-                        @if (item.ReservationStatus == 1)
-                        {
-                            <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
-                        }
-                    </td>
-                </tr>
-            }        
+                case 0:
+                    status = "待审核";
+                    className = "";
+                    break;
+                case 1:
+                    status = "审核通过";
+                    className = "bg-success";
+                    break;
+                case 2:
+                    status = "审核未通过";
+                    className = "bg-danger";
+                    break;
+                default:
+                    break;
+            }
+            <tr class="@className">
+                <td>
+                    @item.Place.PlaceName
+                </td>
+                <td>
+                    @item.ReservationForDate.ToString("yyyy-MM-dd")
+                </td>
+                <td>
+                    @Html.Raw(item.ReservationForTime.Replace(",", "<br />"))
+                </td>
+                <td>
+                    @item.ReservationUnit
+                </td>
+                <td>
+                    @item.ReservationActivityContent
+                </td>
+                <td>
+                    @item.ReservationPersonName
+                </td>
+                <td>
+                    @item.ReservationPersonPhone
+                </td>
+                <td>
+                    @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                </td>
+                <td>
+                    @Html.Raw(status)
+                </td>
+                <td>
+                    @if (item.ReservationStatus == 1)
+                    {
+                        <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
+                    }
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
     @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)

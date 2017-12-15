@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace Models
 {
@@ -11,6 +8,7 @@ namespace Models
     public class ReservationPlace
     {
         #region Private Field
+
         /// <summary>
         /// 活动室id
         /// </summary>
@@ -39,8 +37,9 @@ namespace Models
         /// <summary>
         /// 是否删除
         /// </summary>
-        private bool isDel; 
-        #endregion
+        private bool isDel;
+
+        #endregion Private Field
 
         /// <summary>
         /// 活动室id
@@ -49,15 +48,9 @@ namespace Models
         [Column]
         public Guid PlaceId
         {
-            get
-            {
-                return placeId;
-            }
+            get { return placeId; }
 
-            set
-            {
-                placeId = value;
-            }
+            set { placeId = value; }
         }
 
         /// <summary>
@@ -66,15 +59,9 @@ namespace Models
         [Column]
         public string PlaceName
         {
-            get
-            {
-                return placeName;
-            }
+            get { return placeName; }
 
-            set
-            {
-                placeName = value;
-            }
+            set { placeName = value; }
         }
 
         /// <summary>
@@ -83,15 +70,9 @@ namespace Models
         [Column]
         public DateTime UpdateTime
         {
-            get
-            {
-                return updateTime;
-            }
+            get { return updateTime; }
 
-            set
-            {
-                updateTime = value;
-            }
+            set { updateTime = value; }
         }
 
         /// <summary>
@@ -100,15 +81,9 @@ namespace Models
         [Column]
         public string UpdateBy
         {
-            get
-            {
-                return updateBy;
-            }
+            get { return updateBy; }
 
-            set
-            {
-                updateBy = value;
-            }
+            set { updateBy = value; }
         }
 
         /// <summary>
@@ -126,15 +101,9 @@ namespace Models
         [Column]
         public bool IsDel
         {
-            get
-            {
-                return isDel;
-            }
+            get { return isDel; }
 
-            set
-            {
-                isDel = value;
-            }
+            set { isDel = value; }
         }
     }
 }

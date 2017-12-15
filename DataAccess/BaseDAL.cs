@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using WeihanLi.Common.Helpers;
@@ -19,11 +20,11 @@ namespace DataAccess
         /// <summary>
         /// db operator
         /// </summary>
-        protected Models.ReservationDbContext db = new Models.ReservationDbContext();
+        protected ReservationDbContext db = new ReservationDbContext();
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {
-            T t = GetOne(whereLambda);
+            var t = GetOne(whereLambda);
             if (t == null)
             {
                 return false;
@@ -78,7 +79,7 @@ namespace DataAccess
 
         public T Fetch(Expression<Func<T, bool>> whereLambda)
         {
-            T t = db.Set<T>().Where(whereLambda).FirstOrDefault();
+            var t = db.Set<T>().Where(whereLambda).FirstOrDefault();
             return t;
         }
 
@@ -86,7 +87,7 @@ namespace DataAccess
         {
             try
             {
-                T t = db.Set<T>().Where(whereLambda).FirstOrDefault();
+                var t = db.Set<T>().Where(whereLambda).FirstOrDefault();
                 return t;
             }
             catch (Exception ex)
@@ -142,7 +143,8 @@ namespace DataAccess
         /// <param name="orderBy">排序表达式</param>
         /// <param name="isAsc">是否正序排列</param>
         /// <returns></returns>
-        public List<T> GetAll<TKey>(Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc)
+        public List<T> GetAll<TKey>(Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,
+            bool isAsc)
         {
             if (isAsc)
             {
@@ -164,16 +166,19 @@ namespace DataAccess
         /// <param name="orderBy">排序条件Linq表达式</param>
         /// <param name="isAsc">是否是正向排序</param>
         /// <returns>符合要求的数据列表</returns>
-        public List<T> GetPagedList<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
+        public List<T> GetPagedList<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> whereLambda,
+            Expression<Func<T, TKey>> orderBy, bool isAsc = true)
         {
             // 分页 一定注意： Skip 之前一定要 OrderBy
             if (isAsc)
             {
-                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize).ToList();
             }
             else
             {
-                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                    .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             }
         }
 
@@ -190,7 +195,8 @@ namespace DataAccess
         /// <param name="orderBy">排序条件Linq表达式</param>
         /// <param name="isAsc">是否正序排列</param>
         /// <returns>符合要求的列表</returns>
-        public virtual List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
+        public virtual List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount,
+            Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
         {
             try
             {
@@ -199,11 +205,13 @@ namespace DataAccess
                 // 分页 一定注意： Skip 之前一定要 OrderBy
                 if (isAsc)
                 {
-                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy)
+                        .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
                 else
                 {
-                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                    return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                        .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                 }
             }
             catch (Exception ex)
@@ -228,7 +236,9 @@ namespace DataAccess
         /// <param name="isAsc">首要排序条件的排序顺序，是否正序排列</param>
         /// <param name="isAsc1">次要排序条件的排序顺序，是否正序排列 </param>
         /// <returns>符合条件的数据集合</returns>
-        public virtual List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true)
+        public virtual List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount,
+            Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,
+            Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true)
         {
             try
             {
@@ -239,22 +249,26 @@ namespace DataAccess
                 {
                     if (isAsc1)
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenBy(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenBy(orderby1)
+                            .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                     else
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderBy(orderBy).ThenByDescending(orderby1)
+                            .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                 }
                 else
                 {
                     if (isAsc1)
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenBy(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenBy(orderby1)
+                            .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                     else
                     {
-                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy).ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+                        return db.Set<T>().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                            .ThenByDescending(orderby1).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                     }
                 }
             }
@@ -282,7 +296,7 @@ namespace DataAccess
             //4.2先设置 对象的包装 状态为 Unchanged
             entry.State = EntityState.Unchanged;
             //4.3循环 被修改的属性名 数组
-            foreach (string proName in propertyNames)
+            foreach (var proName in propertyNames)
             {
                 //4.4将每个 被修改的属性的状态 设置为已修改状态;后面生成update语句时，就只为已修改的属性 更新
                 entry.Property(proName).IsModified = true;
@@ -297,7 +311,7 @@ namespace DataAccess
         /// <param name="strSql">sql语句</param>
         /// <param name="paras">参数</param>
         /// <returns>执行sql语句后受影响的行数</returns>
-        public virtual int ExcuteSql(string strSql, params System.Data.SqlClient.SqlParameter[] paras)
+        public virtual int ExcuteSql(string strSql, params SqlParameter[] paras)
         {
             return db.Database.ExecuteSqlCommand(strSql, paras);
         }
@@ -309,7 +323,7 @@ namespace DataAccess
         /// <returns></returns>
         private bool RemoveHoldingEntityInContext(T entity)
         {
-            ObjectContext objContext = ((IObjectContextAdapter)db).ObjectContext;
+            var objContext = ((IObjectContextAdapter)db).ObjectContext;
             var objSet = objContext.CreateObjectSet<T>();
             var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
             var exists = objContext.TryGetObjectByKey(entityKey, out var foundEntity);

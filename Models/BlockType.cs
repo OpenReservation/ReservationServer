@@ -8,6 +8,7 @@ namespace Models
     public class BlockType
     {
         #region Private Field
+
         /// <summary>
         /// typeId
         /// </summary>
@@ -16,8 +17,9 @@ namespace Models
         /// <summary>
         /// typeName
         /// </summary>
-        private string typeName; 
-        #endregion
+        private string typeName;
+
+        #endregion Private Field
 
         /// <summary>
         /// 黑名单类型id
@@ -26,15 +28,9 @@ namespace Models
         [Key]
         public Guid TypeId
         {
-            get
-            {
-                return typeId;
-            }
+            get { return typeId; }
 
-            set
-            {
-                typeId = value;
-            }
+            set { typeId = value; }
         }
 
         /// <summary>
@@ -43,15 +39,9 @@ namespace Models
         [Column]
         public string TypeName
         {
-            get
-            {
-                return typeName;
-            }
+            get { return typeName; }
 
-            set
-            {
-                typeName = value;
-            }
+            set { typeName = value; }
         }
     }
 }

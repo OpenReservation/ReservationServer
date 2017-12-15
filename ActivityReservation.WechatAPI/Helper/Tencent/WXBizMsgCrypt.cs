@@ -41,7 +41,7 @@ namespace Tencent
         // @param sToken: 公众平台上，开发者设置的Token
         // @param sEncodingAESKey: 公众平台上，开发者设置的EncodingAESKey
         // @param sAppID: 公众帐号的appid
-        public WXBizMsgCrypt(string sToken , string sEncodingAESKey , string sAppID)
+        public WXBizMsgCrypt(string sToken, string sEncodingAESKey, string sAppID)
         {
             m_sToken = sToken;
             m_sAppID = sAppID;
@@ -55,13 +55,13 @@ namespace Tencent
         // @param sPostData: 密文，对应POST请求的数据
         // @param sMsg: 解密后的原文，当return返回0时有效
         // @return: 成功0，失败返回对应的错误码
-        public int DecryptMsg(string sMsgSignature , string sTimeStamp , string sNonce , string sPostData , ref string sMsg)
+        public int DecryptMsg(string sMsgSignature, string sTimeStamp, string sNonce, string sPostData, ref string sMsg)
         {
             if (m_sEncodingAESKey.Length != 43)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
             }
-            XmlDocument doc = new XmlDocument();
+            var doc = new XmlDocument();
             XmlNode root;
             string sEncryptMsg;
             try
@@ -72,29 +72,29 @@ namespace Tencent
             }
             catch (Exception)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_ParseXml_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ParseXml_Error;
             }
             //verify signature
-            int ret = 0;
-            ret = VerifySignature(m_sToken , sTimeStamp , sNonce , sEncryptMsg , sMsgSignature);
+            var ret = 0;
+            ret = VerifySignature(m_sToken, sTimeStamp, sNonce, sEncryptMsg, sMsgSignature);
             if (ret != 0)
                 return ret;
             //decrypt
-            string cpid = "";
+            var cpid = "";
             try
             {
-                sMsg = Cryptography.AES_decrypt(sEncryptMsg , m_sEncodingAESKey , ref cpid);
+                sMsg = Cryptography.AES_decrypt(sEncryptMsg, m_sEncodingAESKey, ref cpid);
             }
             catch (FormatException)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecodeBase64_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecodeBase64_Error;
             }
             catch (Exception)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecryptAES_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecryptAES_Error;
             }
             if (cpid != m_sAppID)
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateAppid_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateAppid_Error;
             return 0;
         }
 
@@ -105,36 +105,36 @@ namespace Tencent
         // @param sEncryptMsg: 加密后的可以直接回复用户的密文，包括msg_signature, timestamp, nonce, encrypt的xml格式的字符串,
         //						当return返回0时有效
         // return：成功0，失败返回对应的错误码
-        public int EncryptMsg(string sReplyMsg , string sTimeStamp , string sNonce , ref string sEncryptMsg)
+        public int EncryptMsg(string sReplyMsg, string sTimeStamp, string sNonce, ref string sEncryptMsg)
         {
             if (m_sEncodingAESKey.Length != 43)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
             }
-            string raw = "";
+            var raw = "";
             try
             {
-                raw = Cryptography.AES_encrypt(sReplyMsg , m_sEncodingAESKey , m_sAppID);
+                raw = Cryptography.AES_encrypt(sReplyMsg, m_sEncodingAESKey, m_sAppID);
             }
             catch (Exception)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_EncryptAES_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_EncryptAES_Error;
             }
-            string MsgSigature = "";
-            int ret = 0;
-            ret = GenarateSinature(m_sToken , sTimeStamp , sNonce , raw , ref MsgSigature);
+            var MsgSigature = "";
+            var ret = 0;
+            ret = GenarateSinature(m_sToken, sTimeStamp, sNonce, raw, ref MsgSigature);
             if (0 != ret)
                 return ret;
             sEncryptMsg = "";
 
-            string EncryptLabelHead = "<Encrypt><![CDATA[";
-            string EncryptLabelTail = "]]></Encrypt>";
-            string MsgSigLabelHead = "<MsgSignature><![CDATA[";
-            string MsgSigLabelTail = "]]></MsgSignature>";
-            string TimeStampLabelHead = "<TimeStamp><![CDATA[";
-            string TimeStampLabelTail = "]]></TimeStamp>";
-            string NonceLabelHead = "<Nonce><![CDATA[";
-            string NonceLabelTail = "]]></Nonce>";
+            var EncryptLabelHead = "<Encrypt><![CDATA[";
+            var EncryptLabelTail = "]]></Encrypt>";
+            var MsgSigLabelHead = "<MsgSignature><![CDATA[";
+            var MsgSigLabelTail = "]]></MsgSignature>";
+            var TimeStampLabelHead = "<TimeStamp><![CDATA[";
+            var TimeStampLabelTail = "]]></TimeStamp>";
+            var NonceLabelHead = "<Nonce><![CDATA[";
+            var NonceLabelTail = "]]></Nonce>";
             sEncryptMsg = sEncryptMsg + "<xml>" + EncryptLabelHead + raw + EncryptLabelTail;
             sEncryptMsg = sEncryptMsg + MsgSigLabelHead + MsgSigature + MsgSigLabelTail;
             sEncryptMsg = sEncryptMsg + TimeStampLabelHead + sTimeStamp + TimeStampLabelTail;
@@ -143,15 +143,15 @@ namespace Tencent
             return 0;
         }
 
-        public class DictionarySort : System.Collections.IComparer
+        public class DictionarySort : IComparer
         {
-            public int Compare(object oLeft , object oRight)
+            public int Compare(object oLeft, object oRight)
             {
-                string sLeft = oLeft as string;
-                string sRight = oRight as string;
-                int iLeftLength = sLeft.Length;
-                int iRightLength = sRight.Length;
-                int index = 0;
+                var sLeft = oLeft as string;
+                var sRight = oRight as string;
+                var iLeftLength = sLeft.Length;
+                var iRightLength = sRight.Length;
+                var index = 0;
                 while (index < iLeftLength && index < iRightLength)
                 {
                     if (sLeft[index] < sRight[index])
@@ -166,11 +166,12 @@ namespace Tencent
         }
 
         //Verify Signature
-        private static int VerifySignature(string sToken , string sTimeStamp , string sNonce , string sMsgEncrypt , string sSigture)
+        private static int VerifySignature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt,
+            string sSigture)
         {
-            string hash = "";
-            int ret = 0;
-            ret = GenarateSinature(sToken , sTimeStamp , sNonce , sMsgEncrypt , ref hash);
+            var hash = "";
+            var ret = 0;
+            ret = GenarateSinature(sToken, sTimeStamp, sNonce, sMsgEncrypt, ref hash);
             if (ret != 0)
                 return ret;
             //System.Console.WriteLine(hash);
@@ -178,39 +179,40 @@ namespace Tencent
                 return 0;
             else
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateSignature_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateSignature_Error;
             }
         }
 
-        public static int GenarateSinature(string sToken , string sTimeStamp , string sNonce , string sMsgEncrypt , ref string sMsgSignature)
+        public static int GenarateSinature(string sToken, string sTimeStamp, string sNonce, string sMsgEncrypt,
+            ref string sMsgSignature)
         {
-            ArrayList AL = new ArrayList();
+            var AL = new ArrayList();
             AL.Add(sToken);
             AL.Add(sTimeStamp);
             AL.Add(sNonce);
             AL.Add(sMsgEncrypt);
             AL.Sort(new DictionarySort());
-            string raw = "";
-            for (int i = 0; i < AL.Count; ++i)
+            var raw = "";
+            for (var i = 0; i < AL.Count; ++i)
             {
                 raw += AL[i];
             }
 
             SHA1 sha;
             ASCIIEncoding enc;
-            string hash = "";
+            var hash = "";
             try
             {
                 sha = new SHA1CryptoServiceProvider();
                 enc = new ASCIIEncoding();
-                byte[] dataToHash = enc.GetBytes(raw);
-                byte[] dataHashed = sha.ComputeHash(dataToHash);
-                hash = BitConverter.ToString(dataHashed).Replace("-" , "");
+                var dataToHash = enc.GetBytes(raw);
+                var dataHashed = sha.ComputeHash(dataToHash);
+                hash = BitConverter.ToString(dataHashed).Replace("-", "");
                 hash = hash.ToLower();
             }
             catch (Exception)
             {
-                return (int) WXBizMsgCryptErrorCode.WXBizMsgCrypt_ComputeSignature_Error;
+                return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ComputeSignature_Error;
             }
             sMsgSignature = hash;
             return 0;

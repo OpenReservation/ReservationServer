@@ -29,7 +29,7 @@
     /// <summary>
     /// 文本消息模型
     /// </summary>
-    public class WechatResponseTextMsgModel: IWechatReply
+    public class WechatResponseTextMsgModel : IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）
@@ -59,7 +59,7 @@
     /// <summary>
     /// 图片消息模型
     /// </summary>
-    public class WechatResponseImageMsgModel: IWechatReply
+    public class WechatResponseImageMsgModel : IWechatReply
     {
         /// <summary>
         /// 发送者账号（一个OpenID）

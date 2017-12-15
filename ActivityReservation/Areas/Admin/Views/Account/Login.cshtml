@@ -10,71 +10,78 @@
 </head>
 <body>
 
-    <div class="container" style="max-width:30em;">
-        <header>
-            <h1 class="h1">登录<small>后台管理系统</small></h1>
-        </header>
-        <section>
-            <form class="form-signin" style="margin:2em auto">
-                <div class="form-group">
-                    <label for="inputUsername" class="sr-only">用户名</label>
-                    <input type="text" id="inputUsername" name="UserName" class="form-control" placeholder="用户名" required="required" autofocus>
-                </div>
-                <div>
-                    <label for="inputPassword" class="sr-only">密码</label>
-                    <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="密码" required="required">
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" value="remember-me" name="rememberMe" id="rememberMe"> Remember me
-                    </label>
-                </div>
-                <button class="btn btn-lg btn-primary btn-block" type="button" id="btnLogin">登录</button>
-            </form>
-        </section>
-        <footer>
-            <p>&copy; @DateTime.Now.Year - @HttpContext.Current.Application["SystemTitle"] </p>
-        </footer>
-    </div>
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script src="~/Content/layer/layer.js"></script>
-    <script>
-        function GetQueryString(name) {
-            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-            var r = window.location.search.substr(1).match(reg);
-            if (r != null) return unescape(r[2]); return null;
-        }
-        function isFormValid() {
-            var username = $("#inputUsername").val();
-            var password = $("#inputPassword").val();
-            if (username && password) {
-                if (username.length > 2 && username.length <= 8) {
-                } else {
-                    layer.msg("用户名不合法，用户名长度至少两个字符，最多8个字符");
-                    return false;
-                }
-                if (password.length >= 6 && password.length <= 20) {
-                } else {
-                    layer.msg("密码不合法，密码长度至少6个字符，最多20个字符");
-                    return false;
-                }
-                return true;
+<div class="container" style="max-width: 30em;">
+    <header>
+        <h1 class="h1">
+            登录<small>后台管理系统</small>
+        </h1>
+    </header>
+    <section>
+        <form class="form-signin" style="margin: 2em auto">
+            <div class="form-group">
+                <label for="inputUsername" class="sr-only">用户名</label>
+                <input type="text" id="inputUsername" name="UserName" class="form-control" placeholder="用户名" required="required" autofocus>
+            </div>
+            <div>
+                <label for="inputPassword" class="sr-only">密码</label>
+                <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="密码" required="required">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" value="remember-me" name="rememberMe" id="rememberMe"> Remember me
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="button" id="btnLogin">登录</button>
+        </form>
+    </section>
+    <footer>
+        <p>&copy; @DateTime.Now.Year - @HttpContext.Current.Application["SystemTitle"] </p>
+    </footer>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Content/layer/layer.js"></script>
+<script>
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+    function isFormValid() {
+        var username = $("#inputUsername").val();
+        var password = $("#inputPassword").val();
+        if (username && password) {
+            if (username.length > 2 && username.length <= 8) {
             } else {
-                layer.msg("登录信息不完整");
+                layer.msg("用户名不合法，用户名长度至少两个字符，最多8个字符");
                 return false;
             }
-        }
-        function Login() {
-            if (!isFormValid()) {
-                return;
+            if (password.length >= 6 && password.length <= 20) {
+            } else {
+                layer.msg("密码不合法，密码长度至少6个字符，最多20个字符");
+                return false;
             }
-            var username = $("#inputUsername").val();
-            var password = $("#inputPassword").val();
-            var remember = $("#rememberMe").checked;
-            var returnUrl = '@ViewData["returnUrl"]';
-            $("#btnLogin").text("登录中...");
-            $("#btnLogin").attr("disabled", "disabled");
-            $.post("LogOn", { "UserName": username, "Password": password, "RememberMe": remember }, function (data, status) {
+            return true;
+        } else {
+            layer.msg("登录信息不完整");
+            return false;
+        }
+    }
+
+    function Login() {
+        if (!isFormValid()) {
+            return;
+        }
+        var username = $("#inputUsername").val();
+        var password = $("#inputPassword").val();
+        var remember = $("#rememberMe").checked;
+        var returnUrl = '@ViewData["returnUrl"]';
+        $("#btnLogin").text("登录中...");
+        $("#btnLogin").attr("disabled", "disabled");
+        $.post("LogOn",
+            { "UserName": username, "Password": password, "RememberMe": remember },
+            function(data, status) {
                 if (status === "success") {
                     if (data) {
                         if (returnUrl) {
@@ -82,8 +89,7 @@
                         } else {
                             location.href = "/Admin/Home/Index";
                         }
-                    }
-                    else {
+                    } else {
                         layer.msg("登录失败");
                         $("#inputPassword").val('');
                         $("#btnLogin").removeAttr("disabled");
@@ -96,13 +102,14 @@
                     $("#btnLogin").text("登录");
                 }
             });
+    }
+
+    $("#btnLogin").on("click", Login);
+    document.onkeydown = function(e) {
+        if (e.keyCode == 13) {
+            Login();
         }
-        $("#btnLogin").on("click", Login);
-        document.onkeydown = function (e) {
-            if (e.keyCode == 13) {
-                Login();
-            }
-        }
-    </script>
+    }
+</script>
 </body>
-</html> 
+</html>

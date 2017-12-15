@@ -4,6 +4,7 @@ using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
 using Models;
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
@@ -32,7 +33,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(int activeStatus, int pageIndex, int pageSize)
         {
             int totalCount;
-            Expression<Func<Models.DisabledPeriod, bool>> whereLambda = (p => !p.IsDeleted);
+            Expression<Func<DisabledPeriod, bool>> whereLambda = (p => !p.IsDeleted);
             if (activeStatus > 0)
             {
                 if (activeStatus == 1)
@@ -44,7 +45,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                     whereLambda = (p => !p.IsDeleted && !p.IsActive);
                 }
             }
-            var data = BusinessHelper.DisabledPeriodHelper.GetPagedList(pageIndex, pageSize, out totalCount, whereLambda, p => p.UpdatedTime, false);
+            var data = BusinessHelper.DisabledPeriodHelper.GetPagedList(pageIndex, pageSize, out totalCount,
+                whereLambda, p => p.UpdatedTime, false);
             var pager = data.ToPagedList(pageIndex, pageSize, totalCount);
             return View(pager);
         }
@@ -57,7 +59,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public JsonResult AddPeriod(DisabledPeriodViewModel model)
         {
-            JsonResultModel<bool> result = new JsonResultModel<bool>();
+            var result = new JsonResultModel<bool>();
             if (ModelState.IsValid)
             {
                 if (!model.IsModelValid())
@@ -68,7 +70,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    var list = BusinessHelper.DisabledPeriodHelper.GetAll(p => !p.IsDeleted && (System.Data.Entity.DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 && System.Data.Entity.DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
+                    var list = BusinessHelper.DisabledPeriodHelper.GetAll(p =>
+                        !p.IsDeleted && (DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 &&
+                                         DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
                     if (list != null && list.Any())
                     {
                         result.Status = JsonResultStatus.RequestError;
@@ -85,7 +89,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         UpdatedTime = DateTime.Now,
                         UpdatedBy = Username
                     };
-                    int count = BusinessHelper.DisabledPeriodHelper.Add(period);
+                    var count = BusinessHelper.DisabledPeriodHelper.Add(period);
                     if (count > 0)
                     {
                         result.Status = JsonResultStatus.Success;
@@ -116,7 +120,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult UpdatePeriodStatus(Guid periodId, int status)
         {
-            JsonResultModel<bool> result = new JsonResultModel<bool>();
+            var result = new JsonResultModel<bool>();
             var period = BusinessHelper.DisabledPeriodHelper.Fetch(p => p.PeriodId == periodId);
             if (period == null)
             {
@@ -133,7 +137,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             else
             {
                 period.IsActive = status > 0;
-                int count = BusinessHelper.DisabledPeriodHelper.Update(period, "IsActive");
+                var count = BusinessHelper.DisabledPeriodHelper.Update(period, "IsActive");
                 if (count > 0)
                 {
                     OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}",
@@ -154,7 +158,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult DeletePeriod(Guid periodId)
         {
-            int count = BusinessHelper.DisabledPeriodHelper.Delete(new DisabledPeriod { PeriodId = periodId });
+            var count = BusinessHelper.DisabledPeriodHelper.Delete(new DisabledPeriod { PeriodId = periodId });
             if (count > 0)
             {
                 OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, Username);

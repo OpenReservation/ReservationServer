@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace ActivityReservation.AdminLogic.ViewModels
 {
@@ -24,6 +21,6 @@ namespace ActivityReservation.AdminLogic.ViewModels
         /// 拉入黑名单的值
         /// </summary>
         [Required]
-        public string BlockValue { get; set; }     
+        public string BlockValue { get; set; }
     }
 }

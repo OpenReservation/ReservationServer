@@ -11,7 +11,6 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 预约活动室管理
     /// </summary>
-
     public class ReservationPlaceController : AdminBaseController
     {
         /// <summary>
@@ -34,13 +33,14 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 pageSize = 10;
             }
-            Expression<Func<Models.ReservationPlace, bool>> whereLambda = (p => p.IsDel == false);
+            Expression<Func<ReservationPlace, bool>> whereLambda = (p => p.IsDel == false);
             if (!String.IsNullOrEmpty(placeName))
             {
                 whereLambda = (p => p.PlaceName.Contains(placeName) && p.IsDel == false);
             }
-            int totalCount = 0;
-            var list = BusinessHelper.ReservationPlaceHelper.GetPagedList(pageIndex, pageSize, out totalCount, whereLambda, p => p.UpdateTime, false);
+            var totalCount = 0;
+            var list = BusinessHelper.ReservationPlaceHelper.GetPagedList(pageIndex, pageSize, out totalCount,
+                whereLambda, p => p.UpdateTime, false);
             var data = list.ToPagedList(pageIndex, pageSize, totalCount);
             return View(data);
         }
@@ -62,14 +62,23 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 return Json("活动室不存在");
             }
-            if (BusinessHelper.ReservationPlaceHelper.Exist(p => p.PlaceName.ToUpperInvariant().Equals(newName.ToUpperInvariant()) && p.IsDel == false))
+            if (BusinessHelper.ReservationPlaceHelper.Exist(p =>
+                p.PlaceName.ToUpperInvariant().Equals(newName.ToUpperInvariant()) && p.IsDel == false))
             {
                 return Json("活动室名称已存在");
             }
             try
             {
-                BusinessHelper.ReservationPlaceHelper.Update(new ReservationPlace() { PlaceId = placeId, PlaceName = newName, UpdateBy = Username, UpdateTime = DateTime.Now }, "PlaceName", "UpdateBy", "UpdateTime");
-                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}", OperLogModule.ReservationPlace, Username);
+                BusinessHelper.ReservationPlaceHelper.Update(
+                    new ReservationPlace()
+                    {
+                        PlaceId = placeId,
+                        PlaceName = newName,
+                        UpdateBy = Username,
+                        UpdateTime = DateTime.Now
+                    }, "PlaceName", "UpdateBy", "UpdateTime");
+                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}",
+                    OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
             catch (Exception ex)
@@ -87,11 +96,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (!String.IsNullOrEmpty(placeName))
             {
-                if (BusinessHelper.ReservationPlaceHelper.Exist(p => p.PlaceName.ToUpperInvariant().Equals(placeName.ToUpperInvariant()) && p.IsDel == false))
+                if (BusinessHelper.ReservationPlaceHelper.Exist(p =>
+                    p.PlaceName.ToUpperInvariant().Equals(placeName.ToUpperInvariant()) && p.IsDel == false))
                 {
                     return Json("活动室已存在");
                 }
-                ReservationPlace place = new ReservationPlace()
+                var place = new ReservationPlace()
                 {
                     PlaceId = Guid.NewGuid(),
                     PlaceName = placeName,
@@ -134,15 +144,19 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                BusinessHelper.ReservationPlaceHelper.Update(new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = Username }, "IsDel", "UpdateBy", "UpdateTime");
-                OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", OperLogModule.ReservationPlace, Username);
+                BusinessHelper.ReservationPlaceHelper.Update(
+                    new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = Username }, "IsDel", "UpdateBy",
+                    "UpdateTime");
+                OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", OperLogModule.ReservationPlace,
+                    Username);
                 return Json("");
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
                 return Json("删除活动室失败，发生异常：" + ex.Message);
-            };
+            }
+            ;
         }
 
         /// <summary>
@@ -164,16 +178,21 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                bool bStatus = (status > 0);
-                BusinessHelper.ReservationPlaceHelper.Update(new ReservationPlace() { PlaceId = placeId, UpdateBy = Username, IsActive = bStatus }, "IsActive", "UpdateBy", "UpdateTime");
-                OperLogHelper.AddOperLog(String.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(), placeName, (status > 0) ? "启用" : "禁用"), OperLogModule.ReservationPlace, Username);
+                var bStatus = (status > 0);
+                BusinessHelper.ReservationPlaceHelper.Update(
+                    new ReservationPlace() { PlaceId = placeId, UpdateBy = Username, IsActive = bStatus }, "IsActive",
+                    "UpdateBy", "UpdateTime");
+                OperLogHelper.AddOperLog(
+                    String.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(), placeName, (status > 0) ? "启用" : "禁用"),
+                    OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
                 return Json("修改活动室状态失败，发生异常：" + ex.Message);
-            };
+            }
+            ;
         }
     }
 }

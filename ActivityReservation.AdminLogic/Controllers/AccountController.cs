@@ -1,8 +1,9 @@
-﻿using ActivityReservation.Filters;
+﻿using ActivityReservation.AdminLogic.ViewModels;
+using ActivityReservation.Filters;
 using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
+using Models;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
@@ -17,7 +18,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [Filters.NoPermissionRequired]
+        [NoPermissionRequired]
         [HttpGet]
         public ActionResult Login(string returnUrl)
         {
@@ -34,19 +35,19 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns>登录结果</returns>
         [AllowAnonymous]
-        [Filters.NoPermissionRequired]
+        [NoPermissionRequired]
         [HttpPost]
-        public ActionResult LogOn(ViewModels.LoginViewModel model)
+        public ActionResult LogOn(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                Models.User u = new Models.User() { UserName = model.UserName, UserPassword = model.Password };
+                var u = new User() { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
                 u = BusinessHelper.UserHelper.Login(u);
                 if (u != null)
                 {
-                    Helpers.AuthFormService.Login(model.UserName, model.RememberMe);
-                    Helpers.AuthFormService.SetCurrentUser(u);
+                    AuthFormService.Login(model.UserName, model.RememberMe);
+                    AuthFormService.SetCurrentUser(u);
                     return Json(true);
                 }
             }
@@ -59,7 +60,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            Models.User u = CurrentUser;
+            var u = CurrentUser;
             return View(u);
         }
 
@@ -94,7 +95,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
-            Helpers.AuthFormService.Logout();
+            AuthFormService.Logout();
             //redirect to login page
             return RedirectToAction("Login");
         }
@@ -105,7 +106,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">修改密码实体</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ModifyPassword(ViewModels.ModifyPasswordViewModel model)
+        public ActionResult ModifyPassword(ModifyPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -121,7 +122,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
                         if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword") > 0)
                         {
-                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}", OperLogModule.Account, Username);
+                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+                                OperLogModule.Account, Username);
 
                             Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
 
@@ -155,17 +157,18 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 return Json(false);
             }
-            Models.User u = CurrentUser;
+            var u = CurrentUser;
             if (u != null)
             {
                 u.UserMail = email;
                 try
                 {
-                    int count = BusinessHelper.UserHelper.Update(u, "UserMail");
+                    var count = BusinessHelper.UserHelper.Update(u, "UserMail");
                     if (count == 1)
                     {
-                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}", OperLogModule.Account, Username);
-                        Helpers.AuthFormService.SetCurrentUser(u);
+                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+                            OperLogModule.Account, Username);
+                        AuthFormService.SetCurrentUser(u);
                         return Json(true);
                     }
                 }
@@ -183,14 +186,14 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="accountModel">账户信息实体</param>
         /// <returns></returns>
         [HttpPost]
-        [Filters.AdminPermissionRequired]
-        public ActionResult CreateAccount(ViewModels.CreateAccountViewModel accountModel)
+        [AdminPermissionRequired]
+        public ActionResult CreateAccount(CreateAccountViewModel accountModel)
         {
             if (ModelState.IsValid)
             {
-                Business.IBLLUser userBLL = BusinessHelper.UserHelper;
+                var userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
-                Models.User u = userBLL.Fetch(s => s.UserName == accountModel.Username);
+                var u = userBLL.Fetch(s => s.UserName == accountModel.Username);
                 if (u != null)
                 {
                     return Json(false);
@@ -201,7 +204,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     return Json(false);
                 }
-                u = new Models.User()
+                u = new User()
                 {
                     UserId = Guid.NewGuid(),
                     UserName = accountModel.Username,
@@ -210,10 +213,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 };
                 try
                 {
-                    int count = userBLL.Add(u);
+                    var count = userBLL.Add(u);
                     if (count == 1)
                     {
-                        OperLogHelper.AddOperLog(String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail), OperLogModule.Account, Username);
+                        OperLogHelper.AddOperLog(
+                            String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail),
+                            OperLogModule.Account, Username);
                         return Json(true);
                     }
                 }
@@ -231,12 +236,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="u">账户信息</param>
         /// <returns></returns>
         [HttpPost]
-        [Filters.AdminPermissionRequired]
-        public ActionResult DeleteAccount(Models.User u)
+        [AdminPermissionRequired]
+        public ActionResult DeleteAccount(User u)
         {
             try
             {
-                int count = BusinessHelper.UserHelper.Delete(u);
+                var count = BusinessHelper.UserHelper.Delete(u);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), OperLogModule.Account, Username);
@@ -256,14 +261,14 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="u">用户信息</param>
         /// <returns></returns>
         [HttpPost]
-        [Filters.AdminPermissionRequired]
-        public ActionResult ResetPass(Models.User u)
+        [AdminPermissionRequired]
+        public ActionResult ResetPass(User u)
         {
             try
             {
                 //加密
                 u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
-                int count = BusinessHelper.UserHelper.Update(u, "UserPassword");
+                var count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
@@ -290,7 +295,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [NoPermissionRequired]
         public ActionResult ValidUsername(string userName)
         {
-            Models.User u = BusinessHelper.UserHelper.Fetch(s => s.UserName == userName);
+            var u = BusinessHelper.UserHelper.Fetch(s => s.UserName == userName);
             if (u == null)
             {
                 return Json(true);
@@ -309,7 +314,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ValidUserMail(string userMail)
         {
-            Models.User u = BusinessHelper.UserHelper.Fetch(s => s.UserMail == userMail);
+            var u = BusinessHelper.UserHelper.Fetch(s => s.UserMail == userMail);
             if (u == null)
             {
                 return Json(true);
@@ -325,10 +330,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="password">用户密码</param>
         /// <returns></returns>
-        [Filters.PermissionRequired]
+        [PermissionRequired]
         public ActionResult ValidOldPassword(string password)
         {
-            Models.User u = CurrentUser;
+            var u = CurrentUser;
             if (u != null)
             {
                 if (u.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(password)))
@@ -339,24 +344,25 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        [Filters.AdminPermissionRequired]
+        [AdminPermissionRequired]
         public ActionResult UserList()
         {
             return View();
         }
 
-        [Filters.AdminPermissionRequired]
+        [AdminPermissionRequired]
         public ActionResult UserListTable(SearchHelperModel search)
         {
             //默认查询所有
-            Expression<Func<Models.User, bool>> whereLambda = (u => u.IsSuper == false);
+            Expression<Func<User, bool>> whereLambda = (u => u.IsSuper == false);
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLambda = (u => u.UserName.Contains(search.SearchItem1) && u.IsSuper == false);
             }
-            int rowsCount = 0;
-            List<Models.User> userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, u => u.AddTime, false);
-            IPagedListModel<Models.User> data = userList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var rowsCount = 0;
+            var userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount,
+                whereLambda, u => u.AddTime, false);
+            var data = userList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(data);
         }
     }

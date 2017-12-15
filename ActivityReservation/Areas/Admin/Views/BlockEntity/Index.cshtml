@@ -4,14 +4,18 @@
 }
 <div class="table-wraper">
     <div class="table-header">
-        <h3 class="table-title">预约黑名单管理 <small><button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加黑名单</button></small></h3>
+        <h3 class="table-title">
+            预约黑名单管理 <small>
+                <button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加黑名单</button>
+            </small>
+        </h3>
         <div class="form-inline">
-            <div style="display:inline-block" class="form-group">
+            <div style="display: inline-block" class="form-group">
                 按黑名单类型查看：
                 <label>
                     <input type="radio" checked="checked" value="0" class="radio-inline" name="blockTypes" />全部
                 </label>
-                @foreach (Models.BlockType t in Model)
+                @foreach (var t in Model)
                 {
                     <label>
                         <input type="radio" class="radio-inline" value="@t.TypeId" name="blockTypes" />@t.TypeName
@@ -25,7 +29,7 @@
     </div>
     <div class="table-body" id="div_main"></div>
 </div>
-<div id="div_addToBlockList" style="display:none;width:300px;padding:10px" class="container">
+<div id="div_addToBlockList" style="display: none; width: 300px; padding: 10px" class="container">
     <form>
         <div class="input-group">
             <label for="inputBlockValue">请输入要添加到黑名单的信息</label> <br />
@@ -34,7 +38,7 @@
         <div class="input-group">
             <label>请选择黑名单类型</label><br />
             <select id="blockType">
-                @foreach (Models.BlockType t in Model)
+                @foreach (var t in Model)
                 {
                     <option value="@t.TypeId">@t.TypeName</option>
                 }
@@ -45,6 +49,7 @@
 @section scripts{
     <script>
         var pageSize = 10, pageIndex = 1;
+
         //加载数据
         function loadData(pIndex) {
             if (!pIndex) {
@@ -52,13 +57,17 @@
             } else {
                 pageIndex = pIndex;
             }
-            $("#div_main").html('<br /><img src="/images/loading.gif"/> 正在玩命加载中，请稍后...');
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> 正在玩命加载中，请稍后...');
             $.ajax({
                 url: "/Admin/BlockEntity/List",
                 data: {
-                    "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem0": "", "SearchItem1": $("input[name='blockTypes']:radio:checked").val(), "SearchItem2": $("#entityValue").val()
+                    "PageIndex": pageIndex,
+                    "PageSize": pageSize,
+                    "SearchItem0": "",
+                    "SearchItem1": $("input[name='blockTypes']:radio:checked").val(),
+                    "SearchItem2": $("#entityValue").val()
                 },
-                success: function (data, status) {
+                success: function(data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -68,62 +77,72 @@
                 }
             });
         }
-        //搜索
-        $("#btnSearch").on("click", function () {
-            loadData();
-        });
-        //
-        $("input[name='blockTypes']").on("change", function () {
-            loadData();
-        });
-        //添加黑名单
-        $("#btnAdd").on("click", function () {
-            layer.open({
-                type:1,
-                content: $("#div_addToBlockList"),
-                area:["300px","240px"],
-                btn: ["添加", "取消"],
-                title:"添加黑名单",
-                yes: function (index) {
-                    var type = $("#blockType").val(), blockValue = $("#inputBlockValue").val();
-                    if (type && blockValue) {
-                        $.post("/Admin/BlockEntity/AddEntity", { "typeId": type, "blockValue": blockValue }, function (data) {
-                            if (data) {
-                                layer.msg("添加成功");
-                                $("#inputBlockValue").val('');
-                                loadData();
-                            } else {
-                                layer.msg("添加失败，请稍后重试！")
-                            }
-                        })
-                    } else {
-                        layer.msg('添加到黑名单信息不完整');
-                    }
-                    layer.close(index);
-                },
-                cancel: function () {
 
-                }
+        //搜索
+        $("#btnSearch").on("click",
+            function() {
+                loadData();
             });
-        });
+        //
+        $("input[name='blockTypes']").on("change",
+            function() {
+                loadData();
+            });
+        //添加黑名单
+        $("#btnAdd").on("click",
+            function() {
+                layer.open({
+                    type: 1,
+                    content: $("#div_addToBlockList"),
+                    area: ["300px", "240px"],
+                    btn: ["添加", "取消"],
+                    title: "添加黑名单",
+                    yes: function(index) {
+                        var type = $("#blockType").val(), blockValue = $("#inputBlockValue").val();
+                        if (type && blockValue) {
+                            $.post("/Admin/BlockEntity/AddEntity",
+                                { "typeId": type, "blockValue": blockValue },
+                                function(data) {
+                                    if (data) {
+                                        layer.msg("添加成功");
+                                        $("#inputBlockValue").val('');
+                                        loadData();
+                                    } else {
+                                        layer.msg("添加失败，请稍后重试！")
+                                    }
+                                })
+                        } else {
+                            layer.msg('添加到黑名单信息不完整');
+                        }
+                        layer.close(index);
+                    },
+                    cancel: function() {
+
+                    }
+                });
+            });
+
         //更新
-        function UpdateStatus(id, entityName,status, obj) {            
+        function UpdateStatus(id, entityName, status, obj) {
             if (id && status) {
                 $(obj).attr("disabled", "disabled");
-                layer.confirm("将要更改这条黑名单的状态，是否继续？", {
+                layer.confirm("将要更改这条黑名单的状态，是否继续？",
+                    {
                         btn: ["确定", "取消"],
-                        title: "确认"                    
+                        title: "确认"
                     },
-                    function (idx) {
-                        $.post("/Admin/BlockEntity/UpdateEntityStatus", { "entityId": id,"entityName":entityName, "status": status }, function (data) {
-                            if (data) {
-                                layer.msg('更新成功');
-                                loadData(pageIndex);
-                            }
-                        })
+                    function(idx) {
+                        $.post("/Admin/BlockEntity/UpdateEntityStatus",
+                            { "entityId": id, "entityName": entityName, "status": status },
+                            function(data) {
+                                if (data) {
+                                    layer.msg('更新成功');
+                                    loadData(pageIndex);
+                                }
+                            })
                         layer.close(idx);
                     },
-                    function () {
+                    function() {
                         $(obj).removeAttr("disabled");
                     }
                 );
@@ -131,32 +150,37 @@
                 layer.msg("参数异常，更新状态失败");
             }
         }
+
         //删除
-        function DeleteEntity(id,entityName,obj) {
+        function DeleteEntity(id, entityName, obj) {
             if (id) {
                 $(obj).attr("disabled", "disabled");
-                layer.confirm("将要从黑名单中删除这条数据，是否继续？", {
-                    title: "警告",
-                    btn: ["确定", "取消"]                    
-                },
-                function (idx) {
-                    $.post("/Admin/BlockEntity/DeleteEntity", { "entityId": id,"entityName":entityName }, function (data) {
-                        if (data) {
-                            layer.msg("删除成功");
-                            loadData(pageIndex);
-                        }
+                layer.confirm("将要从黑名单中删除这条数据，是否继续？",
+                    {
+                        title: "警告",
+                        btn: ["确定", "取消"]
+                    },
+                    function(idx) {
+                        $.post("/Admin/BlockEntity/DeleteEntity",
+                            { "entityId": id, "entityName": entityName },
+                            function(data) {
+                                if (data) {
+                                    layer.msg("删除成功");
+                                    loadData(pageIndex);
+                                }
+                            });
+                        layer.close(idx);
+                    },
+                    function(idx) {
+                        $(obj).removeAttr("disabled");
+                        layer.close(idx);
                     });
-                    layer.close(idx);
-                },
-                function (idx) {
-                    $(obj).removeAttr("disabled");
-                    layer.close(idx);
-                });
             } else {
                 layer.msg("参数异常，删除失败");
             }
         }
-        $(function () {
+
+        $(function() {
             loadData();
         });
     </script>

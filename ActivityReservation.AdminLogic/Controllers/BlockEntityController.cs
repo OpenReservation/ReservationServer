@@ -1,7 +1,7 @@
 ﻿using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
+using Models;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
@@ -16,7 +16,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
-            List<Models.BlockType> types = BusinessHelper.BlockTypeHelper.GetAll();
+            var types = BusinessHelper.BlockTypeHelper.GetAll();
             return View(types);
         }
 
@@ -28,11 +28,11 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             //默认查询全部
-            Expression<Func<Models.BlockEntity, bool>> whereLambda = (b => true);
+            Expression<Func<BlockEntity, bool>> whereLambda = (b => true);
             //判断查询条件
             if (!String.IsNullOrEmpty(search.SearchItem1) && !("0".Equals(search.SearchItem1)))
             {
-                Guid id = Guid.Parse(search.SearchItem1);
+                var id = Guid.Parse(search.SearchItem1);
                 if (!String.IsNullOrEmpty(search.SearchItem2))
                 {
                     whereLambda = (b => b.BlockTypeId == id && b.BlockValue.Contains(search.SearchItem2));
@@ -49,11 +49,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                     whereLambda = (b => b.BlockValue.Contains(search.SearchItem2));
                 }
             }
-            int rowsCount = 0;
+            var rowsCount = 0;
             try
             {
-                List<Models.BlockEntity> blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, b => b.BlockTime, false);
-                IPagedListModel<Models.BlockEntity> dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+                var blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize,
+                    out rowsCount, whereLambda, b => b.BlockTime, false);
+                var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
                 return View(dataList);
             }
             catch (Exception ex)
@@ -72,7 +73,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                Models.BlockEntity entity = new Models.BlockEntity()
+                var entity = new BlockEntity()
                 {
                     BlockId = Guid.NewGuid(),
                     BlockTypeId = typeId,
@@ -81,11 +82,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 };
                 try
                 {
-                    int count = BusinessHelper.BlockEntityHelper.Add(entity);
+                    var count = BusinessHelper.BlockEntityHelper.Add(entity);
                     if (count == 1)
                     {
                         //记录日志
-                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity, Username);
+                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity,
+                            Username);
                         return Json(true);
                     }
                 }
@@ -109,7 +111,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult UpdateEntityStatus(Guid entityId, string entityName, int status)
         {
-            Models.BlockEntity entity = new Models.BlockEntity() { BlockId = entityId };
+            var entity = new BlockEntity() { BlockId = entityId };
             if (status > 0)
             {
                 entity.IsActive = true;
@@ -120,10 +122,12 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                int count = BusinessHelper.BlockEntityHelper.Update(entity, "IsActive");
+                var count = BusinessHelper.BlockEntityHelper.Update(entity, "IsActive");
                 if (count > 0)
                 {
-                    OperLogHelper.AddOperLog(String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive ? "启用" : "禁用"), OperLogModule.BlockEntity, Username);
+                    OperLogHelper.AddOperLog(
+                        String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive ? "启用" : "禁用"),
+                        OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
             }
@@ -144,7 +148,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                int c = BusinessHelper.BlockEntityHelper.Delete(new Models.BlockEntity() { BlockId = entityId });
+                var c = BusinessHelper.BlockEntityHelper.Delete(new BlockEntity() { BlockId = entityId });
                 if (c == 1)
                 {
                     //记录日志

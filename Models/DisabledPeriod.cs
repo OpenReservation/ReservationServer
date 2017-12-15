@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Models
 {
@@ -15,6 +11,7 @@ namespace Models
     public class DisabledPeriod
     {
         #region private field
+
         private Guid periodId;
         private DateTime startDate;
         private DateTime endDate;
@@ -23,7 +20,8 @@ namespace Models
         private string updatedBy;
         private DateTime updatedTime;
         private bool isDeleted;
-        #endregion
+
+        #endregion private field
 
         /// <summary>
         /// 主键
@@ -31,15 +29,9 @@ namespace Models
         [Key]
         public Guid PeriodId
         {
-            get
-            {
-                return periodId;
-            }
+            get { return periodId; }
 
-            set
-            {
-                periodId = value;
-            }
+            set { periodId = value; }
         }
 
         /// <summary>
@@ -48,15 +40,9 @@ namespace Models
         [Column]
         public DateTime StartDate
         {
-            get
-            {
-                return startDate;
-            }
+            get { return startDate; }
 
-            set
-            {
-                startDate = value;
-            }
+            set { startDate = value; }
         }
 
         /// <summary>
@@ -65,15 +51,9 @@ namespace Models
         [Column]
         public DateTime EndDate
         {
-            get
-            {
-                return endDate;
-            }
+            get { return endDate; }
 
-            set
-            {
-                endDate = value;
-            }
+            set { endDate = value; }
         }
 
         /// <summary>
@@ -82,15 +62,9 @@ namespace Models
         [Column]
         public bool RepeatYearly
         {
-            get
-            {
-                return repeatYearly;
-            }
+            get { return repeatYearly; }
 
-            set
-            {
-                repeatYearly = value;
-            }
+            set { repeatYearly = value; }
         }
 
         /// <summary>
@@ -99,15 +73,9 @@ namespace Models
         [Column]
         public string UpdatedBy
         {
-            get
-            {
-                return updatedBy;
-            }
+            get { return updatedBy; }
 
-            set
-            {
-                updatedBy = value;
-            }
+            set { updatedBy = value; }
         }
 
         /// <summary>
@@ -116,15 +84,9 @@ namespace Models
         [Column]
         public DateTime UpdatedTime
         {
-            get
-            {
-                return updatedTime;
-            }
+            get { return updatedTime; }
 
-            set
-            {
-                updatedTime = value;
-            }
+            set { updatedTime = value; }
         }
 
         /// <summary>
@@ -133,15 +95,9 @@ namespace Models
         [Column]
         public bool IsActive
         {
-            get
-            {
-                return isActive;
-            }
+            get { return isActive; }
 
-            set
-            {
-                isActive = value;
-            }
+            set { isActive = value; }
         }
 
         /// <summary>
@@ -150,15 +106,9 @@ namespace Models
         [Column]
         public bool IsDeleted
         {
-            get
-            {
-                return isDeleted;
-            }
+            get { return isDeleted; }
 
-            set
-            {
-                isDeleted = value;
-            }
+            set { isDeleted = value; }
         }
     }
 }

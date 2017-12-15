@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Exceptionless.Json;
+using System;
 using System.Threading.Tasks;
-using Exceptionless.Json;
 using WeihanLi.Common.Helpers;
 
 namespace Common
@@ -77,7 +74,7 @@ namespace Common
         }
     }
 
-    class QingyunkeResponseModel
+    internal class QingyunkeResponseModel
     {
         /// <summary>
         /// result
@@ -86,6 +83,7 @@ namespace Common
         public int Result { get; set; }
 
         private string _content;
+
         /// <summary>
         /// content
         /// </summary>

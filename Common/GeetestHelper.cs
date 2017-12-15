@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using WeihanLi.Common.Helpers;
 
 namespace Common
@@ -20,15 +19,9 @@ namespace Common
 
         public GeetestResponseModel Response
         {
-            get
-            {
-                return response;
-            }
+            get { return response; }
 
-            set
-            {
-                response = value;
-            }
+            set { response = value; }
         }
 
         /// <summary>
@@ -55,7 +48,7 @@ namespace Common
             if (this.captchaID != null)
             {
                 this.userID = userID;
-                string challenge = this.registerChallenge();
+                var challenge = this.registerChallenge();
                 if (challenge.Length == 32)
                 {
                     getSuccessPreProcessRes(challenge);
@@ -79,14 +72,15 @@ namespace Common
         /// </summary>
         private void getFailPreProcessRes()
         {
-            int rand1 = new Random().Next(100,1000);
-            int rand2 = new Random().Next(100, 1000);
-            string md5Str1 = Encode(rand1.ToString() + "");
-            string md5Str2 = Encode(rand2.ToString() + "");
-            string challenge = md5Str1 + md5Str2.Substring(0, 2);
+            var rand1 = new Random().Next(100, 1000);
+            var rand2 = new Random().Next(100, 1000);
+            var md5Str1 = Encode(rand1.ToString() + "");
+            var md5Str2 = Encode(rand2.ToString() + "");
+            var challenge = md5Str1 + md5Str2.Substring(0, 2);
             response.success = 0;
             response.challenge = challenge;
         }
+
         /// <summary>
         /// 预处理成功后的标准串
         /// </summary>
@@ -96,6 +90,7 @@ namespace Common
             response.success = 1;
             response.challenge = challenge;
         }
+
         /// <summary>
         /// failback模式的验证方式
         /// </summary>
@@ -109,30 +104,31 @@ namespace Common
             {
                 return GeetestConsts.FailResult;
             }
-            string[] validateStr = validate.Split('_');
-            string encodeAns = validateStr[0];
-            string encodeFullBgImgIndex = validateStr[1];
-            string encodeImgGrpIndex = validateStr[2];
-            int decodeAns = DecodeResponse(challenge, encodeAns);
-            int decodeFullBgImgIndex = DecodeResponse(challenge, encodeFullBgImgIndex);
-            int decodeImgGrpIndex = DecodeResponse(challenge, encodeImgGrpIndex);
-            int validateResult = validateFailImage(decodeAns, decodeFullBgImgIndex, decodeImgGrpIndex);
+            var validateStr = validate.Split('_');
+            var encodeAns = validateStr[0];
+            var encodeFullBgImgIndex = validateStr[1];
+            var encodeImgGrpIndex = validateStr[2];
+            var decodeAns = DecodeResponse(challenge, encodeAns);
+            var decodeFullBgImgIndex = DecodeResponse(challenge, encodeFullBgImgIndex);
+            var decodeImgGrpIndex = DecodeResponse(challenge, encodeImgGrpIndex);
+            var validateResult = validateFailImage(decodeAns, decodeFullBgImgIndex, decodeImgGrpIndex);
             return validateResult;
         }
+
         private int validateFailImage(int ans, int full_bg_index, int img_grp_index)
         {
             const int thread = 3;
-            string full_bg_name = this.Encode(full_bg_index + "").Substring(0, 10);
-            string bg_name = Encode(img_grp_index + "").Substring(10, 10);
-            string answer_decode = "";
-            for (int i = 0; i < 9; i++)
+            var full_bg_name = this.Encode(full_bg_index + "").Substring(0, 10);
+            var bg_name = Encode(img_grp_index + "").Substring(10, 10);
+            var answer_decode = "";
+            for (var i = 0; i < 9; i++)
             {
                 if (i % 2 == 0) answer_decode += full_bg_name.ElementAt(i);
                 else if (i % 2 == 1) answer_decode += bg_name.ElementAt(i);
             }
-            string x_decode = answer_decode.Substring(4);
-            int x_int = Convert.ToInt32(x_decode, 16);
-            int result = x_int % 200;
+            var x_decode = answer_decode.Substring(4);
+            var x_int = Convert.ToInt32(x_decode, 16);
+            var result = x_int % 200;
             if (result < 40) result = 40;
             if (Math.Abs(ans - result) < thread)
             {
@@ -140,6 +136,7 @@ namespace Common
             }
             return GeetestConsts.FailResult;
         }
+
         private bool requestIsLegal(string challenge, string validate, string seccode)
         {
             if (String.IsNullOrEmpty(challenge) || String.IsNullOrEmpty(validate) || String.IsNullOrEmpty(seccode))
@@ -164,8 +161,8 @@ namespace Common
             }
             if (validate.Length > 0 && checkResultByPrivate(challenge, validate))
             {
-                string query = "seccode=" + seccode + "&user_id=" + userID + "&sdk=csharp_" + GeetestConsts.Version;
-                string response = "";
+                var query = "seccode=" + seccode + "&user_id=" + userID + "&sdk=csharp_" + GeetestConsts.Version;
+                var response = "";
                 try
                 {
                     response = postValidate(query);
@@ -184,43 +181,45 @@ namespace Common
 
         private string registerChallenge()
         {
-            string url = "";
+            var url = "";
             if (string.Empty.Equals(this.userID))
             {
                 url = string.Format("{0}{1}?gt={2}", GeetestConsts.ApiUrl, GeetestConsts.RegisterUrl, this.captchaID);
             }
             else
             {
-                url = string.Format("{0}{1}?gt={2}&user_id={3}", GeetestConsts.ApiUrl, GeetestConsts.RegisterUrl, this.captchaID, this.userID);
+                url = string.Format("{0}{1}?gt={2}&user_id={3}", GeetestConsts.ApiUrl, GeetestConsts.RegisterUrl,
+                    this.captchaID, this.userID);
             }
-            string retstring = HttpHelper.HttpGetString(url);
+            var retstring = HttpHelper.HttpGetString(url);
             return retstring;
         }
+
         private bool checkResultByPrivate(string origin, string validate)
         {
-            string encodeStr = Encode(privateKey + "geetest" + origin);
+            var encodeStr = Encode(privateKey + "geetest" + origin);
             return validate.Equals(encodeStr);
         }
 
         private string postValidate(string data)
         {
-            string url = string.Format("{0}{1}", GeetestConsts.ApiUrl, GeetestConsts.ValidateUrl);
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            var url = string.Format("{0}{1}", GeetestConsts.ApiUrl, GeetestConsts.ValidateUrl);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "POST";
             request.ContentType = "application/x-www-form-urlencoded";
             request.ContentLength = Encoding.UTF8.GetByteCount(data);
             // 发送数据
-            Stream myRequestStream = request.GetRequestStream();
-            byte[] requestBytes = Encoding.ASCII.GetBytes(data);
+            var myRequestStream = request.GetRequestStream();
+            var requestBytes = Encoding.ASCII.GetBytes(data);
             myRequestStream.Write(requestBytes, 0, requestBytes.Length);
             myRequestStream.Close();
-            HttpWebResponse res = (HttpWebResponse)request.GetResponse();
+            var res = (HttpWebResponse)request.GetResponse();
             // 读取返回信息
-            using (Stream myResponseStream = res.GetResponseStream())
+            using (var myResponseStream = res.GetResponseStream())
             {
                 if (myResponseStream != null)
                 {
-                    using (StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8))
+                    using (var myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8))
                     {
                         return myStreamReader.ReadToEnd();
                     }
@@ -231,38 +230,39 @@ namespace Common
 
         private int DecodeRandBase(string challenge)
         {
-            string baseStr = challenge.Substring(32, 2);
-            List<int> tempList = new List<int>();
-            for (int i = 0; i < baseStr.Length; i++)
+            var baseStr = challenge.Substring(32, 2);
+            var tempList = new List<int>();
+            for (var i = 0; i < baseStr.Length; i++)
             {
-                int tempAscii = (int)baseStr[i];
-                tempList.Add((tempAscii > 57) ? (tempAscii - 87)
+                var tempAscii = (int)baseStr[i];
+                tempList.Add((tempAscii > 57)
+                    ? (tempAscii - 87)
                     : (tempAscii - 48));
             }
-            int result = tempList.ElementAt(0) * 36 + tempList.ElementAt(1);
+            var result = tempList.ElementAt(0) * 36 + tempList.ElementAt(1);
             return result;
         }
 
         private int DecodeResponse(string challenge, string str)
         {
             if (str.Length > 100) return 0;
-            int[] shuzi = new int[] { 1, 2, 5, 10, 50 };
-            string chongfu = "";
-            Hashtable key = new Hashtable();
-            int count = 0;
-            for (int i = 0; i < challenge.Length; i++)
+            var shuzi = new int[] { 1, 2, 5, 10, 50 };
+            var chongfu = "";
+            var key = new Hashtable();
+            var count = 0;
+            for (var i = 0; i < challenge.Length; i++)
             {
-                string item = challenge.ElementAt(i) + "";
+                var item = challenge.ElementAt(i) + "";
                 if (!chongfu.Contains(item))
                 {
-                    int value = shuzi[count % 5];
+                    var value = shuzi[count % 5];
                     chongfu += item;
                     count++;
                     key.Add(item, value);
                 }
             }
-            int res = 0;
-            for (int i = 0; i < str.Length; i++) res += (int)key[str[i] + ""];
+            var res = 0;
+            for (var i = 0; i < str.Length; i++) res += (int)key[str[i] + ""];
             res = res - this.DecodeRandBase(challenge);
             return res;
         }
@@ -274,7 +274,7 @@ namespace Common
         /// <returns></returns>
         private string Encode(string plainText)
         {
-            string t2 = BitConverter.ToString(HashHelper.GetHashedBytes(HashType.MD5, plainText));
+            var t2 = BitConverter.ToString(HashHelper.GetHashedBytes(HashType.MD5, plainText));
             t2 = t2.Replace("-", "");
             t2 = t2.ToLower();
             return t2;
@@ -302,34 +302,42 @@ namespace Common
         /// SDK版本号
         /// </summary>
         public const string Version = "3.2.0";
+
         /// <summary>
         /// SDK开发语言
         /// </summary>
         public const string SdkLang = "csharp";
+
         /// <summary>
         /// 极验验证API URL
         /// </summary>
         public const string ApiUrl = "http://api.geetest.com";
+
         /// <summary>
         /// register url
         /// </summary>
         public const string RegisterUrl = "/register.php";
+
         /// <summary>
         /// validate url
         /// </summary>
         public const string ValidateUrl = "/validate.php";
+
         /// <summary>
         /// 极验验证API服务状态Session Key
         /// </summary>
         public const string GtServerStatusSessionKey = "gt_server_status";
+
         /// <summary>
         /// 极验验证二次验证表单数据 Chllenge
         /// </summary>
         public const string fnGeetestChallenge = "geetest_challenge";
+
         /// <summary>
         /// 极验验证二次验证表单数据 Validate
         /// </summary>
         public const string fnGeetestValidate = "geetest_validate";
+
         /// <summary>
         /// 极验验证二次验证表单数据 Seccode
         /// </summary>
@@ -339,19 +347,22 @@ namespace Common
         /// 验证成功结果字符串
         /// </summary>
         public const int SuccessResult = 1;
+
         /// <summary>
         /// 证结失败验果字符串
         /// </summary>
         public const int FailResult = 0;
+
         /// <summary>
         /// 判定为机器人结果字符串
         /// </summary>
         public const string ForbiddenResult = "forbidden";
-        
+
         /// <summary>
         /// public key
         /// </summary>
         public static readonly string publicKey = ConfigurationHelper.AppSetting("GeetestPublicKey");
+
         /// <summary>
         /// private key
         /// </summary>

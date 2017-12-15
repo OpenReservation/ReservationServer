@@ -12,6 +12,5 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// 日志助手
         /// </summary>
         private static LogHelper logger = new LogHelper(typeof(HomeController));
-
     }
 }

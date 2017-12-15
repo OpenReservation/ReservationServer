@@ -5,7 +5,7 @@
 @if (Model.Data.Count() > 0)
 {
     <ul>
-        @foreach (Models.Notice item in Model.Data)
+        @foreach (var item in Model.Data)
         {
             <li>
                 <a href="/Notice/@item.NoticePath" target="_blank">

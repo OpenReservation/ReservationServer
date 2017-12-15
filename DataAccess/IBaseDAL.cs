@@ -82,7 +82,8 @@ namespace DataAccess
         /// <param name="orderBy">排序条件Linq表达式</param>
         /// <param name="isAsc">是否是正向排序</param>
         /// <returns>符合要求的数据列表</returns>
-        List<T> GetPagedList<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true);
+        List<T> GetPagedList<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> whereLambda,
+            Expression<Func<T, TKey>> orderBy, bool isAsc = true);
 
         #region 查询分页数据（返回符合要求的记录总数）+ GetPagedList
 
@@ -97,7 +98,8 @@ namespace DataAccess
         /// <param name="orderBy">排序条件Linq表达式</param>
         /// <param name="isAsc">是否正序排列</param>
         /// <returns>符合要求的列表</returns>
-        List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true);
+        List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount,
+            Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true);
 
         /// <summary>
         /// 获取分页数据，双排序
@@ -113,7 +115,9 @@ namespace DataAccess
         /// <param name="isAsc">首要排序条件的排序顺序，是否正序排列</param>
         /// <param name="isAsc1">次要排序条件的排序顺序，是否正序排列 </param>
         /// <returns>符合条件的数据集合</returns>
-        List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true);
+        List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount,
+            Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,
+            Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true);
 
         #endregion 查询分页数据（返回符合要求的记录总数）+ GetPagedList
 

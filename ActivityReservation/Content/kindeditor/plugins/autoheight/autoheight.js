@@ -7,43 +7,44 @@
 * @licence http://www.kindsoft.net/license.php
 *******************************************************************************/
 
-KindEditor.plugin('autoheight', function(K) {
-	var self = this;
+KindEditor.plugin('autoheight',
+    function (K) {
+        var self = this;
 
-	if (!self.autoHeightMode) {
-		return;
-	}
+        if (!self.autoHeightMode) {
+            return;
+        }
 
-	var minHeight;
+        var minHeight;
 
-	function hideScroll() {
-		var edit = self.edit;
-		var body = edit.doc.body;
-		edit.iframe[0].scroll = 'no';
-		body.style.overflowY = 'hidden';
-	}
+        function hideScroll() {
+            var edit = self.edit;
+            var body = edit.doc.body;
+            edit.iframe[0].scroll = 'no';
+            body.style.overflowY = 'hidden';
+        }
 
-	function resetHeight() {
-		var edit = self.edit;
-		var body = edit.doc.body;
-		edit.iframe.height(minHeight);
-		self.resize(null, Math.max((K.IE ? body.scrollHeight : body.offsetHeight) + 76, minHeight));
-	}
+        function resetHeight() {
+            var edit = self.edit;
+            var body = edit.doc.body;
+            edit.iframe.height(minHeight);
+            self.resize(null, Math.max((K.IE ? body.scrollHeight : body.offsetHeight) + 76, minHeight));
+        }
 
-	function init() {
-		minHeight = K.removeUnit(self.height);
+        function init() {
+            minHeight = K.removeUnit(self.height);
 
-		self.edit.afterChange(resetHeight);
-		hideScroll();
-		resetHeight();
-	}
+            self.edit.afterChange(resetHeight);
+            hideScroll();
+            resetHeight();
+        }
 
-	if (self.isCreated) {
-		init();
-	} else {
-		self.afterCreate(init);
-	}
-});
+        if (self.isCreated) {
+            init();
+        } else {
+            self.afterCreate(init);
+        }
+    });
 
 /*
 * 如何实现真正的自动高度？

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.Web.Hosting;
 
 namespace Common
 {
@@ -13,7 +12,7 @@ namespace Common
         public static string MapPath(string virtualPath)
         {
             //拼接路径
-            return System.Web.Hosting.HostingEnvironment.MapPath("~/")+ virtualPath;
-        }        
+            return HostingEnvironment.MapPath("~/") + virtualPath;
+        }
     }
 }

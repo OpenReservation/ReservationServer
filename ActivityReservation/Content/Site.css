@@ -2,55 +2,61 @@
     padding-top: 50px;
     padding-bottom: 20px;
 }
+
 /* Set padding to keep content from hitting the edges */
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
-.main-content {
-    min-height:24em;
-}
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
+
+.main-content { min-height: 24em; }
+
+/* Override the default bootstrap behavior where horizontal description lists
+   will truncate terms that are too long to fit in the left column
 */
-.dl-horizontal dt {
-    white-space: normal;
-}
+
+.dl-horizontal dt { white-space: normal; }
+
 /* Set width on the form input elements since they're 100% wide by default */
+
 input,
 select,
-textarea {
-    max-width: 280px;
-}
+textarea { max-width: 280px; }
+
 footer {
-    padding:0.4em;
-    text-align:center;
+    padding: 0.4em;
+    text-align: center;
 }
+
 /* custome styles for */
+
 .nodata-tip {
-    padding:1em;
-    font-size:1.2em;
-    text-align:center;
+    padding: 1em;
+    font-size: 1.2em;
+    text-align: center;
 }
+
 #div_main {
-    width:100%;
-    overflow:auto;
+    width: 100%;
+    overflow: auto;
 }
+
 .table-wraper {
-    width:100%;
-    min-width:400px;
+    width: 100%;
+    min-width: 400px;
 }
-.table-header {
-    padding:10px 0 4px;
+
+.table-header { padding: 10px 0 4px; }
+
+.table-title { /*border-bottom:2px solid #ccc;*/ }
+
+.table-body {
+    border-top: 1px solid #ccc;
+    margin-top: 0.8em;
 }
-.table-title{
-   /*border-bottom:2px solid #ccc;*/
-}
-.table-body{
-    border-top:1px solid #ccc;
-    margin-top:0.8em;
-}
+
 .form-control {
-    margin-top:0.2em;
-    margin-bottom:0.3em;
+    margin-top: 0.2em;
+    margin-bottom: 0.3em;
 }

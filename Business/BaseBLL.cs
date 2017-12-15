@@ -1,12 +1,13 @@
-﻿using System;
+﻿using DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace Business
 {
-    public abstract class BaseBLL<T>:IBaseBLL<T> where T : class
+    public abstract class BaseBLL<T> : IBaseBLL<T> where T : class
     {
-        protected DataAccess.IBaseDAL<T> dbHandler = null;
+        protected IBaseDAL<T> dbHandler = null;
 
         public BaseBLL()
         {
@@ -53,12 +54,13 @@ namespace Business
         public T Fetch(Expression<Func<T, bool>> whereLambda)
         {
             return dbHandler.Fetch(whereLambda);
-        }        
+        }
 
         public List<T> GetAll()
         {
             return dbHandler.GetAll();
         }
+
         /// <summary>
         /// 查询所有数据并根据指定项排序
         /// </summary>
@@ -89,11 +91,11 @@ namespace Business
         /// <param name="orderBy">排序表达式</param>
         /// <param name="isAsc">是否正序排列</param>
         /// <returns></returns>
-        public List<T> GetAll<TKey>(Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc)
+        public List<T> GetAll<TKey>(Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,
+            bool isAsc)
         {
             return dbHandler.GetAll(whereLambda, orderBy, isAsc);
         }
-
 
         /// <summary>
         /// 查询分页数据 + List<T> GetPagedList
@@ -105,7 +107,8 @@ namespace Business
         /// <param name="orderBy">排序条件Linq表达式</param>
         /// <param name="isAsc">是否是正向排序</param>
         /// <returns>符合要求的数据列表</returns>
-        public List<T> GetPagedList<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
+        public List<T> GetPagedList<TKey>(int pageIndex, int pageSize, Expression<Func<T, bool>> whereLambda,
+            Expression<Func<T, TKey>> orderBy, bool isAsc = true)
         {
             return dbHandler.GetPagedList(pageIndex, pageSize, whereLambda, orderBy, isAsc);
         }
@@ -123,7 +126,8 @@ namespace Business
         /// <param name="orderBy">排序条件Linq表达式</param>
         /// <param name="isAsc">是否正序排列</param>
         /// <returns>符合要求的列表</returns>
-        public virtual List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
+        public virtual List<T> GetPagedList<TKey>(int pageIndex, int pageSize, out int rowsCount,
+            Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, bool isAsc = true)
         {
             return dbHandler.GetPagedList(pageIndex, pageSize, out rowsCount, whereLambda, orderBy, isAsc);
         }
@@ -142,9 +146,12 @@ namespace Business
         /// <param name="isAsc">首要排序条件的排序顺序，是否正序排列</param>
         /// <param name="isAsc1">次要排序条件的排序顺序，是否正序排列 </param>
         /// <returns>符合条件的数据集合</returns>
-        public virtual List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount, Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy, Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true)
+        public virtual List<T> GetPagedList<TKey, TKey1>(int pageIndex, int pageSize, out int rowsCount,
+            Expression<Func<T, bool>> whereLambda, Expression<Func<T, TKey>> orderBy,
+            Expression<Func<T, TKey1>> orderby1, bool isAsc = true, bool isAsc1 = true)
         {
-            return dbHandler.GetPagedList(pageIndex, pageSize, out rowsCount, whereLambda, orderBy, orderby1, isAsc, isAsc1);
+            return dbHandler.GetPagedList(pageIndex, pageSize, out rowsCount, whereLambda, orderBy, orderby1, isAsc,
+                isAsc1);
         }
 
         #endregion 查询分页数据（返回符合要求的记录总数）+ GetPagedList

@@ -1,4 +1,5 @@
-﻿using Senparc.Weixin.MessageHandlers;
+﻿using Senparc.Weixin.Exceptions;
+using Senparc.Weixin.MessageHandlers;
 using System.Text;
 using System.Web.Mvc;
 
@@ -19,7 +20,7 @@ namespace ActivityReservation.WechatAPI.Helper
             base.Content = content;
         }
 
-        new public string Content
+        public new string Content
         {
             get
             {
@@ -48,7 +49,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 //使用IMessageHandler输出
                 if (_messageHandlerDocument == null)
                 {
-                    throw new Senparc.Weixin.Exceptions.WeixinException("执行WeixinResult时提供的MessageHandler不能为Null！", null);
+                    throw new WeixinException("执行WeixinResult时提供的MessageHandler不能为Null！", null);
                 }
                 var finalResponseDocument = _messageHandlerDocument.FinalResponseDocument;
 

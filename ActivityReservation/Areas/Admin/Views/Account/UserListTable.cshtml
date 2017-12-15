@@ -1,38 +1,37 @@
-﻿@using ActivityReservation.Helpers;
-@model IPagedListModel<Models.User>
-@{ 
+﻿@model IPagedListModel<Models.User>
+@{
     Layout = null;
 }
 @if (Model.Data.Count() > 0)
 {
     <table class="table table-hover">
         <thead>
-            <tr>
-                <th>用户名</th>
-                <th>用户邮箱</th>
-                <th>添加时间</th>
-                <th>操作</th>
-            </tr>
+        <tr>
+            <th>用户名</th>
+            <th>用户邮箱</th>
+            <th>添加时间</th>
+            <th>操作</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (Models.User item in Model.Data)
-            {
-                <tr>
-                    <td>
-                        @item.UserName
-                    </td>
-                    <td>
-                        @item.UserMail
-                    </td>
-                    <td>
-                        @item.AddTime
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-default" onclick="UpdatePassword('@item.UserId','@item.UserName',this)">重置密码</button>
-                        <button type="button" class="btn btn-danger" onclick="DeleteAccount('@item.UserId','@item.UserName',this)">删除账户</button>
-                    </td>
-                </tr>
-            }
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>
+                    @item.UserName
+                </td>
+                <td>
+                    @item.UserMail
+                </td>
+                <td>
+                    @item.AddTime
+                </td>
+                <td>
+                    <button type="button" class="btn btn-default" onclick="UpdatePassword('@item.UserId', '@item.UserName', this)">重置密码</button>
+                    <button type="button" class="btn btn-danger" onclick="DeleteAccount('@item.UserId', '@item.UserName', this)">删除账户</button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
     @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)

@@ -2,7 +2,7 @@
 {
     public class SearchHelperModel
     {
-        private int pageIndex,pageSize;
+        private int pageIndex, pageSize;
 
         /// <summary>
         /// 当前页码索引
@@ -11,16 +11,13 @@
         {
             get
             {
-                if (pageIndex <=0)
+                if (pageIndex <= 0)
                 {
                     pageIndex = 1;
                 }
                 return pageIndex;
             }
-            set
-            {
-                pageIndex = value;
-            }
+            set { pageIndex = value; }
         }
 
         /// <summary>
@@ -30,16 +27,13 @@
         {
             get
             {
-                if (pageSize<=0)
+                if (pageSize <= 0)
                 {
                     pageSize = 10;
                 }
                 return pageSize;
             }
-            set
-            {
-                pageSize = value;
-            }
+            set { pageSize = value; }
         }
 
         public string SearchItem0 { get; set; }

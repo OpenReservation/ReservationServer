@@ -1,10 +1,10 @@
 ﻿using ActivityReservation.Helpers;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+using ActivityReservation.WorkContexts;
+using Models;
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Web.Mvc;
-using ActivityReservation.WorkContexts;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -29,14 +29,15 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(SearchHelperModel search)
         {
-            Expression<Func<Models.OperationLog, bool>> whereLambda = (l => 1 == 1);
+            Expression<Func<OperationLog, bool>> whereLambda = (l => 1 == 1);
             //日志模块名称
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
                 //日志内容
                 if (!String.IsNullOrEmpty(search.SearchItem2))
                 {
-                    whereLambda = (l => l.LogContent.Contains(search.SearchItem2) && l.LogModule.Contains(search.SearchItem1));
+                    whereLambda = (l =>
+                        l.LogContent.Contains(search.SearchItem2) && l.LogModule.Contains(search.SearchItem1));
                 }
                 else
                 {
@@ -50,11 +51,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                     whereLambda = (l => l.LogContent.Contains(search.SearchItem2));
                 }
             }
-            int rowsCount = 0;
+            var rowsCount = 0;
             try
             {
-                List<Models.OperationLog> logList = BusinessHelper.OperationLogHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount, whereLambda, l => l.OperTime, false);
-                IPagedListModel<Models.OperationLog> dataList = logList.ToPagedList(search.PageIndex , search.PageSize , rowsCount);
+                var logList = BusinessHelper.OperationLogHelper.GetPagedList(search.PageIndex, search.PageSize,
+                    out rowsCount, whereLambda, l => l.OperTime, false);
+                var dataList = logList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
                 return View(dataList);
             }
             catch (Exception ex)

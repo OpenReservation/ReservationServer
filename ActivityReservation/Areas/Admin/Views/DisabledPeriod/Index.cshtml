@@ -4,21 +4,13 @@
 @section styles{
     <link href="~/Content/jqueryui/jquery-ui.min.css" rel="stylesheet" />
     <style>
-        .table > thead > tr > th {
-            vertical-align: middle;
-        }
+        .table > thead > tr > th { vertical-align: middle; }
 
-        .table > tbody > tr > td {
-            vertical-align: middle;
-        }
+        .table > tbody > tr > td { vertical-align: middle; }
 
-        td > .btn {
-            margin-bottom: 4px;
-        }
+        td > .btn { margin-bottom: 4px; }
 
-        .ui-datepicker {
-            z-index: 23333333 !important;
-        }
+        .ui-datepicker { z-index: 23333333 !important; }
     </style>
 }
 <div class="table-wraper">
@@ -86,7 +78,7 @@
                     "pageSize": pageSize,
                     "activeStatus": $("input[name='activeStatus']:checked").val()
                 },
-                success: function (data, status) {
+                success: function(data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -100,76 +92,84 @@
         //更新预约状态
         function UpdateStatus(id, status) {
             if (status < 0) {
-                layer.confirm("将要禁用该时间段，是否继续？", {
-                    btn: ["继续", "取消"],
-                    title: "确认",
-                    yes: function (index) {
-                        if (id && status) {
-                            var loading = layer.load(2);
-                            $.post("/Admin/DisabledPeriod/UpdatePeriodStatus", { "periodId": id, "status": status }, function (data) {
-                                if (data.Status == 200) {
-                                    layer.msg("更新成功");
-                                    loadData(pageIndex);
-                                } else {
-                                    layer.msg(data.Msg);
-                                }
-                                layer.close(loading);
-                            });
-                        } else {
-                            layer.msg('参数异常，操作失败');
-                        }
-                        layer.close(index);
-                    },
-                    cancel: function () {
+                layer.confirm("将要禁用该时间段，是否继续？",
+                    {
+                        btn: ["继续", "取消"],
+                        title: "确认",
+                        yes: function(index) {
+                            if (id && status) {
+                                var loading = layer.load(2);
+                                $.post("/Admin/DisabledPeriod/UpdatePeriodStatus",
+                                    { "periodId": id, "status": status },
+                                    function(data) {
+                                        if (data.Status == 200) {
+                                            layer.msg("更新成功");
+                                            loadData(pageIndex);
+                                        } else {
+                                            layer.msg(data.Msg);
+                                        }
+                                        layer.close(loading);
+                                    });
+                            } else {
+                                layer.msg('参数异常，操作失败');
+                            }
+                            layer.close(index);
+                        },
+                        cancel: function() {
 
-                    }
-                });
+                        }
+                    });
             } else {
                 var loading = layer.load(2);
-                $.post("/Admin/DisabledPeriod/UpdatePeriodStatus", { "periodId": id, "status": status }, function (data) {
-                    if (data.Status == 200) {
-                        layer.msg("更新成功");
-                        loadData(pageIndex);
-                    } else {
-                        layer.msg(data.Msg);
-                    }
-                    layer.close(loading);
-                });
+                $.post("/Admin/DisabledPeriod/UpdatePeriodStatus",
+                    { "periodId": id, "status": status },
+                    function(data) {
+                        if (data.Status == 200) {
+                            layer.msg("更新成功");
+                            loadData(pageIndex);
+                        } else {
+                            layer.msg(data.Msg);
+                        }
+                        layer.close(loading);
+                    });
             }
         }
 
         function DeletePeriod(id) {
-            layer.confirm("将要删除预约记录，是否继续？", {
-                btn: ["继续", "取消"],
-                title: "警告",
-                yes: function (index) {
-                    var loading = layer.load(2);
-                    $.post("/Admin/DisabledPeriod/DeletePeriod", { "periodId": id }, function (data) {
-                        layer.close(loading);
-                        if (!data) {
-                            layer.msg("删除成功");
-                            loadData(pageIndex);
-                        } else {
-                            layer.msg(data);
-                        }
-                    });
-                    layer.close(index);
-                },
-                cancel: function () {
+            layer.confirm("将要删除预约记录，是否继续？",
+                {
+                    btn: ["继续", "取消"],
+                    title: "警告",
+                    yes: function(index) {
+                        var loading = layer.load(2);
+                        $.post("/Admin/DisabledPeriod/DeletePeriod",
+                            { "periodId": id },
+                            function(data) {
+                                layer.close(loading);
+                                if (!data) {
+                                    layer.msg("删除成功");
+                                    loadData(pageIndex);
+                                } else {
+                                    layer.msg(data);
+                                }
+                            });
+                        layer.close(index);
+                    },
+                    cancel: function() {
 
+                    }
                 }
-            }
             );
         }
 
         //
-        $("#btnAdd").click(function () {
+        $("#btnAdd").click(function() {
             layer.open({
                 type: 1,
                 content: $("#div_addPeriod"),
                 title: "添加禁用时间段",
                 btn: ["提交", "取消"],
-                yes: function (index) {
+                yes: function(index) {
                     var startDate = $("#startDate").val(), endDate = $("#endDate").val();
                     if (!startDate) {
                         layer.msg("请选择开始日期");
@@ -180,31 +180,39 @@
                         return;
                     }
                     var loading = layer.load(2);
-                    $.post("/Admin/DisabledPeriod/AddPeriod", { "StartDate": startDate, "EndDate": endDate, "RepeatYearly": false, "IsActive": $("input[name='add_activeStatus']").eq(0).prop("checked") }, function (data) {
-                        layer.close(loading);
-                        if (data.Status == 200) {
-                            layer.msg("添加成功");
-                            loadData();
-                        } else {
-                            layer.msg(data.Msg);
-                        }
-                    });
+                    $.post("/Admin/DisabledPeriod/AddPeriod",
+                        {
+                            "StartDate": startDate,
+                            "EndDate": endDate,
+                            "RepeatYearly": false,
+                            "IsActive": $("input[name='add_activeStatus']").eq(0).prop("checked")
+                        },
+                        function(data) {
+                            layer.close(loading);
+                            if (data.Status == 200) {
+                                layer.msg("添加成功");
+                                loadData();
+                            } else {
+                                layer.msg(data.Msg);
+                            }
+                        });
                     layer.close(index);
                 },
-                cancel: function () {
+                cancel: function() {
 
                 }
             });
         });
         //
-        $("input[name='activeStatus']:radio").on("change", function () {
-            loadData();
-        });
-        $(function () {
+        $("input[name='activeStatus']:radio").on("change",
+            function() {
+                loadData();
+            });
+        $(function() {
             $("#startDate").datepicker({
                 dateFormat: "yy-mm-dd",
                 minDate: 0,
-                onSelect: function (dateText) {
+                onSelect: function(dateText) {
                     $("#endDate").datepicker('option', 'minDate', dateText);
                 }
             });

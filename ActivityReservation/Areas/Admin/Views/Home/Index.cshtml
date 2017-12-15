@@ -1,4 +1,5 @@
-﻿@{
+﻿@using ActivityReservation.Helpers
+@{
     ViewBag.Title = "管理后台首页";
 }
 <div class="table-wraper">
@@ -13,9 +14,11 @@
             <li class="list-group-item">@Html.ActionLink("活动室管理", "Index", "ReservationPlace")</li>
             <li class="list-group-item">@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
             <li class="list-group-item">@Html.ActionLink("公告管理", "Index", "Notice")</li>
-            @if (ActivityReservation.Helpers.AuthFormService.GetCurrentUser().IsSuper)
+            @if (AuthFormService.GetCurrentUser().IsSuper)
             {
-                <li role="separator" class="list-unstyled"><br /> </li>
+                <li role="separator" class="list-unstyled">
+                    <br />
+                </li>
                 <li class="list-group-item">@Html.ActionLink("用户管理", "UserList", "Account")</li>
 
                 <li class="list-group-item">@Html.ActionLink("操作日志查看", "Index", "OperationLog")</li>

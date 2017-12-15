@@ -1,5 +1,7 @@
 ﻿using Business;
+using Models;
 using System;
+using System.Web;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 
@@ -26,12 +28,12 @@ namespace ActivityReservation.Helpers
         {
             try
             {
-                Models.OperationLog log = new Models.OperationLog()
+                var log = new OperationLog()
                 {
                     LogId = Guid.NewGuid(),
                     LogContent = logContent,
                     LogModule = logModule,
-                    IpAddress = System.Web.HttpContext.Current.Request.UserHostAddress,
+                    IpAddress = HttpContext.Current.Request.UserHostAddress,
                     OperBy = operBy,
                     OperTime = DateTime.Now
                 };
@@ -61,7 +63,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public static string GetModuleName(OperLogModule module)
         {
-            string moduleName = "预约管理";
+            var moduleName = "预约管理";
             switch (module)
             {
                 case OperLogModule.Reservation:
@@ -107,13 +109,13 @@ namespace ActivityReservation.Helpers
     /// </summary>
     public enum OperLogModule
     {
-        Reservation = 0,//预约
-        BlockEntity = 1,//黑名单
-        ReservationPlace = 2,//预约活动室
-        Notice = 3,//公告
-        Account = 4,//账户管理
-        Settings = 5,//系统设置
-        DisabledPeriod = 6,//禁用时间段
-        Wechat = 7,//微信
+        Reservation = 0, //预约
+        BlockEntity = 1, //黑名单
+        ReservationPlace = 2, //预约活动室
+        Notice = 3, //公告
+        Account = 4, //账户管理
+        Settings = 5, //系统设置
+        DisabledPeriod = 6, //禁用时间段
+        Wechat = 7, //微信
     }
 }

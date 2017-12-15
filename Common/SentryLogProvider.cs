@@ -1,6 +1,6 @@
 ﻿using SharpRaven;
-using System;
 using SharpRaven.Data;
+using System;
 using WeihanLi.Common.Helpers;
 
 namespace Common
@@ -13,7 +13,8 @@ namespace Common
         /// <summary>
         /// client
         /// </summary>
-        private static readonly RavenClient SentryClient = new RavenClient(ConfigurationHelper.AppSetting("SentryClientKey"));
+        private static readonly RavenClient SentryClient =
+            new RavenClient(ConfigurationHelper.AppSetting("SentryClientKey"));
 
         void ILogProvider.LogInit()
         {
@@ -109,7 +110,7 @@ namespace Common
         {
             SentryClient.Capture(new SentryEvent(new SentryMessage(msg))
             {
-                Level = ErrorLevel.Fatal                 
+                Level = ErrorLevel.Fatal
             });
         }
 
@@ -117,7 +118,7 @@ namespace Common
         {
             SentryClient.Capture(new SentryEvent(new SentryMessage(msgFormat, args))
             {
-                Level = ErrorLevel.Fatal                 
+                Level = ErrorLevel.Fatal
             });
         }
 

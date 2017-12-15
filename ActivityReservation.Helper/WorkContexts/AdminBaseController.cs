@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using ActivityReservation.Filters;
 using ActivityReservation.Helpers;
+using Models;
+using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WorkContexts
 {
     [Authorize]
-    [Filters.PermissionRequired]
+    [PermissionRequired]
 #if !DEBUG
     [RequireHttps]
 #endif
@@ -46,18 +43,18 @@ namespace ActivityReservation.WorkContexts
             }
         }
 
-        private Models.User _currentUser;
+        private User _currentUser;
 
         /// <summary>
         /// 当前用户
         /// </summary>
-        public Models.User CurrentUser
+        public User CurrentUser
         {
             get
             {
                 if (_currentUser == null)
                 {
-                    _currentUser = Helpers.AuthFormService.GetCurrentUser();
+                    _currentUser = AuthFormService.GetCurrentUser();
                 }
                 return _currentUser;
             }

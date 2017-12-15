@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ActivityReservation.WechatAPI.Helper;
+using ActivityReservation.WechatAPI.Model;
+using Newtonsoft.Json;
+using System;
 using System.Text;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
@@ -8,7 +11,7 @@ namespace ActivityReservation.WechatAPI.Filters
     public class WechatRequestValidAttribute : FilterAttribute, IAuthorizationFilter
     {
         private static LogHelper logger = new LogHelper(typeof(WechatRequestValidAttribute));
-        Model.WechatMsgRequestModel model = new Model.WechatMsgRequestModel();
+        private WechatMsgRequestModel model = new WechatMsgRequestModel();
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {
@@ -30,7 +33,7 @@ namespace ActivityReservation.WechatAPI.Filters
 
                 request.ContentType = model.RequestContent;
             }
-            logger.Debug("微信请求信息:" + Newtonsoft.Json.JsonConvert.SerializeObject(model));
+            logger.Debug("微信请求信息:" + JsonConvert.SerializeObject(model));
             //验证
             if (!CheckSignature(model))
             {
@@ -44,7 +47,7 @@ namespace ActivityReservation.WechatAPI.Filters
             }
         }
 
-        private bool CheckSignature(Model.WechatMsgRequestModel model)
+        private bool CheckSignature(WechatMsgRequestModel model)
         {
             string signature, timestamp, nonce, tempStr;
             //获取请求来的参数
@@ -52,7 +55,7 @@ namespace ActivityReservation.WechatAPI.Filters
             timestamp = model.Timestamp;
             nonce = model.Nonce;
             //创建数组，将 Token, timestamp, nonce 三个参数加入数组
-            string[] array = { Helper.WeChatConsts.Token, timestamp, nonce };
+            string[] array = { WeChatConsts.Token, timestamp, nonce };
             //进行排序
             Array.Sort(array);
             //拼接为一个字符串

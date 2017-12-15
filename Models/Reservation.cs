@@ -8,6 +8,7 @@ namespace Models
     public class Reservation
     {
         #region Private Field
+
         /// <summary>
         /// 预约id
         /// </summary>
@@ -116,8 +117,9 @@ namespace Models
         /// <summary>
         ///  预约时间段7
         /// </summary>
-        private bool t7 = true; 
-        #endregion
+        private bool t7 = true;
+
+        #endregion Private Field
 
         /// <summary>
         /// 预约id
@@ -126,15 +128,9 @@ namespace Models
         [Key]
         public Guid ReservationId
         {
-            get
-            {
-                return reservationId;
-            }
+            get { return reservationId; }
 
-            set
-            {
-                reservationId = value;
-            }
+            set { reservationId = value; }
         }
 
         /// <summary>
@@ -143,15 +139,9 @@ namespace Models
         [Column]
         public string ReservationPersonName
         {
-            get
-            {
-                return reservationPersonName;
-            }
+            get { return reservationPersonName; }
 
-            set
-            {
-                reservationPersonName = value;
-            }
+            set { reservationPersonName = value; }
         }
 
         /// <summary>
@@ -160,15 +150,9 @@ namespace Models
         [Column]
         public string ReservationPersonPhone
         {
-            get
-            {
-                return reservationPersonPhone;
-            }
+            get { return reservationPersonPhone; }
 
-            set
-            {
-                reservationPersonPhone = value;
-            }
+            set { reservationPersonPhone = value; }
         }
 
         /// <summary>
@@ -177,15 +161,9 @@ namespace Models
         [Column]
         public DateTime ReservationTime
         {
-            get
-            {
-                return reservationTime;
-            }
+            get { return reservationTime; }
 
-            set
-            {
-                reservationTime = value;
-            }
+            set { reservationTime = value; }
         }
 
         /// <summary>
@@ -194,15 +172,9 @@ namespace Models
         [Column]
         public String ReservationForTime
         {
-            get
-            {
-                return reservationForTime;
-            }
+            get { return reservationForTime; }
 
-            set
-            {
-                reservationForTime = value;
-            }
+            set { reservationForTime = value; }
         }
 
         [Column]
@@ -227,15 +199,9 @@ namespace Models
         [Column]
         public bool T1
         {
-            get
-            {
-                return t1;
-            }
+            get { return t1; }
 
-            set
-            {
-                t1 = value;
-            }
+            set { t1 = value; }
         }
 
         /// <summary>
@@ -244,15 +210,9 @@ namespace Models
         [Column]
         public bool T2
         {
-            get
-            {
-                return t2;
-            }
+            get { return t2; }
 
-            set
-            {
-                t2 = value;
-            }
+            set { t2 = value; }
         }
 
         /// <summary>
@@ -261,15 +221,9 @@ namespace Models
         [Column]
         public bool T3
         {
-            get
-            {
-                return t3;
-            }
+            get { return t3; }
 
-            set
-            {
-                t3 = value;
-            }
+            set { t3 = value; }
         }
 
         /// <summary>
@@ -278,15 +232,9 @@ namespace Models
         [Column]
         public bool T4
         {
-            get
-            {
-                return t4;
-            }
+            get { return t4; }
 
-            set
-            {
-                t4 = value;
-            }
+            set { t4 = value; }
         }
 
         /// <summary>
@@ -295,15 +243,9 @@ namespace Models
         [Column]
         public bool T5
         {
-            get
-            {
-                return t5;
-            }
+            get { return t5; }
 
-            set
-            {
-                t5 = value;
-            }
+            set { t5 = value; }
         }
 
         /// <summary>
@@ -312,15 +254,9 @@ namespace Models
         [Column]
         public bool T6
         {
-            get
-            {
-                return t6;
-            }
+            get { return t6; }
 
-            set
-            {
-                t6 = value;
-            }
+            set { t6 = value; }
         }
 
         /// <summary>
@@ -329,15 +265,9 @@ namespace Models
         [Column]
         public bool T7
         {
-            get
-            {
-                return t7;
-            }
+            get { return t7; }
 
-            set
-            {
-                t7 = value;
-            }
+            set { t7 = value; }
         }
 
         /// <summary>
@@ -349,15 +279,9 @@ namespace Models
         [Column]
         public int ReservationStatus
         {
-            get
-            {
-                return reservationStatus;
-            }
+            get { return reservationStatus; }
 
-            set
-            {
-                reservationStatus = value;
-            }
+            set { reservationStatus = value; }
         }
 
         /// <summary>
@@ -366,15 +290,9 @@ namespace Models
         [Column]
         public string UpdateBy
         {
-            get
-            {
-                return updateBy;
-            }
+            get { return updateBy; }
 
-            set
-            {
-                updateBy = value;
-            }
+            set { updateBy = value; }
         }
 
         /// <summary>
@@ -383,15 +301,9 @@ namespace Models
         [Column]
         public DateTime UpdateTime
         {
-            get
-            {
-                return updateTime;
-            }
+            get { return updateTime; }
 
-            set
-            {
-                updateTime = value;
-            }
+            set { updateTime = value; }
         }
 
         /// <summary>
@@ -400,15 +312,9 @@ namespace Models
         [Column]
         public DateTime ReservationForDate
         {
-            get
-            {
-                return reservationForDate;
-            }
+            get { return reservationForDate; }
 
-            set
-            {
-                reservationForDate = value;
-            }
+            set { reservationForDate = value; }
         }
 
         /// <summary>
@@ -417,15 +323,9 @@ namespace Models
         [Column]
         public string ReservationFromIp
         {
-            get
-            {
-                return reservationFromIp;
-            }
+            get { return reservationFromIp; }
 
-            set
-            {
-                reservationFromIp = value;
-            }
+            set { reservationFromIp = value; }
         }
 
         /// <summary>
@@ -434,15 +334,9 @@ namespace Models
         [Column]
         public Guid ReservationPlaceId
         {
-            get
-            {
-                return reservationPlaceId;
-            }
+            get { return reservationPlaceId; }
 
-            set
-            {
-                reservationPlaceId = value;
-            }
+            set { reservationPlaceId = value; }
         }
 
         /// <summary>
@@ -451,21 +345,15 @@ namespace Models
         [Column]
         public string UpdateMemo
         {
-            get
-            {
-                return updateMemo;
-            }
+            get { return updateMemo; }
 
-            set
-            {
-                updateMemo = value;
-            }
+            set { updateMemo = value; }
         }
 
         /// <summary>
         /// 预约活动室信息
         /// </summary>
         [ForeignKey("ReservationPlaceId")]
-        public virtual ReservationPlace Place { get; set; }        
+        public virtual ReservationPlace Place { get; set; }
     }
 }

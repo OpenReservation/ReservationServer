@@ -48,15 +48,9 @@ namespace Models
         [Column]
         public Guid NoticeId
         {
-            get
-            {
-                return noticeId;
-            }
+            get { return noticeId; }
 
-            set
-            {
-                noticeId = value;
-            }
+            set { noticeId = value; }
         }
 
         /// <summary>
@@ -65,15 +59,9 @@ namespace Models
         [Column]
         public string NoticeTitle
         {
-            get
-            {
-                return noticeTitle;
-            }
+            get { return noticeTitle; }
 
-            set
-            {
-                noticeTitle = value;
-            }
+            set { noticeTitle = value; }
         }
 
         /// <summary>
@@ -82,15 +70,9 @@ namespace Models
         [Column]
         public string NoticeDesc
         {
-            get
-            {
-                return noticeDesc;
-            }
+            get { return noticeDesc; }
 
-            set
-            {
-                noticeDesc = value;
-            }
+            set { noticeDesc = value; }
         }
 
         /// <summary>
@@ -99,15 +81,9 @@ namespace Models
         [Column]
         public string NoticeContent
         {
-            get
-            {
-                return noticeContent;
-            }
+            get { return noticeContent; }
 
-            set
-            {
-                noticeContent = value;
-            }
+            set { noticeContent = value; }
         }
 
         /// <summary>
@@ -116,15 +92,9 @@ namespace Models
         [Column]
         public string NoticePath
         {
-            get
-            {
-                return noticePath;
-            }
+            get { return noticePath; }
 
-            set
-            {
-                noticePath = value;
-            }
+            set { noticePath = value; }
         }
 
         /// <summary>
@@ -133,15 +103,9 @@ namespace Models
         [Column]
         public string NoticeExternalLink
         {
-            get
-            {
-                return noticeExternalLink;
-            }
+            get { return noticeExternalLink; }
 
-            set
-            {
-                noticeExternalLink = value;
-            }
+            set { noticeExternalLink = value; }
         }
 
         /// <summary>
@@ -150,15 +114,9 @@ namespace Models
         [Column]
         public string NoticeImagePath
         {
-            get
-            {
-                return noticeImagePath;
-            }
+            get { return noticeImagePath; }
 
-            set
-            {
-                noticeImagePath = value;
-            }
+            set { noticeImagePath = value; }
         }
 
         /// <summary>
@@ -167,15 +125,9 @@ namespace Models
         [Column]
         public string NoticeCustomPath
         {
-            get
-            {
-                return noticeCustomPath;
-            }
+            get { return noticeCustomPath; }
 
-            set
-            {
-                noticeCustomPath = value;
-            }
+            set { noticeCustomPath = value; }
         }
 
         /// <summary>
@@ -184,15 +136,9 @@ namespace Models
         [Column]
         public int NoticeVisitCount
         {
-            get
-            {
-                return noticeVisitCount;
-            }
+            get { return noticeVisitCount; }
 
-            set
-            {
-                noticeVisitCount = value;
-            }
+            set { noticeVisitCount = value; }
         }
 
         /// <summary>
@@ -201,15 +147,9 @@ namespace Models
         [Column]
         public DateTime UpdateTime
         {
-            get
-            {
-                return updateTime;
-            }
+            get { return updateTime; }
 
-            set
-            {
-                updateTime = value;
-            }
+            set { updateTime = value; }
         }
 
         /// <summary>
@@ -218,15 +158,9 @@ namespace Models
         [Column]
         public string UpdateBy
         {
-            get
-            {
-                return updateBy;
-            }
+            get { return updateBy; }
 
-            set
-            {
-                updateBy = value;
-            }
+            set { updateBy = value; }
         }
 
         /// <summary>
@@ -235,15 +169,9 @@ namespace Models
         [Column]
         public DateTime NoticePublishTime
         {
-            get
-            {
-                return noticePublishTime;
-            }
+            get { return noticePublishTime; }
 
-            set
-            {
-                noticePublishTime = value;
-            }
+            set { noticePublishTime = value; }
         }
 
         /// <summary>
@@ -252,15 +180,9 @@ namespace Models
         [Column]
         public string NoticePublisher
         {
-            get
-            {
-                return noticePublisher;
-            }
+            get { return noticePublisher; }
 
-            set
-            {
-                noticePublisher = value;
-            }
+            set { noticePublisher = value; }
         }
 
         /// <summary>
@@ -269,15 +191,9 @@ namespace Models
         [Column]
         public bool CheckStatus
         {
-            get
-            {
-                return checkStatus;
-            }
+            get { return checkStatus; }
 
-            set
-            {
-                checkStatus = value;
-            }
+            set { checkStatus = value; }
         }
 
         /// <summary>
@@ -286,15 +202,9 @@ namespace Models
         [Column]
         public bool IsDeleted
         {
-            get
-            {
-                return isDeleted;
-            }
+            get { return isDeleted; }
 
-            set
-            {
-                isDeleted = value;
-            }
+            set { isDeleted = value; }
         }
     }
 }

@@ -1,11 +1,13 @@
-﻿using ActivityReservation.WechatAPI.Helper;
+﻿using ActivityReservation.WechatAPI.Filters;
+using ActivityReservation.WechatAPI.Helper;
 using Senparc.Weixin.MessageHandlers;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    [Filters.WechatRequestValid]
+    [WechatRequestValid]
     public class WechatBaseController : Controller
     {
         /// <summary>
@@ -18,7 +20,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             return new WechatResult(messageHandlerDocument);
         }
 
-        public async System.Threading.Tasks.Task<ContentResult> Wechat(WechatContext wechatContext)
+        public async Task<ContentResult> Wechat(WechatContext wechatContext)
         {
             return Content(wechatContext.GetResponseAsync());
         }

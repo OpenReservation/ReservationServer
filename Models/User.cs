@@ -8,6 +8,7 @@ namespace Models
     public class User
     {
         #region Private Field
+
         private Guid userId;
 
         private string userName;
@@ -20,8 +21,9 @@ namespace Models
 
         private bool isEnabled = true;
 
-        private DateTime addTime = DateTime.Now; 
-        #endregion
+        private DateTime addTime = DateTime.Now;
+
+        #endregion Private Field
 
         /// <summary>
         /// 用户id,唯一编号
@@ -30,15 +32,9 @@ namespace Models
         [Key]
         public Guid UserId
         {
-            get
-            {
-                return userId;
-            }
+            get { return userId; }
 
-            set
-            {
-                userId = value;
-            }
+            set { userId = value; }
         }
 
         /// <summary>
@@ -47,15 +43,9 @@ namespace Models
         [Column]
         public string UserName
         {
-            get
-            {
-                return userName;
-            }
+            get { return userName; }
 
-            set
-            {
-                userName = value;
-            }
+            set { userName = value; }
         }
 
         /// <summary>
@@ -64,15 +54,9 @@ namespace Models
         [Column]
         public string UserPassword
         {
-            get
-            {
-                return userPassword;
-            }
+            get { return userPassword; }
 
-            set
-            {
-                userPassword = value;
-            }
+            set { userPassword = value; }
         }
 
         /// <summary>
@@ -81,15 +65,9 @@ namespace Models
         [Column]
         public bool IsSuper
         {
-            get
-            {
-                return isSuper;
-            }
+            get { return isSuper; }
 
-            set
-            {
-                isSuper = value;
-            }
+            set { isSuper = value; }
         }
 
         /// <summary>
@@ -98,15 +76,9 @@ namespace Models
         [Column]
         public DateTime AddTime
         {
-            get
-            {
-                return addTime;
-            }
+            get { return addTime; }
 
-            set
-            {
-                addTime = value;
-            }
+            set { addTime = value; }
         }
 
         /// <summary>
@@ -115,15 +87,9 @@ namespace Models
         [Column]
         public string UserMail
         {
-            get
-            {
-                return userMail;
-            }
+            get { return userMail; }
 
-            set
-            {
-                userMail = value;
-            }
+            set { userMail = value; }
         }
 
         /// <summary>
@@ -132,15 +98,9 @@ namespace Models
         [Column]
         public bool IsEnabled
         {
-            get
-            {
-                return isEnabled;
-            }
+            get { return isEnabled; }
 
-            set
-            {
-                isEnabled = value;
-            }
+            set { isEnabled = value; }
         }
     }
 }

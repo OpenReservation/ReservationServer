@@ -26,7 +26,7 @@
     /// <summary>
     /// 文本消息模型
     /// </summary>
-    public class WechatRequestTextMsgModel: IWechatMsg
+    public class WechatRequestTextMsgModel : IWechatMsg
     {
         /// <summary>
         /// 开发者微信号
@@ -45,7 +45,10 @@
 
         /// <summary>
         /// 消息类型
-        public string MsgType { get { return "text"; } }
+        public string MsgType
+        {
+            get { return "text"; }
+        }
 
         /// <summary>
         /// 文本消息内容
@@ -80,7 +83,10 @@
 
         /// <summary>
         /// 消息类型
-        public string MsgType { get { return "image"; } }
+        public string MsgType
+        {
+            get { return "image"; }
+        }
 
         /// <summary>
         /// 图片链接
@@ -120,7 +126,10 @@
 
         /// <summary>
         /// 消息类型
-        public string MsgType { get { return "voice"; } }
+        public string MsgType
+        {
+            get { return "voice"; }
+        }
 
         /// <summary>
         /// 语音格式
@@ -165,7 +174,10 @@
 
         /// <summary>
         /// 消息类型
-        public string MsgType { get { return "video"; } }
+        public string MsgType
+        {
+            get { return "video"; }
+        }
 
         /// <summary>
         /// 视频消息缩略图媒体id，可以调用多媒体文件下载接口拉取数据
@@ -205,7 +217,10 @@
 
         /// <summary>
         /// 消息类型
-        public string MsgType { get { return "location"; } }
+        public string MsgType
+        {
+            get { return "location"; }
+        }
 
         /// <summary>
         /// 地理位置维度
@@ -255,7 +270,10 @@
 
         /// <summary>
         /// 消息类型
-        public string MsgType { get { return "link"; } }
+        public string MsgType
+        {
+            get { return "link"; }
+        }
 
         /// <summary>
         /// 消息链接

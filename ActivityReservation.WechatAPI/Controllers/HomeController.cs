@@ -1,23 +1,25 @@
 ﻿using ActivityReservation.WechatAPI.Helper;
+using ActivityReservation.WechatAPI.Model;
+using Senparc.Weixin.MP.Entities.Request;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
     public class HomeController : WechatBaseController
     {
-
         [HttpGet]
         [ActionName("Index")]
-        public void Get(Model.WechatMsgRequestModel model)
+        public void Get(WechatMsgRequestModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
                     //GET微信验证，获取 echostr 参数并返回
-                    string echoStr = HttpContext.Request.QueryString["echostr"];
+                    var echoStr = HttpContext.Request.QueryString["echostr"];
                     if (!string.IsNullOrEmpty(echoStr))
                     {
                         //将随机生成的 echostr 参数 原样输出
@@ -39,10 +41,10 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public async System.Threading.Tasks.Task<ActionResult> PostAsync(Model.WechatMsgRequestModel model)
+        public async Task<ActionResult> PostAsync(WechatMsgRequestModel model)
         {
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
-            var postModel = new Senparc.Weixin.MP.Entities.Request.PostModel
+            var postModel = new PostModel
             {
                 Nonce = model.Nonce,
                 Timestamp = model.Timestamp,

@@ -1,17 +1,16 @@
 ﻿using Common;
+using Senparc.Weixin.Context;
+using Senparc.Weixin.Exceptions;
+using Senparc.Weixin.MP;
+using Senparc.Weixin.MP.Entities;
+using Senparc.Weixin.MP.Entities.Request;
 using Senparc.Weixin.MP.MessageHandlers;
 using System;
-using System.Xml;
-using Senparc.Weixin.MP.Entities;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using Senparc.Weixin.MP.Entities.Request;
-using System.Xml.Linq;
-using Senparc.Weixin.MP;
-using Senparc.Weixin.Exceptions;
-using Senparc.Weixin.Context;
 using System.Web;
+using System.Xml;
+using System.Xml.Linq;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Helper
@@ -19,39 +18,39 @@ namespace ActivityReservation.WechatAPI.Helper
     /// <summary>
     /// 微信消息处理帮助类
     /// </summary>
-    public class WechatMsgHandler: MessageHandler<WechatContext>
+    public class WechatMsgHandler : MessageHandler<WechatContext>
     {
-
         private static LogHelper logger = new LogHelper(typeof(WechatMsgHandler));
+
         #region OldMethod
 
         public static string ReturnMessage(string postStr)
         {
-            string responseContent = "";
+            var responseContent = "";
             try
             {
-                XmlDocument xmldoc = new XmlDocument();
+                var xmldoc = new XmlDocument();
                 xmldoc.LoadXml(postStr);
-                XmlNode MsgType = xmldoc.SelectSingleNode("/xml/MsgType");
-                XmlNode formUser = xmldoc.SelectSingleNode("/xml/FromUserName");
+                var MsgType = xmldoc.SelectSingleNode("/xml/MsgType");
+                var formUser = xmldoc.SelectSingleNode("/xml/FromUserName");
                 if (MsgType != null)
                 {
                     switch (MsgType.InnerText)
                     {
                         case "event":
-                            responseContent = EventHandle(xmldoc);//事件处理
+                            responseContent = EventHandle(xmldoc); //事件处理
                             break;
 
                         case "text":
-                            responseContent = TextMsgHandle(xmldoc);//接受文本消息处理
+                            responseContent = TextMsgHandle(xmldoc); //接受文本消息处理
                             break;
 
                         case "image":
-                            responseContent = ImageMsgHandle(xmldoc);//图片消息
+                            responseContent = ImageMsgHandle(xmldoc); //图片消息
                             break;
 
                         case "voice":
-                            responseContent = VoiceMsgHandleAsync(xmldoc);//语音消息
+                            responseContent = VoiceMsgHandleAsync(xmldoc); //语音消息
                             break;
 
                         default:
@@ -69,9 +68,9 @@ namespace ActivityReservation.WechatAPI.Helper
         private static string VoiceMsgHandleAsync(XmlDocument xmldoc)
         {
             string responseContent = "", reply = null;
-            XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
-            XmlNode FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
-            XmlNode Content = xmldoc.SelectSingleNode("/xml/Recognition");
+            var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
+            var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
+            var Content = xmldoc.SelectSingleNode("/xml/Recognition");
             if (Content != null)
             {
                 //设置回复消息
@@ -92,10 +91,10 @@ namespace ActivityReservation.WechatAPI.Helper
 
         private static string ImageMsgHandle(XmlDocument xmldoc)
         {
-            string responseContent = "";
-            XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
-            XmlNode FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
-            XmlNode MediaId = xmldoc.SelectSingleNode("/xml/MediaId");
+            var responseContent = "";
+            var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
+            var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
+            var MediaId = xmldoc.SelectSingleNode("/xml/MediaId");
             if (MediaId != null)
             {
                 //reply = "这是回复";
@@ -105,7 +104,7 @@ namespace ActivityReservation.WechatAPI.Helper
                     DateTime.Now.Ticks,
                     //"您发送的消息是："+Content.InnerText+"\r\n 我的回复："+reply + "\r\n<a href=\"http://private.chinacloudsites.cn/\">点击进入我们官网</a>"
                     MediaId.InnerText
-                    );
+                );
             }
             return responseContent;
         }
@@ -113,9 +112,9 @@ namespace ActivityReservation.WechatAPI.Helper
         private static string TextMsgHandle(XmlDocument xmldoc)
         {
             string responseContent = "", reply = "";
-            XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
-            XmlNode FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
-            XmlNode Content = xmldoc.SelectSingleNode("/xml/Content");
+            var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
+            var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
+            var Content = xmldoc.SelectSingleNode("/xml/Content");
             if (Content != null)
             {
                 //设置回复消息
@@ -136,17 +135,17 @@ namespace ActivityReservation.WechatAPI.Helper
 
         private static string EventHandle(XmlDocument xmldoc)
         {
-            string responseContent = "";
-            XmlNode Event = xmldoc.SelectSingleNode("/xml/Event");
-            XmlNode EventKey = xmldoc.SelectSingleNode("/xml/EventKey");
-            XmlNode ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
-            XmlNode FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
+            var responseContent = "";
+            var Event = xmldoc.SelectSingleNode("/xml/Event");
+            var EventKey = xmldoc.SelectSingleNode("/xml/EventKey");
+            var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
+            var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
             if (Event != null)
             {
                 //菜单单击事件
                 if (Event.InnerText.Equals("CLICK"))
                 {
-                    if (EventKey.InnerText.Equals("click_one"))//click_one
+                    if (EventKey.InnerText.Equals("click_one")) //click_one
                     {
                         responseContent = string.Format(ReplyMessageType.Message_Text,
                             FromUserName.InnerText,
@@ -154,36 +153,37 @@ namespace ActivityReservation.WechatAPI.Helper
                             DateTime.Now.Ticks,
                             "你点击的是click_one");
                     }
-                    else if (EventKey.InnerText.Equals("click_two"))//click_two
+                    else if (EventKey.InnerText.Equals("click_two")) //click_two
                     {
                         responseContent = string.Format(ReplyMessageType.Message_News_Main,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
                             DateTime.Now.Ticks,
                             "2",
-                             string.Format(ReplyMessageType.Message_News_Item, "我要寄件", "",
-                             "http://www.soso.com/orderPlace.jpg",
-                             "http://www.soso.com/") +
-                             string.Format(ReplyMessageType.Message_News_Item, "订单管理", "",
-                             "http://www.soso.com/orderManage.jpg",
-                             "http://www.soso.com/"));
+                            string.Format(ReplyMessageType.Message_News_Item, "我要寄件", "",
+                                "http://www.soso.com/orderPlace.jpg",
+                                "http://www.soso.com/") +
+                            string.Format(ReplyMessageType.Message_News_Item, "订单管理", "",
+                                "http://www.soso.com/orderManage.jpg",
+                                "http://www.soso.com/"));
                     }
-                    else if (EventKey.InnerText.Equals("click_three"))//click_three
+                    else if (EventKey.InnerText.Equals("click_three")) //click_three
                     {
                         responseContent = string.Format(ReplyMessageType.Message_News_Main,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
                             DateTime.Now.Ticks,
                             "1",
-                             string.Format(ReplyMessageType.Message_News_Item, "标题", "摘要",
-                             "http://www.soso.com/jieshao.jpg",
-                             "http://www.soso.com/"));
+                            string.Format(ReplyMessageType.Message_News_Item, "标题", "摘要",
+                                "http://www.soso.com/jieshao.jpg",
+                                "http://www.soso.com/"));
                     }
                 }
             }
             return responseContent;
-        } 
-        #endregion
+        }
+
+        #endregion OldMethod
 
         /// <summary>
         /// 模板消息集合（Key：checkCode，Value：OpenId）
@@ -204,7 +204,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 }
                 return true;
             };
-        }        
+        }
 
         public WechatMsgHandler(XDocument doc, PostModel postModel, int maxRecordCount = 0)
             : base(doc, postModel, maxRecordCount)
@@ -258,38 +258,48 @@ namespace ActivityReservation.WechatAPI.Helper
                             ResponseMessage = OnTextOrEventRequest(requestMessage) ?? OnTextRequest(requestMessage);
                         }
                         break;
+
                     case RequestMsgType.Location:
                         ResponseMessage = OnLocationRequest(RequestMessage as RequestMessageLocation);
                         break;
+
                     case RequestMsgType.Image:
                         ResponseMessage = OnImageRequest(RequestMessage as RequestMessageImage);
                         break;
+
                     case RequestMsgType.Voice:
                         ResponseMessage = OnVoiceRequest(RequestMessage as RequestMessageVoice);
                         break;
+
                     case RequestMsgType.Video:
                         ResponseMessage = OnVideoRequest(RequestMessage as RequestMessageVideo);
                         break;
+
                     case RequestMsgType.Link:
                         ResponseMessage = OnLinkRequest(RequestMessage as RequestMessageLink);
                         break;
+
                     case RequestMsgType.ShortVideo:
                         ResponseMessage = OnShortVideoRequest(RequestMessage as RequestMessageShortVideo);
                         break;
+
                     case RequestMsgType.Event:
                         {
-                            var requestMessageText = (RequestMessage as IRequestMessageEventBase).ConvertToRequestMessageText();
+                            var requestMessageText =
+                                (RequestMessage as IRequestMessageEventBase).ConvertToRequestMessageText();
                             ResponseMessage = OnTextOrEventRequest(requestMessageText)
-                                                ?? OnEventRequest(RequestMessage as IRequestMessageEventBase);
+                                              ?? OnEventRequest(RequestMessage as IRequestMessageEventBase);
                         }
                         break;
+
                     default:
                         throw new UnknownRequestMsgTypeException("未知的MsgType请求类型", null);
                 }
 
                 //记录上下文
                 //此处修改
-                if (WeixinContextGlobal.UseWeixinContext && ResponseMessage != null && !string.IsNullOrEmpty(ResponseMessage.FromUserName))
+                if (WeixinContextGlobal.UseWeixinContext && ResponseMessage != null &&
+                    !string.IsNullOrEmpty(ResponseMessage.FromUserName))
                 {
                     WeixinContext.InsertMessage(ResponseMessage);
                 }
@@ -327,13 +337,16 @@ namespace ActivityReservation.WechatAPI.Helper
         /// </summary>
         public static string Message_Text
         {
-            get { return @"<xml>
+            get
+            {
+                return @"<xml>
                             <ToUserName><![CDATA[{0}]]></ToUserName>
                             <FromUserName><![CDATA[{1}]]></FromUserName>
                             <CreateTime>{2}</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA[{3}]]></Content>
-                          </xml>"; }
+                          </xml>";
+            }
         }
 
         /// <summary>
@@ -374,7 +387,9 @@ namespace ActivityReservation.WechatAPI.Helper
 
         public static string Message_Image
         {
-            get { return @"<xml>
+            get
+            {
+                return @"<xml>
                             <ToUserName><![CDATA[{0}]]></ToUserName>
                             <FromUserName><![CDATA[{1}]]></FromUserName>
                             <CreateTime>{2}</CreateTime>
@@ -382,7 +397,8 @@ namespace ActivityReservation.WechatAPI.Helper
                             <Image>
                                 <MediaId><![CDATA[{3}]]></MediaId>
                             </Image>
-                          </xml>"; }
+                          </xml>";
+            }
         }
     }
 }

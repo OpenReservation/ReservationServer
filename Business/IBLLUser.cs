@@ -1,7 +1,9 @@
-﻿namespace Business
+﻿using Models;
+
+namespace Business
 {
-    public partial interface IBLLUser : IBaseBLL<Models.User>
+    public partial interface IBLLUser : IBaseBLL<User>
     {
-        Models.User Login(Models.User u);
+        User Login(User u);
     }
 }

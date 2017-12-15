@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Business;
+using Common;
+using Models;
+using System;
 using System.Web;
 using System.Web.Security;
 
@@ -10,6 +13,7 @@ namespace ActivityReservation.Helpers
         /// 加密字符串
         /// </summary>
         private const string EncryptString = "ReservationSystem";
+
         /// <summary>
         /// loginCookieName 登录cookie名称
         /// </summary>
@@ -24,9 +28,9 @@ namespace ActivityReservation.Helpers
         /// 获取当前登录用户
         /// </summary>
         /// <returns></returns>
-        public static Models.User GetCurrentUser()
+        public static User GetCurrentUser()
         {
-            return HttpContext.Current.Session[AuthCacheKey] as Models.User;
+            return HttpContext.Current.Session[AuthCacheKey] as User;
         }
 
         /// <summary>
@@ -34,9 +38,9 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="user">用户信息</param>
         /// <returns></returns>
-        public static bool SetCurrentUser(Models.User user)
+        public static bool SetCurrentUser(User user)
         {
-            HttpContext.Current.Session[AuthCacheKey]=user;
+            HttpContext.Current.Session[AuthCacheKey] = user;
             return true;
         }
 
@@ -45,11 +49,12 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="loginName">登录名</param>
         /// <param name="rememberMe">是否保存cookie</param>
-        public static void Login(string loginName,bool rememberMe)
+        public static void Login(string loginName, bool rememberMe)
         {
-            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(loginName+EncryptString, rememberMe, 30);
-            string cookieVal = FormsAuthentication.Encrypt(ticket);
-            HttpCookie cookie = new HttpCookie(LoginCookieName, cookieVal) { Expires = DateTime.Now.AddDays(1),HttpOnly = true };
+            var ticket = new FormsAuthenticationTicket(loginName + EncryptString, rememberMe, 30);
+            var cookieVal = FormsAuthentication.Encrypt(ticket);
+            var cookie =
+                new HttpCookie(LoginCookieName, cookieVal) { Expires = DateTime.Now.AddDays(1), HttpOnly = true };
             FormsAuthentication.SetAuthCookie(loginName, rememberMe);
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
@@ -60,23 +65,23 @@ namespace ActivityReservation.Helpers
         /// <returns>是否登录成功</returns>
         public static bool TryAutoLogin()
         {
-            HttpCookie cookie = HttpContext.Current.Request.Cookies[LoginCookieName];
+            var cookie = HttpContext.Current.Request.Cookies[LoginCookieName];
             if (cookie != null)
             {
-                string cookieValue = cookie.Value;
+                var cookieValue = cookie.Value;
                 var ticket = FormsAuthentication.Decrypt(cookieValue);
-                string loginName = ticket.Name.Substring(0,ticket.Name.IndexOf(EncryptString));
-                Models.User user= new Business.BLLUser().Fetch(u => u.UserName == loginName);
+                var loginName = ticket.Name.Substring(0, ticket.Name.IndexOf(EncryptString));
+                var user = new BLLUser().Fetch(u => u.UserName == loginName);
                 if (user != null)
                 {
-                    Common.RedisHelper.Set<Models.User>(AuthCacheKey, user);
+                    RedisHelper.Set<User>(AuthCacheKey, user);
                     cookie.Expires = DateTime.Now.AddDays(1);
                     cookie.HttpOnly = true;
                     HttpContext.Current.Response.Cookies.Add(cookie);
                     FormsAuthentication.SetAuthCookie(loginName, true);
                     return true;
-                }                
-            }            
+                }
+            }
             return false;
         }
 
@@ -87,7 +92,7 @@ namespace ActivityReservation.Helpers
         {
             //sign out
             FormsAuthentication.SignOut();
-            //remove and set cookie expires  
+            //remove and set cookie expires
             //remove first,and then set expires,or you will still have the cookie,can not log out
             HttpContext.Current.Response.Cookies.Remove(LoginCookieName);
             HttpContext.Current.Response.Cookies[LoginCookieName].Expires = DateTime.Now.AddDays(-1);

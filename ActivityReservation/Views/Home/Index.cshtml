@@ -3,53 +3,56 @@
 }
 @section styles{
     <style>
-        .table>tbody>tr>td {
-            vertical-align:middle;
-        }
+        .table > tbody > tr > td { vertical-align: middle; }
     </style>
 }
 <div class="container">
-    <div class="form-inline" style="margin:1em 0">
+    <div class="form-inline" style="margin: 1em 0">
         <div class="form-group">
             <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
         </div>
-        <button id="btnSearch" type="button" class="btn btn-primary">搜索</button> <br/>
+        <button id="btnSearch" type="button" class="btn btn-primary">搜索</button> <br />
         <span class="text-info">注：默认只显示最近7天的预约，已过期的预约可以根据预约人联系方式查询</span>
     </div>
     <div id="div_main">
-
     </div>
     <form id="checkForm" class="hidden" action="@Url.Action("Check")" method="post">
         <input name="id" id="reId" value="" />
     </form>
 </div>
 @section scripts{
-<script>
-    var pageSize = 10;
-    function loadData(pageIndex) {
-        $("#div_main").html('<br /><img src="/images/loading.gif"/> 正在玩命加载中，请稍后...');
-        if (!pageIndex) {
-            pageIndex = 1;
-        }
-        $.post("/Home/ReservationList", { "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#contactPhone").val() }, function (data, status) {
-            if (status == "success") {
-                $("#div_main").html(data);
-            } else {
-                $("#div_main").html('');
-                layer.msg('数据加载异常，请稍后重试！');
+    <script>
+        var pageSize = 10;
+
+        function loadData(pageIndex) {
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> 正在玩命加载中，请稍后...');
+            if (!pageIndex) {
+                pageIndex = 1;
             }
+            $.post("/Home/ReservationList",
+                { "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#contactPhone").val() },
+                function(data, status) {
+                    if (status == "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        $("#div_main").html('');
+                        layer.msg('数据加载异常，请稍后重试！');
+                    }
+                });
+        }
+
+        function view(id) {
+            $("#reId").val(id);
+            $("#checkForm").submit();
+        }
+
+        //search
+        $("#btnSearch").on("click",
+            function() {
+                loadData();
+            });
+        $(function() {
+            loadData();
         });
-    }
-    function view(id) {
-        $("#reId").val(id);
-        $("#checkForm").submit();
-    }
-    //search
-    $("#btnSearch").on("click", function () {
-        loadData();
-    });
-    $(function () {
-        loadData();
-    });
-</script>
+    </script>
 }

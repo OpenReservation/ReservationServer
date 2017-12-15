@@ -1,20 +1,19 @@
-﻿using ActivityReservation.Helpers;
-using WeihanLi.AspNetMvc.MvcSimplePager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using ActivityReservation.AdminLogic.ViewModels;
+using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
+using Business;
+using Models;
+using System;
+using System.Linq.Expressions;
+using System.Web.Mvc;
+using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 公告管理
     /// </summary>
-    public class NoticeController: AdminBaseController
+    public class NoticeController : AdminBaseController
     {
         public ActionResult Index()
         {
@@ -28,16 +27,17 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(SearchHelperModel search)
         {
-            Expression<Func<Models.Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
+            Expression<Func<Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLamdba = (n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1));
             }
-            int count = -1;
+            var count = -1;
             try
             {
-                List<Models.Notice> list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba, n => n.NoticePublishTime, false);
-                return View(list.ToPagedList(search.PageIndex , search.PageSize , count));
+                var list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out count,
+                    whereLamdba, n => n.NoticePublishTime, false);
+                return View(list.ToPagedList(search.PageIndex, search.PageSize, count));
             }
             catch (Exception ex)
             {
@@ -45,7 +45,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 throw;
             }
         }
-        
+
         /// <summary>
         /// 添加公告
         /// </summary>
@@ -63,7 +63,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Create(ViewModels.NoticeViewModel model)
+        public ActionResult Create(NoticeViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -72,10 +72,10 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 //notice
-                Models.Notice n = new Models.Notice()
+                var n = new Notice()
                 {
                     NoticeId = Guid.NewGuid(),
-                    CheckStatus = true,//默认审核通过
+                    CheckStatus = true, //默认审核通过
                     NoticeContent = model.Content,
                     NoticeTitle = model.Title,
                     NoticeCustomPath = model.CustomPath,
@@ -93,17 +93,18 @@ namespace ActivityReservation.AdminLogic.Controllers
                     }
                     else
                     {
-                        n.NoticePath = n.NoticeCustomPath+".html";
+                        n.NoticePath = n.NoticeCustomPath + ".html";
                     }
                 }
                 else
                 {
                     n.NoticePath = DateTime.Now.ToString("yyyyMMddHHmmss") + ".html";
                 }
-                int c = BusinessHelper.NoticeHelper.Add(n);
+                var c = BusinessHelper.NoticeHelper.Add(n);
                 if (c == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("{0}添加新公告，{1}", Username, n.NoticeTitle), OperLogModule.Notice, Username);
+                    OperLogHelper.AddOperLog(String.Format("{0}添加新公告，{1}", Username, n.NoticeTitle),
+                        OperLogModule.Notice, Username);
                     return RedirectToAction("Index");
                 }
                 else
@@ -117,6 +118,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 throw;
             }
         }
+
         /// <summary>
         /// 判断路径是否可用
         /// </summary>
@@ -134,7 +136,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     path = path + ".html";
                 }
-                bool existStatus = new Business.BLLNotice().Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
+                var existStatus = new BLLNotice().Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
                 if (existStatus)
                 {
                     return Json(false);
@@ -152,7 +154,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         [HttpPost]
-        public ActionResult Preview(ViewModels.NoticeViewModel model)
+        public ActionResult Preview(NoticeViewModel model)
         {
             if (ModelState.IsValid)
             {

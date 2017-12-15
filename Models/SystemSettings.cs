@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Web;
 
 namespace Models
 {
@@ -34,53 +31,32 @@ namespace Models
         [Column]
         public Guid SettingId
         {
-            get
-            {
-                return settingId;
-            }
+            get { return settingId; }
 
-            set
-            {
-                settingId = value;
-            }
+            set { settingId = value; }
         }
+
         [Column]
         public string SettingName
         {
-            get
-            {
-                return settingName;
-            }
+            get { return settingName; }
 
-            set
-            {
-                settingName = value;
-            }
+            set { settingName = value; }
         }
+
         [Column]
         public string DisplayName
         {
-            get
-            {
-                return displayName;
-            }
+            get { return displayName; }
 
-            set
-            {
-                displayName = value;
-            }
+            set { displayName = value; }
         }
+
         [Column]
         public string SettingValue
         {
-            get
-            {
-                return settingValue;
-            }
-            set
-            {
-                settingValue = value;
-            }
+            get { return settingValue; }
+            set { settingValue = value; }
         }
     }
 }

@@ -1,61 +1,60 @@
-﻿@using ActivityReservation.Helpers;
-@model IPagedListModel<Models.BlockEntity>
-@{ 
+﻿@model IPagedListModel<Models.BlockEntity>
+@{
     Layout = null;
 }
 @if (Model.Data.Count() > 0)
 {
     <table class="table table-hover">
         <thead>
-            <tr>
-                <th>黑名单类型</th>
-                <th>黑名单内容</th>
-                <th>拉入黑名单时间</th>
-                <th>状态</th>
-                <th>操作</th>
-            </tr>
+        <tr>
+            <th>黑名单类型</th>
+            <th>黑名单内容</th>
+            <th>拉入黑名单时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (Models.BlockEntity item in Model.Data)
+        @foreach (var item in Model.Data)
+        {
+            var className = "bg-success";
+            if (!item.IsActive)
             {
-                string className = "bg-success";
-                if (!item.IsActive)
-                {
-                    className = "bg-danger";
-                }
-                <tr class="@className">
-                    <td>
-                        @item.BlockType.TypeName
-                    </td>
-                    <td>
-                        @item.BlockValue
-                    </td>
-                    <td>
-                        @item.BlockTime
-                    </td>
-                    <td>
-                        @if (item.IsActive)
-                    {
-                            <span>启用</span>
-                        }
-                        else
-                        {
-                            <span>禁用</span>
-                        }
-                    </td>
-                    <td>
-                        @if (item.IsActive)
-                    {
-                            <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId', '@item.BlockValue',-1,this)">禁用</button>
-                        }
-                        else
-                        {
-                            <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId','@item.BlockValue',1,this)">启用</button>
-                        }
-                        <button type="button" class="btn btn-danger" onclick="DeleteEntity('@item.BlockId','@item.BlockValue',this)">删除</button>
-                    </td>
-                </tr>
+                className = "bg-danger";
             }
+            <tr class="@className">
+                <td>
+                    @item.BlockType.TypeName
+                </td>
+                <td>
+                    @item.BlockValue
+                </td>
+                <td>
+                    @item.BlockTime
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <span>启用</span>
+                    }
+                    else
+                    {
+                        <span>禁用</span>
+                    }
+                </td>
+                <td>
+                    @if (item.IsActive)
+                    {
+                        <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId', '@item.BlockValue', -1, this)">禁用</button>
+                    }
+                    else
+                    {
+                        <button type="button" class='btn btn-warning' onclick="UpdateStatus('@item.BlockId', '@item.BlockValue', 1, this)">启用</button>
+                    }
+                    <button type="button" class="btn btn-danger" onclick="DeleteEntity('@item.BlockId', '@item.BlockValue', this)">删除</button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
     @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)

@@ -6,13 +6,13 @@ namespace ActivityReservation.AdminLogic.ViewModels
     public class DisabledPeriodViewModel
     {
         /// <summary>
-        /// 开始日期 
+        /// 开始日期
         /// </summary>
         [Required]
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// 结束日期 
+        /// 结束日期
         /// </summary>
         [Required]
         public DateTime EndDate { get; set; }
@@ -24,7 +24,7 @@ namespace ActivityReservation.AdminLogic.ViewModels
         public bool RepeatYearly { get; set; }
 
         /// <summary>
-        /// 是否启用 
+        /// 是否启用
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
