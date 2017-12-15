@@ -45,11 +45,33 @@
             });
         }
 
+        function DeleteNotice(noticeId) {
+            if (!noticeId) return;
+
+            layer.confirm('确定要删除通知吗？',
+                { title: '警告' },
+                function(index) {
+                    $.post('@Url.Action("Delete")',
+                        { 'noticeId': noticeId },
+                        function(data) {
+                            if (!data) {
+                                $(".tr_" + noticeId).remove();
+                                layer.msg('删除成功');
+                                layer.close(index);
+
+                            } else {
+                                layer.msg(data);
+                            }
+                        });
+                });
+        }
+
         //搜索
         $("#btnSearch").on("click",
             function() {
                 loadData();
             });
+
         $(function() {
             loadData();
         });

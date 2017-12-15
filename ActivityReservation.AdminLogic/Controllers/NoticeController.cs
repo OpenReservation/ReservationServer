@@ -32,9 +32,9 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 whereLamdba = (n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1));
             }
-            var count = -1;
             try
             {
+                var count = -1;
                 var list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out count,
                     whereLamdba, n => n.NoticePublishTime, false);
                 return View(list.ToPagedList(search.PageIndex, search.PageSize, count));
@@ -103,7 +103,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var c = BusinessHelper.NoticeHelper.Add(n);
                 if (c == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("{0}添加新公告，{1}", Username, n.NoticeTitle),
+                    OperLogHelper.AddOperLog($"{Username}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
                         OperLogModule.Notice, Username);
                     return RedirectToAction("Index");
                 }
@@ -161,6 +161,17 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return View(model);
             }
             return View();
+        }
+
+        public JsonResult Delete(Guid noticeId)
+        {
+            var result = BusinessHelper.NoticeHelper.Delete(new Notice { NoticeId = noticeId });
+            if (result > 0)
+            {
+                OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, Username);
+                return Json("");
+            }
+            return Json("删除失败");
         }
     }
 }
