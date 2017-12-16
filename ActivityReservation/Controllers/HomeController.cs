@@ -207,7 +207,7 @@ namespace ActivityReservation.Controllers
             Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = whereLamdba.And(n => n.NoticeTitle.Contains(search.SearchItem1));
+                whereLamdba = n => n.NoticeTitle.Contains(search.SearchItem1) && n.CheckStatus;
             }
             try
             {

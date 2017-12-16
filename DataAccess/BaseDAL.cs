@@ -149,16 +149,12 @@ namespace DataAccess
             Expression<Func<T, TKey>> orderBy, bool isAsc = true)
         {
             // 分页 一定注意： Skip 之前一定要 OrderBy
-            if (isAsc)
-            {
-                return db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderBy(orderBy).Skip((pageIndex - 1) * pageSize)
-                    .Take(pageSize).ToList();
-            }
-            else
-            {
-                return db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+            return isAsc
+                ? db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderBy(orderBy)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize).ToList()
+                : db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
                     .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-            }
         }
 
         #region 查询分页数据（返回符合要求的记录总数）+ GetPagedList

@@ -30,7 +30,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             Expression<Func<Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
             if (!String.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = (n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1));
+                whereLamdba = n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1);
             }
             try
             {
