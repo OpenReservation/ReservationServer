@@ -21,7 +21,7 @@ namespace DataAccess
         /// <summary>
         /// db operator
         /// </summary>
-        protected ReservationDbContext db = DependencyResolver.Current.GetService<ReservationDbContext>();
+        protected DbContext db = DependencyResolver.Current.GetService<ReservationDbContext>();
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {
