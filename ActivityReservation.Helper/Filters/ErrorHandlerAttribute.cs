@@ -6,12 +6,16 @@ namespace ActivityReservation.Filters
 {
     public class ErrorHandlerAttribute : HandleErrorAttribute
     {
+        private static readonly LogHelper Logger = LogHelper.GetLogHelper<ErrorHandlerAttribute>();
+
         public override void OnException(ExceptionContext filterContext)
         {
             if (filterContext != null)
             {
                 var httpEx = new HttpException(null, filterContext.Exception);
-                new LogHelper(typeof(ErrorHandlerAttribute)).Error(httpEx);
+
+                Logger.Error(httpEx);
+
                 var errorCode = httpEx.GetHttpCode();
                 ViewResult view = null;
                 switch (errorCode)

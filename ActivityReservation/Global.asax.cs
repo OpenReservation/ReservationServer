@@ -18,7 +18,6 @@ namespace ActivityReservation
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
@@ -51,6 +50,8 @@ namespace ActivityReservation
                 new SentryLogProvider()
             });
 
+            //Register filters
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             //register system settings
             SystemSettingsConfig.RegisterSystemSettings();
         }

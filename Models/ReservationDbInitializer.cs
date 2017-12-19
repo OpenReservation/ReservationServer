@@ -7,6 +7,8 @@ namespace Models
 {
     internal class ReservationDbInitializer : DropCreateDatabaseIfModelChanges<ReservationDbContext>
     {
+        private static LogHelper Logger = LogHelper.GetLogHelper<ReservationDbInitializer>();
+
         public override void InitializeDatabase(ReservationDbContext context)
         {
             //数据库初始化，不存在则创建
@@ -109,6 +111,7 @@ namespace Models
             }
             catch (Exception ex)
             {
+                Logger.Fatal(ex);
                 throw ex;
             }
         }

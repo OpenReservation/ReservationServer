@@ -1,11 +1,18 @@
 ﻿using System.Data.Entity;
+using WeihanLi.Common.Helpers;
 
 namespace Models
 {
+    [DbConfigurationType(typeof(ReservationDbConfiguration))]
     public class ReservationDbContext : DbContext
     {
+        private static readonly LogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
+
         public ReservationDbContext() : base("name=ReservationConn")
         {
+            //log
+            Database.Log = Logger.Debug;
+
             Database.SetInitializer(new ReservationDbInitializer());
         }
 

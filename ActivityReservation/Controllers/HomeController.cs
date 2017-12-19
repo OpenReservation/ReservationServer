@@ -1,17 +1,16 @@
-﻿using System;
-using System.Data.Entity;
-using System.Linq.Expressions;
-using System.Web.Mvc;
-using ActivityReservation.HelperModels;
+﻿using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
 using Business;
 using Common;
 using Models;
+using System;
+using System.Data.Entity;
+using System.Linq.Expressions;
+using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
 using RequestHelper = Common.RequestHelper;
 
 namespace ActivityReservation.Controllers
@@ -256,8 +255,6 @@ namespace ActivityReservation.Controllers
 
         public ActionResult About()
         {
-            // just for logger test
-            Logger.Error("test error message,just for logger test.Hahaha...");
             return View();
         }
 
