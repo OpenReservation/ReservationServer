@@ -79,8 +79,8 @@
     <Reference Include="WeihanLi.AspNetMvc.MvcSimplePager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WeihanLi.AspNetMvc.MvcSimplePager.1.0.0\lib\net45\WeihanLi.AspNetMvc.MvcSimplePager.dll</HintPath>
     </Reference>
-    <Reference Include="WeihanLi.Common, Version=1.0.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WeihanLi.Common.1.0.7\lib\net45\WeihanLi.Common.dll</HintPath>
+    <Reference Include="WeihanLi.Common, Version=1.0.7.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WeihanLi.Common.1.0.7.1\lib\net45\WeihanLi.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

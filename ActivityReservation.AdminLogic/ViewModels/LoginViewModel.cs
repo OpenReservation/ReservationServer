@@ -20,5 +20,13 @@ namespace ActivityReservation.AdminLogic.ViewModels
 
         [Display(Name = "记住我")]
         public bool RememberMe { get; set; }
+
+        [Display(Name = "验证码")]
+        [Required]
+        public string Recaptcha { get; set; }
+
+        [Required]
+        [Display(Name = "验证码类型")]
+        public string RecaptchaType { get; set; } = "Google";// Google, Geetest, None
     }
 }

@@ -1,6 +1,9 @@
 ﻿using ActivityReservation.Filters;
 using ActivityReservation.Helpers;
+using Common;
 using Models;
+using Newtonsoft.Json;
+using System;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
 
@@ -58,6 +61,30 @@ namespace ActivityReservation.WorkContexts
                 }
                 return _currentUser;
             }
+        }
+
+        protected bool ValidateValidCode(string recapchaType, string recaptcha)
+        {
+            if (recapchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (recapchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
+            {
+                return GoogleRecaptchaHelper.IsValidRequest(recaptcha);
+            }
+
+            if (recapchaType.Equals("Geetest", StringComparison.OrdinalIgnoreCase))
+            {
+                return new GeetestHelper()
+                    .ValidateRequest(JsonConvert.DeserializeObject<GeetestRequestModel>(recaptcha),
+                        Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
+                    Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
+                    () => { Session.Remove(GeetestConsts.GeetestUserId); });
+            }
+
+            return false;
         }
     }
 }

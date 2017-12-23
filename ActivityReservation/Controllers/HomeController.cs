@@ -264,11 +264,11 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public JsonResult GetGeetestValidCode()
         {
-            var helper = new GeetestHelper(GeetestConsts.publicKey, GeetestConsts.privateKey);
-            var userID = RequestHelper.GetRequestIP();
-            var gtServerStatus = helper.preProcess(userID);
+            var helper = new GeetestHelper();
+            var userIp = RequestHelper.GetRequestIP();
+            var gtServerStatus = helper.PreProcess(userIp);
+            Session[GeetestConsts.GeetestUserId] = userIp;
             Session[GeetestConsts.GtServerStatusSessionKey] = gtServerStatus;
-            Session["geetestUserId"] = userID;
             return Json(helper.Response, JsonRequestBehavior.AllowGet);
         }
 
@@ -278,27 +278,29 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public JsonResult ValidateGeetestCode()
         {
-            var helper = new GeetestHelper(GeetestConsts.publicKey, GeetestConsts.privateKey);
-            var gt_server_status_code = byte.Parse(Session[GeetestConsts.GtServerStatusSessionKey].ToString());
-            var userID = Session["geetestUserId"].ToString();
-            var result = 0;
-            var challenge = Request[GeetestConsts.fnGeetestChallenge];
-            var validate = Request[GeetestConsts.fnGeetestValidate];
-            var seccode = Request[GeetestConsts.fnGeetestSeccode];
-            if (gt_server_status_code == 1)
+            var geetestRequest = new GeetestRequestModel
             {
-                result = helper.enhencedValidateRequest(challenge, validate, seccode, userID);
-            }
-            else
-            {
-                result = helper.failbackValidateRequest(challenge, validate, seccode);
-            }
-            if (result == 1)
-            {
-                Session.Remove("geetestUserId");
-                return Json(true);
-            }
-            return Json(false);
+                challenge = Request[GeetestConsts.FnGeetestChallenge],
+                validate = Request[GeetestConsts.FnGeetestValidate],
+                seccode = Request[GeetestConsts.FnGeetestSeccode]
+            };
+
+            return Json(new GeetestHelper()
+                .ValidateRequest(geetestRequest,
+                    Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
+                    Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
+                () => { Session.Remove(GeetestConsts.GeetestUserId); }));
+        }
+
+        /// <summary>
+        /// 验证谷歌验证码
+        /// </summary>
+        /// <param name="response">response</param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult ValidateGoogleRecaptchaResponse(string response)
+        {
+            return Json(GoogleRecaptchaHelper.IsValidRequest(response));
         }
     }
 }

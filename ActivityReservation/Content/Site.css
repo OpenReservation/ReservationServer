@@ -10,19 +10,25 @@
     padding-right: 15px;
 }
 
-.main-content { min-height: 24em; }
+.main-content {
+    min-height: 24em;
+}
 
 /* Override the default bootstrap behavior where horizontal description lists
    will truncate terms that are too long to fit in the left column
 */
 
-.dl-horizontal dt { white-space: normal; }
+.dl-horizontal dt {
+    white-space: normal;
+}
 
 /* Set width on the form input elements since they're 100% wide by default */
 
 input,
 select,
-textarea { max-width: 280px; }
+textarea {
+    max-width: 280px;
+}
 
 footer {
     padding: 0.4em;
@@ -47,9 +53,12 @@ footer {
     min-width: 400px;
 }
 
-.table-header { padding: 10px 0 4px; }
+.table-header {
+    padding: 10px 0 4px;
+}
 
-.table-title { /*border-bottom:2px solid #ccc;*/ }
+.table-title { /*border-bottom:2px solid #ccc;*/
+}
 
 .table-body {
     border-top: 1px solid #ccc;
@@ -59,4 +68,8 @@ footer {
 .form-control {
     margin-top: 0.2em;
     margin-bottom: 0.3em;
+}
+
+.recaptcha {
+    margin: 0.4em auto;
 }

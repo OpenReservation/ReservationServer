@@ -41,17 +41,21 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                var u = new User() { UserName = model.UserName, UserPassword = model.Password };
+                if (!ValidateValidCode(model.RecaptchaType, model.Recaptcha))
+                {
+                    return Json("验证码有误");
+                }
+                var u = new User { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
                 u = BusinessHelper.UserHelper.Login(u);
                 if (u != null)
                 {
                     AuthFormService.Login(model.UserName, model.RememberMe);
                     AuthFormService.SetCurrentUser(u);
-                    return Json(true);
+                    return Json("");
                 }
             }
-            return Json(false);
+            return Json("登录失败，用户名或密码错误");
         }
 
         /// <summary>
