@@ -73,7 +73,10 @@
     _geetestRecaptchaResponse: '',
     init: function () {
         document.write(recaptchaHelper._recaptchaStyles);
-        recaptchaHelper._loadScript(recaptchaHelper._googleRecaptchaUrl, recaptchaHelper._onGoogleRecaptchaLoadSuccess, recaptchaHelper._onGoogleRecaptchaLoadError);
+        // loadGoogleRecaptcha firstly
+        // recaptchaHelper._loadScript(recaptchaHelper._googleRecaptchaUrl, recaptchaHelper._onGoogleRecaptchaLoadSuccess, recaptchaHelper._onGoogleRecaptchaLoadError);
+        //load geetest only
+        recaptchaHelper._loadScript(recaptchaHelper._geetestRecaptchaUrl, recaptchaHelper._onGeetestRecaptchaLoadSuccess, recaptchaHelper._onGeetestRecaptchaLoadError);
     },
     recaptchaType: 'None',
     getRecaptchaResponse: function () {
