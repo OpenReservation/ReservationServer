@@ -23,7 +23,13 @@
     },
     _onGoogleRecaptchaLoadSuccess: function () {
         recaptchaHelper.recaptchaType = 'Google';
-        $(".btnSubmit").eq(0).before('<div class="g-recaptcha recaptcha" data-sitekey="6Lc-vz0UAAAAAG38zeZKM7_pQL5k4Z7FpnrtU_3A"></div>');
+        if (location.href.indexOf('weihanli.xyz') < 1) {
+            $(".btnSubmit").eq(0)
+                .before(
+                '<div class="g-recaptcha recaptcha" data-sitekey="6Lc-vz0UAAAAAG38zeZKM7_pQL5k4Z7FpnrtU_3A"></div>');
+        } else {
+            $(".btnSubmit").eq(0).before('<div class="g-recaptcha recaptcha" data-sitekey="6Lc56zkUAAAAAOGHzUyKh5pCW2c7bPlNmra0R3NW"></div>');
+        }
     },
     _onGoogleRecaptchaLoadError: function () {
         $("script").last().remove();
@@ -74,9 +80,9 @@
     init: function () {
         document.write(recaptchaHelper._recaptchaStyles);
         // loadGoogleRecaptcha firstly
-        // recaptchaHelper._loadScript(recaptchaHelper._googleRecaptchaUrl, recaptchaHelper._onGoogleRecaptchaLoadSuccess, recaptchaHelper._onGoogleRecaptchaLoadError);
-        //load geetest only
-        recaptchaHelper._loadScript(recaptchaHelper._geetestRecaptchaUrl, recaptchaHelper._onGeetestRecaptchaLoadSuccess, recaptchaHelper._onGeetestRecaptchaLoadError);
+        recaptchaHelper._loadScript(recaptchaHelper._googleRecaptchaUrl, recaptchaHelper._onGoogleRecaptchaLoadSuccess, recaptchaHelper._onGoogleRecaptchaLoadError);
+        // load geetest only
+        // recaptchaHelper._loadScript(recaptchaHelper._geetestRecaptchaUrl, recaptchaHelper._onGeetestRecaptchaLoadSuccess, recaptchaHelper._onGeetestRecaptchaLoadError);
     },
     recaptchaType: 'None',
     getRecaptchaResponse: function () {
