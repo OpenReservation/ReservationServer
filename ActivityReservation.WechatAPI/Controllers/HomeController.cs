@@ -41,9 +41,8 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public async Task<ActionResult> PostAsync(WechatMsgRequestModel model)
+        public ActionResult Post(WechatMsgRequestModel model)
         {
-            //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
             var postModel = new PostModel
             {
                 Nonce = model.Nonce,
@@ -87,7 +86,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             //logger.Debug("返回的消息：" + Common.ConverterHelper.ObjectToJson(messageHandler.ResponseDocument));
             //return Wechat(messageHandler);
             var context = new WechatContext(model);
-            return await Wechat(context);
+            return Wechat(context);
         }
     }
 }

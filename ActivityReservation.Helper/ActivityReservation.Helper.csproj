@@ -112,6 +112,7 @@
     <Compile Include="Helpers\ReservationHelper.cs" />
     <Compile Include="Helpers\SearchHelperModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ReservationPeriodViewModel.cs" />
     <Compile Include="ViewModels\ReservationViewModel.cs" />
     <Compile Include="WorkContexts\AdminBaseController.cs" />
     <Compile Include="WorkContexts\FrontBaseController.cs" />

@@ -20,7 +20,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             return new WechatResult(messageHandlerDocument);
         }
 
-        public async Task<ContentResult> Wechat(WechatContext wechatContext)
+        public ContentResult Wechat(WechatContext wechatContext)
         {
             return Content(wechatContext.GetResponseAsync());
         }

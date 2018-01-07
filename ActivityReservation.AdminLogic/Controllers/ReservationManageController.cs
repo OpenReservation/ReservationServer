@@ -5,6 +5,7 @@ using ActivityReservation.WorkContexts;
 using Models;
 using System;
 using System.Data.Entity;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
@@ -68,41 +69,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                         UpdateTime = DateTime.Now,
                         ReservationId = Guid.NewGuid()
                     };
-                    foreach (var item in model.ReservationForTimeIds.Split(','))
+                    foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
                     {
-                        switch (Convert.ToInt32(item))
-                        {
-                            case 1:
-                                reservation.T1 = false;
-                                break;
-
-                            case 2:
-                                reservation.T2 = false;
-                                break;
-
-                            case 3:
-                                reservation.T3 = false;
-                                break;
-
-                            case 4:
-                                reservation.T4 = false;
-                                break;
-
-                            case 5:
-                                reservation.T5 = false;
-                                break;
-
-                            case 6:
-                                reservation.T6 = false;
-                                break;
-
-                            case 7:
-                                reservation.T7 = false;
-                                break;
-
-                            default:
-                                break;
-                        }
+                        reservation.ReservationPeriod += (1 << item);
                     }
                     BusinessHelper.ReservationHelper.Add(reservation);
                     OperLogHelper.AddOperLog(

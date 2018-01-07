@@ -78,6 +78,7 @@
     <Compile Include="ReservationDbConfiguration.cs" />
     <Compile Include="ReservationDbContext.cs" />
     <Compile Include="ReservationDbInitializer.cs" />
+    <Compile Include="ReservationPeriod.cs" />
     <Compile Include="ReservationPlace.cs" />
     <Compile Include="SystemSettings.cs" />
     <Compile Include="User.cs" />

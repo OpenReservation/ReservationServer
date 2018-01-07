@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -65,6 +66,12 @@ namespace Models
         }
 
         /// <summary>
+        /// 排序
+        /// </summary>
+        [Column]
+        public int PlaceIndex { get; set; }
+
+        /// <summary>
         /// 更新时间
         /// </summary>
         [Column]
@@ -87,8 +94,15 @@ namespace Models
         }
 
         /// <summary>
+        /// 最多可预约时间段数量
+        /// </summary>
+        [Column]
+        public int MaxReservationPeriodNum { get; set; }
+
+        /// <summary>
         /// 是否启用
         /// </summary>
+        [Column]
         public bool IsActive
         {
             get { return isActive; }
@@ -105,5 +119,8 @@ namespace Models
 
             set { isDel = value; }
         }
+
+        [NotMapped]
+        public IReadOnlyList<ReservationPeriod> ReservationPeriodList { get; set; }
     }
 }

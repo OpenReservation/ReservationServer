@@ -12,6 +12,7 @@ namespace ActivityReservation.Helpers
         IBLLOperationLog OperationLogHelper { get; }
         IBLLReservation ReservationHelper { get; }
         IBLLReservationPlace ReservationPlaceHelper { get; }
+        IBLLReservationPeriod ReservationPeriodHelper { get; }
         IBLLSystemSettings SystemSettingsHelper { get; }
         IBLLNotice NoticeHelper { get; }
         IBLLDisabledPeriod DisabledPeriodHelper { get; }
@@ -69,6 +70,13 @@ namespace ActivityReservation.Helpers
         /// </summary>
 	    public IBLLReservationPlace ReservationPlaceHelper
         => DependencyResolver.Current.GetService<IBLLReservationPlace>();
+
+      
+        /// <summary>
+        /// ReservationPeriodHelper
+        /// </summary>
+	    public IBLLReservationPeriod ReservationPeriodHelper
+        => DependencyResolver.Current.GetService<IBLLReservationPeriod>();
 
       
         /// <summary>
