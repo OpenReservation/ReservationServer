@@ -24,7 +24,7 @@ namespace ActivityReservation.WechatAPI.Helper
             logger.Debug("收到微信消息：" + requestMessage);
         }
 
-        public string GetResponseAsync()
+        public string GetResponse()
         {
             responseMessage = WechatMsgHandler.ReturnMessage(requestMessage);
             logger.Debug("返回消息：" + responseMessage);

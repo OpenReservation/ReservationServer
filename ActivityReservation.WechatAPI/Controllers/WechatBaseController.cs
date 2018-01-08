@@ -1,7 +1,6 @@
 ﻿using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
 using Senparc.Weixin.MessageHandlers;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
 
@@ -22,7 +21,7 @@ namespace ActivityReservation.WechatAPI.Controllers
 
         public ContentResult Wechat(WechatContext wechatContext)
         {
-            return Content(wechatContext.GetResponseAsync());
+            return Content(wechatContext.GetResponse());
         }
     }
 }

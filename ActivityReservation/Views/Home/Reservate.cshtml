@@ -66,7 +66,7 @@
             <section id="secPickTimePeriod" ng-class="{'show':step==2}">
                 <p class="lead">选择预约时间段</p>
                 <div>
-                    <div ng-repeat="item in ReservationPeriods"><label><input type="checkbox" ng-checked="item.IsCanReservate" name="cbPeriod" ng-class="item.PeriodIndex" title="item.PeriodDescription" />{{item.PeriodTitle}}</label></div>
+                    <div ng-repeat="item in ReservationPeriods"><label><input type="checkbox" ng-disabled="!item.IsCanReservate" name="cbPeriod" data-periodIndex="{{item.PeriodIndex}}" title="{{item.PeriodDescription}}" />{{item.PeriodTitle}}</label></div>
                 </div>
             </section>
             @* 填写预约人信息 *@
@@ -296,17 +296,29 @@
                                 $scope.reservationModel.ReservationPlaceName =
                                     $("input[name='place']:radio:checked").parent().text().trim();
                                 //请求服务器端接口，判断可用预约时间段
-                                $http.post("/Home/GetAvailablePeriods",
-                                    {
+                                var loading;
+                                $.ajax({
+                                    url: "/Home/GetAvailablePeriods",
+                                    data: {
                                         "dt": $scope.reservationModel.ReservationForDate,
                                         "placeId": $scope.reservationModel.ReservationPlaceId
-                                    }).success(function (response) {
+                                    },
+                                    type: "post",
+                                    async: false,
+                                    success: function (response) {
+                                        layer.close(loading);
                                         if (response) {
                                             $scope.ReservationPeriods = response;
                                         }
-                                    }).error(function (res) {
-                                        console.error(res);
-                                    });
+                                    },
+                                    beforeSend: function () {
+                                        loading = layer.load(2);
+                                    },
+                                    error: function (res) {
+                                        layer.close(loading);
+                                        layer.alert(res);
+                                    }
+                                });
                             } else {
                                 layer.msg('请选择要预约的活动室');
                                 console.log('请选择要预约的活动室');
@@ -321,17 +333,15 @@
                             });
                             if (!periods || periods.length <= 0) {
                                 layer.msg('请选择预约时间段');
-                                console.log('请选择预约时间段');
                                 return;
                             }
                             if (periods.length > 2) {
                                 layer.msg('预约时间段不能超过两个');
-                                console.log('预约时间段不能超过两个');
                                 return;
                             }
                             var tempPeriods = [], tempPeriodIds = [];
                             for (var i in periods) {
-                                tempPeriodIds.push($(periods[i]).val());
+                                tempPeriodIds.push($(periods[i]).attr("data-periodIndex"));
                                 tempPeriods.push($(periods[i]).parent().text());
                             }
                             $scope.reservationModel.ReservationForTimeIds = tempPeriodIds.join(",");
