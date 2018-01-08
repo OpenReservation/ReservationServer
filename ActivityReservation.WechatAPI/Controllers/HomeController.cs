@@ -1,6 +1,5 @@
 ﻿using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
-using Senparc.Weixin.MP.Entities.Request;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -44,29 +43,23 @@ namespace ActivityReservation.WechatAPI.Controllers
         public async Task<ActionResult> PostAsync(WechatMsgRequestModel model)
         {
             //自定义MessageHandler，对微信请求的详细判断操作都在这里面。
-            var postModel = new PostModel
-            {
-                Nonce = model.Nonce,
-                Timestamp = model.Timestamp,
-                Signature = model.Signature,
-                Msg_Signature = model.Msg_Signature,
-                AppId = WeChatConsts.AppId,
-                EncodingAESKey = WeChatConsts.AESKey,
-                Token = WeChatConsts.Token,
-            };
+            //var postModel = new PostModel
+            //{
+            //    Nonce = model.Nonce,
+            //    Timestamp = model.Timestamp,
+            //    Signature = model.Signature,
+            //    Msg_Signature = model.Msg_Signature,
+            //    AppId = WeChatConsts.AppId,
+            //    EncodingAESKey = WeChatConsts.AESKey,
+            //    Token = WeChatConsts.Token,
+            //};
             if (model.RequestContent == null)
             {
                 using (var reader = new StreamReader(Request.InputStream))
                 {
                     logger.Debug($"Request.InputStream Length:{Request.InputStream.Length}");
-                    Request.InputStream.Position = 0;
                     model.RequestContent = reader.ReadToEnd();
                     logger.Debug($"RequestContent from Request.InputStream:{model.RequestContent}");
-                    if (String.IsNullOrWhiteSpace(model.RequestContent))
-                    {
-                        model.RequestContent = Request.ContentType;
-                        logger.Debug($"RequestContent from Request.ContentType:{model.RequestContent}");
-                    }
                 }
             }
             if (String.IsNullOrEmpty(model.RequestContent))

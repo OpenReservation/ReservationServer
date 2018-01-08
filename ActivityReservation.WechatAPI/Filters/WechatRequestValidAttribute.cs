@@ -2,6 +2,7 @@
 using ActivityReservation.WechatAPI.Model;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Text;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
@@ -11,34 +12,36 @@ namespace ActivityReservation.WechatAPI.Filters
     public class WechatRequestValidAttribute : FilterAttribute, IAuthorizationFilter
     {
         private static LogHelper logger = new LogHelper(typeof(WechatRequestValidAttribute));
-        private WechatMsgRequestModel model = new WechatMsgRequestModel();
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {
-            model.Nonce = filterContext.HttpContext.Request.QueryString["nonce"];
-            model.Signature = filterContext.HttpContext.Request.QueryString["signature"];
-            model.Timestamp = filterContext.HttpContext.Request.QueryString["timestamp"];
-            model.Msg_Signature = filterContext.HttpContext.Request.QueryString["msg_signature"];
-            if (filterContext.HttpContext.Request.HttpMethod.ToUpper() == "POST")
+            var model = new WechatMsgRequestModel
             {
-                var request = filterContext.HttpContext.Request;
+                Nonce = filterContext.HttpContext.Request.QueryString["nonce"],
+                Signature = filterContext.HttpContext.Request.QueryString["signature"],
+                Timestamp = filterContext.HttpContext.Request.QueryString["timestamp"],
+                Msg_Signature = filterContext.HttpContext.Request.QueryString["msg_signature"]
+            };
 
-                // Fix request.InputStream can not read twice problem,see <https://stackoverflow.com/questions/1678846/how-to-log-request-inputstream-with-httpmodule-then-reset-inputstream-position>
-
-                var bytes = new byte[request.InputStream.Length];
-                request.InputStream.Position = 0;
-                request.InputStream.Read(bytes, 0, bytes.Length);
-                model.RequestContent = Encoding.UTF8.GetString(bytes);
-                // reset stream position
-
-                request.ContentType = model.RequestContent;
+            if ("POST".Equals(filterContext.HttpContext.Request.HttpMethod, StringComparison.OrdinalIgnoreCase))
+            {
+                using (var memStream = new MemoryStream())
+                {
+                    filterContext.HttpContext.Request.InputStream.CopyTo(memStream);
+                    using (var reader = new StreamReader(memStream))
+                    {
+                        model.RequestContent = reader.ReadToEnd();
+                    }
+                }
+                filterContext.HttpContext.Request.InputStream.Seek(0, SeekOrigin.Begin);
             }
+
             logger.Debug("微信请求信息:" + JsonConvert.SerializeObject(model));
             //验证
             if (!CheckSignature(model))
             {
                 logger.Error("微信请求签名验证不通过");
-                filterContext.Result = new ContentResult()
+                filterContext.Result = new ContentResult
                 {
                     Content = "微信请求验证失败",
                     ContentEncoding = Encoding.UTF8,
@@ -67,10 +70,7 @@ namespace ActivityReservation.WechatAPI.Filters
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }

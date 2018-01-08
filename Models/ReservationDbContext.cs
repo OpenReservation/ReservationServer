@@ -3,7 +3,8 @@ using WeihanLi.Common.Helpers;
 
 namespace Models
 {
-    [DbConfigurationType(typeof(ReservationDbConfiguration))]
+    // Custom DbConfiguration
+    //[DbConfigurationType(typeof(ReservationDbConfiguration))]
     public class ReservationDbContext : DbContext
     {
         private static readonly LogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
@@ -11,7 +12,7 @@ namespace Models
         public ReservationDbContext() : base("name=ReservationConn")
         {
             //log
-            Database.Log = Logger.Debug;
+            Database.Log = Logger.Info;
 
             Database.SetInitializer(new ReservationDbInitializer());
         }
