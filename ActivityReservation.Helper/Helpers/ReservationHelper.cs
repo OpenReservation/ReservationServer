@@ -1,59 +1,43 @@
 ﻿using ActivityReservation.ViewModels;
 using Business;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ActivityReservation.Helpers
 {
     public class ReservationHelper
     {
         /// <summary>
+        /// 最多可预约天数
+        /// </summary>
+        private const int MaxReservationDiffDays = 7;
+
+        /// <summary>
         /// 根据预约日期和预约地点获取可用的预约时间段
         /// </summary>
         /// <param name="dt">预约日期</param>
         /// <param name="placeId">预约地点id</param>
         /// <returns></returns>
-        public static bool[] GetAvailabelPeriodsByDateAndPlace(DateTime dt, Guid placeId)
+        public static List<ReservationPeriodViewModel> GetAvailabelPeriodsByDateAndPlace(DateTime dt, Guid placeId)
         {
             //待审核和审核通过的预约时间段不能再被预约
-            var reservationList = new BLLReservation().GetAll(r =>
+            var reservationList = DependencyResolver.Current.GetService<IBLLReservation>().GetAll(r =>
                 DbFunctions.DiffDays(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
                 r.ReservationStatus != 2);
-            var periodsStatus = new bool[7] { true, true, true, true, true, true, true };
-            foreach (var item in reservationList)
+            var reservationPeriod = DependencyResolver.Current.GetService<IBLLReservationPeriod>().GetAll(_ => _.PlaceId == placeId);
+            
+            return reservationPeriod.Select(_ => new ReservationPeriodViewModel
             {
-                if (periodsStatus[0] && !item.T1)
-                {
-                    periodsStatus[0] = false;
-                }
-                if (periodsStatus[1] && !item.T2)
-                {
-                    periodsStatus[1] = false;
-                }
-                if (periodsStatus[2] && !item.T3)
-                {
-                    periodsStatus[2] = false;
-                }
-                if (periodsStatus[3] && !item.T4)
-                {
-                    periodsStatus[3] = false;
-                }
-                if (periodsStatus[4] && !item.T5)
-                {
-                    periodsStatus[4] = false;
-                }
-                if (periodsStatus[5] && !item.T6)
-                {
-                    periodsStatus[5] = false;
-                }
-                if (periodsStatus[6] && !item.T7)
-                {
-                    periodsStatus[6] = false;
-                }
-            }
-            return periodsStatus;
+                PeriodId = _.PeriodId,
+                PeriodIndex = _.PeriodIndex,
+                PeriodTitle = _.PeriodTitle,
+                PeriodDescription = _.PeriodDescription,
+                IsCanReservate = reservationList.All(r => (r.ReservationPeriod & (1 << _.PeriodIndex)) == 0)
+            }).OrderBy(_=>_.PeriodIndex).ThenBy(_=>_.PeriodTitle).ToList();
         }
 
         /// <summary>
@@ -61,32 +45,32 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="dt">预约日期</param>
         /// <returns></returns>
-        private static bool IsReservationForDateAvailabel(DateTime dt)
+        public static bool IsReservationForDateAvailabel(DateTime dt,bool isAdmin, out string msg)
         {
             var daysdiff = dt.Subtract(DateTime.Today).Days;
-            if (daysdiff >= 0 && daysdiff <= 7)
+            if (daysdiff < 0)
             {
-                return true;
+                msg = "预约日期不可预约";
+                return false;
             }
-            return false;
-        }
-
-        /// <summary>
-        /// 判断预约日期是否在禁用时间段范围内
-        /// </summary>
-        /// <param name="dt">预约日期</param>
-        /// <returns></returns>
-        private static bool IsReservationForDateDisabled(DateTime dt)
-        {
+            if (!isAdmin && daysdiff >MaxReservationDiffDays)
+            {
+                msg = $"预约日期需要在{MaxReservationDiffDays}天内";
+                return false;
+            }
+            
             var disabledPeriods = new BLLDisabledPeriod().GetAll(p =>
                 !p.IsDeleted && p.IsActive && DbFunctions.DiffDays(p.StartDate, dt) >= 0 &&
                 DbFunctions.DiffDays(dt, p.EndDate) >= 0);
             if (disabledPeriods != null && disabledPeriods.Any())
             {
+                msg = "";
                 return true;
             }
+            msg = "预约日期被禁用，如要预约请联系网站管理员";
             return false;
         }
+        
 
         /// <summary>
         /// 判断预约时间段是否可用
@@ -97,52 +81,15 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         private static bool IsReservationForPeriodAvailable(DateTime dt, Guid placeId, string reservationForPeriodIds)
         {
-            var reservationList = new BLLReservation().GetAll(r =>
-                DbFunctions.DiffDays(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
-                r.ReservationStatus != 2);
-            var periodsStatus = new bool[7] { true, true, true, true, true, true, true };
-            foreach (var item in reservationList)
-            {
-                if (periodsStatus[0] && !item.T1)
-                {
-                    periodsStatus[0] = false;
-                }
-                if (periodsStatus[1] && !item.T2)
-                {
-                    periodsStatus[1] = false;
-                }
-                if (periodsStatus[2] && !item.T3)
-                {
-                    periodsStatus[2] = false;
-                }
-                if (periodsStatus[3] && !item.T4)
-                {
-                    periodsStatus[3] = false;
-                }
-                if (periodsStatus[4] && !item.T5)
-                {
-                    periodsStatus[4] = false;
-                }
-                if (periodsStatus[5] && !item.T6)
-                {
-                    periodsStatus[5] = false;
-                }
-                if (periodsStatus[6] && !item.T7)
-                {
-                    periodsStatus[6] = false;
-                }
-            }
-            var periodIds = reservationForPeriodIds.Split(',');
+            var periods = GetAvailabelPeriodsByDateAndPlace(dt, placeId);
+            // 可以修改为根据 id 去判断
+            var periodIds = reservationForPeriodIds.Split(',').Select(_=>Convert.ToInt32(_)).ToArray();
             //
-            foreach (var item in periodIds)
+            if (periodIds.All(p=> periods.Any(_ => _.IsCanReservate && _.PeriodIndex == p)))
             {
-                var index = Convert.ToInt32(item);
-                if (!periodsStatus[index - 1])
-                {
-                    return false;
-                }
+                return true;
             }
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -191,21 +138,12 @@ namespace ActivityReservation.Helpers
                 string.IsNullOrEmpty(reservation.ReservationPersonPhone) ||
                 string.IsNullOrEmpty(reservation.ReservationForTimeIds) || Guid.Empty == reservation.ReservationPlaceId)
             {
-                msg = "预约信息为空";
+                msg = "预约信息不完整";
                 return false;
             }
             var reservationForDate = reservation.ReservationForDate;
-            if (!isAdmin)
+            if (!IsReservationForDateAvailabel(reservationForDate,isAdmin,out msg))
             {
-                if (!IsReservationForDateAvailabel(reservationForDate))
-                {
-                    msg = "预约日期不在可预约范围内";
-                    return false;
-                }
-            }
-            if (IsReservationForDateDisabled(reservationForDate))
-            {
-                msg = "预约日期已被禁用，不可预约，如要预约请联系网站管理员";
                 return false;
             }
             if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId,

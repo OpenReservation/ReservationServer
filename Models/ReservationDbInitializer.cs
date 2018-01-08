@@ -56,18 +56,46 @@ namespace Models
                     new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
                 };
                 context.BlockTypes.AddRange(blockTypes);
+                var placeId = Guid.NewGuid();
                 //Places init
-                var places = new List<ReservationPlace>
+                context.ReservationPlaces.AddRange(new[] {
+                    new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0 },
+                    new ReservationPlace { PlaceId = Guid.NewGuid(), PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1 },
+                    new ReservationPlace { PlaceId = Guid.NewGuid(), PlaceName = "第一排练厅", UpdateBy = "System", PlaceIndex = 2 },
+                    new ReservationPlace { PlaceId = Guid.NewGuid(), PlaceName = "宣传制作室", UpdateBy = "System", PlaceIndex = 3 } });
+                context.ReservationPeriods.AddRange(new[]
                 {
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "小礼堂", UpdateBy = "System"},
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第一多功能厅", UpdateBy = "System"},
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第二多功能厅", UpdateBy = "System"},
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第一排练厅", UpdateBy = "System"},
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "宣传制作室", UpdateBy = "System"},
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第一会议室", UpdateBy = "System"},
-                    new ReservationPlace {PlaceId = Guid.NewGuid(), PlaceName = "第二会议室", UpdateBy = "System"}
-                };
-                context.ReservationPlaces.AddRange(places);
+                    new ReservationPeriod
+                    {
+                        PeriodId = Guid.NewGuid(),
+                        PeriodIndex = 0,
+                        PeriodTitle = "8:00~10:00",
+                        PeriodDescription = "8:00~10:00",
+                        PlaceId = placeId,
+                        UpdateBy = "System",
+                        UpdateTime = DateTime.Now
+                    },
+                    new ReservationPeriod
+                    {
+                        PeriodId = Guid.NewGuid(),
+                        PeriodIndex = 1,
+                        PeriodTitle = "10:00~12:00",
+                        PeriodDescription = "10:00~12:00",
+                        PlaceId = placeId,
+                        UpdateBy = "System",
+                        UpdateTime = DateTime.Now
+                    },
+                    new ReservationPeriod
+                    {
+                        PeriodId = Guid.NewGuid(),
+                        PeriodIndex = 2,
+                        PeriodTitle = "13:00~16:00",
+                        PeriodDescription = "13:00~16:00",
+                        PlaceId = placeId,
+                        UpdateBy = "System",
+                        UpdateTime = DateTime.Now
+                    }
+                });
                 //sys settings init
                 var settings = new List<SystemSettings>
                 {

@@ -27,6 +27,10 @@ namespace DataAccess
 
 	public partial class DALReservationPlace: BaseDAL<ReservationPlace>,IDALReservationPlace { }
 	
+	public partial interface IDALReservationPeriod: IBaseDAL<ReservationPeriod> { }
+
+	public partial class DALReservationPeriod: BaseDAL<ReservationPeriod>,IDALReservationPeriod { }
+	
 	public partial interface IDALSystemSettings: IBaseDAL<SystemSettings> { }
 
 	public partial class DALSystemSettings: BaseDAL<SystemSettings>,IDALSystemSettings { }
@@ -51,6 +55,7 @@ namespace DataAccess
                 builder.RegisterType<DALOperationLog>().As<IDALOperationLog>();
                 builder.RegisterType<DALReservation>().As<IDALReservation>();
                 builder.RegisterType<DALReservationPlace>().As<IDALReservationPlace>();
+                builder.RegisterType<DALReservationPeriod>().As<IDALReservationPeriod>();
                 builder.RegisterType<DALSystemSettings>().As<IDALSystemSettings>();
                 builder.RegisterType<DALNotice>().As<IDALNotice>();
                 builder.RegisterType<DALDisabledPeriod>().As<IDALDisabledPeriod>();

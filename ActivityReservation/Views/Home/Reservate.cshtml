@@ -66,13 +66,7 @@
             <section id="secPickTimePeriod" ng-class="{'show':step==2}">
                 <p class="lead">选择预约时间段</p>
                 <div>
-                    <label><input type="checkbox" value="1" name="cbPeriod" id="cb1" />08:00~09:50</label> <br />
-                    <label><input type="checkbox" value="2" name="cbPeriod" id="cb2" />10:00~11:50</label> <br />
-                    <label><input type="checkbox" value="3" name="cbPeriod" id="cb3" />12:00~14:20</label> <br />
-                    <label><input type="checkbox" value="4" name="cbPeriod" id="cb4" />14:30~16:40</label> <br />
-                    <label><input type="checkbox" value="5" name="cbPeriod" id="cb5" />16:50~18:50</label> <br />
-                    <label><input type="checkbox" value="6" name="cbPeriod" id="cb6" />19:00~20:50</label> <br />
-                    <label><input type="checkbox" value="7" name="cbPeriod" id="cb7" />21:00~22:30</label> <br />
+                    <div ng-repeat="item in ReservationPeriods"><label><input type="checkbox" ng-checked="item.IsCanReservate" name="cbPeriod" ng-class="item.PeriodIndex" title="item.PeriodDescription" />{{item.PeriodTitle}}</label></div>
                 </div>
             </section>
             @* 填写预约人信息 *@
@@ -254,6 +248,7 @@
                 }
                 //current step
                 $scope.step = 0;
+                $scope.ReservationPeriods = [];
                 //submit
                 $scope.submitForm = function () {
                     $scope.isSubmit = true;
@@ -306,18 +301,9 @@
                                         "dt": $scope.reservationModel.ReservationForDate,
                                         "placeId": $scope.reservationModel.ReservationPlaceId
                                     }).success(function (response) {
-                                        var statusArray = response;
-                                        //console.log(statusArray);
-                                        $("input:checkbox[name='cbPeriod']").each(function (index, ele) {
-                                            $(ele).removeAttr("checked");
-                                            if (!statusArray[index]) {
-                                                $(ele).attr("disabled", "disabled");
-                                                $(ele).addClass("disabled");
-                                            } else {
-                                                $(ele).removeAttr("disabled");
-                                                $(ele).removeClass("disabled");
-                                            }
-                                        });
+                                        if (response) {
+                                            $scope.ReservationPeriods = response;
+                                        }
                                     }).error(function (res) {
                                         console.error(res);
                                     });

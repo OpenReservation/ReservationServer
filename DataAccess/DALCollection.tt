@@ -12,6 +12,7 @@
 		"OperationLog",
 		"Reservation",
 		"ReservationPlace",
+        "ReservationPeriod",
 		"SystemSettings",
 		"Notice",
         "DisabledPeriod"

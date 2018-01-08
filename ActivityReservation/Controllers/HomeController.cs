@@ -7,6 +7,7 @@ using Common;
 using Models;
 using System;
 using System.Data.Entity;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
@@ -66,8 +67,29 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult Reservate()
         {
-            var places = new BLLReservationPlace().GetAll(s => s.IsDel == false && s.IsActive, s => s.PlaceName, true);
+            var places = new BLLReservationPlace().GetAll(s => s.IsDel == false && s.IsActive, s => s.PlaceId, true);
             return View(places);
+        }
+
+        /// <summary>
+        /// 预约日期是否可以预约
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult IsReservationForDateValid(DateTime reservationForDate)
+        {
+            var jsonResult = new JsonResultModel<bool>() { Status = JsonResultStatus.Success };
+            string msg;
+            var isValid = ReservationHelper.IsReservationForDateAvailabel(reservationForDate, false, out msg);
+            if (isValid)
+            {
+                jsonResult.Data = true;
+            }
+            else
+            {
+                jsonResult.Data = false;
+                jsonResult.Msg = msg;
+            }
+            return Json(jsonResult, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -119,38 +141,11 @@ namespace ActivityReservation.Controllers
                         UpdateTime = DateTime.Now,
                         ReservationId = Guid.NewGuid()
                     };
-                    foreach (var item in model.ReservationForTimeIds.Split(','))
+                    //TODO:验证最大可预约时间段，同一个手机号，同一个IP地址
+
+                    foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
                     {
-                        switch (Convert.ToInt32(item))
-                        {
-                            case 1:
-                                reservation.T1 = false;
-                                break;
-
-                            case 2:
-                                reservation.T2 = false;
-                                break;
-
-                            case 3:
-                                reservation.T3 = false;
-                                break;
-
-                            case 4:
-                                reservation.T4 = false;
-                                break;
-
-                            case 5:
-                                reservation.T5 = false;
-                                break;
-
-                            case 6:
-                                reservation.T6 = false;
-                                break;
-
-                            case 7:
-                                reservation.T7 = false;
-                                break;
-                        }
+                        reservation.ReservationPeriod += (1 << item);
                     }
                     var bValue = new BLLReservation().Add(reservation);
                     if (bValue > 0)

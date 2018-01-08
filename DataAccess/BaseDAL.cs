@@ -64,7 +64,7 @@ namespace DataAccess
                 db.Set<T>().Remove(t);
                 return db.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return 1;
             }

@@ -60,6 +60,15 @@ namespace Business
             dbHandler = DependencyResolver.Current.GetService<IDALReservationPlace>();
         }
     }
+	public partial interface IBLLReservationPeriod:IBaseBLL<ReservationPeriod>{}
+
+	public partial class BLLReservationPeriod : BaseBLL<ReservationPeriod>,  IBLLReservationPeriod
+    {
+        protected override void InitDbHandler()
+        {
+            dbHandler = DependencyResolver.Current.GetService<IDALReservationPeriod>();
+        }
+    }
 	public partial interface IBLLSystemSettings:IBaseBLL<SystemSettings>{}
 
 	public partial class BLLSystemSettings : BaseBLL<SystemSettings>,  IBLLSystemSettings
@@ -98,6 +107,7 @@ namespace Business
                 builder.RegisterType<BLLOperationLog>().As<IBLLOperationLog>();
                 builder.RegisterType<BLLReservation>().As<IBLLReservation>();
                 builder.RegisterType<BLLReservationPlace>().As<IBLLReservationPlace>();
+                builder.RegisterType<BLLReservationPeriod>().As<IBLLReservationPeriod>();
                 builder.RegisterType<BLLSystemSettings>().As<IBLLSystemSettings>();
                 builder.RegisterType<BLLNotice>().As<IBLLNotice>();
                 builder.RegisterType<BLLDisabledPeriod>().As<IBLLDisabledPeriod>();
