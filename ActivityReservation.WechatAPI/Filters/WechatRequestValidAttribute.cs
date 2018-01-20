@@ -1,8 +1,6 @@
 ﻿using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
-using Newtonsoft.Json;
 using System;
-using System.IO;
 using System.Text;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
@@ -22,21 +20,6 @@ namespace ActivityReservation.WechatAPI.Filters
                 Timestamp = filterContext.HttpContext.Request.QueryString["timestamp"],
                 Msg_Signature = filterContext.HttpContext.Request.QueryString["msg_signature"]
             };
-
-            if ("POST".Equals(filterContext.HttpContext.Request.HttpMethod, StringComparison.OrdinalIgnoreCase))
-            {
-                using (var memStream = new MemoryStream())
-                {
-                    filterContext.HttpContext.Request.InputStream.CopyTo(memStream);
-                    using (var reader = new StreamReader(memStream))
-                    {
-                        model.RequestContent = reader.ReadToEnd();
-                    }
-                }
-                filterContext.HttpContext.Request.InputStream.Seek(0, SeekOrigin.Begin);
-            }
-
-            logger.Debug("微信请求信息:" + JsonConvert.SerializeObject(model));
             //验证
             if (!CheckSignature(model))
             {
