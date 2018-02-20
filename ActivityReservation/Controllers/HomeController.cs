@@ -1,18 +1,17 @@
-﻿using ActivityReservation.HelperModels;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Web.Mvc;
+using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
 using Business;
 using Common;
 using Models;
-using System;
-using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
-using RequestHelper = Common.RequestHelper;
 
 namespace ActivityReservation.Controllers
 {
@@ -260,7 +259,7 @@ namespace ActivityReservation.Controllers
         public JsonResult GetGeetestValidCode()
         {
             var helper = new GeetestHelper();
-            var userIp = RequestHelper.GetRequestIP();
+            var userIp = Request.GetIP();
             var gtServerStatus = helper.PreProcess(userIp);
             Session[GeetestConsts.GeetestUserId] = userIp;
             Session[GeetestConsts.GtServerStatusSessionKey] = gtServerStatus;
