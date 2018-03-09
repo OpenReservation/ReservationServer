@@ -4,13 +4,13 @@ namespace ActivityReservation.WechatAPI
 {
     public class WechatAPIAreaRegistration : AreaRegistration
     {
-        public override string AreaName => "WechatAPI";
+        public override string AreaName => "Wechat";
 
         public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute(
-                "WechatAPI_default",
-                "WechatAPI/{controller}/{action}/{id}",
+                "Wechat_default",
+                "Wechat/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional },
                 namespaces: new[] { "ActivityReservation.WechatAPI.Controllers" }
             );

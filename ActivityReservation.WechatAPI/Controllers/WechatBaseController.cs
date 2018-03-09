@@ -1,7 +1,6 @@
-﻿using ActivityReservation.WechatAPI.Filters;
+﻿using System.Web.Mvc;
+using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
-using Senparc.Weixin.MessageHandlers;
-using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.WechatAPI.Controllers
@@ -12,12 +11,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <summary>
         /// logger
         /// </summary>
-        protected static LogHelper logger = new LogHelper(typeof(WechatBaseController));
-
-        public WechatResult Wechat(IMessageHandlerDocument messageHandlerDocument)
-        {
-            return new WechatResult(messageHandlerDocument);
-        }
+        protected static LogHelper Logger = new LogHelper(typeof(WechatBaseController));
 
         public ContentResult Wechat(WechatContext wechatContext)
         {

@@ -1,15 +1,16 @@
-﻿using ActivityReservation.Controllers;
-using Autofac;
-using Autofac.Integration.Mvc;
-using Common;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Compilation;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using ActivityReservation.Controllers;
+using Autofac;
+using Autofac.Integration.Mvc;
+using Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Redis;
 
 namespace ActivityReservation
 {
@@ -21,9 +22,21 @@ namespace ActivityReservation
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            //log4net init
+            LogHelper.LogInit(new ILogProvider[]
+            {
+                new ExceptionlessLogProvider(),
+                new SentryLogProvider()
+            });
+
+            //Register filters
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+            #region DependenceInjection
+
             var builder = new ContainerBuilder();
 
-            //register modules
+            //RegisterAssemblyModules
             builder.RegisterAssemblyModules(BuildManager.GetReferencedAssemblies().Cast<Assembly>().ToArray());
 
             //ReservationDbContext
@@ -43,15 +56,15 @@ namespace ActivityReservation
             WeihanLi.Common.DependencyResolver.SetDependencyResolver(
                 new WeihanLi.Common.AutofacDependencyResolver(container));
 
-            //log4net init
-            LogHelper.LogInit(Server.MapPath("log4net.config"), new ILogProvider[]
+            #endregion DependenceInjection
+
+            // redis config
+            RedisManager.AddRedisConfig(option =>
             {
-                new ExceptionlessLogProvider(),
-                new SentryLogProvider()
+                option.CachePrefix = "ActivityReservation";
+                option.ChannelPrefix = "ActivityReservation";
             });
 
-            //Register filters
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             //register system settings
             SystemSettingsConfig.RegisterSystemSettings();
         }

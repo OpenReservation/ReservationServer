@@ -5,17 +5,18 @@ namespace ActivityReservation.WechatAPI.Helper
 {
     public class WechatSecurityHelper
     {
-        private static WXBizMsgCrypt wxcpt =
+        private static readonly WXBizMsgCrypt Wxcpt =
             new WXBizMsgCrypt(WeChatConsts.Token, WeChatConsts.AESKey, WeChatConsts.AppId);
 
-        private readonly string signature, timestamp, nonce;
-        private static LogHelper logger = new LogHelper(typeof(WechatSecurityHelper));
+        private static readonly LogHelper Logger = new LogHelper(typeof(WechatSecurityHelper));
+
+        private readonly string _signature, _timestamp, _nonce;
 
         public WechatSecurityHelper(string signature, string timestamp, string nonce)
         {
-            this.signature = signature;
-            this.timestamp = timestamp;
-            this.nonce = nonce;
+            _signature = signature;
+            _timestamp = timestamp;
+            _nonce = nonce;
         }
 
         /// <summary>
@@ -26,10 +27,10 @@ namespace ActivityReservation.WechatAPI.Helper
         public string EncryptMsg(string msg)
         {
             var encryptMsg = "";
-            var result = wxcpt.EncryptMsg(msg, timestamp, nonce, ref encryptMsg);
+            var result = Wxcpt.EncryptMsg(msg, _timestamp, _nonce, ref encryptMsg);
             if (result != 0)
             {
-                logger.Error("微信消息加密失败,result:" + result);
+                Logger.Error("微信消息加密失败,result:" + result);
             }
             return encryptMsg;
         }
@@ -42,10 +43,10 @@ namespace ActivityReservation.WechatAPI.Helper
         public string DecryptMsg(string msg)
         {
             var decryptMsg = "";
-            var result = wxcpt.DecryptMsg(signature, timestamp, nonce, msg, ref decryptMsg);
+            var result = Wxcpt.DecryptMsg(_signature, _timestamp, _nonce, msg, ref decryptMsg);
             if (result != 0)
             {
-                logger.Error("消息解密失败,result:" + result);
+                Logger.Error("消息解密失败,result:" + result);
             }
             return decryptMsg;
         }

@@ -7,41 +7,17 @@ namespace Models
     [Table("tabBlockType")]
     public class BlockType
     {
-        #region Private Field
-
-        /// <summary>
-        /// typeId
-        /// </summary>
-        private Guid typeId;
-
-        /// <summary>
-        /// typeName
-        /// </summary>
-        private string typeName;
-
-        #endregion Private Field
-
         /// <summary>
         /// 黑名单类型id
         /// </summary>
         [Column]
         [Key]
-        public Guid TypeId
-        {
-            get { return typeId; }
-
-            set { typeId = value; }
-        }
+        public Guid TypeId { get; set; }
 
         /// <summary>
         /// 黑名单类型名称
         /// </summary>
         [Column]
-        public string TypeName
-        {
-            get { return typeName; }
-
-            set { typeName = value; }
-        }
+        public string TypeName { get; set; }
     }
 }

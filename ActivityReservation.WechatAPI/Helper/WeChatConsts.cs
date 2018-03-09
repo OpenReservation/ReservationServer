@@ -18,5 +18,10 @@ namespace ActivityReservation.WechatAPI.Helper
         /// EncodingAESKey
         /// </summary>
         public static readonly string AESKey = ConfigurationHelper.AppSetting("WechatAESKey");
+
+        /// <summary>
+        /// AppSecret
+        /// </summary>
+        public static readonly string AppSecret = ConfigurationHelper.AppSetting("WechatAppSecret");
     }
 }

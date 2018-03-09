@@ -1,16 +1,15 @@
 ﻿using ActivityReservation.WechatAPI.Model;
 using Newtonsoft.Json;
-using Senparc.Weixin.Context;
-using Senparc.Weixin.MP.Entities;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
-    public class WechatContext : MessageContext<IRequestMessageBase, IResponseMessageBase>
+    public class WechatContext
     {
-        private static LogHelper logger = new LogHelper(typeof(WechatContext));
-        private WechatSecurityHelper securityHelper;
-        private string requestMessage, responseMessage;
+        private static readonly LogHelper Logger = new LogHelper(typeof(WechatContext));
+        private readonly WechatSecurityHelper _securityHelper;
+        private readonly string _requestMessage;
 
         public WechatContext()
         {
@@ -18,17 +17,21 @@ namespace ActivityReservation.WechatAPI.Helper
 
         public WechatContext(WechatMsgRequestModel request)
         {
-            logger.Debug("微信服务器消息：" + JsonConvert.SerializeObject(request));
-            securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
-            requestMessage = securityHelper.DecryptMsg(request.RequestContent);
-            logger.Debug("收到微信消息：" + requestMessage);
+            Logger.Debug("微信服务器消息：" + JsonConvert.SerializeObject(request));
+            _securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
+            _requestMessage = _securityHelper.DecryptMsg(request.RequestContent);
+            Logger.Debug("收到微信消息：" + _requestMessage);
         }
 
         public string GetResponse()
         {
-            responseMessage = WechatMsgHandler.ReturnMessage(requestMessage);
-            logger.Debug("返回消息：" + responseMessage);
-            return securityHelper.EncryptMsg(responseMessage);
+            var responseMessage = WechatMsgHandler.ReturnMessage(_requestMessage);
+            if (responseMessage.IsNotNullOrEmpty())
+            {
+                Logger.Debug("返回消息：" + responseMessage);
+                return _securityHelper.EncryptMsg(responseMessage);
+            }
+            return string.Empty;
         }
     }
 }
