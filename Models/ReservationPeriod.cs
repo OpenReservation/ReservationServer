@@ -39,6 +39,18 @@ namespace Models
         public Guid PlaceId { get; set; }
 
         /// <summary>
+        /// CreateBy
+        /// </summary>
+        [Column]
+        public string CreateBy { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        [Column]
+        public DateTime CreateTime { get; set; }
+
+        /// <summary>
         /// 更新人
         /// </summary>
         [Column]

@@ -1,11 +1,11 @@
-﻿using ActivityReservation.ViewModels;
-using Business;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.ViewModels;
+using Business;
 
 namespace ActivityReservation.Helpers
 {
@@ -28,16 +28,17 @@ namespace ActivityReservation.Helpers
             var reservationList = DependencyResolver.Current.GetService<IBLLReservation>().GetAll(r =>
                 DbFunctions.DiffDays(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
                 r.ReservationStatus != 2);
-            var reservationPeriod = DependencyResolver.Current.GetService<IBLLReservationPeriod>().GetAll(_ => _.PlaceId == placeId);
+            var reservationPeriod = DependencyResolver.Current.GetService<IBLLReservationPeriod>().GetAll(_ => _.PlaceId == placeId, _ => _.CreateTime, true);
 
-            return reservationPeriod.Select(_ => new ReservationPeriodViewModel
+            return reservationPeriod.Select((_, index) => new ReservationPeriodViewModel
             {
+                PeriodIdx = index,
                 PeriodId = _.PeriodId,
                 PeriodIndex = _.PeriodIndex,
                 PeriodTitle = _.PeriodTitle,
                 PeriodDescription = _.PeriodDescription,
-                IsCanReservate = reservationList.All(r => (r.ReservationPeriod & (1 << _.PeriodIndex)) == 0)
-            }).OrderBy(_ => _.PeriodIndex).ThenBy(_ => _.PeriodTitle).ToList();
+                IsCanReservate = reservationList.All(r => (r.ReservationPeriod & (1 << index)) == 0)
+            }).OrderBy(_ => _.PeriodIndex).ToList();
         }
 
         /// <summary>
@@ -86,7 +87,7 @@ namespace ActivityReservation.Helpers
             // 预约时间段逻辑修改
             var periodIndexes = reservationForPeriodIds.Split(',').Select(_ => Convert.ToInt32(_)).ToArray();
             //
-            if (periodIndexes.All(p => periods.Any(_ => _.IsCanReservate && _.PeriodIndex == p)))
+            if (periodIndexes.All(p => periods.Any(_ => _.IsCanReservate && _.PeriodIdx == p)))
             {
                 return true;
             }

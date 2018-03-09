@@ -1,15 +1,15 @@
-﻿using ActivityReservation.HelperModels;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Web.Mvc;
+using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
 using Business;
 using Common;
 using Models;
-using System;
-using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Extensions;
 using WeihanLi.Common.Helpers;
@@ -185,7 +185,6 @@ namespace ActivityReservation.Controllers
         /// <summary>
         /// 公告
         /// </summary>
-        /// <param name="path">路径</param>
         /// <returns></returns>
         public ActionResult Notice()
         {
@@ -199,7 +198,7 @@ namespace ActivityReservation.Controllers
         public ActionResult NoticeList(SearchHelperModel search)
         {
             Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
-            if (!String.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLamdba = n => n.NoticeTitle.Contains(search.SearchItem1) && n.CheckStatus;
             }

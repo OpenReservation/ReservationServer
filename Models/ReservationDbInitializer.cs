@@ -57,21 +57,22 @@ namespace Models
                 };
                 context.BlockTypes.AddRange(blockTypes);
                 var placeId = Guid.NewGuid();
+                var placeId1 = Guid.NewGuid();
                 //Places init
                 context.ReservationPlaces.AddRange(new[] {
                     new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0 },
-                    new ReservationPlace { PlaceId = Guid.NewGuid(), PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1 },
-                    new ReservationPlace { PlaceId = Guid.NewGuid(), PlaceName = "第一排练厅", UpdateBy = "System", PlaceIndex = 2 },
-                    new ReservationPlace { PlaceId = Guid.NewGuid(), PlaceName = "宣传制作室", UpdateBy = "System", PlaceIndex = 3 } });
+                    new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1 }});
                 context.ReservationPeriods.AddRange(new[]
                 {
                     new ReservationPeriod
                     {
                         PeriodId = Guid.NewGuid(),
-                        PeriodIndex = 0,
+                        PeriodIndex = 3,
                         PeriodTitle = "8:00~10:00",
                         PeriodDescription = "8:00~10:00",
                         PlaceId = placeId,
+                        CreateBy = "System",
+                        CreateTime = DateTime.Now,
                         UpdateBy = "System",
                         UpdateTime = DateTime.Now
                     },
@@ -82,6 +83,8 @@ namespace Models
                         PeriodTitle = "10:00~12:00",
                         PeriodDescription = "10:00~12:00",
                         PlaceId = placeId,
+                        CreateBy = "System",
+                        CreateTime = DateTime.Now.AddSeconds(2),
                         UpdateBy = "System",
                         UpdateTime = DateTime.Now
                     },
@@ -92,9 +95,23 @@ namespace Models
                         PeriodTitle = "13:00~16:00",
                         PeriodDescription = "13:00~16:00",
                         PlaceId = placeId,
+                        CreateBy = "System",
+                        CreateTime = DateTime.Now.AddSeconds(3),
                         UpdateBy = "System",
                         UpdateTime = DateTime.Now
-                    }
+                    },
+                    new ReservationPeriod
+                    {
+                        PeriodId = Guid.NewGuid(),
+                        PeriodIndex = 1,
+                        PeriodTitle = "08:00~18:00",
+                        PeriodDescription = "08:00~18:00",
+                        PlaceId = placeId1,
+                        CreateBy = "System",
+                        CreateTime = DateTime.Now.AddSeconds(3),
+                        UpdateBy = "System",
+                        UpdateTime = DateTime.Now
+                    },
                 });
                 //sys settings init
                 var settings = new List<SystemSettings>
