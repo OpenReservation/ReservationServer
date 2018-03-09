@@ -74,17 +74,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
+    <ProjectReference Include="..\Common\ActivityReservation.Common.csproj">
       <Project>{ad801d46-ea66-4ab9-9214-2c89b03cdf00}</Project>
-      <Name>Common</Name>
+      <Name>ActivityReservation.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+    <ProjectReference Include="..\DataAccess\ActivityReservation.DataAccess.csproj">
       <Project>{d41641f8-9bf3-4984-a3a6-a5ae6518b66b}</Project>
-      <Name>DataAccess</Name>
+      <Name>ActivityReservation.DataAccess</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Models\Models.csproj">
+    <ProjectReference Include="..\Models\ActivityReservation.Models.csproj">
       <Project>{82edf7ea-8c0d-4ac2-b567-38fae6faa3dc}</Project>
-      <Name>Models</Name>
+      <Name>ActivityReservation.Models</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

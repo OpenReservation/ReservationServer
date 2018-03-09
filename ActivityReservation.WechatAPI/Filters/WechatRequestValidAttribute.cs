@@ -9,7 +9,7 @@ namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : FilterAttribute, IAuthorizationFilter
     {
-        private static LogHelper logger = new LogHelper(typeof(WechatRequestValidAttribute));
+        private static readonly LogHelper Logger = new LogHelper(typeof(WechatRequestValidAttribute));
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {
@@ -23,7 +23,7 @@ namespace ActivityReservation.WechatAPI.Filters
             //验证
             if (!CheckSignature(model))
             {
-                logger.Error("微信请求签名验证不通过");
+                Logger.Error("微信请求签名验证不通过");
                 filterContext.Result = new ContentResult
                 {
                     Content = "微信请求验证失败",

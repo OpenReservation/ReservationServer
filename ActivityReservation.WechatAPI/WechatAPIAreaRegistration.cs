@@ -4,10 +4,7 @@ namespace ActivityReservation.WechatAPI
 {
     public class WechatAPIAreaRegistration : AreaRegistration
     {
-        public override string AreaName
-        {
-            get { return "WechatAPI"; }
-        }
+        public override string AreaName => "WechatAPI";
 
         public override void RegisterArea(AreaRegistrationContext context)
         {
