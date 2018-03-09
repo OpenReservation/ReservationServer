@@ -1,16 +1,17 @@
-﻿using System;
-using System.Data.Entity;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Web.Mvc;
-using ActivityReservation.HelperModels;
+﻿using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
 using Business;
 using Common;
 using Models;
+using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Web.Mvc;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Extensions;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Controllers
