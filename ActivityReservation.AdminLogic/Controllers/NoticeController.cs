@@ -28,7 +28,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             Expression<Func<Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
-            if (!String.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLamdba = n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1);
             }
@@ -85,7 +85,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     UpdateTime = DateTime.Now
                 };
                 //
-                if (!String.IsNullOrEmpty(n.NoticeCustomPath))
+                if (!string.IsNullOrEmpty(n.NoticeCustomPath))
                 {
                     if (n.NoticeCustomPath.EndsWith(".html"))
                     {
@@ -126,7 +126,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult IsPathAvailable(string path)
         {
-            if (String.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(path))
             {
                 return Json(true);
             }

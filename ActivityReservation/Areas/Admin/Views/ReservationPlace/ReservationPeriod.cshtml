@@ -1,0 +1,23 @@
+﻿@{
+    ViewBag.Title = "活动室预约时间段管理";
+}
+<div class="table-wraper">
+    <div class="table-header">
+        <h3 class="table-title">
+            活动室预约时间段管理<small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
+        </h3>
+    </div>
+    <div class="table-body" id="div_main"></div>
+</div>
+<div id="editPlace" style="padding: 1em 2.2em; display: none">
+    <form>
+        <div class="input-group">
+            <label for="inputPeriodTitle">请输入时间段名称</label> <br />
+            <input type="text" required="required" class="form-control" value="" id="inputPeriodTitle" placeholder="预约时间段标题" />
+        </div>
+        <div class="input-group">
+            <label for="inputPeriodIndex">请输入时间段排序</label> <br />
+            <input type="number" min="1" required="required" class="form-control" value="" id="inputPeriodIndex" placeholder="预约时间段排序" />
+        </div>
+    </form>
+</div>

@@ -104,10 +104,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
             var rowsCount = 0;
             //类别，加载全部还是只加载待审核列表
-            if (!String.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
+            if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
             {
                 //根据预约人联系方式查询
-                if (!String.IsNullOrEmpty(search.SearchItem1))
+                if (!string.IsNullOrEmpty(search.SearchItem1))
                 {
                     whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
                 }
@@ -120,7 +120,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             else
             {
-                if (!String.IsNullOrEmpty(search.SearchItem1))
+                if (!string.IsNullOrEmpty(search.SearchItem1))
                 {
                     whereLambda = (m =>
                         m.ReservationPersonPhone.Contains(search.SearchItem1) && m.ReservationStatus == 0);

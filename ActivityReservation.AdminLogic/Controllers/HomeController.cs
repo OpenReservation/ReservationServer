@@ -18,7 +18,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             get
             {
-                if (String.IsNullOrEmpty(siteUrl))
+                if (string.IsNullOrEmpty(siteUrl))
                 {
                     var url = HttpContext.Request.Url.AbsoluteUri.ToString();
                     siteUrl = url.Substring(0, url.IndexOf(HttpContext.Request.Path));
@@ -57,7 +57,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 showError("上传目录不存在。");
             }
             var dirName = Request.QueryString["dir"];
-            if (String.IsNullOrEmpty(dirName))
+            if (string.IsNullOrEmpty(dirName))
             {
                 dirName = "image";
             }
@@ -71,7 +71,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 showError("上传文件大小超过限制。");
             }
-            if (String.IsNullOrEmpty(fileExt) ||
+            if (string.IsNullOrEmpty(fileExt) ||
                 Array.IndexOf(((String)extTable[dirName]).Split(','), fileExt.Substring(1).ToLower()) == -1)
             {
                 showError("上传文件扩展名是不允许的扩展名。\n只允许" + ((String)extTable[dirName]) + "格式。");
@@ -128,7 +128,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
             var dirPath = Server.MapPath("~" + rootPath);
             var dirName = Request.QueryString["dir"];
-            if (!String.IsNullOrEmpty(dirName))
+            if (!string.IsNullOrEmpty(dirName))
             {
                 if (Array.IndexOf("image,flash,media,file".Split(','), dirName) == -1)
                 {
@@ -144,7 +144,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             //根据path参数，设置各路径和URL
             var path = Request.QueryString["path"];
-            path = String.IsNullOrEmpty(path) ? "" : path;
+            path = string.IsNullOrEmpty(path) ? "" : path;
             if (path == "")
             {
                 currentPath = dirPath;
@@ -162,7 +162,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
             //排序形式，name or size or type
             var order = Request.QueryString["order"];
-            order = String.IsNullOrEmpty(order) ? "" : order.ToLower();
+            order = string.IsNullOrEmpty(order) ? "" : order.ToLower();
             //不允许使用..移动到上一级目录
             if (Regex.IsMatch(path, @"\.\."))
             {

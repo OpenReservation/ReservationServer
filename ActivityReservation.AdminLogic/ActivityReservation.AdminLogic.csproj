@@ -103,19 +103,15 @@
     <Compile Include="ViewModels\NoticeViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ActivityReservation.Business\ActivityReservation.Business.csproj">
+      <Project>{3f550118-51bb-4782-bb3f-3983fc56f2cc}</Project>
+      <Name>ActivityReservation.Business</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj">
       <Project>{5848d1b2-49a2-4d82-afaa-b4e6a8079ff0}</Project>
       <Name>ActivityReservation.Helper</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Business\ActivityReservation.Business.csproj">
-      <Project>{3f550118-51bb-4782-bb3f-3983fc56f2cc}</Project>
-      <Name>ActivityReservation.Business</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common\ActivityReservation.Common.csproj">
-      <Project>{ad801d46-ea66-4ab9-9214-2c89b03cdf00}</Project>
-      <Name>ActivityReservation.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Models\ActivityReservation.Models.csproj">
+    <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj">
       <Project>{82edf7ea-8c0d-4ac2-b567-38fae6faa3dc}</Project>
       <Name>ActivityReservation.Models</Name>
     </ProjectReference>

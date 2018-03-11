@@ -157,7 +157,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ModifyEmail(string email)
         {
-            if (String.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email))
             {
                 return Json(false);
             }
@@ -221,7 +221,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count == 1)
                     {
                         OperLogHelper.AddOperLog(
-                            String.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail),
+                            string.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail),
                             OperLogModule.Account, Username);
                         return Json(true);
                     }
@@ -248,7 +248,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = BusinessHelper.UserHelper.Delete(u);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("删除用户 {0}", u.UserName), OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog(string.Format("删除用户 {0}", u.UserName), OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -275,7 +275,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = BusinessHelper.UserHelper.Update(u, "UserPassword");
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog(string.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -359,7 +359,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             //默认查询所有
             Expression<Func<User, bool>> whereLambda = (u => u.IsSuper == false);
-            if (!String.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLambda = (u => u.UserName.Contains(search.SearchItem1) && u.IsSuper == false);
             }

@@ -1,10 +1,11 @@
-﻿using ActivityReservation.Helpers;
-using ActivityReservation.WorkContexts;
-using Models;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.Helpers;
+using ActivityReservation.WorkContexts;
+using Models;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -34,7 +35,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 pageSize = 10;
             }
             Expression<Func<ReservationPlace, bool>> whereLambda = (p => p.IsDel == false);
-            if (!String.IsNullOrEmpty(placeName))
+            if (!string.IsNullOrEmpty(placeName))
             {
                 whereLambda = (p => p.PlaceName.Contains(placeName) && p.IsDel == false);
             }
@@ -54,7 +55,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult UpdatePlaceName(Guid placeId, string newName, string beforeName)
         {
-            if (String.IsNullOrEmpty(newName))
+            if (string.IsNullOrEmpty(newName))
             {
                 return Json("活动室名称不能为空");
             }
@@ -94,7 +95,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult AddPlace(string placeName)
         {
-            if (!String.IsNullOrEmpty(placeName))
+            if (!string.IsNullOrEmpty(placeName))
             {
                 if (BusinessHelper.ReservationPlaceHelper.Exist(p =>
                     p.PlaceName.ToUpperInvariant().Equals(placeName.ToUpperInvariant()) && p.IsDel == false))
@@ -134,7 +135,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult DeletePlace(Guid placeId, string placeName)
         {
-            if (String.IsNullOrEmpty(placeName))
+            if (string.IsNullOrEmpty(placeName))
             {
                 return Json("活动室名称不能为空");
             }
@@ -168,7 +169,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult UpdatePlaceStatus(Guid placeId, string placeName, int status)
         {
-            if (String.IsNullOrEmpty(placeName))
+            if (string.IsNullOrEmpty(placeName))
             {
                 return Json("活动室名称不能为空");
             }
@@ -183,7 +184,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     new ReservationPlace() { PlaceId = placeId, UpdateBy = Username, IsActive = bStatus }, "IsActive",
                     "UpdateBy", "UpdateTime");
                 OperLogHelper.AddOperLog(
-                    String.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(), placeName, (status > 0) ? "启用" : "禁用"),
+                    string.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(), placeName, (status > 0) ? "启用" : "禁用"),
                     OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
@@ -193,6 +194,70 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("修改活动室状态失败，发生异常：" + ex.Message);
             }
             ;
+        }
+
+        public ActionResult ReservationPeriod() => View();
+
+        public ActionResult ReservationPeriodList(Guid placeId)
+        {
+            return Json(BusinessHelper.ReservationPeriodHelper.GetAll(_ => _.PlaceId == placeId, _ => _.CreateTime, false), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult AddReservationPeriod(ReservationPeriod model)
+        {
+            if (model.PlaceId == Guid.Empty)
+            {
+                return Json("预约活动室不能为空");
+            }
+
+            if (model.PeriodTitle.IsNullOrWhiteSpace())
+            {
+                return Json("预约时间段不能为空");
+            }
+
+            if (!BusinessHelper.ReservationPlaceHelper.Exist(p => p.PlaceId == model.PlaceId))
+            {
+                return Json("活动室不存在");
+            }
+
+            if (!BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex))
+            {
+                return Json("排序重复，请修改");
+            }
+
+            model.PeriodId = Guid.NewGuid();
+            model.CreateBy = Username;
+            model.CreateTime = DateTime.Now;
+            model.UpdateBy = Username;
+            model.UpdateTime = DateTime.Now;
+
+            var result = BusinessHelper.ReservationPeriodHelper.Add(model);
+            if (result > 0)
+            {
+                OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);
+            }
+            return Json(result > 0 ? "" : "创建预约时间段失败");
+        }
+
+        [HttpPost]
+        public JsonResult DeleteReservationPeriod(Guid periodId)
+        {
+            if (periodId == Guid.Empty)
+            {
+                return Json("预约时间段不能为空");
+            }
+            if (!BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodId == periodId))
+            {
+                return Json("预约时间段不存在");
+            }
+
+            var result = BusinessHelper.ReservationPeriodHelper.Delete(new ReservationPeriod { PeriodId = periodId });
+            if (result > 0)
+            {
+                OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, Username);
+            }
+            return Json(result > 0 ? "" : "删除失败");
         }
     }
 }

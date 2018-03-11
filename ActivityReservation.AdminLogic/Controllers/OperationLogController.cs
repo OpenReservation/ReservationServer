@@ -31,10 +31,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             Expression<Func<OperationLog, bool>> whereLambda = (l => 1 == 1);
             //日志模块名称
-            if (!String.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 //日志内容
-                if (!String.IsNullOrEmpty(search.SearchItem2))
+                if (!string.IsNullOrEmpty(search.SearchItem2))
                 {
                     whereLambda = (l =>
                         l.LogContent.Contains(search.SearchItem2) && l.LogModule.Contains(search.SearchItem1));
@@ -46,7 +46,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             else
             {
-                if (!String.IsNullOrEmpty(search.SearchItem2))
+                if (!string.IsNullOrEmpty(search.SearchItem2))
                 {
                     whereLambda = (l => l.LogContent.Contains(search.SearchItem2));
                 }

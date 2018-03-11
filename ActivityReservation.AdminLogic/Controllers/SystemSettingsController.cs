@@ -32,7 +32,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             //默认查询所有
             Expression<Func<SystemSettings, bool>> whereLambda = (s => 1 == 1);
             var rowsCount = 0;
-            if (!String.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
             }
@@ -55,7 +55,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = BusinessHelper.SystemSettingsHelper.Add(setting);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(String.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue),
+                    OperLogHelper.AddOperLog(string.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue),
                         OperLogModule.Settings, Username);
                     HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
@@ -81,7 +81,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(
-                        String.Format("更新系统设置{0}---{1}：{2}", setting.SettingId, setting.SettingName,
+                        string.Format("更新系统设置{0}---{1}：{2}", setting.SettingId, setting.SettingName,
                             setting.SettingValue), OperLogModule.Settings, Username);
                     HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);

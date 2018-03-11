@@ -30,10 +30,10 @@ namespace ActivityReservation.AdminLogic.Controllers
             //默认查询全部
             Expression<Func<BlockEntity, bool>> whereLambda = (b => true);
             //判断查询条件
-            if (!String.IsNullOrEmpty(search.SearchItem1) && !("0".Equals(search.SearchItem1)))
+            if (!string.IsNullOrEmpty(search.SearchItem1) && !("0".Equals(search.SearchItem1)))
             {
                 var id = Guid.Parse(search.SearchItem1);
-                if (!String.IsNullOrEmpty(search.SearchItem2))
+                if (!string.IsNullOrEmpty(search.SearchItem2))
                 {
                     whereLambda = (b => b.BlockTypeId == id && b.BlockValue.Contains(search.SearchItem2));
                 }
@@ -44,7 +44,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             else
             {
-                if (!String.IsNullOrEmpty(search.SearchItem2))
+                if (!string.IsNullOrEmpty(search.SearchItem2))
                 {
                     whereLambda = (b => b.BlockValue.Contains(search.SearchItem2));
                 }
@@ -86,7 +86,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count == 1)
                     {
                         //记录日志
-                        OperLogHelper.AddOperLog(String.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity,
+                        OperLogHelper.AddOperLog(string.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity,
                             Username);
                         return Json(true);
                     }
@@ -126,7 +126,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count > 0)
                 {
                     OperLogHelper.AddOperLog(
-                        String.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive ? "启用" : "禁用"),
+                        string.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive ? "启用" : "禁用"),
                         OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
