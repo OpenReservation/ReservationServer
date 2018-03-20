@@ -1,6 +1,4 @@
-# ActivityReservation
-## Build Status
-[![Build status](https://ci.appveyor.com/api/projects/status/4d06b7edjjsx6n8r?svg=true)](https://ci.appveyor.com/project/WeihanLi/activityreservation)
+# ActivityReservation [![Build status](https://ci.appveyor.com/api/projects/status/4d06b7edjjsx6n8r?svg=true)](https://ci.appveyor.com/project/WeihanLi/activityreservation)
 
 ## Intro
 
@@ -14,30 +12,6 @@
 后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
 
 后台登录账号：管理员用户名:admin ,密码:Admin888
-
-## Architecture
-
-前端：Bootstrap + layer + Angularjs + jquery-ui + KindEditor
-
-后端：EntityFramework + log4net + 三层架构 
-
-## Function
-
-1. 活动室预约
-1. 预约管理
-1. 活动室管理
-1. 公告管理
-1. 用户管理
-1. 预约黑名单管理
-1. 系统设置管理
-1. 某段时间段禁用预约，如节假日/寒（暑）假等
-
-## Todo
-
-- [ ] 预约时间段修改，与所要预约的活动室进行关联
-- [ ] 微信小程序预约
-- [ ] 微信公共号预约
-
 
 ## Summary
 
