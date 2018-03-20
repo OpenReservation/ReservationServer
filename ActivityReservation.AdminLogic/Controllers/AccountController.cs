@@ -102,7 +102,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             //logout
             AuthFormService.Logout();
             //redirect to login page
-            return RedirectToAction("Login");
+            return RedirectToAction("Index", new { area = "", controller = "Home" });
         }
 
         /// <summary>
