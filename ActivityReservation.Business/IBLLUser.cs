@@ -1,6 +1,6 @@
-﻿using Models;
+﻿using ActivityReservation.Models;
 
-namespace Business
+namespace ActivityReservation.Business
 {
     public partial interface IBLLUser : IBaseBLL<User>
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Web;
 using System.Web.Security;
-using Business;
-using Models;
+using ActivityReservation.Models;
 using WeihanLi.Redis;
+using BLLUser = ActivityReservation.Business.BLLUser;
 
 namespace ActivityReservation.Helpers
 {
@@ -74,7 +74,7 @@ namespace ActivityReservation.Helpers
                 var user = new BLLUser().Fetch(u => u.UserName == loginName);
                 if (user != null)
                 {
-                    RedisManager.GetCacheClient().Set(AuthCacheKey, user);
+                    RedisManager.CacheClient.Set(AuthCacheKey, user);
                     cookie.Expires = DateTime.Now.AddDays(1);
                     cookie.HttpOnly = true;
                     HttpContext.Current.Response.Cookies.Add(cookie);

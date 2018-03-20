@@ -1,142 +1,89 @@
-﻿using SharpRaven;
+﻿using System;
+using System.Collections.Concurrent;
+using SharpRaven;
 using SharpRaven.Data;
-using System;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
+using WeihanLi.Extensions;
 
-namespace Common
+namespace ActivityReservation.Common
 {
     /// <summary>
     /// SentryLogProvider
     /// </summary>
-    public class SentryLogProvider : ILogProvider
+    public class SentryLogHelperProvider : ILogHelperProvider
+    {
+        private readonly ConcurrentDictionary<int, SentryLogHelper> _logHelpers = new ConcurrentDictionary<int, SentryLogHelper>();
+
+        public ILogHelper CreateLogHelper(string categoryName) => _logHelpers.GetOrAdd(1, k => new SentryLogHelper());
+    }
+
+    public class SentryLogHelper : ILogHelper
     {
         /// <summary>
         /// client
         /// </summary>
-        private static readonly RavenClient SentryClient =
-            new RavenClient(ConfigurationHelper.AppSetting("SentryClientKey"));
+        private static readonly RavenClient SentryClient;
 
-        void ILogProvider.LogInit()
+        static SentryLogHelper()
         {
-            // LogProviderInit
+            SentryClient =
+                new RavenClient(ConfigurationHelper.AppSetting("SentryClientKey"));
         }
 
-        public void Info(string msg)
+        public void Log(LogHelperLevel loggerLevel, string message, Exception exception)
         {
-        }
-
-        public void Trace(string msg)
-        {
-        }
-
-        public void InfoFormat(string msgFormat, params object[] args)
-        {
-        }
-
-        public void Debug(string msg)
-        {
-        }
-
-        public void DebugFormat(string msgFormat, params object[] args)
-        {
-        }
-
-        public void Debug(string msg, Exception ex)
-        {
-        }
-
-        public void Debug(Exception ex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Warn(string msg)
-        {
-            SentryClient.Capture(new SentryEvent(new SentryMessage(msg))
+            if (IsEnabled(loggerLevel))
             {
-                Level = ErrorLevel.Warning
-            });
+                if (message.IsNotNullOrWhiteSpace() || exception != null)
+                {
+                    switch (loggerLevel)
+                    {
+                        case LogHelperLevel.Warn:
+                            SentryClient.Capture(new SentryEvent(exception)
+                            {
+                                Level = ErrorLevel.Warning,
+                                Message = new SentryMessage(message)
+                            });
+                            break;
+
+                        case LogHelperLevel.Error:
+                            SentryClient.Capture(new SentryEvent(exception)
+                            {
+                                Message = new SentryMessage(message),
+                                Level = ErrorLevel.Error
+                            });
+                            break;
+
+                        case LogHelperLevel.Fatal:
+                            SentryClient.Capture(new SentryEvent(exception)
+                            {
+                                Level = ErrorLevel.Fatal,
+                                Message = new SentryMessage(message)
+                            });
+                            break;
+                    }
+                }
+            }
         }
 
-        public void WarnFormat(string msgFormat, params object[] args)
-            => Warn(string.Format(msgFormat, args));
-
-        public void Warn(string msg, Exception ex)
+        public bool IsEnabled(LogHelperLevel loggerLevel)
         {
-            SentryClient.Capture(new SentryEvent(ex)
+            switch (loggerLevel)
             {
-                Level = ErrorLevel.Warning,
-                Message = new SentryMessage(msg)
-            });
-        }
+                case LogHelperLevel.All:
+                case LogHelperLevel.Info:
+                case LogHelperLevel.Debug:
+                case LogHelperLevel.None:
+                    return false;
 
-        public void Warn(Exception ex)
-        {
-            SentryClient.Capture(new SentryEvent(ex)
-            {
-                Level = ErrorLevel.Warning
-            });
-        }
-
-        public void Error(string msg)
-        {
-            SentryClient.Capture(new SentryEvent(new SentryMessage(msg))
-            {
-                Level = ErrorLevel.Error
-            });
-        }
-
-        public void ErrorFormat(string msgFormat, params object[] args)
-            => Error(string.Format(msgFormat, args));
-
-        public void Error(string msg, Exception ex)
-        {
-            SentryClient.Capture(new SentryEvent(ex)
-            {
-                Message = new SentryMessage(msg),
-                Level = ErrorLevel.Error
-            });
-        }
-
-        public void Error(Exception ex)
-        {
-            SentryClient.Capture(new SentryEvent(ex)
-            {
-                Level = ErrorLevel.Error
-            });
-        }
-
-        public void Fatal(string msg)
-        {
-            SentryClient.Capture(new SentryEvent(new SentryMessage(msg))
-            {
-                Level = ErrorLevel.Fatal
-            });
-        }
-
-        public void FatalFormat(string msgFormat, params object[] args)
-        {
-            SentryClient.Capture(new SentryEvent(new SentryMessage(msgFormat, args))
-            {
-                Level = ErrorLevel.Fatal
-            });
-        }
-
-        public void Fatal(string msg, Exception ex)
-        {
-            SentryClient.Capture(new SentryEvent(ex)
-            {
-                Level = ErrorLevel.Fatal,
-                Message = new SentryMessage(msg)
-            });
-        }
-
-        public void Fatal(Exception ex)
-        {
-            SentryClient.Capture(new SentryEvent(ex)
-            {
-                Level = ErrorLevel.Fatal
-            });
+                //case LogHelperLevel.Trace:
+                //case LogHelperLevel.Warn:
+                //case LogHelperLevel.Error:
+                //case LogHelperLevel.Fatal:
+                default:
+                    return true;
+            }
         }
     }
 }

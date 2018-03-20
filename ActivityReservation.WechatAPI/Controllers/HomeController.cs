@@ -3,6 +3,7 @@ using System.IO;
 using System.Web.Mvc;
 using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {

@@ -1,14 +1,15 @@
-﻿using ActivityReservation.HelperModels;
-using ActivityReservation.Helpers;
-using ActivityReservation.ViewModels;
-using ActivityReservation.WorkContexts;
-using Models;
-using System;
+﻿using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.HelperModels;
+using ActivityReservation.Helpers;
+using ActivityReservation.Models;
+using ActivityReservation.ViewModels;
+using ActivityReservation.WorkContexts;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {

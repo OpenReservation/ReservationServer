@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Models.BlockType>
+﻿@model IEnumerable<ActivityReservation.Models.BlockType>
 @{
     ViewBag.Title = "预约黑名单管理";
 }
@@ -17,9 +17,9 @@
                 </label>
                 @foreach (var t in Model)
                 {
-                    <label>
-                        <input type="radio" class="radio-inline" value="@t.TypeId" name="blockTypes" />@t.TypeName
-                    </label>
+                <label>
+                    <input type="radio" class="radio-inline" value="@t.TypeId" name="blockTypes" />@t.TypeName
+                </label>
                 }
                 &nbsp;&nbsp;
                 <input type="search" value="" id="entityValue" class="form-control" placeholder="黑名单内容" />
@@ -40,7 +40,7 @@
             <select id="blockType">
                 @foreach (var t in Model)
                 {
-                    <option value="@t.TypeId">@t.TypeName</option>
+                <option value="@t.TypeId">@t.TypeName</option>
                 }
             </select>
         </div>

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     [Table("tabReservationPeriod")]
     public class ReservationPeriod

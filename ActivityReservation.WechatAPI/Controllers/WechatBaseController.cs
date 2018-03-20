@@ -2,6 +2,7 @@
 using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -11,7 +12,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <summary>
         /// logger
         /// </summary>
-        protected static LogHelper Logger = new LogHelper(typeof(WechatBaseController));
+        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatBaseController));
 
         public ContentResult Wechat(WechatContext wechatContext)
         {

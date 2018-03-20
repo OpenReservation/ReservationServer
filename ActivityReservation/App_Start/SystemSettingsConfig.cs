@@ -1,6 +1,6 @@
-﻿using Business;
-using System.Web;
+﻿using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.Business;
 
 namespace ActivityReservation
 {

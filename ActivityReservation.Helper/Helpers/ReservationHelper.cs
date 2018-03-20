@@ -4,8 +4,8 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ActivityReservation.Business;
 using ActivityReservation.ViewModels;
-using Business;
 
 namespace ActivityReservation.Helpers
 {

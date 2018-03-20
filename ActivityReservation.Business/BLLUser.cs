@@ -1,7 +1,7 @@
-﻿using Models;
+﻿using ActivityReservation.Models;
 using WeihanLi.Common.Helpers;
 
-namespace Business
+namespace ActivityReservation.Business
 {
     public partial class BLLUser : BaseBLL<User>, IBaseBLL<User>
     {

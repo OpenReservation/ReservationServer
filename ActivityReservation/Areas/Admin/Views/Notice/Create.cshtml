@@ -1,4 +1,4 @@
-﻿@model Models.Notice
+﻿@model ActivityReservation.Models.Notice
 
 @{
     ViewBag.Title = "添加新公告";
@@ -38,7 +38,7 @@
     <script src="~/Content/kindeditor/lang/zh-CN.js"></script>
     <script>
         var editor;
-        KindEditor.ready(function(K) {
+        KindEditor.ready(function (K) {
             editor = K.create('#content',
                 {
                     uploadJson: '/Admin/Home/UploadFile',
@@ -47,17 +47,17 @@
                     height: "300px",
                     width: '100%',
                     autoHeightMode: true,
-                    afterCreate: function() {
+                    afterCreate: function () {
                         var self = this;
                         K.ctrl(document,
                             13,
-                            function() {
+                            function () {
                                 self.sync();
                                 K('form')[0].submit();
                             });
                         K.ctrl(self.edit.doc,
                             13,
-                            function() {
+                            function () {
                                 self.sync();
                                 K('form')[0].submit();
                             });
@@ -99,7 +99,7 @@
                 method: "POST",
                 async: false,
                 data: { "path": path },
-                success: function(data) {
+                success: function (data) {
                     if (data) {
                         status = true;
                     }
@@ -110,7 +110,7 @@
 
         //preview
         $("#btnPreview").on("click",
-            function() {
+            function () {
                 var title = $("#title").val(), content = editor.html();
                 if (!title) {
                     layer.msg('公告标题不能为空！');

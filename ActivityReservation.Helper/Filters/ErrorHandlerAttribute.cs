@@ -1,12 +1,13 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.Filters
 {
     public class ErrorHandlerAttribute : HandleErrorAttribute
     {
-        private static readonly LogHelper Logger = LogHelper.GetLogHelper<ErrorHandlerAttribute>();
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ErrorHandlerAttribute>();
 
         public override void OnException(ExceptionContext filterContext)
         {

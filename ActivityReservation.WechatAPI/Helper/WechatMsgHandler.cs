@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Web;
 using System.Xml;
-using Common;
+using ActivityReservation.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
 
@@ -13,7 +14,7 @@ namespace ActivityReservation.WechatAPI.Helper
     /// </summary>
     internal class WechatMsgHandler
     {
-        private static readonly LogHelper Logger = new LogHelper(typeof(WechatMsgHandler));
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatMsgHandler));
 
         public static string ReturnMessage(string postStr)
         {

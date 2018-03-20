@@ -1,10 +1,12 @@
-﻿@model Models.User
+﻿@model ActivityReservation.Models.User
 @{
     ViewBag.Title = "我的账户";
 }
 @section styles{
     <style>
-        #div_profile, #div_modifyPass { padding: 20px; }
+        #div_profile, #div_modifyPass {
+            padding: 20px;
+        }
     </style>
 }
 <div class="table-wraper">
@@ -49,13 +51,13 @@
     <script>
         //修改邮箱
         $("#btnModifyEmail").on("click",
-            function() {
+            function () {
                 //layer.propmt
                 layer.prompt({
-                        title: '请输入新的邮箱',
-                        formType: 0 //prompt风格，支持0-2
-                    },
-                    function(param) {
+                    title: '请输入新的邮箱',
+                    formType: 0 //prompt风格，支持0-2
+                },
+                    function (param) {
                         if (param) {
                             $(this).attr("disabeld", "disabled");
                             var inputEmail = param;
@@ -73,7 +75,7 @@
                                 async: false,
                                 method: "POST",
                                 data: { "userMail": inputEmail },
-                                success: function(data) {
+                                success: function (data) {
                                     isEmailValid = data;
                                 }
                             });
@@ -84,7 +86,7 @@
                             //update
                             $.post("/Admin/Account/ModifyEmail",
                                 { "email": param },
-                                function(data) {
+                                function (data) {
                                     if (data) {
                                         layer.msg('修改成功');
                                         location.reload();
@@ -98,26 +100,26 @@
             });
         //修改密码
         angular.module("ModifyPassApp", []).controller("ModifyPassCtrl",
-            function($scope, $http) {
+            function ($scope, $http) {
                 $scope.modifyPassModel = {
                     OldPassword: "",
                     NewPassword: "",
                     ConfirmPassword: ""
                 };
-                $scope.isFormValid = function() {
+                $scope.isFormValid = function () {
                     if ($scope.modifyPassModel.ConfirmPassword != $scope.modifyPassModel.NewPassword) {
                         return false;
                     }
                     return true;
                 };
-                $scope.updatePass = function() {
+                $scope.updatePass = function () {
                     var isOldPassValid = false;
                     $.ajax({
                         url: "/Admin/Account/ValidOldPassword",
                         async: false,
                         method: "POST",
                         data: { "password": $scope.modifyPassModel.OldPassword },
-                        success: function(data) {
+                        success: function (data) {
                             isOldPassValid = data;
                         }
                     });
@@ -126,12 +128,12 @@
                         return;
                     }
                     $http.post("/Admin/Account/ModifyPassword",
-                            {
-                                "OldPassword": $scope.modifyPassModel.OldPassword,
-                                "NewPassword": $scope.modifyPassModel.NewPassword,
-                                "ConfirmPassword": $scope.modifyPassModel.ConfirmPassword
-                            })
-                        .success(function(data) {
+                        {
+                            "OldPassword": $scope.modifyPassModel.OldPassword,
+                            "NewPassword": $scope.modifyPassModel.NewPassword,
+                            "ConfirmPassword": $scope.modifyPassModel.ConfirmPassword
+                        })
+                        .success(function (data) {
                             if (data) {
                                 layer.msg('密码修改成功，请重新登录');
                                 location.href = '/Admin/Account/Login';

@@ -3,12 +3,13 @@ using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure.Interception;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     internal class ReservationLogFormatter : DatabaseLogFormatter
     {
-        private static readonly LogHelper Logger = LogHelper.GetLogHelper<ReservationLogFormatter>();
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ReservationLogFormatter>();
 
         public ReservationLogFormatter(Action<string> writeAction) : base(writeAction)
         {

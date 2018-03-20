@@ -1,9 +1,10 @@
-﻿using Exceptionless.Json;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Exceptionless.Json;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
-namespace Common
+namespace ActivityReservation.Common
 {
     /// <summary>
     /// ChatBotHelper
@@ -19,7 +20,7 @@ namespace Common
         /// <summary>
         /// logger
         /// </summary>
-        private static readonly LogHelper Logger = new LogHelper(typeof(ChatRobotHelper));
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(ChatRobotHelper));
 
         /// <summary>
         /// 获取机器人回复

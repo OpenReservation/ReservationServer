@@ -3,16 +3,18 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.Business;
+using ActivityReservation.Common;
 using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
+using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
-using Business;
-using Common;
-using Models;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Extensions;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
+using BLLReservation = ActivityReservation.Business.BLLReservation;
 
 namespace ActivityReservation.Controllers
 {
@@ -22,7 +24,7 @@ namespace ActivityReservation.Controllers
         {
         }
 
-        public HomeController(LogHelper logger) : base(logger)
+        public HomeController(ILogHelper logger) : base(logger)
         {
         }
 
@@ -67,7 +69,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult Reservate()
         {
-            var places = new BLLReservationPlace().GetAll(s => s.IsDel == false && s.IsActive, s => s.PlaceId, true);
+            var places = DependencyResolver.Current.GetService<IBLLReservationPlace>().GetAll(s => s.IsDel == false && s.IsActive, s => s.PlaceId, true);
             return View(places);
         }
 

@@ -1,9 +1,9 @@
-﻿using Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using ActivityReservation.Models;
 
-namespace Business
+namespace ActivityReservation.Business
 {
     public partial interface IBLLReservation : IBaseBLL<Reservation>
     {

@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
-namespace Common
+namespace ActivityReservation.Common
 {
     public static class GoogleRecaptchaHelper
     {
@@ -13,7 +14,7 @@ namespace Common
 
         private static readonly string GoogleRecaptchaSecret = ConfigurationHelper.AppSetting("GoogleRecaptchaSecret");
 
-        private static readonly LogHelper Logger = new LogHelper(typeof(GoogleRecaptchaHelper));
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(GoogleRecaptchaHelper));
 
         public static bool IsValidRequest(string recaptchaResponse)
         {

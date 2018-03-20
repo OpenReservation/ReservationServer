@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     [Table("tabReservation")]
     public class Reservation
@@ -81,7 +81,7 @@ namespace Models
         /// 更新时间
         /// </summary>
         private DateTime updateTime;
-        
+
         #endregion Private Field
 
         /// <summary>

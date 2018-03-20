@@ -1,12 +1,12 @@
-﻿using ActivityReservation.AdminLogic.ViewModels;
-using ActivityReservation.Helpers;
-using ActivityReservation.WorkContexts;
-using Business;
-using Models;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Web.Mvc;
+using ActivityReservation.AdminLogic.ViewModels;
+using ActivityReservation.Helpers;
+using ActivityReservation.Models;
+using ActivityReservation.WorkContexts;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -136,7 +136,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     path = path + ".html";
                 }
-                var existStatus = new BLLNotice().Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
+                var existStatus = BusinessHelper.NoticeHelper.Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
                 if (existStatus)
                 {
                     return Json(false);

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Web;
-using Business;
-using Models;
+using ActivityReservation.Business;
+using ActivityReservation.Models;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.Helpers
 {
@@ -15,7 +16,7 @@ namespace ActivityReservation.Helpers
         /// <summary>
         /// log4net logger 日志记录助手
         /// </summary>
-        private static LogHelper logger = null;
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper<OperLogHelper>();
 
         /// <summary>
         /// 添加操作日志
@@ -41,7 +42,7 @@ namespace ActivityReservation.Helpers
             }
             catch (Exception ex)
             {
-                logger.Error("添加操作日志失败", ex);
+                Logger.Error("添加操作日志失败", ex);
             }
             return false;
         }

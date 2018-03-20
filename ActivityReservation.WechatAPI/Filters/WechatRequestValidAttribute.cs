@@ -4,12 +4,13 @@ using System.Web.Mvc;
 using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : FilterAttribute, IAuthorizationFilter
     {
-        private static readonly LogHelper Logger = new LogHelper(typeof(WechatRequestValidAttribute));
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatRequestValidAttribute));
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {

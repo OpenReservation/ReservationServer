@@ -1,10 +1,10 @@
-﻿using DataAccess;
-using Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using ActivityReservation.Models;
+using IDALReservation = ActivityReservation.DataAccess.IDALReservation;
 
-namespace Business
+namespace ActivityReservation.Business
 {
     public partial class BLLReservation
     {

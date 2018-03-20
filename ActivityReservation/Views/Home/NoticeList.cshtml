@@ -1,25 +1,25 @@
-﻿@model IPagedListModel<Models.Notice>
+﻿@model IPagedListModel<ActivityReservation.Models.Notice>
 @{
     Layout = null;
 }
 @if (Model.Data.Any())
 {
-    <ul>
-        @foreach (var item in Model.Data)
+<ul>
+    @foreach (var item in Model.Data)
         {
-            <li>
-                <a href="/Notice/@item.NoticePath" target="_blank">
-                    <span class="notice-title">@item.NoticeTitle</span>
-                    <span class="pub-time">@item.NoticePublishTime.ToString("yyyy-MM-dd HH:mm:ss")</span>
-                </a>
-            </li>
+    <li>
+        <a href="/Notice/@item.NoticePath" target="_blank">
+            <span class="notice-title">@item.NoticeTitle</span>
+            <span class="pub-time">@item.NoticePublishTime.ToString("yyyy-MM-dd HH:mm:ss")</span>
+        </a>
+    </li>
         }
-    </ul>
-    @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
+</ul>
+@Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
 }
 else
 {
-    <div class="nodata-tip">
-        暂时没有数据.
-    </div>
+<div class="nodata-tip">
+    暂时没有数据.
+</div>
 }

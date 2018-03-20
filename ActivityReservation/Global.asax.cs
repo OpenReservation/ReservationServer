@@ -5,11 +5,12 @@ using System.Web.Compilation;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using ActivityReservation.Common;
 using ActivityReservation.Controllers;
 using Autofac;
 using Autofac.Integration.Mvc;
-using Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 using WeihanLi.Redis;
 
 namespace ActivityReservation
@@ -23,10 +24,9 @@ namespace ActivityReservation
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             //log4net init
-            LogHelper.LogInit(new ILogProvider[]
+            LogHelper.LogInit(new ILogHelperProvider[]
             {
-                new ExceptionlessLogProvider(),
-                new SentryLogProvider()
+                new SentryLogHelperProvider()
             });
 
             //Register filters

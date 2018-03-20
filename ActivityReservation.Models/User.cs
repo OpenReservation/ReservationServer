@@ -2,20 +2,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     [Table("tabUser")]
     public class User
     {
         #region Private Field
-
-        private Guid userId;
-
-        private string userName;
-
-        private string userMail;
-
-        private string userPassword;
 
         private bool isSuper = false;
 
@@ -30,34 +22,19 @@ namespace Models
         /// </summary>
         [Column]
         [Key]
-        public Guid UserId
-        {
-            get { return userId; }
-
-            set { userId = value; }
-        }
+        public Guid UserId { get; set; }
 
         /// <summary>
         ///  用户名
         /// </summary>
         [Column]
-        public string UserName
-        {
-            get { return userName; }
-
-            set { userName = value; }
-        }
+        public string UserName { get; set; }
 
         /// <summary>
         /// 用户密码
         /// </summary>
         [Column]
-        public string UserPassword
-        {
-            get { return userPassword; }
-
-            set { userPassword = value; }
-        }
+        public string UserPassword { get; set; }
 
         /// <summary>
         /// 是否是超级管理员
@@ -85,12 +62,7 @@ namespace Models
         /// 用户邮箱
         /// </summary>
         [Column]
-        public string UserMail
-        {
-            get { return userMail; }
-
-            set { userMail = value; }
-        }
+        public string UserMail { get; set; }
 
         /// <summary>
         /// 是否启用

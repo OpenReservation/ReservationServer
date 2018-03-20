@@ -1,11 +1,11 @@
-﻿@model IPagedListModel<Models.DisabledPeriod>
+﻿@model IPagedListModel<ActivityReservation.Models.DisabledPeriod>
 @{
     Layout = null;
 }
 @if (Model.Data.Count() > 0)
 {
-    <table class="table table-hover">
-        <thead>
+<table class="table table-hover">
+    <thead>
         <tr>
             <th>开始日期</th>
             <th>结束日期</th>
@@ -14,8 +14,8 @@
             <th>更新时间</th>
             <th>操作</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         @foreach (var item in Model)
         {
             string status = "未启用", className = "bg-warning";
@@ -25,42 +25,42 @@
                 className = "bg-success";
             }
 
-            <tr class="@className">
-                <td>
-                    @item.StartDate.ToString("yyyy-MM-dd")
-                </td>
-                <td>
-                    @item.EndDate.ToString("yyyy-MM-dd")
-                </td>
-                <td>
-                    @status
-                </td>
-                <td>
-                    @item.UpdatedBy
-                </td>
-                <td>
-                    @item.UpdatedTime.ToString("yyyy-MM-dd HH:mm:ss")
-                </td>
-                <td>
-                    <button class="btn btn-danger" onclick="DeletePeriod('@item.PeriodId')">删除</button>
-                    @if (item.IsActive)
+        <tr class="@className">
+            <td>
+                @item.StartDate.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                @item.EndDate.ToString("yyyy-MM-dd")
+            </td>
+            <td>
+                @status
+            </td>
+            <td>
+                @item.UpdatedBy
+            </td>
+            <td>
+                @item.UpdatedTime.ToString("yyyy-MM-dd HH:mm:ss")
+            </td>
+            <td>
+                <button class="btn btn-danger" onclick="DeletePeriod('@item.PeriodId')">删除</button>
+                @if (item.IsActive)
                     {
-                        <button onclick="UpdateStatus('@item.PeriodId', -1)" class="btn btn-warning">禁用</button>
+                <button onclick="UpdateStatus('@item.PeriodId', -1)" class="btn btn-warning">禁用</button>
                     }
                     else
                     {
-                        <button onclick="UpdateStatus('@item.PeriodId', 1)" class="btn btn-success">启用</button>
+                <button onclick="UpdateStatus('@item.PeriodId', 1)" class="btn btn-success">启用</button>
                     }
-                </td>
-            </tr>
+            </td>
+        </tr>
         }
-        </tbody>
-    </table>
-    @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
+    </tbody>
+</table>
+@Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
 }
 else
 {
-    <div class="nodata-tip">
-        暂时没有数据.
-    </div>
+<div class="nodata-tip">
+    暂时没有数据.
+</div>
 }

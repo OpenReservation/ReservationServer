@@ -19,11 +19,11 @@
 	};
 #>
 using Autofac;
-using DataAccess;
-using Models;
+using ActivityReservation.DataAccess;
+using ActivityReservation.Models;
 using WeihanLi.Common;
 
-namespace Business
+namespace ActivityReservation.Business
 {
 <# 
 	foreach (var item in types)

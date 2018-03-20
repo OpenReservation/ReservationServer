@@ -42,8 +42,8 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -79,8 +79,8 @@
     <Reference Include="WeihanLi.AspNetMvc.MvcSimplePager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WeihanLi.AspNetMvc.MvcSimplePager.1.0.0\lib\net45\WeihanLi.AspNetMvc.MvcSimplePager.dll</HintPath>
     </Reference>
-    <Reference Include="WeihanLi.Common, Version=1.0.7.12, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WeihanLi.Common.1.0.7.12\lib\net45\WeihanLi.Common.dll</HintPath>
+    <Reference Include="WeihanLi.Common, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WeihanLi.Common.1.0.8\lib\net45\WeihanLi.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -117,7 +117,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

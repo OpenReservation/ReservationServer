@@ -1,7 +1,8 @@
 ﻿ 
 using Autofac;
-using Models;
-namespace DataAccess
+using ActivityReservation.Models;
+
+namespace ActivityReservation.DataAccess
 {
 	public partial interface IDALUser: IBaseDAL<User> { }
 

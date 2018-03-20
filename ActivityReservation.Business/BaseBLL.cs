@@ -1,9 +1,9 @@
-﻿using DataAccess;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using ActivityReservation.DataAccess;
 
-namespace Business
+namespace ActivityReservation.Business
 {
     public abstract class BaseBLL<T> : IBaseBLL<T> where T : class
     {

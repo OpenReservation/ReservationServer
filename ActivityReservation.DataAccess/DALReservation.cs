@@ -1,10 +1,11 @@
-﻿using Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using ActivityReservation.Models;
+using WeihanLi.Common.Log;
 
-namespace DataAccess
+namespace ActivityReservation.DataAccess
 {
     public partial interface IDALReservation
     {

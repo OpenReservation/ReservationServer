@@ -1,13 +1,14 @@
 ﻿using ActivityReservation.WechatAPI.Model;
 using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
     public class WechatContext
     {
-        private static readonly LogHelper Logger = new LogHelper(typeof(WechatContext));
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatContext));
         private readonly WechatSecurityHelper _securityHelper;
         private readonly string _requestMessage;
 

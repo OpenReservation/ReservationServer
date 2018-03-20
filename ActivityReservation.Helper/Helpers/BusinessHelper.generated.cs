@@ -1,6 +1,7 @@
 ﻿using Autofac;
-using Business;
 using System.Web.Mvc;
+using ActivityReservation.Business;
+using IBLLUser = ActivityReservation.Business.IBLLUser;
 
 namespace ActivityReservation.Helpers
 {

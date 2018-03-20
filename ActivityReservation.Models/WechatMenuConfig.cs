@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     [Table("tabWechatMenuConfig")]
     public class WechatMenuConfig
@@ -11,7 +11,7 @@ namespace Models
         [Key]
         public Guid ConfigId { get; set; }
 
-        public int ParentId { get; set; }
+        public Guid ParentId { get; set; }
 
         public string ButtonKey { get; set; }
 

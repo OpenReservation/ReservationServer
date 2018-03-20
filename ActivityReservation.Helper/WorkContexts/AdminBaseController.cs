@@ -1,11 +1,12 @@
-﻿using ActivityReservation.Filters;
-using ActivityReservation.Helpers;
-using Common;
-using Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Web.Mvc;
+using ActivityReservation.Common;
+using ActivityReservation.Filters;
+using ActivityReservation.Helpers;
+using ActivityReservation.Models;
+using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.WorkContexts
 {
@@ -26,7 +27,7 @@ namespace ActivityReservation.WorkContexts
         /// <summary>
         /// logger
         /// </summary>
-        protected static LogHelper Logger = new LogHelper(typeof(AdminBaseController));
+        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(AdminBaseController));
 
         /// <summary>
         /// 管理员姓名

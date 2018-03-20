@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace Business
+namespace ActivityReservation.Business
 {
     public interface IBaseBLL<T>
     {

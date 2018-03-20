@@ -1,22 +1,23 @@
-﻿using Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
+using ActivityReservation.Models;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
-namespace DataAccess
+namespace ActivityReservation.DataAccess
 {
     public class BaseDAL<T> : IBaseDAL<T> where T : class
     {
         /// <summary>
         /// logger
         /// </summary>
-        protected static LogHelper Logger = new LogHelper(typeof(BaseDAL<T>));
+        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(BaseDAL<T>));
 
         /// <summary>
         /// db operator

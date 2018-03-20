@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     internal class ReservationDbInitializer : DropCreateDatabaseIfModelChanges<ReservationDbContext>
     {
-        private static LogHelper Logger = LogHelper.GetLogHelper<ReservationDbInitializer>();
+        private static ILogHelper Logger = LogHelper.GetLogHelper<ReservationDbInitializer>();
 
         public override void InitializeDatabase(ReservationDbContext context)
         {

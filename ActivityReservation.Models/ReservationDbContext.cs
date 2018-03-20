@@ -1,13 +1,14 @@
 ﻿using System.Data.Entity;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
-namespace Models
+namespace ActivityReservation.Models
 {
     // Custom DbConfiguration
     //[DbConfigurationType(typeof(ReservationDbConfiguration))]
     public class ReservationDbContext : DbContext
     {
-        private static readonly LogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
+        private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
 
         public ReservationDbContext() : base("name=ReservationConn")
         {

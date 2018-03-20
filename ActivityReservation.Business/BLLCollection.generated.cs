@@ -1,10 +1,10 @@
 ﻿ 
 using Autofac;
-using DataAccess;
-using Models;
+using ActivityReservation.DataAccess;
+using ActivityReservation.Models;
 using WeihanLi.Common;
 
-namespace Business
+namespace ActivityReservation.Business
 {
 	public partial interface IBLLUser:IBaseBLL<User>{}
 

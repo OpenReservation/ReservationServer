@@ -19,8 +19,9 @@
 	};
 #>
 using Autofac;
-using Models;
-namespace DataAccess
+using ActivityReservation.Models;
+
+namespace ActivityReservation.DataAccess
 {
 <# 
 	foreach (var item in types)

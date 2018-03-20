@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Log;
 
 namespace ActivityReservation.WorkContexts
 {
@@ -8,9 +9,9 @@ namespace ActivityReservation.WorkContexts
     /// </summary>
     public class FrontBaseController : Controller
     {
-        protected LogHelper Logger;
+        protected ILogHelper Logger;
 
-        public FrontBaseController(LogHelper logger)
+        public FrontBaseController(ILogHelper logger)
         {
             Logger = logger;
         }

@@ -21,12 +21,11 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <returns>AccessToken</returns>
         public static string GetAccessToken()
         {
-            var cacheClient = RedisManager.GetCacheClient();
-            var token = cacheClient.GetOrSet("wechat_access_token", () => RetryHelper.TryInvoke(() => HttpHelper.HttpGetFor<AccessTokenEntity>(
+            var token = RedisManager.CacheClient.GetOrSet("wechat_access_token", () => RetryHelper.TryInvoke(() => HttpHelper.HttpGetFor<AccessTokenEntity>(
                     GetAccessTokenUrlFormat.FormatWith(WeChatConsts.AppId, WeChatConsts.AppSecret)),
                 result => result.AccessToken.IsNotNullOrWhiteSpace()),
                 TimeSpan.FromSeconds(7120));
-            return token.AccessToken;
+            return token?.AccessToken;
         }
     }
 }
