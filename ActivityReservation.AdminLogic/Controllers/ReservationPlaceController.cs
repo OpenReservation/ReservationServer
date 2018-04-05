@@ -197,11 +197,10 @@ namespace ActivityReservation.AdminLogic.Controllers
             ;
         }
 
-        public ActionResult ReservationPeriod() => View();
-
-        public ActionResult ReservationPeriodList(Guid placeId)
+        public ActionResult ReservationPeriod(Guid placeId)
         {
-            return Json(BusinessHelper.ReservationPeriodHelper.GetAll(_ => _.PlaceId == placeId, _ => _.CreateTime, false), JsonRequestBehavior.AllowGet);
+            ViewBag.PlaceId = placeId;
+            return View(BusinessHelper.ReservationPeriodHelper.GetAll(_ => _.PlaceId == placeId, _ => _.CreateTime, false));
         }
 
         [HttpPost]
@@ -222,7 +221,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("活动室不存在");
             }
 
-            if (!BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex))
+            if (BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId))
             {
                 return Json("排序重复，请修改");
             }
@@ -239,6 +238,40 @@ namespace ActivityReservation.AdminLogic.Controllers
                 OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);
             }
             return Json(result > 0 ? "" : "创建预约时间段失败");
+        }
+
+        [HttpPost]
+        public JsonResult UpdateReservationPeriod(ReservationPeriod model)
+        {
+            if (model.PeriodId == Guid.Empty)
+            {
+                return Json("预约时间段不能为空");
+            }
+
+            if (model.PeriodTitle.IsNullOrWhiteSpace())
+            {
+                return Json("预约时间段不能为空");
+            }
+
+            if (!BusinessHelper.ReservationPeriodHelper.Exist(_ => _.PeriodId == model.PeriodId))
+            {
+                return Json("预约时间段不存在");
+            }
+
+            if (BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId))
+            {
+                return Json("排序重复，请修改");
+            }
+
+            model.UpdateBy = Username;
+            model.UpdateTime = DateTime.Now;
+
+            var result = BusinessHelper.ReservationPeriodHelper.Update(model, "PeriodIndex", "PeriodTitle", "PeriodDescription");
+            if (result > 0)
+            {
+                OperLogHelper.AddOperLog($"更新预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);
+            }
+            return Json(result > 0 ? "" : "更新预约时间段信息失败");
         }
 
         [HttpPost]

@@ -12,9 +12,12 @@ namespace ActivityReservation.Models
 
         public ReservationDbContext() : base("name=ReservationConn")
         {
+#if DEBUG
+
             //log
             Database.Log = Logger.Info;
 
+#endif
             Database.SetInitializer(new ReservationDbInitializer());
         }
 
@@ -29,5 +32,7 @@ namespace ActivityReservation.Models
         public virtual DbSet<Notice> Notices { get; set; }
 
         public virtual DbSet<DisabledPeriod> DisabledPeriods { get; set; }
+
+        public virtual DbSet<WechatMenuConfig> WechatMenuConfigs { get; set; }
     }
 }

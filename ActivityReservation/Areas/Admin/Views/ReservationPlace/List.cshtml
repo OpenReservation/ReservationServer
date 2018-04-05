@@ -4,61 +4,62 @@
 }
 @if (Model.Data != null && Model.Data.Any())
 {
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>活动室名称</th>
-            <th>更新时间</th>
-            <th>状态</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Data)
-        {
-            var className = "bg-success";
-            if (!item.IsActive)
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>活动室名称</th>
+                <th>更新时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
             {
-                className = "bg-danger";
+                var className = "bg-success";
+                if (!item.IsActive)
+                {
+                    className = "bg-danger";
+                }
+                <tr class="@className">
+                    <td>
+                        @item.PlaceName
+                    </td>
+                    <td>
+                        @item.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    </td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <span>启用</span>
+                        }
+                        else
+                        {
+                            <span>禁用</span>
+                        }
+                    </td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <button type="button" class='btn btn-warning' onclick="updatePlaceStatus('@item.PlaceId', '@item.PlaceName', -1, this)">禁用</button>
+                        }
+                        else
+                        {
+                            <button type="button" class='btn btn-warning' onclick="updatePlaceStatus('@item.PlaceId', '@item.PlaceName', 1, this)">启用</button>
+                        }
+                        <button type="button" class="btn btn-primary" onclick="editPlace('@item.PlaceId', '@item.PlaceName', this)">编辑</button>
+                        <button type="button" class="btn btn-danger" onclick="deletePlace('@item.PlaceId', '@item.PlaceName', this)">删除</button>
+                        <a role="button" class="btn btn-primary" href="/Admin/ReservationPlace/ReservationPeriod?placeId=@(item.PlaceId.ToString("N"))">预约时间段管理</a>
+                    </td>
+                </tr>
             }
-        <tr class="@className">
-            <td>
-                @item.PlaceName
-            </td>
-            <td>
-                @item.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
-            </td>
-            <td>
-                @if (item.IsActive)
-                    {
-                <span>启用</span>
-                    }
-                    else
-                    {
-                <span>禁用</span>
-                    }
-            </td>
-            <td>
-                @if (item.IsActive)
-                    {
-                <button type="button" class='btn btn-warning' onclick="updatePlaceStatus('@item.PlaceId', '@item.PlaceName', -1, this)">禁用</button>
-                    }
-                    else
-                    {
-                <button type="button" class='btn btn-warning' onclick="updatePlaceStatus('@item.PlaceId', '@item.PlaceName', 1, this)">启用</button>
-                    }
-                <button type="button" class="btn btn-primary" onclick="editPlace('@item.PlaceId', '@item.PlaceName', this)">编辑</button>
-                <button type="button" class="btn btn-danger" onclick="deletePlace('@item.PlaceId', '@item.PlaceName', this)">删除</button>
-            </td>
-        </tr>
-        }
-    </tbody>
-</table>
-@Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
+        </tbody>
+    </table>
+    @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
 }
 else
 {
-<div class="nodata-tip">
-    暂时没有数据
-</div>
+    <div class="nodata-tip">
+        暂时没有数据
+    </div>
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<ActivityReservation.Models.ReservationPeriod>
+@{
     ViewBag.Title = "活动室预约时间段管理";
 }
 <div class="table-wraper">
@@ -7,7 +8,31 @@
             活动室预约时间段管理<small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
         </h3>
     </div>
-    <div class="table-body" id="div_main"></div>
+    <div class="table-body" id="div_main">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>时间段名称</th>
+                    <th>时间段描述</th>
+                    <th>时间段排序</th>
+                    <th>创建人</th>
+                    <th>创建时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.PeriodTitle</td>
+                        <td>@item.PeriodDescription</td>
+                        <td>@item.PeriodIndex</td>
+                        <td>@item.CreateBy</td>
+                        <td>@item.CreateTime</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 <div id="editPlace" style="padding: 1em 2.2em; display: none">
     <form>
@@ -16,8 +41,51 @@
             <input type="text" required="required" class="form-control" value="" id="inputPeriodTitle" placeholder="预约时间段标题" />
         </div>
         <div class="input-group">
+            <label for="inputPeriodDesc">请输入时间段描述</label> <br />
+            <textarea type="text" required="required" class="form-control" id="inputPeriodDesc" placeholder="预约时间段标题"></textarea>
+        </div>
+        <div class="input-group">
             <label for="inputPeriodIndex">请输入时间段排序</label> <br />
             <input type="number" min="1" required="required" class="form-control" value="" id="inputPeriodIndex" placeholder="预约时间段排序" />
         </div>
+        <input type="hidden" id="hiddenPlaceId" value="@(ViewBag.PlaceId?.ToString("N"))" />
     </form>
 </div>
+@section scripts{
+    <script>
+        $("#btnAdd").click(function() {
+            layer.open({
+                type: 1,
+                title: "添加预约时间段",
+                content: $("#editPlace"),
+                btn: ["保存", "取消"],
+                yes: function(index) {
+                    if (!$.trim($("#inputPeriodTitle").val())) {
+                        layer.msg("预约时间段不能为空");
+                        return;
+                    }
+                    if (!$("#inputPeriodIndex").val()) {
+                        layer.msg("预约时间段排序不能为空");
+                        return;
+                    }
+                    layer.close(index);
+                    $.post('@Url.Action("AddReservationPeriod")',
+                        {
+                            PlaceId: $("#hiddenPlaceId").val(),
+                            PeriodTitle: $("#inputPeriodTitle").val(),
+                            PeriodDescription: $("#inputPeriodDesc").val(),
+                            PeriodIndex: $("#inputPeriodIndex").val()
+                        }, function (data) {
+                            if (!data) {
+                                location.reload();
+                            } else {
+                                layer.alert(data);
+                            }
+                        });
+                },
+                cancel: function() {
+                }
+            });
+        });
+    </script>
+}

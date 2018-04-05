@@ -98,7 +98,7 @@
       <HintPath>..\packages\WeihanLi.Common.1.0.8\lib\net45\WeihanLi.Common.dll</HintPath>
     </Reference>
     <Reference Include="WeihanLi.Redis, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WeihanLi.Redis.1.0.0-beta-2\lib\net45\WeihanLi.Redis.dll</HintPath>
+      <HintPath>..\packages\WeihanLi.Redis.1.0.0\lib\net45\WeihanLi.Redis.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
