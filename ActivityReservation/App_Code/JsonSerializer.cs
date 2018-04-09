@@ -1,17 +1,15 @@
-﻿using Microsoft.Web.Redis;
+﻿using System.Text;
+using Microsoft.Web.Redis;
 using Newtonsoft.Json;
-using System.Text;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation
 {
     public class JsonSerializer : ISerializer
     {
-        private static JsonSerializerSettings _settings =
-            new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All };
-
         public byte[] Serialize(object data)
         {
-            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data, _settings));
+            return Encoding.UTF8.GetBytes(data.ToJson());
         }
 
         public object Deserialize(byte[] data)
@@ -20,7 +18,7 @@ namespace ActivityReservation
             {
                 return null;
             }
-            return JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), _settings);
+            return JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data));
         }
     }
 }

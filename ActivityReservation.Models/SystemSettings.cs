@@ -7,56 +7,17 @@ namespace ActivityReservation.Models
     [Table("tabSystemSettings")]
     public class SystemSettings
     {
-        /// <summary>
-        /// setting id
-        /// </summary>
-        private Guid settingId;
-
-        /// <summary>
-        /// settingName
-        /// </summary>
-        private string settingName;
-
-        /// <summary>
-        /// 显示名称
-        /// </summary>
-        private string displayName;
-
-        /// <summary>
-        /// settingValue
-        /// </summary>
-        private string settingValue;
-
         [Key]
         [Column]
-        public Guid SettingId
-        {
-            get { return settingId; }
-
-            set { settingId = value; }
-        }
+        public Guid SettingId { get; set; }
 
         [Column]
-        public string SettingName
-        {
-            get { return settingName; }
-
-            set { settingName = value; }
-        }
+        public string SettingName { get; set; }
 
         [Column]
-        public string DisplayName
-        {
-            get { return displayName; }
-
-            set { displayName = value; }
-        }
+        public string DisplayName { get; set; }
 
         [Column]
-        public string SettingValue
-        {
-            get { return settingValue; }
-            set { settingValue = value; }
-        }
+        public string SettingValue { get; set; }
     }
 }

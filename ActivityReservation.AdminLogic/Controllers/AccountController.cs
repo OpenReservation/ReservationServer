@@ -101,7 +101,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
             AuthFormService.Logout();
-            //redirect to login page
+            //redirect to homepage
             return RedirectToAction("Index", new { area = "", controller = "Home" });
         }
 

@@ -17,17 +17,21 @@
                     <th>时间段排序</th>
                     <th>创建人</th>
                     <th>创建时间</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="tr_'@item.PeriodId.ToString("N")'">
                         <td>@item.PeriodTitle</td>
                         <td>@item.PeriodDescription</td>
                         <td>@item.PeriodIndex</td>
                         <td>@item.CreateBy</td>
                         <td>@item.CreateTime</td>
+                        <td>
+                            <button type="button" onclick="edit('@item.PeriodId.ToString("N")')">编辑</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -53,6 +57,47 @@
 </div>
 @section scripts{
     <script>
+        //
+        function edit(periodId) {
+            $("#inputPeriodTitle").val($(".tr_" + periodId).find("td")[0].text());
+            $("#inputPeriodDesc").val($(".tr_" + periodId).find("td")[1].text());
+            $("#inputPeriodIndex").val($(".tr_" + periodId).find("td")[2].text());
+
+            layer.open({
+                type: 1,
+                title: "编辑预约时间段信息",
+                content: $("#editPlace"),
+                btn: ["保存", "取消"],
+                yes: function(index) {
+                    if (!$.trim($("#inputPeriodTitle").val())) {
+                        layer.msg("预约时间段不能为空");
+                        return;
+                    }
+                    if (!$("#inputPeriodIndex").val()) {
+                        layer.msg("预约时间段排序不能为空");
+                        return;
+                    }
+                    layer.close(index);
+                    $.post('@Url.Action("UpdateReservationPeriod")',
+                        {
+                            PlaceId: $("#hiddenPlaceId").val(),
+                            PeriodId: periodId,
+                            PeriodTitle: $("#inputPeriodTitle").val(),
+                            PeriodDescription: $("#inputPeriodDesc").val(),
+                            PeriodIndex: $("#inputPeriodIndex").val()
+                        }, function (data) {
+                            if (!data) {
+                                location.reload();
+                            } else {
+                                layer.alert(data);
+                            }
+                        });
+                },
+                cancel: function() {
+                }
+            });
+        }
+
         $("#btnAdd").click(function() {
             layer.open({
                 type: 1,

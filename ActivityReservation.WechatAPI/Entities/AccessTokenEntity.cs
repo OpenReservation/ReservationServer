@@ -2,7 +2,7 @@
 
 namespace ActivityReservation.WechatAPI.Entities
 {
-    public class AccessTokenEntity
+    internal class AccessTokenEntity
     {
         /// <summary>
         /// AccessToken

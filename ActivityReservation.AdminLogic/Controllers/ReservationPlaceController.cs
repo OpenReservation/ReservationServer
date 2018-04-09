@@ -247,10 +247,14 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 return Json("预约时间段不能为空");
             }
+            if (model.PlaceId == Guid.Empty)
+            {
+                return Json("预约地点不能为空");
+            }
 
             if (model.PeriodTitle.IsNullOrWhiteSpace())
             {
-                return Json("预约时间段不能为空");
+                return Json("预约时间段标题不能为空");
             }
 
             if (!BusinessHelper.ReservationPeriodHelper.Exist(_ => _.PeriodId == model.PeriodId))
