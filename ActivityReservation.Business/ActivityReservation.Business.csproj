@@ -24,9 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActivityReservation.Common\ActivityReservation.Common.csproj" />
     <ProjectReference Include="..\ActivityReservation.DataAccess\ActivityReservation.DataAccess.csproj" />
-    <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>

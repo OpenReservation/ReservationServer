@@ -1,12 +1,12 @@
-﻿using ActivityReservation.WorkContexts;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
-using System.Web.Script.Serialization;
+using ActivityReservation.WorkContexts;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -99,7 +99,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var hash = new Hashtable();
             hash["error"] = 0;
             hash["url"] = fileUrl;
-            Response.Write(JsonHelper.Object2Json(hash));
+            Response.Write(hash.ToJson());
             Response.End();
         }
 
@@ -109,7 +109,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var hash = new Hashtable();
             hash["error"] = 1;
             hash["message"] = message;
-            HttpContext.Response.Write(JsonHelper.Object2Json(hash));
+            HttpContext.Response.Write(hash.ToJson());
             HttpContext.Response.End();
         }
 
@@ -236,42 +236,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                 dirFileList.Add(hash);
             }
             return Json(result, JsonRequestBehavior.AllowGet);
-        }
-    }
-
-    /// <summary>
-    /// JsonHelper
-    /// @Author:liweihan
-    /// 基于 JavaScriptSerializer 实现 json序列化和反序列化
-    /// 实际项目中可以删掉这个类，对这个类的引用使用自己封装的json序列化工具方法
-    /// </summary>
-    internal static class JsonHelper
-    {
-        private static JavaScriptSerializer serializer = new JavaScriptSerializer();
-
-        /// <summary>
-        /// 对象json序列化
-        /// </summary>
-        /// <param name="obj">对象实体</param>
-        /// <returns>序列化后的json数据</returns>
-        public static string Object2Json(object obj)
-        {
-            if (obj == null)
-            {
-                throw new ArgumentException("对象不能为空", "obj");
-            }
-            return serializer.Serialize(obj);
-        }
-
-        /// <summary>
-        /// json字符串反序列化为对象
-        /// </summary>
-        /// <typeparam name="T">对象类型</typeparam>
-        /// <param name="jsonString">json字符串</param>
-        /// <returns>对象</returns>
-        public static T Json2Object<T>(string jsonString)
-        {
-            return serializer.Deserialize<T>(jsonString);
         }
     }
 

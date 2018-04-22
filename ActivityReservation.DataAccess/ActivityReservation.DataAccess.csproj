@@ -31,7 +31,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ActivityReservation.Common\ActivityReservation.Common.csproj" />
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj">
     </ProjectReference>
   </ItemGroup>

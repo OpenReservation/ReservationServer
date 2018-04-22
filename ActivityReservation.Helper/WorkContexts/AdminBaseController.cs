@@ -12,9 +12,6 @@ namespace ActivityReservation.WorkContexts
 {
     [Authorize]
     [PermissionRequired]
-#if !DEBUG
-    [RequireHttps]
-#endif
     public class AdminBaseController : Controller
     {
         #region BusinessHelper 提供对Business层的访问对象
