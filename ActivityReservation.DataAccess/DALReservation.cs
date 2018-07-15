@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ActivityReservation.Models;
+using Microsoft.EntityFrameworkCore;
 using WeihanLi.Common.Log;
 
 namespace ActivityReservation.DataAccess
@@ -28,7 +29,7 @@ namespace ActivityReservation.DataAccess
             Expression<Func<Reservation, TKey1>> orderby1, bool isAsc, bool isAsc1);
     }
 
-    public partial class DALReservation : BaseDAL<Reservation>, IDALReservation
+    public partial class DALReservation
     {
         /// <summary>
         /// 获取预约数据列表

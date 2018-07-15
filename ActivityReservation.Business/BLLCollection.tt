@@ -18,7 +18,7 @@
         "DisabledPeriod"
 	};
 #>
-using Autofac;
+using IServiceCollection;
 using ActivityReservation.DataAccess;
 using ActivityReservation.Models;
 using WeihanLi.Common;
@@ -42,15 +42,15 @@ namespace ActivityReservation.Business
     } 
 #>
 
-    public class BusinessModule : Autofac.Module
+    public static class BusinessExtensions
     {
-        protected override void Load(ContainerBuilder builder)
+        public static IServiceCollection AddBLL(this IServiceClollection services)
         {
 <# 
             foreach (var item in types)
             {
 #>
-                builder.RegisterType<BLL<#= item #>>().As<IBLL<#= item #>>();
+                services.AddScoped<IBLL<#= item #>, BLL<#= item #>>();
 <#		 
             }
 #>

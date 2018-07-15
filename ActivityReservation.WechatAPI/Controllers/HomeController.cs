@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Web.Mvc;
+using System.Linq;
 using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using WeihanLi.Common.Log;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -17,13 +20,11 @@ namespace ActivityReservation.WechatAPI.Controllers
             {
                 try
                 {
-                    var echoStr = HttpContext.Request.QueryString["echostr"];
+                    var echoStr = HttpContext.Request.Query["echostr"].FirstOrDefault();
                     if (!string.IsNullOrEmpty(echoStr))
                     {
                         //将随机生成的 echostr 参数 原样输出
-                        Response.Write(echoStr);
-                        //截止输出流
-                        Response.End();
+                        Response.Body.Write(echoStr.GetBytes());
                     }
                 }
                 catch (Exception ex)
@@ -39,15 +40,15 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult PostAsync(WechatMsgRequestModel model)
+        public ActionResult Post([FromBody]WechatMsgRequestModel model)
         {
             if (model.RequestContent == null)
             {
-                using (var reader = new StreamReader(Request.InputStream))
+                using (var reader = new StreamReader(Request.Body))
                 {
-                    Logger.Debug($"Request.InputStream Length:{Request.InputStream.Length}");
+                    Logger.Debug($"Request Length:{Request.Body.Length}");
                     model.RequestContent = reader.ReadToEnd();
-                    Logger.Debug($"RequestContent from Request.InputStream:{model.RequestContent}");
+                    Logger.Debug($"RequestContent from Request.Body:{model.RequestContent}");
                 }
             }
             if (string.IsNullOrEmpty(model.RequestContent))

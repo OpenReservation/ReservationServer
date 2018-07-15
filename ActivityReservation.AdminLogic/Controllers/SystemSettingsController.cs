@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -56,9 +56,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = BusinessHelper.SystemSettingsHelper.Add(setting);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(string.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue),
+                    OperLogHelper.AddOperLog($"新增系统设置 {setting.SettingName}：{setting.SettingValue}",
                         OperLogModule.Settings, Username);
-                    HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
                 }
             }
@@ -82,9 +81,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(
-                        string.Format("更新系统设置{0}---{1}：{2}", setting.SettingId, setting.SettingName,
-                            setting.SettingValue), OperLogModule.Settings, Username);
-                    HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
+                        $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, Username);
                     return Json(true);
                 }
             }
@@ -93,6 +90,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error(ex);
             }
             return Json(false);
+        }
+
+        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Web;
-using System.Web.Mvc;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
 

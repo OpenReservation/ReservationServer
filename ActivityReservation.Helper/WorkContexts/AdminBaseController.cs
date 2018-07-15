@@ -1,19 +1,30 @@
 ﻿using System;
-using System.Web.Mvc;
+using System.Threading;
 using ActivityReservation.Common;
-using ActivityReservation.Filters;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using WeihanLi.AspNetMvc.AccessControlHelper;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Extensions;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.WorkContexts
 {
     [Authorize]
-    [PermissionRequired]
     public class AdminBaseController : Controller
     {
+        public AdminBaseController(ILogger logger, OperLogHelper operLogHelper)
+        {
+            Logger = logger;
+            OperLogHelper = operLogHelper;
+        }
+
         #region BusinessHelper 提供对Business层的访问对象
 
         protected static IBusinessHelper BusinessHelper
@@ -24,7 +35,9 @@ namespace ActivityReservation.WorkContexts
         /// <summary>
         /// logger
         /// </summary>
-        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(AdminBaseController));
+        protected readonly ILogger Logger;
+
+        protected readonly OperLogHelper OperLogHelper;
 
         /// <summary>
         /// 管理员姓名
@@ -55,7 +68,24 @@ namespace ActivityReservation.WorkContexts
             {
                 if (_currentUser == null)
                 {
-                    _currentUser = AuthFormService.GetCurrentUser();
+                    using (var locker = RedisManager.GetRedLockClient(HttpContext.TraceIdentifier))
+                    {
+                        if (_currentUser == null)
+                        {
+                            if (locker.TryLock())
+                            {
+                                if (HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
+                                {
+                                    _currentUser = bytes.GetString().JsonToType<User>();
+                                }
+                            }
+                            else
+                            {
+                                Thread.Sleep(200);
+                            }                            
+                        }
+                        return _currentUser;
+                    }
                 }
                 return _currentUser;
             }
@@ -81,9 +111,9 @@ namespace ActivityReservation.WorkContexts
             {
                 return new GeetestHelper()
                     .ValidateRequest(JsonConvert.DeserializeObject<GeetestRequestModel>(recaptcha),
-                        Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
-                    Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
-                    () => { Session.Remove(GeetestConsts.GeetestUserId); });
+                        HttpContext.Session.TryGetValue(GeetestConsts.GeetestUserId, out var bytes) ? bytes.GetString() : "",
+                    Convert.ToByte(HttpContext.Session.TryGetValue(GeetestConsts.GtServerStatusSessionKey, out var bytesVal) ? bytesVal.GetString() : "0"),
+                    () => HttpContext.Session.Remove(GeetestConsts.GeetestUserId));
             }
 
             return false;

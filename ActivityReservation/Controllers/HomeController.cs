@@ -1,30 +1,27 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
-using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Extensions;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
-using BLLReservation = ActivityReservation.Business.BLLReservation;
+using WeihanLi.Common;
+using WeihanLi.Common.Models;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Controllers
 {
     public class HomeController : FrontBaseController
     {
-        public HomeController() : this(LogHelper.GetLogHelper<HomeController>())
-        {
-        }
-
-        public HomeController(ILogHelper logger) : base(logger)
+        public HomeController(ILogger<HomeController> logger) : base(logger)
         {
         }
 
@@ -41,23 +38,22 @@ namespace ActivityReservation.Controllers
         public ActionResult ReservationList(SearchHelperModel search)
         {
             Expression<Func<Reservation, bool>> whereLambda = (m =>
-                DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 &&
-                DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0);
-            var rowsCount = 0;
+                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
+                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
             //补充查询条件
             //根据预约日期查询
-            if (!String.IsNullOrEmpty(search.SearchItem0))
+            if (!string.IsNullOrEmpty(search.SearchItem0))
             {
-                whereLambda = (m =>
-                    DbFunctions.DiffDays(DateTime.Parse(search.SearchItem0), m.ReservationForDate) == 0);
+                whereLambda = m =>
+                    EF.Functions.DateDiffDay(DateTime.Parse(search.SearchItem0), m.ReservationForDate) == 0;
             }
             //根据预约人联系方式查询
-            if (!String.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
+                whereLambda = m => m.ReservationPersonPhone.Contains(search.SearchItem1);
             }
             //load data
-            var list = new BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out rowsCount,
+            var list = new BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out var rowsCount,
                 whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(dataList);
@@ -84,14 +80,14 @@ namespace ActivityReservation.Controllers
             var isValid = ReservationHelper.IsReservationForDateAvailabel(reservationForDate, false, out msg);
             if (isValid)
             {
-                jsonResult.Data = true;
+                jsonResult.SetSuccessResult(true);
             }
             else
             {
-                jsonResult.Data = false;
-                jsonResult.Msg = msg;
+                jsonResult.Result = false;
+                jsonResult.ErrorMsg = msg;
             }
-            return Json(jsonResult, JsonRequestBehavior.AllowGet);
+            return Json(jsonResult);
         }
 
         /// <summary>
@@ -114,7 +110,7 @@ namespace ActivityReservation.Controllers
         [HttpPost]
         public ActionResult MakeReservation(ReservationViewModel model)
         {
-            var result = new JsonResultModel { Data = false, Status = JsonResultStatus.RequestError };
+            var result = new JsonResultModel();
             try
             {
                 if (ModelState.IsValid)
@@ -122,7 +118,7 @@ namespace ActivityReservation.Controllers
                     string msg;
                     if (!ReservationHelper.IsReservationAvailabel(model, out msg))
                     {
-                        result.Msg = msg;
+                        result.ErrorMsg = msg;
                         return Json(result);
                     }
 
@@ -137,7 +133,7 @@ namespace ActivityReservation.Controllers
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
-                        ReservationFromIp = HttpContext.Request.UserHostAddress, //记录预约人IP地址
+                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.ToString(), //记录预约人IP地址
 
                         UpdateBy = model.ReservationPersonName,
                         UpdateTime = DateTime.Now,
@@ -152,13 +148,12 @@ namespace ActivityReservation.Controllers
                     var bValue = new BLLReservation().Add(reservation);
                     if (bValue > 0)
                     {
-                        result.Data = true;
-                        result.Msg = "预约成功";
+                        result.Result = true;
                         result.Status = JsonResultStatus.Success;
                     }
                     else
                     {
-                        result.Msg = "预约失败";
+                        result.ErrorMsg = "预约失败";
                         result.Status = JsonResultStatus.ProcessFail;
                     }
                     return Json(result);
@@ -168,7 +163,7 @@ namespace ActivityReservation.Controllers
             {
                 Logger.Error(ex);
                 result.Status = JsonResultStatus.ProcessFail;
-                result.Msg = ex.Message;
+                result.ErrorMsg = ex.Message;
             }
             return Json(result);
         }
@@ -261,11 +256,11 @@ namespace ActivityReservation.Controllers
         public JsonResult GetGeetestValidCode()
         {
             var helper = new GeetestHelper();
-            var userIp = Request.GetIP();
+            var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
             var gtServerStatus = helper.PreProcess(userIp);
-            Session[GeetestConsts.GeetestUserId] = userIp;
-            Session[GeetestConsts.GtServerStatusSessionKey] = gtServerStatus;
-            return Json(helper.Response, JsonRequestBehavior.AllowGet);
+            HttpContext.Session.Set(GeetestConsts.GeetestUserId, userIp.GetBytes());
+            HttpContext.Session.Set(GeetestConsts.GtServerStatusSessionKey, gtServerStatus.ToString().GetBytes());
+            return Json(helper.Response);
         }
 
         /// <summary>
@@ -274,18 +269,19 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public JsonResult ValidateGeetestCode()
         {
-            var geetestRequest = new GeetestRequestModel
-            {
-                challenge = Request[GeetestConsts.FnGeetestChallenge],
-                validate = Request[GeetestConsts.FnGeetestValidate],
-                seccode = Request[GeetestConsts.FnGeetestSeccode]
-            };
+            //var geetestRequest = new GeetestRequestModel
+            //{
+            //    challenge = Request[GeetestConsts.FnGeetestChallenge],
+            //    validate = Request[GeetestConsts.FnGeetestValidate],
+            //    seccode = Request[GeetestConsts.FnGeetestSeccode]
+            //};
 
-            return Json(new GeetestHelper()
-                .ValidateRequest(geetestRequest,
-                    Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
-                    Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
-                () => { Session.Remove(GeetestConsts.GeetestUserId); }));
+            //return Json(new GeetestHelper()
+            //    .ValidateRequest(geetestRequest,
+            //        Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
+            //        Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
+            //    () => { Session.Remove(GeetestConsts.GeetestUserId); }));
+            return Json(true);
         }
 
         /// <summary>

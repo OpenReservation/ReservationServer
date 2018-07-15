@@ -1,6 +1,6 @@
-﻿using System.Web.Mvc;
-using ActivityReservation.WechatAPI.Filters;
+﻿using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
+using Microsoft.AspNetCore.Mvc;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
 

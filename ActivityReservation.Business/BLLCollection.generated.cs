@@ -1,5 +1,5 @@
 ﻿ 
-using Autofac;
+using IServiceCollection;
 using ActivityReservation.DataAccess;
 using ActivityReservation.Models;
 using WeihanLi.Common;
@@ -97,20 +97,20 @@ namespace ActivityReservation.Business
         }
     }
 
-    public class BusinessModule : Autofac.Module
+    public static class BusinessExtensions
     {
-        protected override void Load(ContainerBuilder builder)
+        public static IServiceCollection AddBLL(this IServiceClollection services)
         {
-                builder.RegisterType<BLLUser>().As<IBLLUser>();
-                builder.RegisterType<BLLBlockType>().As<IBLLBlockType>();
-                builder.RegisterType<BLLBlockEntity>().As<IBLLBlockEntity>();
-                builder.RegisterType<BLLOperationLog>().As<IBLLOperationLog>();
-                builder.RegisterType<BLLReservation>().As<IBLLReservation>();
-                builder.RegisterType<BLLReservationPlace>().As<IBLLReservationPlace>();
-                builder.RegisterType<BLLReservationPeriod>().As<IBLLReservationPeriod>();
-                builder.RegisterType<BLLSystemSettings>().As<IBLLSystemSettings>();
-                builder.RegisterType<BLLNotice>().As<IBLLNotice>();
-                builder.RegisterType<BLLDisabledPeriod>().As<IBLLDisabledPeriod>();
+                services.AddScoped<IBLLUser, BLLUser>();
+                services.AddScoped<IBLLBlockType, BLLBlockType>();
+                services.AddScoped<IBLLBlockEntity, BLLBlockEntity>();
+                services.AddScoped<IBLLOperationLog, BLLOperationLog>();
+                services.AddScoped<IBLLReservation, BLLReservation>();
+                services.AddScoped<IBLLReservationPlace, BLLReservationPlace>();
+                services.AddScoped<IBLLReservationPeriod, BLLReservationPeriod>();
+                services.AddScoped<IBLLSystemSettings, BLLSystemSettings>();
+                services.AddScoped<IBLLNotice, BLLNotice>();
+                services.AddScoped<IBLLDisabledPeriod, BLLDisabledPeriod>();
         }
     }
 }

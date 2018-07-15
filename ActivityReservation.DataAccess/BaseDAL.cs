@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using ActivityReservation.Models;
+using Microsoft.EntityFrameworkCore;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
@@ -22,7 +21,7 @@ namespace ActivityReservation.DataAccess
         /// <summary>
         /// db operator
         /// </summary>
-        protected DbContext db = DependencyResolver.Current.GetService<ReservationDbContext>();
+        protected DbContext db = DependencyResolver.Current.ResolveService<ReservationDbContext>();
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {
@@ -268,7 +267,7 @@ namespace ActivityReservation.DataAccess
         {
             RemoveHoldingEntityInContext(t);
             //4.1将 对象 添加到 EF中
-            DbEntityEntry entry = db.Entry(t);
+            var entry = db.Entry(t);
             //4.2先设置 对象的包装 状态为 Unchanged
             entry.State = EntityState.Unchanged;
             //4.3循环 被修改的属性名 数组
@@ -281,16 +280,16 @@ namespace ActivityReservation.DataAccess
             return db.SaveChanges();
         }
 
-        /// <summary>
-        /// 执行SQL 语句 SqlCommand
-        /// </summary>
-        /// <param name="strSql">sql语句</param>
-        /// <param name="paras">参数</param>
-        /// <returns>执行sql语句后受影响的行数</returns>
-        public virtual int ExcuteSql(string strSql, params SqlParameter[] paras)
-        {
-            return db.Database.ExecuteSqlCommand(strSql, paras);
-        }
+        ///// <summary>
+        ///// 执行SQL 语句 SqlCommand
+        ///// </summary>
+        ///// <param name="strSql">sql语句</param>
+        ///// <param name="paras">参数</param>
+        ///// <returns>执行sql语句后受影响的行数</returns>
+        //public virtual int ExcuteSql(string strSql, params SqlParameter[] paras)
+        //{
+        //    return db.Database.ExecuteSqlCommand(strSql, paras);
+        //}
 
         /// <summary>
         /// 监测Context中的Entity是否存在，如果存在，将其Detach，防止出现问题
@@ -299,15 +298,16 @@ namespace ActivityReservation.DataAccess
         /// <returns></returns>
         private bool RemoveHoldingEntityInContext(T entity)
         {
-            var objContext = ((IObjectContextAdapter)db).ObjectContext;
-            var objSet = objContext.CreateObjectSet<T>();
-            var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
-            var exists = objContext.TryGetObjectByKey(entityKey, out var foundEntity);
-            if (exists)
-            {
-                objContext.Detach(foundEntity);
-            }
-            return exists;
+            //var objContext = db.ObjectContext;
+            //var objSet = objContext.CreateObjectSet<T>();
+            //var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
+            //var exists = objContext.TryGetObjectByKey(entityKey, out var foundEntity);
+            //if (exists)
+            //{
+            //    objContext.Detach(foundEntity);
+            //}
+            //return exists;
+            return true;
         }
     }
 }

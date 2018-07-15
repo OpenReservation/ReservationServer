@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <RootNamespace>ActivityReservation.AdminLogic</RootNamespace>
-    <AssemblyName>ActivityReservation.AdminLogic</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.0.0" />

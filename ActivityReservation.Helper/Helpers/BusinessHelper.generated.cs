@@ -1,7 +1,6 @@
 ﻿using Autofac;
-using System.Web.Mvc;
 using ActivityReservation.Business;
-using IBLLUser = ActivityReservation.Business.IBLLUser;
+using WeihanLi.Common;
 
 namespace ActivityReservation.Helpers
 {
@@ -35,70 +34,70 @@ namespace ActivityReservation.Helpers
         /// UserHelper
         /// </summary>
 	    public IBLLUser UserHelper
-        => DependencyResolver.Current.GetService<IBLLUser>();
+        => DependencyResolver.Current.ResolveService<IBLLUser>();
 
       
         /// <summary>
         /// BlockTypeHelper
         /// </summary>
 	    public IBLLBlockType BlockTypeHelper
-        => DependencyResolver.Current.GetService<IBLLBlockType>();
+        => DependencyResolver.Current.ResolveService<IBLLBlockType>();
 
       
         /// <summary>
         /// BlockEntityHelper
         /// </summary>
 	    public IBLLBlockEntity BlockEntityHelper
-        => DependencyResolver.Current.GetService<IBLLBlockEntity>();
+        => DependencyResolver.Current.ResolveService<IBLLBlockEntity>();
 
       
         /// <summary>
         /// OperationLogHelper
         /// </summary>
 	    public IBLLOperationLog OperationLogHelper
-        => DependencyResolver.Current.GetService<IBLLOperationLog>();
+        => DependencyResolver.Current.ResolveService<IBLLOperationLog>();
 
       
         /// <summary>
         /// ReservationHelper
         /// </summary>
 	    public IBLLReservation ReservationHelper
-        => DependencyResolver.Current.GetService<IBLLReservation>();
+        => DependencyResolver.Current.ResolveService<IBLLReservation>();
 
       
         /// <summary>
         /// ReservationPlaceHelper
         /// </summary>
 	    public IBLLReservationPlace ReservationPlaceHelper
-        => DependencyResolver.Current.GetService<IBLLReservationPlace>();
+        => DependencyResolver.Current.ResolveService<IBLLReservationPlace>();
 
       
         /// <summary>
         /// ReservationPeriodHelper
         /// </summary>
 	    public IBLLReservationPeriod ReservationPeriodHelper
-        => DependencyResolver.Current.GetService<IBLLReservationPeriod>();
+        => DependencyResolver.Current.ResolveService<IBLLReservationPeriod>();
 
       
         /// <summary>
         /// SystemSettingsHelper
         /// </summary>
 	    public IBLLSystemSettings SystemSettingsHelper
-        => DependencyResolver.Current.GetService<IBLLSystemSettings>();
+        => DependencyResolver.Current.ResolveService<IBLLSystemSettings>();
 
       
         /// <summary>
         /// NoticeHelper
         /// </summary>
 	    public IBLLNotice NoticeHelper
-        => DependencyResolver.Current.GetService<IBLLNotice>();
+        => DependencyResolver.Current.ResolveService<IBLLNotice>();
 
       
         /// <summary>
         /// DisabledPeriodHelper
         /// </summary>
 	    public IBLLDisabledPeriod DisabledPeriodHelper
-        => DependencyResolver.Current.GetService<IBLLDisabledPeriod>();
+        => DependencyResolver.Current.ResolveService<IBLLDisabledPeriod>();
 
     }
 }

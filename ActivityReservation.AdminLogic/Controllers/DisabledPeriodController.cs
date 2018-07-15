@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.AdminLogic.ViewModels;
-using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Models;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -65,18 +66,17 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (!model.IsModelValid())
                 {
                     result.Status = JsonResultStatus.RequestError;
-                    result.Msg = "结束日期必须大于开始日期";
+                    result.ErrorMsg = "结束日期必须大于开始日期";
                     return Json(result);
                 }
                 else
                 {
                     var list = BusinessHelper.DisabledPeriodHelper.GetAll(p =>
-                        !p.IsDeleted && (DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 &&
-                                         DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
+                        !p.IsDeleted && EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
                     if (list != null && list.Any())
                     {
                         result.Status = JsonResultStatus.RequestError;
-                        result.Msg = "该时间段已经被禁用，不可重复添加！";
+                        result.ErrorMsg = "该时间段已经被禁用，不可重复添加！";
                         return Json(result);
                     }
                     var period = new DisabledPeriod
@@ -93,13 +93,13 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count > 0)
                     {
                         result.Status = JsonResultStatus.Success;
-                        result.Data = true;
-                        result.Msg = "添加成功";
+                        result.Result = true;
+                        result.ErrorMsg = "";
                     }
                     else
                     {
                         result.Status = JsonResultStatus.ProcessFail;
-                        result.Msg = "添加失败";
+                        result.ErrorMsg = "添加失败";
                     }
                     return Json(result);
                 }
@@ -107,7 +107,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             else
             {
                 result.Status = JsonResultStatus.RequestError;
-                result.Msg = "请求参数异常";
+                result.ErrorMsg = "请求参数异常";
                 return Json(result);
             }
         }
@@ -124,14 +124,14 @@ namespace ActivityReservation.AdminLogic.Controllers
             var period = BusinessHelper.DisabledPeriodHelper.Fetch(p => p.PeriodId == periodId);
             if (period == null)
             {
-                result.Msg = "时间段不存在，请求参数异常";
+                result.ErrorMsg = "时间段不存在，请求参数异常";
                 result.Status = JsonResultStatus.RequestError;
                 return Json(result);
             }
             if ((status > 0 && period.IsActive) || (status <= 0 && !period.IsActive))
             {
-                result.Msg = "不需要更新状态";
-                result.Data = true;
+                result.ErrorMsg = "不需要更新状态";
+                result.Result = true;
                 result.Status = JsonResultStatus.Success;
             }
             else
@@ -144,8 +144,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         OperLogModule.DisabledPeriod, Username);
 
                     result.Status = JsonResultStatus.Success;
-                    result.Data = true;
-                    result.Msg = "更新成功";
+                    result.Result = true;
                 }
             }
             return Json(result);
@@ -165,6 +164,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("");
             }
             return Json("删除失败");
+        }
+
+        public DisabledPeriodController(ILogger<DisabledPeriodController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
         }
     }
 }

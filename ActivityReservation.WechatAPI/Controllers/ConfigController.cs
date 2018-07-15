@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -20,6 +22,10 @@ namespace ActivityReservation.WechatAPI.Controllers
         public JsonResult SaveMenuConfig()
         {
             return Json("");
+        }
+
+        public ConfigController(ILogger<ConfigController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
         }
     }
 }

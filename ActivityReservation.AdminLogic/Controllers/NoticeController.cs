@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.AdminLogic.ViewModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Log;
 
@@ -15,6 +16,10 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// </summary>
     public class NoticeController : AdminBaseController
     {
+        public NoticeController(ILogger<NoticeController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -34,8 +39,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var count = -1;
-                var list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out count,
+                var list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out var count,
                     whereLamdba, n => n.NoticePublishTime, false);
                 return View(list.ToPagedList(search.PageIndex, search.PageSize, count));
             }
@@ -62,7 +66,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">公告信息</param>
         /// <returns></returns>
         [HttpPost]
-        [ValidateInput(false)]
+        // [ValidateInput(false)]
         public ActionResult Create(NoticeViewModel model)
         {
             if (!ModelState.IsValid)

@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web.Mvc;
-using ActivityReservation.HelperModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Models;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -37,7 +37,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult MakeReservation(ReservationViewModel model)
         {
-            var result = new JsonResultModel() { Data = false, Status = JsonResultStatus.RequestError };
+            var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
             try
             {
                 if (ModelState.IsValid)
@@ -45,7 +45,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     string msg;
                     if (!ReservationHelper.IsReservationAvailabel(model, out msg, true))
                     {
-                        result.Msg = msg;
+                        result.ErrorMsg = msg;
                         return Json(result);
                     }
 
@@ -60,7 +60,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
-                        ReservationFromIp = HttpContext.Request.UserHostAddress, //记录预约人IP地址
+                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.ToString(), //记录预约人IP地址
 
                         //管理员预约自动审核通过
                         ReservationStatus = 1,
@@ -78,8 +78,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     OperLogHelper.AddOperLog(
                         $"管理员 {Username} 后台预约 {reservation.ReservationId}：{reservation.ReservationActivityContent}",
                         OperLogModule.Reservation, Username);
-                    result.Data = true;
-                    result.Msg = "预约成功";
+                    result.Result = true;
                     result.Status = JsonResultStatus.Success;
                     return Json(result);
                 }
@@ -88,7 +87,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 Logger.Error(ex);
                 result.Status = JsonResultStatus.ProcessFail;
-                result.Msg = ex.Message;
+                result.ErrorMsg = ex.Message;
             }
             return Json(result);
         }
@@ -101,9 +100,8 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             Expression<Func<Reservation, bool>> whereLambda = (m =>
-                DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 &&
-                DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
-            var rowsCount = 0;
+                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
+                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
             //类别，加载全部还是只加载待审核列表
             if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
             {
@@ -115,8 +113,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 else
                 {
                     whereLambda = (m =>
-                        DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 &&
-                        DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0);
+                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
+                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
                 }
             }
             else
@@ -129,7 +127,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             //load data
             var list = BusinessHelper.ReservationHelper.GetReservationList(search.PageIndex, search.PageSize,
-                out rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
+                out var rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(dataList);
         }
@@ -196,6 +194,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error("删除预约记录出错", ex);
             }
             return Json(false);
+        }
+
+        public ReservationManageController(ILogger<ReservationManageController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
         }
     }
 }

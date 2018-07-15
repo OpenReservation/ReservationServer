@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
 
@@ -10,15 +10,9 @@ namespace ActivityReservation.Models
     {
         private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
 
-        public ReservationDbContext() : base("name=ReservationConn")
+        public ReservationDbContext(DbContextOptions options)
         {
-#if DEBUG
-
-            //log
-            Database.Log = Logger.Info;
-
-#endif
-            Database.SetInitializer(new ReservationDbInitializer());
+            // Database.SetInitializer(new ReservationDbInitializer());
         }
 
         public virtual DbSet<User> Users { get; set; }

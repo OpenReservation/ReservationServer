@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Web;
 using ActivityReservation.Business;
 using ActivityReservation.Models;
+using Microsoft.AspNetCore.Http;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
@@ -18,6 +18,13 @@ namespace ActivityReservation.Helpers
         /// </summary>
         private static readonly ILogHelper Logger = LogHelper.GetLogHelper<OperLogHelper>();
 
+        private readonly HttpContext _httpContext;
+
+        public OperLogHelper(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContext = httpContextAccessor.HttpContext;
+        }
+
         /// <summary>
         /// 添加操作日志
         /// </summary>
@@ -25,7 +32,7 @@ namespace ActivityReservation.Helpers
         /// <param name="logModule">日志模块</param>
         /// <param name="operBy">操作人</param>
         /// <returns></returns>
-        public static bool AddOperLog(string logContent, string logModule, string operBy)
+        public bool AddOperLog(string logContent, string logModule, string operBy)
         {
             try
             {
@@ -34,11 +41,11 @@ namespace ActivityReservation.Helpers
                     LogId = Guid.NewGuid(),
                     LogContent = logContent,
                     LogModule = logModule,
-                    IpAddress = HttpContext.Current.Request.UserHostAddress,
+                    IpAddress = _httpContext.Connection.RemoteIpAddress.ToString(),
                     OperBy = operBy,
                     OperTime = DateTime.Now
                 };
-                return DependencyResolver.Current.GetService<IBLLOperationLog>().Add(log) == 1;
+                return DependencyResolver.Current.ResolveService<IBLLOperationLog>().Add(log) > 0;
             }
             catch (Exception ex)
             {
@@ -54,7 +61,7 @@ namespace ActivityReservation.Helpers
         /// <param name="logModule">日志模块</param>
         /// <param name="operBy">操作人</param>
         /// <returns>是否添加成功</returns>
-        public static bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
+        public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
             => AddOperLog(logContent, GetModuleName(logModule), operBy);
 
         /// <summary>
@@ -62,7 +69,7 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="module"></param>
         /// <returns></returns>
-        public static string GetModuleName(OperLogModule module)
+        private static string GetModuleName(OperLogModule module)
         {
             var moduleName = "预约管理";
             switch (module)
@@ -99,6 +106,7 @@ namespace ActivityReservation.Helpers
                     break;
 
                 default:
+                    moduleName = "其他";
                     break;
             }
             return moduleName;

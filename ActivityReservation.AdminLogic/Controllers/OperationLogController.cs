@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -65,6 +65,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error("ex");
                 throw ex;
             }
+        }
+
+        public OperationLogController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
         }
     }
 }

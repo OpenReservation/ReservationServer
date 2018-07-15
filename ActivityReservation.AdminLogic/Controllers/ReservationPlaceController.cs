@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -296,6 +296,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, Username);
             }
             return Json(result > 0 ? "" : "删除失败");
+        }
+
+        public ReservationPlaceController(ILogger<ReservationPlaceController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        {
         }
     }
 }

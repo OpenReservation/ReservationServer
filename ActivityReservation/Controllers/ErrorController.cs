@@ -1,7 +1,6 @@
-﻿using System.Web.Mvc;
-using ActivityReservation.WorkContexts;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+﻿using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.Controllers
 {
@@ -17,11 +16,7 @@ namespace ActivityReservation.Controllers
             return View();
         }
 
-        public ErrorController() : this(LogHelper.GetLogHelper<ErrorController>())
-        {
-        }
-
-        public ErrorController(ILogHelper logger) : base(logger)
+        public ErrorController(ILogger<ErrorController> logger) : base(logger)
         {
         }
     }

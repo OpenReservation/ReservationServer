@@ -16,8 +16,8 @@
         };
 #>
 using Autofac;
-using Business;
-using System.Web.Mvc;
+using ActivityReservation.Business;
+using WeihanLi.Common;
 
 namespace ActivityReservation.Helpers
 {
@@ -51,7 +51,7 @@ namespace ActivityReservation.Helpers
         /// <#=            item #>Helper
         /// </summary>
 	    public IBLL<#=            item #> <#=            item #>Helper
-        => DependencyResolver.Current.GetService<IBLL<#=            item #>>();
+        => DependencyResolver.Current.ResolveService<IBLL<#=            item #>>();
 
 <#		 
     }

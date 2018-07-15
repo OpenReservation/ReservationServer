@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using ActivityReservation.Business;
 using ActivityReservation.ViewModels;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using WeihanLi.Common;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.Helpers
 {
@@ -25,8 +27,7 @@ namespace ActivityReservation.Helpers
         public static List<ReservationPeriodViewModel> GetAvailabelPeriodsByDateAndPlace(DateTime dt, Guid placeId)
         {
             //待审核和审核通过的预约时间段不能再被预约
-            var reservationList = DependencyResolver.Current.GetService<IBLLReservation>().GetAll(r =>
-                DbFunctions.DiffDays(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
+            var reservationList = DependencyResolver.Current.GetService<IBLLReservation>().GetAll(r => EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
                 r.ReservationStatus != 2);
             var reservationPeriod = DependencyResolver.Current.GetService<IBLLReservationPeriod>().GetAll(_ => _.PlaceId == placeId, _ => _.CreateTime, true);
 
@@ -63,8 +64,8 @@ namespace ActivityReservation.Helpers
             }
 
             var disabledPeriods = new BLLDisabledPeriod().GetAll(p =>
-                !p.IsDeleted && p.IsActive && DbFunctions.DiffDays(p.StartDate, dt) >= 0 &&
-                DbFunctions.DiffDays(dt, p.EndDate) >= 0);
+                !p.IsDeleted && p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
+                EF.Functions.DateDiffDay(dt, p.EndDate) >= 0);
             if (disabledPeriods == null || !disabledPeriods.Any())
             {
                 msg = "";
@@ -111,7 +112,8 @@ namespace ActivityReservation.Helpers
                 return true;
             }
             //预约人IP地址
-            var ip = HttpContext.Current.Request.UserHostAddress;
+            // TODO: need debug
+            var ip = DependencyResolver.Current.GetService<IHttpContextAccessor>().HttpContext.Connection.RemoteIpAddress.ToString();
             if (blockList.Any(b => b.BlockValue.Equals(ip)))
             {
                 mesage = "IP地址已被拉黑";
@@ -143,18 +145,30 @@ namespace ActivityReservation.Helpers
                 msg = "预约信息不完整";
                 return false;
             }
-            var reservationForDate = reservation.ReservationForDate;
-            if (!IsReservationForDateAvailabel(reservationForDate, isAdmin, out msg))
+
+            using (var redisLock = RedisManager.GetRedLockClient($"{reservation.ReservationPlaceId:N}_{reservation.ReservationForDate:yyyyMMdd}"))
             {
-                return false;
+                if (redisLock.TryLock(TimeSpan.FromMinutes(1)))
+                {
+                    var reservationForDate = reservation.ReservationForDate;
+                    if (!IsReservationForDateAvailabel(reservationForDate, isAdmin, out msg))
+                    {
+                        return false;
+                    }
+                    if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId,
+                        reservation.ReservationForTimeIds))
+                    {
+                        msg = "预约时间段冲突，请重新选择预约时间段";
+                        return false;
+                    }
+                    return !IsReservationInfoInBlockList(reservation, out msg);
+                }
+                else
+                {
+                    msg = "系统繁忙，请稍后重试！";
+                    return false;
+                }
             }
-            if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId,
-                reservation.ReservationForTimeIds))
-            {
-                msg = "预约时间段冲突，请重新选择预约时间段";
-                return false;
-            }
-            return !IsReservationInfoInBlockList(reservation, out msg);
         }
     }
 }

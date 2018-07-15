@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Web;
 using System.Xml;
 using ActivityReservation.Common;
 using WeihanLi.Common.Helpers;
@@ -76,7 +75,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
+                reply = ChatRobotHelper.GetBotReply(Content.InnerText.UrlEncode());
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -120,7 +119,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
+                reply = ChatRobotHelper.GetBotReply(Content.InnerText.UrlEncode());
                 if (reply == "error")
                 {
                     reply = Content.InnerText;

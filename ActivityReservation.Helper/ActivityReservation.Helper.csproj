@@ -2,11 +2,17 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <AssemblyName>ActivityReservation.Helper</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <RootNamespace>ActivityReservation</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.3" />
-    <PackageReference Include="WeihanLi.Redis" Version="1.0.0" />
+    <Compile Remove="Filters\ErrorHandlerAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
+    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.3.1" />
+    <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.0.0" />
+    <PackageReference Include="WeihanLi.Redis" Version="1.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.Business\ActivityReservation.Business.csproj" />
@@ -17,10 +23,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BusinessHelper.tt</DependentUpon>
     </Compile>
-    <Content Update="Helpers\BusinessHelper.tt">
+    <None Update="Helpers\BusinessHelper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BusinessHelper.generated.cs</LastGenOutput>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

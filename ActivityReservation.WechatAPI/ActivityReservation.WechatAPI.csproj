@@ -1,9 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <RootNamespace>ActivityReservation.WechatAPI</RootNamespace>
-    <AssemblyName>ActivityReservation.WechatAPI</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj" />

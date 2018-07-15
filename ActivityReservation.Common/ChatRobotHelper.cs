@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Exceptionless.Json;
+using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
 
