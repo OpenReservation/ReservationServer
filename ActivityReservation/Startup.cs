@@ -1,4 +1,7 @@
-﻿using ActivityReservation.Models;
+﻿using ActivityReservation.Business;
+using ActivityReservation.DataAccess;
+using ActivityReservation.Helpers;
+using ActivityReservation.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using WeihanLi.Common;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation
 {
@@ -14,7 +19,7 @@ namespace ActivityReservation
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration.ReplacePlaceholders();
         }
 
         public IConfiguration Configuration { get; }
@@ -22,6 +27,10 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDAL();
+            services.AddBLL();
+            services.AddSingleton<IBusinessHelper, BusinessHelper>();
+
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -33,12 +42,15 @@ namespace ActivityReservation
             // addDbContext
             services.AddDbContext<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ReservationConn")));
 
-            //
+            // SetDependencyResolver
+            DependencyResolver.SetDependencyResolver(services.BuildServiceProvider());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            LogHelper.LogInit();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,13 +59,17 @@ namespace ActivityReservation
             {
                 app.UseExceptionHandler("/Error");
             }
+
             app.UseStaticFiles();
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(name: "areaRoute",
+                  template: "{area:exists}/{controller=Home}/{action=Index}");
+
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}");
             });
         }
     }

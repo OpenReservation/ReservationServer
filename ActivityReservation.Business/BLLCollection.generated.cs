@@ -1,7 +1,7 @@
 ﻿ 
-using IServiceCollection;
 using ActivityReservation.DataAccess;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 
 namespace ActivityReservation.Business
@@ -12,7 +12,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALUser>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALUser>();
         }
     }
 	public partial interface IBLLBlockType:IBaseBLL<BlockType>{}
@@ -21,7 +21,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALBlockType>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALBlockType>();
         }
     }
 	public partial interface IBLLBlockEntity:IBaseBLL<BlockEntity>{}
@@ -30,7 +30,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALBlockEntity>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALBlockEntity>();
         }
     }
 	public partial interface IBLLOperationLog:IBaseBLL<OperationLog>{}
@@ -39,7 +39,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALOperationLog>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALOperationLog>();
         }
     }
 	public partial interface IBLLReservation:IBaseBLL<Reservation>{}
@@ -48,7 +48,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALReservation>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALReservation>();
         }
     }
 	public partial interface IBLLReservationPlace:IBaseBLL<ReservationPlace>{}
@@ -57,7 +57,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALReservationPlace>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALReservationPlace>();
         }
     }
 	public partial interface IBLLReservationPeriod:IBaseBLL<ReservationPeriod>{}
@@ -66,7 +66,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALReservationPeriod>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALReservationPeriod>();
         }
     }
 	public partial interface IBLLSystemSettings:IBaseBLL<SystemSettings>{}
@@ -75,7 +75,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALSystemSettings>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALSystemSettings>();
         }
     }
 	public partial interface IBLLNotice:IBaseBLL<Notice>{}
@@ -84,7 +84,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALNotice>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALNotice>();
         }
     }
 	public partial interface IBLLDisabledPeriod:IBaseBLL<DisabledPeriod>{}
@@ -93,13 +93,13 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDALDisabledPeriod>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDALDisabledPeriod>();
         }
     }
 
     public static class BusinessExtensions
     {
-        public static IServiceCollection AddBLL(this IServiceClollection services)
+        public static IServiceCollection AddBLL(this IServiceCollection services)
         {
                 services.AddScoped<IBLLUser, BLLUser>();
                 services.AddScoped<IBLLBlockType, BLLBlockType>();
@@ -111,6 +111,7 @@ namespace ActivityReservation.Business
                 services.AddScoped<IBLLSystemSettings, BLLSystemSettings>();
                 services.AddScoped<IBLLNotice, BLLNotice>();
                 services.AddScoped<IBLLDisabledPeriod, BLLDisabledPeriod>();
+            return services;
         }
     }
 }

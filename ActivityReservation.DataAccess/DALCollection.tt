@@ -18,8 +18,10 @@
         "DisabledPeriod"
 	};
 #>
-using Autofac;
+using ActivityReservation.DataAccess;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
+using WeihanLi.Common;
 
 namespace ActivityReservation.DataAccess
 {
@@ -35,19 +37,21 @@ namespace ActivityReservation.DataAccess
     } 
 #>
 
-    // DataAccessModule
-    public class DataAccessModule : Module
+    
+    public static class DataAccessExtensions
     {
-        protected override void Load(ContainerBuilder builder)
+        public static IServiceCollection AddDAL(this IServiceCollection services)
         {
 <# 
             foreach (var item in types)
             {
 #>
-                builder.RegisterType<DAL<#= item #>>().As<IDAL<#= item #>>();
+                services.AddScoped<IDAL<#= item #>, DAL<#= item #>>();
 <#		 
             }
 #>
+            return services;
         }
     }
+
 }

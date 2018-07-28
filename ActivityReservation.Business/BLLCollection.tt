@@ -18,9 +18,9 @@
         "DisabledPeriod"
 	};
 #>
-using IServiceCollection;
 using ActivityReservation.DataAccess;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 
 namespace ActivityReservation.Business
@@ -35,7 +35,7 @@ namespace ActivityReservation.Business
     {
         protected override void InitDbHandler()
         {
-            dbHandler = DependencyResolver.Current.GetService<IDAL<#= item #>>();
+            dbHandler = DependencyResolver.Current.ResolveService<IDAL<#= item #>>();
         }
     }
 <#		 
@@ -44,7 +44,7 @@ namespace ActivityReservation.Business
 
     public static class BusinessExtensions
     {
-        public static IServiceCollection AddBLL(this IServiceClollection services)
+        public static IServiceCollection AddBLL(this IServiceCollection services)
         {
 <# 
             foreach (var item in types)
@@ -54,6 +54,7 @@ namespace ActivityReservation.Business
 <#		 
             }
 #>
+            return services;
         }
     }
 }

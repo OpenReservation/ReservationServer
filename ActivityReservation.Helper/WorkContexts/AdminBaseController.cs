@@ -17,6 +17,7 @@ using WeihanLi.Redis;
 namespace ActivityReservation.WorkContexts
 {
     [Authorize]
+    [Area("Admin")]
     public class AdminBaseController : Controller
     {
         public AdminBaseController(ILogger logger, OperLogHelper operLogHelper)

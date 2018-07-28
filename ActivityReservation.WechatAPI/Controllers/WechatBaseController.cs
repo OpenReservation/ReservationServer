@@ -7,6 +7,7 @@ using WeihanLi.Common.Log;
 namespace ActivityReservation.WechatAPI.Controllers
 {
     [WechatRequestValid]
+    [Area("Wechat")]
     public class WechatBaseController : Controller
     {
         /// <summary>

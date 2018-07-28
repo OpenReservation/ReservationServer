@@ -1,6 +1,8 @@
 ﻿ 
-using Autofac;
+using ActivityReservation.DataAccess;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
+using WeihanLi.Common;
 
 namespace ActivityReservation.DataAccess
 {
@@ -45,21 +47,23 @@ namespace ActivityReservation.DataAccess
 	public partial class DALDisabledPeriod: BaseDAL<DisabledPeriod>,IDALDisabledPeriod { }
 	
 
-    // DataAccessModule
-    public class DataAccessModule : Module
+    
+    public static class DataAccessExtensions
     {
-        protected override void Load(ContainerBuilder builder)
+        public static IServiceCollection AddDAL(this IServiceCollection services)
         {
-                builder.RegisterType<DALUser>().As<IDALUser>();
-                builder.RegisterType<DALBlockType>().As<IDALBlockType>();
-                builder.RegisterType<DALBlockEntity>().As<IDALBlockEntity>();
-                builder.RegisterType<DALOperationLog>().As<IDALOperationLog>();
-                builder.RegisterType<DALReservation>().As<IDALReservation>();
-                builder.RegisterType<DALReservationPlace>().As<IDALReservationPlace>();
-                builder.RegisterType<DALReservationPeriod>().As<IDALReservationPeriod>();
-                builder.RegisterType<DALSystemSettings>().As<IDALSystemSettings>();
-                builder.RegisterType<DALNotice>().As<IDALNotice>();
-                builder.RegisterType<DALDisabledPeriod>().As<IDALDisabledPeriod>();
+                services.AddScoped<IDALUser, DALUser>();
+                services.AddScoped<IDALBlockType, DALBlockType>();
+                services.AddScoped<IDALBlockEntity, DALBlockEntity>();
+                services.AddScoped<IDALOperationLog, DALOperationLog>();
+                services.AddScoped<IDALReservation, DALReservation>();
+                services.AddScoped<IDALReservationPlace, DALReservationPlace>();
+                services.AddScoped<IDALReservationPeriod, DALReservationPeriod>();
+                services.AddScoped<IDALSystemSettings, DALSystemSettings>();
+                services.AddScoped<IDALNotice, DALNotice>();
+                services.AddScoped<IDALDisabledPeriod, DALDisabledPeriod>();
+            return services;
         }
     }
+
 }

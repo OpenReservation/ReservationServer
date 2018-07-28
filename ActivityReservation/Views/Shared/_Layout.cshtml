@@ -4,6 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
 </head>
 <body>
@@ -33,6 +35,7 @@
             <p>&copy; @DateTime.Now.Year - 活动室预约系统 &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
     </div>
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
     <script src="~/Content/layer/layer.js"></script>
     @RenderSection("scripts", required: false)
 </body>

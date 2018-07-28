@@ -1,5 +1,4 @@
-﻿using Autofac;
-using ActivityReservation.Business;
+﻿using ActivityReservation.Business;
 using WeihanLi.Common;
 
 namespace ActivityReservation.Helpers
@@ -18,14 +17,6 @@ namespace ActivityReservation.Helpers
         IBLLDisabledPeriod DisabledPeriodHelper { get; }
         
     }
-
-    public class BusinessHelperModule : Module
-	{
-		protected override void Load(ContainerBuilder builder)
-		{
-			builder.RegisterType<BusinessHelper>().As<IBusinessHelper>().SingleInstance();
-		}
-	}        
 
     public class BusinessHelper : IBusinessHelper
     {
