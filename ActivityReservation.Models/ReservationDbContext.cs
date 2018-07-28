@@ -4,15 +4,12 @@ using WeihanLi.Common.Log;
 
 namespace ActivityReservation.Models
 {
-    // Custom DbConfiguration
-    //[DbConfigurationType(typeof(ReservationDbConfiguration))]
     public class ReservationDbContext : DbContext
     {
         private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
 
-        public ReservationDbContext(DbContextOptions options)
+        public ReservationDbContext(DbContextOptions options):base(options)
         {
-            // Database.SetInitializer(new ReservationDbInitializer());
         }
 
         public virtual DbSet<User> Users { get; set; }

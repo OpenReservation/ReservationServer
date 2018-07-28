@@ -2,8 +2,10 @@
 using ActivityReservation.DataAccess;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +32,7 @@ namespace ActivityReservation
             services.AddDAL();
             services.AddBLL();
             services.AddSingleton<IBusinessHelper, BusinessHelper>();
-
+            
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -41,6 +43,22 @@ namespace ActivityReservation
 
             // addDbContext
             services.AddDbContext<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ReservationConn")));
+            services.AddScoped<ReservationDbContext>();
+            
+            //Cookie Authentication
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.AccessDeniedPath = "/Admin/Account/Login";
+                    options.LoginPath = "/Admin/Account/Login";
+                    options.LogoutPath = "/Admin/Account/LogOut";
+
+                    // Cookie settings
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                });
+
+            services.AddScoped<OperLogHelper>();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services.BuildServiceProvider());
@@ -71,6 +89,11 @@ namespace ActivityReservation
                     name: "default",
                     template: "{controller=Home}/{action=Index}");
             });
+
+            app.UseAuthentication();
+
+            // ensure database created
+            DatabaseInitializer.Initialize();
         }
     }
 }
