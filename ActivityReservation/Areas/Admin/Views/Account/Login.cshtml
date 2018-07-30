@@ -39,7 +39,6 @@
     </div>
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Content/layer/layer.js"></script>
-    <script src="~/Scripts/RecaptchaHelper.js"></script>
     <script>
     var loading = layer.load(2);
         document.onreadystatechange = function loadingChange() {
@@ -69,7 +68,7 @@
                 layer.msg("密码不合法，密码长度至少6个字符，最多20个字符");
                 return false;
             }
-            var recaptcha = recaptchaHelper.getRecaptchaResponse();
+            var recaptcha = '111';
             if (!recaptcha) {
                 layer.msg('验证码输入有误');
                 return false;
@@ -87,13 +86,13 @@
         }
         var username = $("#inputUsername").val();
         var password = $("#inputPassword").val();
-        var gResponse = recaptchaHelper.getRecaptchaResponse();
+        var gResponse = '1111';
         var remember = $("#rememberMe").checked;
         var returnUrl = '@ViewData["returnUrl"]';
         $("#btnLogin").text("登录中...");
         $("#btnLogin").attr("disabled", "disabled");
         $.post("LogOn",
-            { "UserName": username, "Password": password, "RememberMe": remember,"Recaptcha":gResponse,'RecaptchaType':recaptchaHelper.recaptchaType },
+            { "UserName": username, "Password": password, "RememberMe": remember,"Recaptcha":gResponse,'RecaptchaType':'None' },
             function(data, status) {
                 if (status === "success") {
                     if (!data) {

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WeihanLi.Common;
@@ -29,10 +30,12 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDAL();
-            services.AddBLL();
-            services.AddSingleton<IBusinessHelper, BusinessHelper>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             
+            services.AddSession();
+            services.AddDistributedRedisCache(options=>options.Configuration = Configuration.GetConnectionString("RedisConn"));
+
+
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -40,10 +43,6 @@ namespace ActivityReservation
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            // addDbContext
-            services.AddDbContext<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ReservationConn")));
-            services.AddScoped<ReservationDbContext>();
             
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -58,7 +57,18 @@ namespace ActivityReservation
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 });
 
+
+            // addDbContext
+            services.AddDbContext<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ReservationConn")));
+
+            services.AddScoped<ReservationDbContext>();
+
+            services.AddDAL();
+            services.AddBLL();
+            services.AddSingleton<IBusinessHelper, BusinessHelper>();
+            
             services.AddScoped<OperLogHelper>();
+
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services.BuildServiceProvider());
@@ -80,6 +90,10 @@ namespace ActivityReservation
 
             app.UseStaticFiles();
 
+            app.UseAuthentication();
+
+            app.UseSession();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "areaRoute",
@@ -89,8 +103,6 @@ namespace ActivityReservation
                     name: "default",
                     template: "{controller=Home}/{action=Index}");
             });
-
-            app.UseAuthentication();
 
             // ensure database created
             DatabaseInitializer.Initialize();

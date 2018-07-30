@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ActivityReservation.AdminLogic.ViewModels;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
@@ -44,20 +47,27 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns>登录结果</returns>
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult LogOn(LoginViewModel model)
+        public async Task<ActionResult> LogOn(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
+#if !DEBUG
+
                 if (!ValidateValidCode(model.RecaptchaType, model.Recaptcha))
                 {
                     return Json("验证码有误");
-                }
+                } 
+#endif
                 var u = new User { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
                 u = BusinessHelper.UserHelper.Login(u);
                 if (u != null)
                 {
-                    HttpContext.Session.Set(AuthFormService.AuthCacheKey, u.ToJson().GetBytes());
+                    HttpContext.Session.SetString(AuthFormService.AuthCacheKey, u.ToJson());
+                    await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, u.UserName) }, "Cookies")), new AuthenticationProperties()
+                    {
+                        IsPersistent = model.RememberMe
+                    });
                     return Json("");
                 }
             }
@@ -99,11 +109,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// 退出登录
         /// </summary>
         /// <returns></returns>
-        public ActionResult Logout()
+        public async Task<ActionResult> Logout()
         {
             Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
-            //HttpContext.Logout();
+            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync(); 
             //redirect to homepage
             return RedirectToAction("Index", new { area = "", controller = "Home" });
         }

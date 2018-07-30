@@ -16,6 +16,7 @@ using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
+using Microsoft.AspNetCore.Http;
 
 namespace ActivityReservation.Controllers
 {
@@ -258,8 +259,8 @@ namespace ActivityReservation.Controllers
             var helper = new GeetestHelper();
             var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
             var gtServerStatus = helper.PreProcess(userIp);
-            HttpContext.Session.Set(GeetestConsts.GeetestUserId, userIp.GetBytes());
-            HttpContext.Session.Set(GeetestConsts.GtServerStatusSessionKey, gtServerStatus.ToString().GetBytes());
+            HttpContext.Session.SetString(GeetestConsts.GeetestUserId, userIp);
+            HttpContext.Session.SetString(GeetestConsts.GtServerStatusSessionKey, gtServerStatus.ToString());
             return Json(helper.Response);
         }
 
