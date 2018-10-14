@@ -10,9 +10,16 @@ namespace ActivityReservation.Filters
 {
     public class AdminPermissionRequireStrategy : IActionAccessStrategy
     {
-        public bool IsActionCanAccess(HttpContext httpContext, string accessKey)
+        private IHttpContextAccessor _accessor;
+
+        private AdminPermissionRequireStrategy(IHttpContextAccessor accessor)
         {
-            if (httpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
+            _accessor = accessor;
+        }
+
+        public bool IsActionCanAccess(string accessKey)
+        {
+            if (_accessor.HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
             {
                 var user = new JsonDataSerializer().Deserializer<User>(bytes);
                 if (user != null)

@@ -16,7 +16,6 @@ using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
-using Microsoft.AspNetCore.Http;
 
 namespace ActivityReservation.Controllers
 {
@@ -77,8 +76,7 @@ namespace ActivityReservation.Controllers
         public ActionResult IsReservationForDateValid(DateTime reservationForDate)
         {
             var jsonResult = new JsonResultModel<bool>() { Status = JsonResultStatus.Success };
-            string msg;
-            var isValid = ReservationHelper.IsReservationForDateAvailabel(reservationForDate, false, out msg);
+            var isValid = ReservationHelper.IsReservationForDateAvailabel(reservationForDate, false, out var msg);
             if (isValid)
             {
                 jsonResult.SetSuccessResult(true);

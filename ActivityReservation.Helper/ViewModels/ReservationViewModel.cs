@@ -40,7 +40,7 @@ namespace ActivityReservation.ViewModels
 
         [Required]
         [Display(Name = "预约人联系方式")]
-        [RegularExpression(@"^\d{11}$", ErrorMessage = "联系方式不合法")]
+        [RegularExpression(@"^1\d{10}$", ErrorMessage = "联系方式不合法")]
         public string ReservationPersonPhone { get; set; }
     }
 }
