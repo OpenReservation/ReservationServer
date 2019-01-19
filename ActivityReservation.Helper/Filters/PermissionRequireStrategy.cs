@@ -17,7 +17,7 @@ namespace ActivityReservation.Filters
             _accessor = accessor;
         }
 
-        public bool IsActionCanAccess(string accessKey)
+        public bool IsCanAccess(string accessKey)
         {
             if (_accessor.HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
             {
@@ -37,7 +37,7 @@ namespace ActivityReservation.Filters
             StatusCode = 403
         };
 
-        public JsonResult DisallowedAjaxResult => new JsonResult(new JsonResultModel
+        public IActionResult DisallowedAjaxResult => new JsonResult(new JsonResultModel
         {
             ErrorMsg = "No Permission",
             Status = JsonResultStatus.NoPermission

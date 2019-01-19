@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using ActivityReservation.Services;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,6 +15,13 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// </summary>
     public class SystemSettingsController : AdminBaseController
     {
+        private readonly IApplicationSettingService _applicationSettingService;
+
+        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper, IApplicationSettingService applicationSettingService) : base(logger, operLogHelper)
+        {
+            _applicationSettingService = applicationSettingService;
+        }
+
         /// <summary>
         /// 系统设置首页
         /// </summary>
@@ -56,6 +64,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = BusinessHelper.SystemSettingsHelper.Add(setting);
                 if (count == 1)
                 {
+                    _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog($"新增系统设置 {setting.SettingName}：{setting.SettingValue}",
                         OperLogModule.Settings, Username);
                     return Json(true);
@@ -80,6 +89,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = BusinessHelper.SystemSettingsHelper.Update(setting, "SettingValue");
                 if (count == 1)
                 {
+                    _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog(
                         $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, Username);
                     return Json(true);
@@ -90,10 +100,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error(ex);
             }
             return Json(false);
-        }
-
-        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
-        {
         }
     }
 }

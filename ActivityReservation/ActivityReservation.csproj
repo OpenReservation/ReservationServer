@@ -4,14 +4,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Log\**" />
-    <Content Remove="Log\**" />
-    <EmbeddedResource Remove="Log\**" />
-    <None Remove="Log\**" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.*" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\" />

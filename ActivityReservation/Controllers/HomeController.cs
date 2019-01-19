@@ -226,7 +226,7 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var notice = new BLLNotice().Fetch(n => n.NoticePath == path);
+                var notice = new BLLNotice().Fetch(n => n.NoticeCustomPath == path);
                 if (notice != null)
                 {
                     return View(notice);

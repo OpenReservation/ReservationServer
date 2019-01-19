@@ -2,6 +2,7 @@
 using ActivityReservation.DataAccess;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using ActivityReservation.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,10 +32,11 @@ namespace ActivityReservation
         public void ConfigureServices(IServiceCollection services)
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
-            services.AddSession();
-            services.AddDistributedRedisCache(options=>options.Configuration = Configuration.GetConnectionString("RedisConn"));
 
+            services.AddSession();
+            services.AddMemoryCache();
+
+            // services.AddDistributedRedisCache(options => options.Configuration = Configuration.GetConnectionString("Redis"));
 
             services.AddMvc()
                 .AddJsonOptions(options =>
@@ -43,7 +45,7 @@ namespace ActivityReservation
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
+
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -57,21 +59,18 @@ namespace ActivityReservation
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 });
 
-
             // addDbContext
-            services.AddDbContext<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("ReservationConn")));
-
-            services.AddScoped<ReservationDbContext>();
+            services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")));
 
             services.AddDAL();
             services.AddBLL();
             services.AddSingleton<IBusinessHelper, BusinessHelper>();
-            
             services.AddScoped<OperLogHelper>();
 
+            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
 
             // SetDependencyResolver
-            DependencyResolver.SetDependencyResolver(services.BuildServiceProvider());
+            DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,6 +95,12 @@ namespace ActivityReservation
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute("Notice", "/Notice/{path}.html", new
+                {
+                    controller = "Home",
+                    action = "NoticeDetails"
+                });
+
                 routes.MapRoute(name: "areaRoute",
                   template: "{area:exists}/{controller=Home}/{action=Index}");
 
