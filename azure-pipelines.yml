@@ -54,7 +54,7 @@ steps:
       exit $rc;
      fi
      
-     docker run -d -p 6010:80 --name activityreservation $(imageName):latest >> /dev/null 2>&1
+     docker run -d -p 7010:80 --name activityreservation $(imageName):latest >> /dev/null 2>&1
      rc=$?
      if [[ $rc != 0 ]];
      then
