@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using ActivityReservation.Models;
 using Microsoft.EntityFrameworkCore;
-using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Log;
 
@@ -21,7 +19,12 @@ namespace ActivityReservation.DataAccess
         /// <summary>
         /// db operator
         /// </summary>
-        protected DbContext db = DependencyResolver.Current.ResolveService<ReservationDbContext>();
+        protected ReservationDbContext db;
+
+        public BaseDAL(ReservationDbContext dbContext)
+        {
+            db = dbContext;
+        }
 
         public bool Exist(Expression<Func<T, bool>> whereLambda)
         {
@@ -59,21 +62,19 @@ namespace ActivityReservation.DataAccess
         {
             try
             {
-                RemoveHoldingEntityInContext(t);
                 db.Set<T>().Attach(t);
                 db.Set<T>().Remove(t);
                 return db.SaveChanges();
             }
             catch (Exception)
             {
-                return 1;
+                return -1;
             }
         }
 
         public T Fetch(Expression<Func<T, bool>> whereLambda)
         {
-            var t = db.Set<T>().AsNoTracking().Where(whereLambda).FirstOrDefault();
-            return t;
+            return db.Set<T>().AsNoTracking().FirstOrDefault(whereLambda);
         }
 
         /// <summary>
@@ -150,10 +151,13 @@ namespace ActivityReservation.DataAccess
         {
             // 分页 一定注意： Skip 之前一定要 OrderBy
             return isAsc
-                ? db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderBy(orderBy)
+                ? db.Set<T>().AsNoTracking()
+                    .Where(whereLambda)
+                    .OrderBy(orderBy)
                     .Skip((pageIndex - 1) * pageSize)
-                    .Take(pageSize).ToList()
-                : db.Set<T>().AsNoTracking().Where(whereLambda).AsNoTracking().OrderByDescending(orderBy)
+                    .Take(pageSize)
+                    .ToList()
+                : db.Set<T>().AsNoTracking().Where(whereLambda).OrderByDescending(orderBy)
                     .Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
         }
 
@@ -267,7 +271,7 @@ namespace ActivityReservation.DataAccess
         {
             RemoveHoldingEntityInContext(t);
             //4.1将 对象 添加到 EF中
-            var entry = db.Entry(t);
+            var entry = db.Attach(t);
             //4.2先设置 对象的包装 状态为 Unchanged
             entry.State = EntityState.Unchanged;
             //4.3循环 被修改的属性名 数组
@@ -298,7 +302,6 @@ namespace ActivityReservation.DataAccess
         /// <returns></returns>
         private bool RemoveHoldingEntityInContext(T entity)
         {
-            //var objContext = db.ObjectContext;
             //var objSet = objContext.CreateObjectSet<T>();
             //var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
             //var exists = objContext.TryGetObjectByKey(entityKey, out var foundEntity);

@@ -35,7 +35,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">预约信息实体</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult MakeReservation(ReservationViewModel model)
+        public ActionResult MakeReservation([FromBody]ReservationViewModel model)
         {
             var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
             try

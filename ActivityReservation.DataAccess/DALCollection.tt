@@ -31,7 +31,12 @@ namespace ActivityReservation.DataAccess
 #>
 	public partial interface IDAL<#= item #>: IBaseDAL<<#= item #>> { }
 
-	public partial class DAL<#= item #>: BaseDAL<<#= item #>>,IDAL<#= item #> { }
+	public partial class DAL<#= item #>: BaseDAL<<#= item #>>,IDAL<#= item #> { 
+
+        public DAL<#= item #>(ReservationDbContext dbContext):base(dbContext)
+        {
+        }
+}
 	
 <#		 
     } 

@@ -130,7 +130,7 @@
                     </tr>
                 </table>
             </section>
-            <footer class="container">
+            <footer class="container" style="text-align: center">
                 <button id="btnPreviousStep" ng-class="{'show-inline':step!=0}" type="button" ng-click="previousStep()" class="btn btn-default">上一步</button>
                 <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'show-inline':step!=4}" id="btnNext">下一步</button>
                 <button ng-click="submitForm()" type="button" ng-disabled="isSubmit" class="btn btn-default" ng-class="{'show-inline':step==4,'disabled':!isModelValid()}">提&emsp;交</button>
@@ -139,6 +139,8 @@
     </div>
 </div>
 @section scripts{
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
     <script>
         var phoneRegExp = /^\d{11}$/;
         var pNameRegExp = /^[\u4e00-\u9fa5]{2,4}$/;
@@ -200,11 +202,11 @@
                         $http.post("/Admin/ReservationManage/MakeReservation", $scope.reservationModel)
                             .success(function (response) {
                                 //console.log(response);
-                                if (response.Status == 200 && response.Data) {
+                                if (response.Status == 200) {
                                     layer.msg('预约成功！');
                                     location.href = "/Admin/ReservationManage/Index";
                                 } else {
-                                    layer.msg(response.Msg);
+                                    layer.msg(response.ErrorMsg);
                                     $scope.isSubmit = false;
                                 }
                             })
@@ -225,7 +227,6 @@
                                     return;
                                 } else {
                                     //TODO:从服务器端判断日期是否合法，不合法则提示用户重新选择
-
                                     $scope.reservationModel.ReservationForDate = date;
                                 }
                                 break;
@@ -238,26 +239,38 @@
                                     $scope.reservationModel.ReservationPlaceName =
                                         $("input[name='place']:radio:checked").parent().text().trim();
                                     //请求服务器端接口，判断可用预约时间段
-                                    $http.post("/Home/GetAvailablePeriods",
-                                        {
+                                    $.ajax({
+                                        url: "/Home/GetAvailablePeriods",
+                                        data: {
                                             "dt": $scope.reservationModel.ReservationForDate,
                                             "placeId": $scope.reservationModel.ReservationPlaceId
-                                        }).success(function (response) {
-                                            var statusArray = response;
-                                            //console.log(statusArray);
-                                            $("input:checkbox[name='cbPeriod']").each(function (index, ele) {
-                                                if (!statusArray[index]) {
-                                                    $(ele).attr("disabled", "disabled");
-                                                    $(ele).addClass("disabled");
-                                                } else {
-                                                    $(ele).removeAttr("disabled");
-                                                    $(ele).removeClass("disabled");
-                                                }
-                                                $(ele).removeClass("checked");
-                                            });
-                                        }).error(function (res) {
-                                            console.error(res);
-                                        });
+                                        },
+                                        type: "post",
+                                        async: false,
+                                        success: function (response) {
+                                            layer.close(loading);
+                                            if (response) {
+                                                $scope.ReservationPeriods = response;
+                                                //$("input:checkbox[name='cbPeriod']").each(function (index, ele) {
+                                                //    if (!statusArray[index]) {
+                                                //        $(ele).attr("disabled", "disabled");
+                                                //        $(ele).addClass("disabled");
+                                                //    } else {
+                                                //        $(ele).removeAttr("disabled");
+                                                //        $(ele).removeClass("disabled");
+                                                //    }
+                                                //    $(ele).removeClass("checked");
+                                                //});
+                                            }
+                                        },
+                                        beforeSend: function () {
+                                            loading = layer.load(2);
+                                        },
+                                        error: function (res) {
+                                            layer.close(loading);
+                                            layer.alert(res);
+                                        }
+                                    });
                                 } else {
                                     layer.msg('请选择要预约的活动室');
                                     console.log('请选择要预约的活动室');

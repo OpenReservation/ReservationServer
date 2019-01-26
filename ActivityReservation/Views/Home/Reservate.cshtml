@@ -135,6 +135,8 @@
     </div>
 </div>
 @section scripts{
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
     <script src="https://static.geetest.com/static/tools/gt.js" async="async"></script>
     <script>
         var phoneRegExp = /^\d{11}$/;
@@ -253,11 +255,11 @@
                         $http.post("/Home/MakeReservation", $scope.reservationModel)
                             .success(function (response) {
                                 //console.log(response);
-                                if (response.Status == 200 && response.Data) {
+                                if (response.Status == 200) {
                                     layer.msg('预约成功！');
                                     location.href = "/";
                                 } else {
-                                    layer.msg(response.Msg);
+                                    layer.msg(response.ErrorMsg);
                                     //重新加载验证码
                                     $scope.loadGeetestCode();
                                     $scope.isSubmit = false;

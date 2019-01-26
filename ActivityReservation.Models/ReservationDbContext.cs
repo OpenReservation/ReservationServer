@@ -8,8 +8,9 @@ namespace ActivityReservation.Models
     {
         private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
 
-        public ReservationDbContext(DbContextOptions options):base(options)
+        public ReservationDbContext(DbContextOptions options) : base(options)
         {
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public virtual DbSet<User> Users { get; set; }
