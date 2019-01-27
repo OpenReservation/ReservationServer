@@ -5,7 +5,9 @@
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">
-            活动室预约时间段管理<small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
+            活动室预约时间段管理
+            <small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
+            <small>&nbsp;&nbsp;<a href="@Url.Action("Index","ReservationPlace", new{ area = "Admin"})">返回活动室管理</a></small>
         </h3>
     </div>
     <div class="table-body" id="div_main">
@@ -23,14 +25,14 @@
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr class="tr_'@item.PeriodId.ToString("N")'">
+                    <tr class="@("tr_"+item.PeriodId.ToString("N"))">
                         <td>@item.PeriodTitle</td>
                         <td>@item.PeriodDescription</td>
                         <td>@item.PeriodIndex</td>
                         <td>@item.CreateBy</td>
                         <td>@item.CreateTime</td>
                         <td>
-                            <button type="button" onclick="edit('@item.PeriodId.ToString("N")')">编辑</button>
+                            <button type="button" class="btn btn-default" onclick="edit('@item.PeriodId.ToString("N")')">编辑</button>
                         </td>
                     </tr>
                 }
@@ -46,7 +48,7 @@
         </div>
         <div class="input-group">
             <label for="inputPeriodDesc">请输入时间段描述</label> <br />
-            <textarea type="text" required="required" class="form-control" id="inputPeriodDesc" placeholder="预约时间段标题"></textarea>
+            <textarea type="text" required="required" class="form-control" id="inputPeriodDesc" placeholder="请输入时间段描述"></textarea>
         </div>
         <div class="input-group">
             <label for="inputPeriodIndex">请输入时间段排序</label> <br />
@@ -62,9 +64,10 @@
     <script>
         //
         function edit(periodId) {
-            $("#inputPeriodTitle").val($(".tr_" + periodId).find("td")[0].text());
-            $("#inputPeriodDesc").val($(".tr_" + periodId).find("td")[1].text());
-            $("#inputPeriodIndex").val($(".tr_" + periodId).find("td")[2].text());
+            console.log(periodId);
+            $("#inputPeriodTitle").val($(".tr_" + periodId).find("td")[0].innerText);
+            $("#inputPeriodDesc").val($(".tr_" + periodId).find("td")[1].innerText);
+            $("#inputPeriodIndex").val($(".tr_" + periodId).find("td")[2].innerText);
 
             layer.open({
                 type: 1,

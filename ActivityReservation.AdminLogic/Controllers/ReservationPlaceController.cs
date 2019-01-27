@@ -221,7 +221,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("活动室不存在");
             }
 
-            if (BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId))
+            if (BusinessHelper.ReservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId))
             {
                 return Json("排序重复，请修改");
             }

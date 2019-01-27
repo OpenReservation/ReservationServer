@@ -6,6 +6,7 @@ using ActivityReservation.Services;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -13,6 +14,7 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 系统设置
     /// </summary>
+    [AccessControl]
     public class SystemSettingsController : AdminBaseController
     {
         private readonly IApplicationSettingService _applicationSettingService;

@@ -62,12 +62,12 @@ namespace ActivityReservation.DataAccess
         {
             try
             {
-                db.Set<T>().Attach(t);
                 db.Set<T>().Remove(t);
                 return db.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return -1;
             }
         }

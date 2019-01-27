@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using ActivityReservation.Common;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
@@ -8,11 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
-using WeihanLi.Redis;
 
 namespace ActivityReservation.WorkContexts
 {
@@ -43,20 +39,7 @@ namespace ActivityReservation.WorkContexts
         /// <summary>
         /// 管理员姓名
         /// </summary>
-        public string Username
-        {
-            get
-            {
-                if (CurrentUser != null)
-                {
-                    return CurrentUser.UserName;
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
+        public string Username => User.Identity.Name;
 
         private User _currentUser;
 
@@ -69,23 +52,9 @@ namespace ActivityReservation.WorkContexts
             {
                 if (_currentUser == null)
                 {
-                    using (var locker = RedisManager.GetRedLockClient(HttpContext.TraceIdentifier))
+                    if (HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
                     {
-                        if (_currentUser == null)
-                        {
-                            if (locker.TryLock())
-                            {
-                                if (HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
-                                {
-                                    _currentUser = bytes.GetString().JsonToType<User>();
-                                }
-                            }
-                            else
-                            {
-                                Thread.Sleep(200);
-                            }                            
-                        }
-                        return _currentUser;
+                        _currentUser = bytes.GetString().JsonToType<User>();
                     }
                 }
                 return _currentUser;

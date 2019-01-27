@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -51,20 +51,26 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-#if !DEBUG
-
                 if (!ValidateValidCode(model.RecaptchaType, model.Recaptcha))
                 {
                     return Json("验证码有误");
-                } 
-#endif
+                }
                 var u = new User { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
                 u = BusinessHelper.UserHelper.Login(u);
                 if (u != null)
                 {
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name, u.UserName),
+                        new Claim(ClaimTypes.Role, "user"),
+                    };
+                    if (u.IsSuper)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    }
                     HttpContext.Session.SetString(AuthFormService.AuthCacheKey, u.ToJson());
-                    await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, u.UserName) }, "Cookies")), new AuthenticationProperties()
+                    await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")), new AuthenticationProperties()
                     {
                         IsPersistent = model.RememberMe
                     });
@@ -114,7 +120,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
             HttpContext.Session.Clear();
-            await HttpContext.SignOutAsync(); 
+            await HttpContext.SignOutAsync();
             //redirect to homepage
             return RedirectToAction("Index", new { area = "", controller = "Home" });
         }

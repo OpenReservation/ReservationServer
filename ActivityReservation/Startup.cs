@@ -31,13 +31,10 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
-            services.AddSession();
             services.AddMemoryCache();
-
             // services.AddDistributedRedisCache(options => options.Configuration = Configuration.GetConnectionString("Redis"));
 
+            services.AddSession();
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -64,11 +61,14 @@ namespace ActivityReservation
 
             services.AddDAL();
             services.AddBLL();
-            services.AddSingleton<IBusinessHelper, BusinessHelper>();
             services.AddScoped<OperLogHelper>();
+            services.AddSingleton<IBusinessHelper, BusinessHelper>();
 
+            // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
 
+            // register access control service
+            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
@@ -110,7 +110,7 @@ namespace ActivityReservation
             });
 
             // ensure database created
-            DatabaseInitializer.Initialize();
+            app.ApplicationServices.InitializeDatabase();
         }
     }
 }

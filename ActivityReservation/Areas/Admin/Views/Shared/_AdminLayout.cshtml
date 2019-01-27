@@ -23,7 +23,7 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("预约", "Reservate", "ReservationManage")</li>
                     <li>@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
-                    <li>@Html.ActionLink("黑名单管理", "Index", "BlockEntity")</li>
+                    <li>@Html.ActionLink("网站首页", "Index", "Home",new { area = "" }, new { target = "_blank" })</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (!User.Identity.IsAuthenticated)
@@ -50,7 +50,7 @@
         </div>
     </div>
     <div class="container body-content">
-        <div class="main-content">
+        <div class="main-content" style="margin-top: 5em">
             @RenderBody()
         </div>
         <hr />

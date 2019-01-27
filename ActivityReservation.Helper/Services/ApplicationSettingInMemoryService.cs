@@ -26,7 +26,7 @@ namespace ActivityReservation.Services
 
         public string SetSettingValue(string settingKey, string settingValue)
         {
-            _settingDictionary[settingKey] = settingKey;
+            _settingDictionary[settingKey] = settingValue;
             return settingValue;
         }
     }
