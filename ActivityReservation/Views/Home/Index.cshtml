@@ -3,7 +3,9 @@
 }
 @section styles{
     <style>
-        .table > tbody > tr > td { vertical-align: middle; }
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
     </style>
 }
 <div class="container">
@@ -18,6 +20,7 @@
     </div>
     <form id="checkForm" class="hidden" action="@Url.Action("Check")" method="post">
         <input name="id" id="reId" value="" />
+        <input name="phone" id="rePhone" />
     </form>
 </div>
 @section scripts{
@@ -31,7 +34,7 @@
             }
             $.post("/Home/ReservationList",
                 { "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#contactPhone").val() },
-                function(data, status) {
+                function (data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -43,15 +46,25 @@
 
         function view(id) {
             $("#reId").val(id);
-            $("#checkForm").submit();
+            layer.prompt({
+                title: '请输入预约使用的手机号',
+                formType: 0 //prompt风格，支持0-2
+            },
+                function (param) {
+                    if (param) {
+                        $("#rePhone").val(param);
+                        $("#checkForm").submit();
+                    }
+                    return false;
+                });
         }
 
         //search
         $("#btnSearch").on("click",
-            function() {
+            function () {
                 loadData();
             });
-        $(function() {
+        $(function () {
             loadData();
         });
     </script>

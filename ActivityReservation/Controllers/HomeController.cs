@@ -172,9 +172,21 @@ namespace ActivityReservation.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Check(Guid id)
+        public ActionResult Check(Guid id, string phone)
         {
+            if (id == Guid.Empty)
+            {
+                return Content("请求参数异常，预约id为空");
+            }
+            if (string.IsNullOrWhiteSpace(phone))
+            {
+                return Content("请求异常，请验证手机号");
+            }
             var r = new BLLReservation().Fetch(re => re.ReservationId == id);
+            if (r.ReservationPersonPhone != phone?.Trim())
+            {
+                return Content("请求异常，或者手机号输入有误");
+            }
             return View(r);
         }
 
