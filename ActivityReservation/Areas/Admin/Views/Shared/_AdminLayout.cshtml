@@ -6,7 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - 活动室预约系统</title>
-    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <environment names="Development">
+        <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    </environment>
     @RenderSection("styles", required: false)
 </head>
 <body>
@@ -23,7 +28,7 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("预约", "Reservate", "ReservationManage")</li>
                     <li>@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
-                    <li>@Html.ActionLink("网站首页", "Index", "Home",new { area = "" }, new { target = "_blank" })</li>
+                    <li>@Html.ActionLink("网站首页", "Index", "Home", new { area = "" }, new { target = "_blank" })</li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (!User.Identity.IsAuthenticated)
@@ -58,9 +63,17 @@
             <p>&copy; @DateTime.Now.Year - 活动室预约系统</p>
         </footer>
     </div>
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Scripts/bootstrap.js"></script>
-    <script src="~/Content/layer/layer.js"></script>
+    <environment names="Development">
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+        <script src="~/Content/layer/layer.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+    </environment>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

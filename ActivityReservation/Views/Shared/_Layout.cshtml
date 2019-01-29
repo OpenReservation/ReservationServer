@@ -4,7 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <environment names="Development">
+        <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    </environment>
     <link href="~/Content/Site.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
 </head>
@@ -35,8 +40,16 @@
             <p>&copy; @DateTime.Now.Year - 活动室预约系统 &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
     </div>
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
-    <script src="~/Content/layer/layer.js"></script>
+    <environment names="Development">
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+        <script src="~/Content/layer/layer.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+    </environment>
     @RenderSection("scripts", required: false)
 </body>
 </html>
