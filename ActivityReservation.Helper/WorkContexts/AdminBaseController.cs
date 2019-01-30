@@ -4,10 +4,8 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WeihanLi.Common;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WorkContexts
@@ -21,13 +19,6 @@ namespace ActivityReservation.WorkContexts
             Logger = logger;
             OperLogHelper = operLogHelper;
         }
-
-        #region BusinessHelper 提供对Business层的访问对象
-
-        protected static IBusinessHelper BusinessHelper
-            => DependencyResolver.Current.GetService<IBusinessHelper>();
-
-        #endregion BusinessHelper 提供对Business层的访问对象
 
         /// <summary>
         /// logger

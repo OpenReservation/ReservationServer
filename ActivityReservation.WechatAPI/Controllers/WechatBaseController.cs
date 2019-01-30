@@ -1,8 +1,7 @@
 ﻿using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
 using Microsoft.AspNetCore.Mvc;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -13,7 +12,12 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <summary>
         /// logger
         /// </summary>
-        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatBaseController));
+        protected readonly ILogger Logger;
+
+        public WechatBaseController(ILogger logger)
+        {
+            Logger = logger;
+        }
 
         public ContentResult Wechat(WechatContext wechatContext)
         {

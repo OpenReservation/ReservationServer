@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
 
@@ -21,8 +20,11 @@ namespace ActivityReservation.Controllers
 {
     public class HomeController : FrontBaseController
     {
-        public HomeController(ILogger<HomeController> logger) : base(logger)
+        private readonly IBLLReservation _reservertionBLL;
+
+        public HomeController(ILogger<HomeController> logger, IBLLReservation reservertionBLL) : base(logger)
         {
+            _reservertionBLL = reservertionBLL;
         }
 
         public ActionResult Index()
@@ -53,7 +55,7 @@ namespace ActivityReservation.Controllers
                 whereLambda = m => m.ReservationPersonPhone.Contains(search.SearchItem1);
             }
             //load data
-            var list = new BLLReservation().GetReservationList(search.PageIndex, search.PageSize, out var rowsCount,
+            var list = _reservertionBLL.GetReservationList(search.PageIndex, search.PageSize, out var rowsCount,
                 whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(dataList);
@@ -65,7 +67,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult Reservate()
         {
-            var places = DependencyResolver.Current.GetService<IBLLReservationPlace>().GetAll(s => s.IsDel == false && s.IsActive, s => s.PlaceId, true);
+            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(s => s.IsDel == false && s.IsActive).OrderBy(_ => _.PlaceIndex).ToList();
             return View(places);
         }
 
@@ -76,7 +78,7 @@ namespace ActivityReservation.Controllers
         public ActionResult IsReservationForDateValid(DateTime reservationForDate)
         {
             var jsonResult = new JsonResultModel<bool>() { Status = JsonResultStatus.Success };
-            var isValid = ReservationHelper.IsReservationForDateAvailabel(reservationForDate, false, out var msg);
+            var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailabel(reservationForDate, false, out var msg);
             if (isValid)
             {
                 jsonResult.SetSuccessResult(true);
@@ -97,7 +99,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId)
         {
-            var periodsStatus = ReservationHelper.GetAvailabelPeriodsByDateAndPlace(dt, placeId);
+            var periodsStatus = HttpContext.RequestServices.GetService<ReservationHelper>().GetAvailabelPeriodsByDateAndPlace(dt, placeId);
             return Json(periodsStatus);
         }
 
@@ -115,7 +117,7 @@ namespace ActivityReservation.Controllers
                 if (ModelState.IsValid)
                 {
                     string msg;
-                    if (!ReservationHelper.IsReservationAvailabel(model, out msg))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailabel(model, out msg))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);
@@ -144,7 +146,7 @@ namespace ActivityReservation.Controllers
                     {
                         reservation.ReservationPeriod += (1 << item);
                     }
-                    var bValue = new BLLReservation().Add(reservation);
+                    var bValue = _reservertionBLL.Insert(reservation);
                     if (bValue > 0)
                     {
                         result.Result = true;
@@ -182,7 +184,7 @@ namespace ActivityReservation.Controllers
             {
                 return Content("请求异常，请验证手机号");
             }
-            var r = new BLLReservation().Fetch(re => re.ReservationId == id);
+            var r = _reservertionBLL.Fetch(re => re.ReservationId == id);
             if (r.ReservationPersonPhone != phone?.Trim())
             {
                 return Content("请求异常，或者手机号输入有误");
@@ -212,10 +214,9 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                int count;
-                var noticeList = new BLLNotice().GetPagedList(search.PageIndex, search.PageSize, out count, whereLamdba,
+                var noticeList = HttpContext.RequestServices.GetService<IBLLNotice>().Paged(search.PageIndex, search.PageSize, whereLamdba,
                     n => n.NoticePublishTime, false);
-                var data = noticeList.ToPagedList(search.PageIndex, search.PageSize, count);
+                var data = noticeList.ToPagedList(search.PageIndex, search.PageSize, noticeList.TotalCount);
                 return View(data);
             }
             catch (Exception ex)
@@ -238,7 +239,7 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var notice = new BLLNotice().Fetch(n => n.NoticeCustomPath == path);
+                var notice = HttpContext.RequestServices.GetService<IBLLNotice>().Fetch(n => n.NoticeCustomPath == path);
                 if (notice != null)
                 {
                     return View(notice);

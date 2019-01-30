@@ -1,9 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using ActivityReservation.Services
+@inject IApplicationSettingService applicationSettings
+<!DOCTYPE html>
 <html lang="zh-cn">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@($"{ViewBag.Title} -- {applicationSettings.GetSettingValue("SystemTitle")}") </title>
+    <meta name="keywords" content="@(applicationSettings.GetSettingValue("SystemKeywords"))" />
     <environment names="Development">
         <link href="~/Content/bootstrap.css" rel="stylesheet" />
     </environment>
@@ -22,7 +26,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("活动室预约系统", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink(applicationSettings.GetSettingValue("SystemTitle"), "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -37,7 +41,7 @@
         <div class="main-content">@RenderBody()</div>
         <hr class="hidden-print" />
         <footer class="hidden-print">
-            <p>&copy; @DateTime.Now.Year - 活动室预约系统 &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
+            <p>&copy; @DateTime.Now.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
     </div>
     <environment names="Development">

@@ -18,18 +18,31 @@ namespace ActivityReservation.Helpers
         /// </summary>
         private const int MaxReservationDiffDays = 7;
 
+        private readonly IBLLReservationPeriod _bllReservationPeriod;
+        private readonly IBLLReservation _bllReservation;
+        private readonly IBLLDisabledPeriod _bllDisabledPeriod;
+        private readonly IBLLBlockEntity _bllBlockEntity;
+
+        public ReservationHelper(IBLLReservationPeriod bllReservationPeriod, IBLLReservation bllReservation, IBLLDisabledPeriod bllDisabledPeriod, IBLLBlockEntity bllBlockEntity)
+        {
+            _bllReservationPeriod = bllReservationPeriod;
+            _bllReservation = bllReservation;
+            _bllBlockEntity = bllBlockEntity;
+            _bllDisabledPeriod = bllDisabledPeriod;
+        }
+
         /// <summary>
         /// 根据预约日期和预约地点获取可用的预约时间段
         /// </summary>
         /// <param name="dt">预约日期</param>
         /// <param name="placeId">预约地点id</param>
         /// <returns></returns>
-        public static List<ReservationPeriodViewModel> GetAvailabelPeriodsByDateAndPlace(DateTime dt, Guid placeId)
+        public List<ReservationPeriodViewModel> GetAvailabelPeriodsByDateAndPlace(DateTime dt, Guid placeId)
         {
             //待审核和审核通过的预约时间段不能再被预约
-            var reservationList = DependencyResolver.Current.GetService<IBLLReservation>().GetAll(r => EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
+            var reservationList = _bllReservation.Select(r => EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
                 r.ReservationStatus != 2);
-            var reservationPeriod = DependencyResolver.Current.GetService<IBLLReservationPeriod>().GetAll(_ => _.PlaceId == placeId, _ => _.CreateTime, true);
+            var reservationPeriod = _bllReservationPeriod.Select(_ => _.PlaceId == placeId).OrderBy(_ => _.CreateTime);
 
             return reservationPeriod.Select((_, index) => new ReservationPeriodViewModel
             {
@@ -49,7 +62,7 @@ namespace ActivityReservation.Helpers
         /// <param name="isAdmin">isAdmin</param>
         /// <param name="msg">errMsg</param>
         /// <returns></returns>
-        public static bool IsReservationForDateAvailabel(DateTime dt, bool isAdmin, out string msg)
+        public bool IsReservationForDateAvailabel(DateTime dt, bool isAdmin, out string msg)
         {
             var daysdiff = dt.Subtract(DateTime.Today).Days;
             if (daysdiff < 0)
@@ -63,7 +76,7 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
-            var disabledPeriods = new BLLDisabledPeriod().GetAll(p =>
+            var disabledPeriods = _bllDisabledPeriod.Select(p =>
                 !p.IsDeleted && p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
                 EF.Functions.DateDiffDay(dt, p.EndDate) >= 0);
             if (disabledPeriods == null || !disabledPeriods.Any())
@@ -82,7 +95,7 @@ namespace ActivityReservation.Helpers
         /// <param name="placeId">预约地点id</param>
         /// <param name="reservationForPeriodIds">预约时间段id</param>
         /// <returns></returns>
-        private static bool IsReservationForPeriodAvailable(DateTime dt, Guid placeId, string reservationForPeriodIds)
+        private bool IsReservationForPeriodAvailable(DateTime dt, Guid placeId, string reservationForPeriodIds)
         {
             var periods = GetAvailabelPeriodsByDateAndPlace(dt, placeId);
             // 预约时间段逻辑修改
@@ -101,9 +114,9 @@ namespace ActivityReservation.Helpers
         /// <param name="reservation">预约信息</param>
         /// <param name="mesage">错误信息</param>
         /// <returns></returns>
-        private static bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string mesage)
+        private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string mesage)
         {
-            var blockList = new BLLBlockEntity().GetAll(b => b.IsActive);
+            var blockList = _bllBlockEntity.Select(b => b.IsActive);
             mesage = "";
             //预约人手机号
             if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonPhone)))
@@ -135,7 +148,7 @@ namespace ActivityReservation.Helpers
         /// <param name="msg">预约错误提示信息</param>
         /// <param name="isAdmin">是否是管理员预约</param>
         /// <returns></returns>
-        public static bool IsReservationAvailabel(ReservationViewModel reservation, out string msg,
+        public bool IsReservationAvailabel(ReservationViewModel reservation, out string msg,
             bool isAdmin = false)
         {
             if (reservation == null || string.IsNullOrEmpty(reservation.ReservationPersonName) ||

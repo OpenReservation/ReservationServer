@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.Services;
@@ -18,10 +19,12 @@ namespace ActivityReservation.AdminLogic.Controllers
     public class SystemSettingsController : AdminBaseController
     {
         private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBLLSystemSettings _systemSettingHelper;
 
-        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper, IApplicationSettingService applicationSettingService) : base(logger, operLogHelper)
+        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper, IApplicationSettingService applicationSettingService, IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
         {
             _applicationSettingService = applicationSettingService;
+            _systemSettingHelper = bLLSystemSettings;
         }
 
         /// <summary>
@@ -47,9 +50,9 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
             }
-            var settingsList = BusinessHelper.SystemSettingsHelper.GetPagedList(search.PageIndex, search.PageSize,
-                out rowsCount, whereLambda, s => s.SettingName);
-            var data = settingsList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var settingsList = _systemSettingHelper.Paged(search.PageIndex, search.PageSize,
+                 whereLambda, s => s.SettingName);
+            var data = settingsList.ToPagedList(search.PageIndex, search.PageSize, settingsList.TotalCount);
             return View(data);
         }
 
@@ -63,7 +66,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 setting.SettingId = Guid.NewGuid();
-                var count = BusinessHelper.SystemSettingsHelper.Add(setting);
+                var count = _systemSettingHelper.Insert(setting);
                 if (count == 1)
                 {
                     _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
@@ -88,7 +91,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var count = BusinessHelper.SystemSettingsHelper.Update(setting, "SettingValue");
+                var count = _systemSettingHelper.Update(s => s.SettingId == setting.SettingId, s => s.SettingValue, setting.SettingValue);
                 if (count == 1)
                 {
                     _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);

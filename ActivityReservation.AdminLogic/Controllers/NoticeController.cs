@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq.Expressions;
 using ActivityReservation.AdminLogic.ViewModels;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -16,8 +16,11 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// </summary>
     public class NoticeController : AdminBaseController
     {
-        public NoticeController(ILogger<NoticeController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        private readonly IBLLNotice _bLLNotice;
+
+        public NoticeController(ILogger<NoticeController> logger, OperLogHelper operLogHelper, IBLLNotice bLLNotice) : base(logger, operLogHelper)
         {
+            _bLLNotice = bLLNotice;
         }
 
         public ActionResult Index()
@@ -39,9 +42,9 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var list = BusinessHelper.NoticeHelper.GetPagedList(search.PageIndex, search.PageSize, out var count,
+                var list = _bLLNotice.Paged(search.PageIndex, search.PageSize,
                     whereLamdba, n => n.NoticePublishTime, false);
-                return View(list.ToPagedList(search.PageIndex, search.PageSize, count));
+                return View(list.Data.ToPagedList(search.PageIndex, search.PageSize, list.TotalCount));
             }
             catch (Exception ex)
             {
@@ -104,7 +107,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     n.NoticePath = DateTime.Now.ToString("yyyyMMddHHmmss") + ".html";
                 }
-                var c = BusinessHelper.NoticeHelper.Add(n);
+                var c = _bLLNotice.Insert(n);
                 if (c == 1)
                 {
                     OperLogHelper.AddOperLog($"{Username}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
@@ -140,7 +143,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     path = path + ".html";
                 }
-                var existStatus = BusinessHelper.NoticeHelper.Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
+                var existStatus = _bLLNotice.Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
                 if (existStatus)
                 {
                     return Json(false);
@@ -169,7 +172,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public JsonResult Delete(Guid noticeId)
         {
-            var result = BusinessHelper.NoticeHelper.Delete(new Notice { NoticeId = noticeId });
+            var result = _bLLNotice.Delete(n => n.NoticeId == noticeId);
             if (result > 0)
             {
                 OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, Username);

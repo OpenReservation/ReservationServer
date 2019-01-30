@@ -1,16 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+﻿using ActivityReservation.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace ActivityReservation.Models
+namespace ActivityReservation.Database
 {
     public class ReservationDbContext : DbContext
     {
-        private static readonly ILogHelper Logger = LogHelper.GetLogHelper<ReservationDbContext>();
-
         public ReservationDbContext(DbContextOptions options) : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public virtual DbSet<User> Users { get; set; }

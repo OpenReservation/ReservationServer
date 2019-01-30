@@ -1,5 +1,5 @@
 ﻿ 
-using ActivityReservation.DataAccess;
+using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
@@ -10,90 +10,80 @@ namespace ActivityReservation.Business
 
 	public partial class BLLUser : BaseBLL<User>,  IBLLUser
     {
-        protected override void InitDbHandler()
+        public BLLUser(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALUser>();
         }
     }
 	public partial interface IBLLBlockType:IBaseBLL<BlockType>{}
 
 	public partial class BLLBlockType : BaseBLL<BlockType>,  IBLLBlockType
     {
-        protected override void InitDbHandler()
+        public BLLBlockType(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALBlockType>();
         }
     }
 	public partial interface IBLLBlockEntity:IBaseBLL<BlockEntity>{}
 
 	public partial class BLLBlockEntity : BaseBLL<BlockEntity>,  IBLLBlockEntity
     {
-        protected override void InitDbHandler()
+        public BLLBlockEntity(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALBlockEntity>();
         }
     }
 	public partial interface IBLLOperationLog:IBaseBLL<OperationLog>{}
 
 	public partial class BLLOperationLog : BaseBLL<OperationLog>,  IBLLOperationLog
     {
-        protected override void InitDbHandler()
+        public BLLOperationLog(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALOperationLog>();
         }
     }
 	public partial interface IBLLReservation:IBaseBLL<Reservation>{}
 
 	public partial class BLLReservation : BaseBLL<Reservation>,  IBLLReservation
     {
-        protected override void InitDbHandler()
+        public BLLReservation(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALReservation>();
         }
     }
 	public partial interface IBLLReservationPlace:IBaseBLL<ReservationPlace>{}
 
 	public partial class BLLReservationPlace : BaseBLL<ReservationPlace>,  IBLLReservationPlace
     {
-        protected override void InitDbHandler()
+        public BLLReservationPlace(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALReservationPlace>();
         }
     }
 	public partial interface IBLLReservationPeriod:IBaseBLL<ReservationPeriod>{}
 
 	public partial class BLLReservationPeriod : BaseBLL<ReservationPeriod>,  IBLLReservationPeriod
     {
-        protected override void InitDbHandler()
+        public BLLReservationPeriod(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALReservationPeriod>();
         }
     }
 	public partial interface IBLLSystemSettings:IBaseBLL<SystemSettings>{}
 
 	public partial class BLLSystemSettings : BaseBLL<SystemSettings>,  IBLLSystemSettings
     {
-        protected override void InitDbHandler()
+        public BLLSystemSettings(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALSystemSettings>();
         }
     }
 	public partial interface IBLLNotice:IBaseBLL<Notice>{}
 
 	public partial class BLLNotice : BaseBLL<Notice>,  IBLLNotice
     {
-        protected override void InitDbHandler()
+        public BLLNotice(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALNotice>();
         }
     }
 	public partial interface IBLLDisabledPeriod:IBaseBLL<DisabledPeriod>{}
 
 	public partial class BLLDisabledPeriod : BaseBLL<DisabledPeriod>,  IBLLDisabledPeriod
     {
-        protected override void InitDbHandler()
+        public BLLDisabledPeriod(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDALDisabledPeriod>();
         }
     }
 

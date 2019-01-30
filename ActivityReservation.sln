@@ -3,18 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation", "ActivityReservation\ActivityReservation.csproj", "{E6DA99DC-9F73-49EB-AC8C-6DA2A7D35CF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation", "ActivityReservation\ActivityReservation.csproj", "{E6DA99DC-9F73-49EB-AC8C-6DA2A7D35CF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation.AdminLogic", "ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj", "{BC7ECC0B-DFDA-4090-A5D0-AE536F9B14D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.AdminLogic", "ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj", "{BC7ECC0B-DFDA-4090-A5D0-AE536F9B14D5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00Solution Items", "00Solution Items", "{DDD30A8E-158F-4927-93AB-A88B69252EB4}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation.WechatAPI", "ActivityReservation.WechatAPI\ActivityReservation.WechatAPI.csproj", "{47FEBE19-41F7-44B2-94A9-00E2C31AA626}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.WechatAPI", "ActivityReservation.WechatAPI\ActivityReservation.WechatAPI.csproj", "{47FEBE19-41F7-44B2-94A9-00E2C31AA626}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation.Helper", "ActivityReservation.Helper\ActivityReservation.Helper.csproj", "{5848D1B2-49A2-4D82-AFAA-B4E6A8079FF0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Helper", "ActivityReservation.Helper\ActivityReservation.Helper.csproj", "{5848D1B2-49A2-4D82-AFAA-B4E6A8079FF0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01UI", "01UI", "{3D9E34B5-4644-41E2-ADF2-49B3FF8A0084}"
 EndProject
@@ -30,11 +30,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06Common", "06Common", "{29
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Common", "ActivityReservation.Common\ActivityReservation.Common.csproj", "{F027E4A9-08CE-4C1F-9A1F-C52388466D08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation.Models", "ActivityReservation.Models\ActivityReservation.Models.csproj", "{82EDF7EA-8C0D-4AC2-B567-38FAE6FAA3DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Models", "ActivityReservation.Models\ActivityReservation.Models.csproj", "{82EDF7EA-8C0D-4AC2-B567-38FAE6FAA3DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation.DataAccess", "ActivityReservation.DataAccess\ActivityReservation.DataAccess.csproj", "{D41641F8-9BF3-4984-A3A6-A5AE6518B66B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Database", "ActivityReservation.DataAccess\ActivityReservation.Database.csproj", "{D41641F8-9BF3-4984-A3A6-A5AE6518B66B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ActivityReservation.Business", "ActivityReservation.Business\ActivityReservation.Business.csproj", "{3F550118-51BB-4782-BB3F-3983FC56F2CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Business", "ActivityReservation.Business\ActivityReservation.Business.csproj", "{3F550118-51BB-4782-BB3F-3983FC56F2CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

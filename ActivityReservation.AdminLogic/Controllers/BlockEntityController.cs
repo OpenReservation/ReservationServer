@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 
@@ -17,8 +19,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
-            var types = BusinessHelper.BlockTypeHelper.GetAll();
-            return View(types);
+            return View();
+        }
+
+        public JsonResult BlockTypes()
+        {
+            return Json(HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true));
         }
 
         /// <summary>
@@ -50,12 +56,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                     whereLambda = (b => b.BlockValue.Contains(search.SearchItem2));
                 }
             }
-            var rowsCount = 0;
             try
             {
-                var blockList = BusinessHelper.BlockEntityHelper.GetPagedList(search.PageIndex, search.PageSize,
-                    out rowsCount, whereLambda, b => b.BlockTime, false);
-                var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+                var blockList = _blockEntityHelper.Paged(search.PageIndex, search.PageSize, whereLambda, b => b.BlockTime, false);
+                var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, blockList.TotalCount);
                 return View(dataList);
             }
             catch (Exception ex)
@@ -83,7 +87,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 };
                 try
                 {
-                    var count = BusinessHelper.BlockEntityHelper.Add(entity);
+                    var count = _blockEntityHelper.Insert(entity);
                     if (count == 1)
                     {
                         //记录日志
@@ -112,22 +116,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult UpdateEntityStatus(Guid entityId, string entityName, int status)
         {
-            var entity = new BlockEntity() { BlockId = entityId };
-            if (status > 0)
-            {
-                entity.IsActive = true;
-            }
-            else
-            {
-                entity.IsActive = false;
-            }
             try
             {
-                var count = BusinessHelper.BlockEntityHelper.Update(entity, "IsActive");
+                var count = _blockEntityHelper.Update(e => e.BlockId == entityId, e => e.IsActive, status > 0);
                 if (count > 0)
                 {
                     OperLogHelper.AddOperLog(
-                        string.Format("更改黑名单 {0} 状态为 {1}", entityName, entity.IsActive ? "启用" : "禁用"),
+                        string.Format("更改黑名单 {0} 状态为 {1}", entityName, status > 0 ? "启用" : "禁用"),
                         OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
@@ -149,7 +144,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var c = BusinessHelper.BlockEntityHelper.Delete(new BlockEntity() { BlockId = entityId });
+                var c = _blockEntityHelper.Delete(b => b.BlockId == entityId);
                 if (c == 1)
                 {
                     //记录日志
@@ -164,8 +159,11 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        public BlockEntityController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        private readonly IBLLBlockEntity _blockEntityHelper;
+
+        public BlockEntityController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper, IBLLBlockEntity bLLBlockEntity) : base(logger, operLogHelper)
         {
+            _blockEntityHelper = bLLBlockEntity;
         }
     }
 }

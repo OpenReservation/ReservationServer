@@ -1,7 +1,6 @@
 ﻿using ActivityReservation.Business;
-using ActivityReservation.DataAccess;
+using ActivityReservation.Database;
 using ActivityReservation.Helpers;
-using ActivityReservation.Models;
 using ActivityReservation.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WeihanLi.Common;
@@ -59,24 +59,26 @@ namespace ActivityReservation
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")));
 
-            services.AddDAL();
             services.AddBLL();
-            services.AddScoped<OperLogHelper>();
-            services.AddSingleton<IBusinessHelper, BusinessHelper>();
-
+            services.AddSingleton<OperLogHelper>();
+            services.AddScoped<ReservationHelper>();
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
 
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            LogHelper.LogInit();
+            LogHelper.LogInit(new[] {
+                new Common.SentryLogHelperProvider()
+            });
+            loggerFactory.AddLog4Net();
 
             if (env.IsDevelopment())
             {
@@ -88,11 +90,8 @@ namespace ActivityReservation
             }
 
             app.UseStaticFiles();
-
-            app.UseAuthentication();
-
             app.UseSession();
-
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute("Notice", "/Notice/{path}.html", new

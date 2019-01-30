@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    public class ConfigController : AdminBaseController
+    public class WechatConfigController : AdminBaseController
     {
         public ActionResult Index() => View();
 
@@ -24,7 +24,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             return Json("");
         }
 
-        public ConfigController(ILogger<ConfigController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        public WechatConfigController(ILogger<WechatConfigController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
         {
         }
     }

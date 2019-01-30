@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using ActivityReservation.AdminLogic.ViewModels;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
@@ -21,8 +22,11 @@ namespace ActivityReservation.AdminLogic.Controllers
 {
     public class AccountController : AdminBaseController
     {
-        public AccountController(ILogger<AccountController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        private readonly IBLLUser _bLLUser;
+
+        public AccountController(ILogger<AccountController> logger, OperLogHelper operLogHelper, IBLLUser bLLUser) : base(logger, operLogHelper)
         {
+            _bLLUser = bLLUser;
         }
 
         /// <summary>
@@ -57,7 +61,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 var u = new User { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
-                u = BusinessHelper.UserHelper.Login(u);
+                u = _bLLUser.Login(u);
                 if (u != null)
                 {
                     var claims = new List<Claim>()
@@ -145,7 +149,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (CurrentUser.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword") > 0)
+                        if (_bLLUser.Update(u => u.UserId == CurrentUser.UserId, u => u.UserPassword, CurrentUser.UserPassword) > 0)
                         {
                             OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
                                 OperLogModule.Account, Username);
@@ -180,7 +184,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ModifyEmail(string email)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email))// 验证格式
             {
                 return Json(false);
             }
@@ -190,7 +194,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 u.UserMail = email;
                 try
                 {
-                    var count = BusinessHelper.UserHelper.Update(u, "UserMail");
+                    var count = _bLLUser.Update(user => user.UserId == u.UserId, ur => ur.UserMail, u.UserMail);
                     if (count == 1)
                     {
                         OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
@@ -218,15 +222,14 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                var userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
-                var u = userBLL.Fetch(s => s.UserName == accountModel.Username);
+                var u = _bLLUser.Fetch(s => s.UserName == accountModel.Username);
                 if (u != null)
                 {
                     return Json(false);
                 }
                 //验证用户邮箱唯一
-                u = userBLL.Fetch(s => s.UserMail == accountModel.UserEmail);
+                u = _bLLUser.Fetch(s => s.UserMail == accountModel.UserEmail);
                 if (u != null)
                 {
                     return Json(false);
@@ -240,7 +243,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 };
                 try
                 {
-                    var count = userBLL.Add(u);
+                    var count = _bLLUser.Insert(u);
                     if (count == 1)
                     {
                         OperLogHelper.AddOperLog(
@@ -268,10 +271,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var count = BusinessHelper.UserHelper.Delete(u);
+                var count = _bLLUser.Delete(ur => ur.UserId == u.UserId);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(string.Format("删除用户 {0}", u.UserName), OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"删除用户 {u.UserId.ToString("N")} {u.UserName}", OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -295,7 +298,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 //加密
                 u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
-                var count = BusinessHelper.UserHelper.Update(u, "UserPassword");
+                var count = _bLLUser.Update(ur => ur.UserId == u.UserId, ur => ur.UserPassword, u.UserPassword);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(string.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
@@ -321,7 +324,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [AllowAnonymous]
         public ActionResult ValidUsername(string userName)
         {
-            var u = BusinessHelper.UserHelper.Fetch(s => s.UserName == userName);
+            var u = _bLLUser.Fetch(s => s.UserName == userName);
             if (u == null)
             {
                 return Json(true);
@@ -340,7 +343,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ValidUserMail(string userMail)
         {
-            var u = BusinessHelper.UserHelper.Fetch(s => s.UserMail == userMail);
+            var u = _bLLUser.Fetch(s => s.UserMail == userMail);
             if (u == null)
             {
                 return Json(true);
@@ -384,10 +387,9 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 whereLambda = (u => u.UserName.Contains(search.SearchItem1) && u.IsSuper == false);
             }
-            var rowsCount = 0;
-            var userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount,
+            var pageList = _bLLUser.Paged(search.PageIndex, search.PageSize,
                 whereLambda, u => u.AddTime, false);
-            var data = userList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var data = pageList.ToPagedList(search.PageIndex, search.PageSize, pageList.TotalCount);
             return View(data);
         }
     }

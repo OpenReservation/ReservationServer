@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
@@ -25,7 +27,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public ActionResult Reservate()
         {
-            var places = BusinessHelper.ReservationPlaceHelper.GetAll(s => s.PlaceName, true);
+            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(r => true).OrderBy(p => p.PlaceName).ToList();
             return View(places);
         }
 
@@ -43,7 +45,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (ModelState.IsValid)
                 {
                     string msg;
-                    if (!ReservationHelper.IsReservationAvailabel(model, out msg, true))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailabel(model, out msg, true))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);
@@ -74,7 +76,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     {
                         reservation.ReservationPeriod += (1 << item);
                     }
-                    BusinessHelper.ReservationHelper.Add(reservation);
+                    _reservationHelper.Insert(reservation);
                     OperLogHelper.AddOperLog(
                         $"管理员 {Username} 后台预约 {reservation.ReservationId}：{reservation.ReservationActivityContent}",
                         OperLogModule.Reservation, Username);
@@ -126,7 +128,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
             }
             //load data
-            var list = BusinessHelper.ReservationHelper.GetReservationList(search.PageIndex, search.PageSize,
+            var list = _reservationHelper.GetReservationList(search.PageIndex, search.PageSize,
                 out var rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(dataList);
@@ -143,13 +145,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var reservation = BusinessHelper.ReservationHelper.Fetch(r => r.ReservationId == reservationId);
+                var reservation = _reservationHelper.Fetch(r => r.ReservationId == reservationId);
                 if (reservation == null)
                 {
                     return Json(false);
                 }
                 reservation.ReservationStatus = status > 0 ? 1 : 2;
-                var count = BusinessHelper.ReservationHelper.Update(reservation, "ReservationStatus");
+                var count = _reservationHelper.Update(reservation, new[] { "ReservationStatus" });
                 if (count == 1)
                 {
                     //记录操作日志
@@ -175,12 +177,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var reservation = BusinessHelper.ReservationHelper.Fetch(r => r.ReservationId == id);
+                var reservation = _reservationHelper.Fetch(r => r.ReservationId == id);
                 if (reservation == null)
                 {
                     return Json(false);
                 }
-                var count = BusinessHelper.ReservationHelper.Delete(reservation);
+                var count = _reservationHelper.Delete(r => r.ReservationId == id);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(
@@ -196,8 +198,11 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        public ReservationManageController(ILogger<ReservationManageController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        private readonly IBLLReservation _reservationHelper;
+
+        public ReservationManageController(ILogger<ReservationManageController> logger, OperLogHelper operLogHelper, IBLLReservation bLLReservation) : base(logger, operLogHelper)
         {
+            _reservationHelper = bLLReservation;
         }
     }
 }

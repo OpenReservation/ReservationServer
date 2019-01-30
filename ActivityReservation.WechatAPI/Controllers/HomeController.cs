@@ -5,13 +5,17 @@ using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WeihanLi.Common.Log;
+using Microsoft.Extensions.Logging;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
     public class HomeController : WechatBaseController
     {
+        public HomeController(ILogger<HomeController> logger) : base(logger)
+        {
+        }
+
         [HttpGet]
         [ActionName("Index")]
         public void Get(WechatMsgRequestModel model)

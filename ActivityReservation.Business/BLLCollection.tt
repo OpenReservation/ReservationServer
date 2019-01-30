@@ -18,7 +18,7 @@
         "DisabledPeriod"
 	};
 #>
-using ActivityReservation.DataAccess;
+using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
@@ -33,9 +33,8 @@ namespace ActivityReservation.Business
 
 	public partial class BLL<#= item #> : BaseBLL<<#= item #>>,  IBLL<#= item #>
     {
-        protected override void InitDbHandler()
+        public BLL<#= item #>(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.ResolveService<IDAL<#= item #>>();
         }
     }
 <#		 

@@ -9,10 +9,10 @@ namespace ActivityReservation
         public static void Main(string[] args)
         {
             var host = WebHost.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
+                .ConfigureAppConfiguration((context, builder) =>
                 {
-                    var builtConfig = config.Build();
-                    config.AddAzureKeyVault(
+                    var builtConfig = builder.Build();
+                    builder.AddAzureKeyVault(
                         $"https://{builtConfig["KeyVault:Name"]}.vault.azure.net/",
                         builtConfig["KeyVault:ClientId"],
                         builtConfig["KeyVault:ClientSecret"]);

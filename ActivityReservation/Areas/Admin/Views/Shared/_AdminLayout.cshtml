@@ -1,11 +1,13 @@
 ﻿@using ActivityReservation.Helpers
+@using ActivityReservation.Services
+@inject IApplicationSettingService applicationSettings
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - 活动室预约系统</title>
+    <title>@($"{ViewBag.Title} -- {applicationSettings.GetSettingValue("SystemTitle")}") </title>
     <environment names="Development">
         <link href="~/Content/bootstrap.css" rel="stylesheet" />
     </environment>
@@ -60,7 +62,7 @@
         </div>
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - 活动室预约系统</p>
+            <p>&copy; @DateTime.Now.Year - @applicationSettings.GetSettingValue("SystemTitle")</p>
         </footer>
     </div>
     <environment names="Development">
