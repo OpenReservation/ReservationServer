@@ -141,7 +141,7 @@ namespace ActivityReservation.Controllers
                         ReservationId = Guid.NewGuid()
                     };
                     //TODO:验证最大可预约时间段，同一个手机号，同一个IP地址
-
+                    // 需要验证这种预约判断是否可以通用，可能有bug
                     foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
                     {
                         reservation.ReservationPeriod += (1 << item);
@@ -185,7 +185,7 @@ namespace ActivityReservation.Controllers
                 return Content("请求异常，请验证手机号");
             }
             var r = _reservertionBLL.Fetch(re => re.ReservationId == id);
-            if (r.ReservationPersonPhone != phone?.Trim())
+            if (r.ReservationPersonPhone != phone.Trim())
             {
                 return Content("请求异常，或者手机号输入有误");
             }

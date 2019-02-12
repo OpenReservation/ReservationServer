@@ -10,7 +10,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
     <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.5.0" />
     <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.0.0" />
-    <PackageReference Include="WeihanLi.Redis" Version="1.0.5" />
+    <PackageReference Include="WeihanLi.Redis" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.Business\ActivityReservation.Business.csproj" />

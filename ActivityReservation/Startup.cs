@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Redis;
 
 namespace ActivityReservation
 {
@@ -58,13 +59,23 @@ namespace ActivityReservation
 
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")));
-
+            services.AddRedisConfig(options =>
+            {
+#if !DEBUG
+                options.RedisServers = new[]
+                {
+                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
+                };
+#endif
+                options.CachePrefix = "ActivityReservation";
+                options.DefaultDatabase = 2;
+                options.EnableCompress = false;
+            });
             services.AddBLL();
             services.AddSingleton<OperLogHelper>();
             services.AddScoped<ReservationHelper>();
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
-
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
 
