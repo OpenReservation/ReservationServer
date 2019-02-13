@@ -42,7 +42,6 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 whereLambda = (p => p.PlaceName.Contains(placeName) && p.IsDel == false);
             }
-            var totalCount = 0;
             var list = _reservationPlaceHelper.Paged(pageIndex, pageSize,
                 whereLambda, p => p.UpdateTime, false);
             var data = list.ToPagedList(pageIndex, pageSize, list.TotalCount);
