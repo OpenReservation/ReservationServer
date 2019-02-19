@@ -15,8 +15,9 @@ namespace ActivityReservation.Services
                 {
                     _settingDictionary[item.Key] = item.Value;
                 }
+                return dictionary.Count;
             }
-            return _settingDictionary.Count;
+            return 0;
         }
 
         public string GetSettingValue(string settingKey)
