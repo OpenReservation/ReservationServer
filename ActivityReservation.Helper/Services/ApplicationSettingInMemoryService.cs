@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace ActivityReservation.Services
 {
     public class ApplicationSettingInMemoryService : IApplicationSettingService
     {
-        private readonly Dictionary<string, string> _settingDictionary = new Dictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _settingDictionary = new ConcurrentDictionary<string, string>();
 
         public int AddSettings(Dictionary<string, string> dictionary)
         {
