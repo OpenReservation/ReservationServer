@@ -5,7 +5,7 @@ using WeihanLi.Common.Models;
 
 namespace ActivityReservation.Filters
 {
-    public class AdminPermissionRequireStrategy : IActionAccessStrategy
+    public class AdminPermissionRequireStrategy : IResourceAccessStrategy
     {
         private readonly IHttpContextAccessor _accessor;
 

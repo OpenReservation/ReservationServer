@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {

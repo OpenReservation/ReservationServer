@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
 

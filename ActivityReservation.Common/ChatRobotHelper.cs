@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Logging;
 
 namespace ActivityReservation.Common
 {
@@ -20,7 +20,7 @@ namespace ActivityReservation.Common
         /// <summary>
         /// logger
         /// </summary>
-        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(ChatRobotHelper));
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(ChatRobotHelper));
 
         /// <summary>
         /// 获取机器人回复

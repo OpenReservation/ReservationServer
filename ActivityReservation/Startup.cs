@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Logging;
 using WeihanLi.Redis;
 
 namespace ActivityReservation
@@ -42,7 +43,7 @@ namespace ActivityReservation
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -69,7 +70,6 @@ namespace ActivityReservation
 #endif
                 options.CachePrefix = "ActivityReservation";
                 options.DefaultDatabase = 2;
-                options.EnableCompress = false;
             });
             services.AddBLL();
             services.AddSingleton<OperLogHelper>();
@@ -86,8 +86,9 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            LogHelper.LogInit(new[] {
-                new Common.SentryLogHelperProvider()
+            LogHelper.AddLogProvider(new ILogHelperProvider[] {
+                new WeihanLi.Common.Logging.Log4Net.Log4NetLogHelperProvider(),
+                new Common.SentryLogHelperProvider(),
             });
             loggerFactory.AddLog4Net();
 
@@ -119,8 +120,8 @@ namespace ActivityReservation
                     template: "{controller=Home}/{action=Index}");
             });
 
-            // ensure database created
-            app.ApplicationServices.InitializeDatabase();
+            // initialize
+            app.ApplicationServices.Initialize();
         }
     }
 }

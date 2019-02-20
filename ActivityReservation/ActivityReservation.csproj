@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.1.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
+    <PackageReference Include="WeihanLi.Common.Logging.Log4Net" Version="1.0.12-preview-20190219-194445" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\favicon.ico" />
@@ -23,6 +24,9 @@
   <ItemGroup>
     <Content Update="Areas\Wechat\Views\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="log4net.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {

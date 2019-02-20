@@ -5,6 +5,7 @@ using ActivityReservation.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.Helpers

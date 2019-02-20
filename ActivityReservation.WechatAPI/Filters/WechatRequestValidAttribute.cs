@@ -5,13 +5,13 @@ using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Logging;
 
 namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : Attribute, IAuthorizationFilter
     {
-        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatRequestValidAttribute));
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatRequestValidAttribute));
 
         private static bool CheckSignature(WechatMsgRequestModel model)
         {

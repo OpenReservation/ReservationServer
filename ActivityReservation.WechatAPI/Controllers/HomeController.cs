@@ -6,6 +6,7 @@ using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers

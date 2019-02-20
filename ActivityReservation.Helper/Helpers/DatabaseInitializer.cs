@@ -12,7 +12,7 @@ namespace ActivityReservation.Helpers
 {
     public static class DatabaseInitializer
     {
-        public static void InitializeDatabase(this IServiceProvider serviceProvider)
+        public static void Initialize(this IServiceProvider serviceProvider)
         {
             IReadOnlyCollection<SystemSettings> settings;
             using (var scope = serviceProvider.CreateScope())
