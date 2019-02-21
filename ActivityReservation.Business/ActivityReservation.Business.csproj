@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WeihanLi.EntityFramework" Version="0.1.1-preview-20190220-234019" />
+    <PackageReference Include="WeihanLi.EntityFramework" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.DataAccess\ActivityReservation.Database.csproj" />

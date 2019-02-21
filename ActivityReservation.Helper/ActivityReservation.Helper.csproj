@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.0" />
-    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.6.0-preview-20190214-141524" />
+    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.6.0" />
     <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.0.0" />
     <PackageReference Include="WeihanLi.Redis" Version="1.1.2" />
   </ItemGroup>
