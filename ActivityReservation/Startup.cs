@@ -75,7 +75,7 @@ namespace ActivityReservation
             services.AddSingleton<OperLogHelper>();
             services.AddScoped<ReservationHelper>();
             // registerApplicationSettingService
-            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
+            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
 
