@@ -46,7 +46,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (ModelState.IsValid)
                 {
                     string msg;
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailabel(model, out msg, true))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out msg, true))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);

@@ -69,6 +69,8 @@
             $("#inputPeriodDesc").val($(".tr_" + periodId).find("td")[1].innerText);
             $("#inputPeriodIndex").val($(".tr_" + periodId).find("td")[2].innerText);
 
+            $("#inputPeriodIndex").attr("disabled", "disabled");
+
             layer.open({
                 type: 1,
                 title: "编辑预约时间段信息",
@@ -99,12 +101,17 @@
                             }
                         });
                 },
-                cancel: function() {
+                cancel: function () {
+                    $("#inputPeriodIndex").removeAttr("disabled");
                 }
             });
         }
 
-        $("#btnAdd").click(function() {
+        $("#btnAdd").click(function () {
+            $("#inputPeriodTitle").val("");
+            $("#inputPeriodDesc").val("");
+            $("#inputPeriodIndex").val(0);
+            $("#inputPeriodIndex").removeAttr("disabled");
             layer.open({
                 type: 1,
                 title: "添加预约时间段",

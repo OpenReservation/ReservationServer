@@ -264,15 +264,16 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("预约时间段不存在");
             }
 
-            if (_reservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId))
-            {
-                return Json("排序重复，请修改");
-            }
+            // 不修改排序
+            //if (_reservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId))
+            //{
+            //    return Json("排序重复，请修改");
+            //}
 
             model.UpdateBy = Username;
             model.UpdateTime = DateTime.Now;
 
-            var result = _reservationPeriodHelper.Update(model, new[] { "PeriodIndex", "PeriodTitle", "PeriodDescription", "UpdateBy", "UpdateTime" });
+            var result = _reservationPeriodHelper.Update(model, new[] { "PeriodTitle", "PeriodDescription", "UpdateBy", "UpdateTime" });
             if (result > 0)
             {
                 OperLogHelper.AddOperLog($"更新预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);

@@ -79,7 +79,7 @@ namespace ActivityReservation.Controllers
         public ActionResult IsReservationForDateValid(DateTime reservationForDate)
         {
             var jsonResult = new JsonResultModel<bool>() { Status = JsonResultStatus.Success };
-            var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailabel(reservationForDate, false, out var msg);
+            var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailable(reservationForDate, false, out var msg);
             if (isValid)
             {
                 jsonResult.SetSuccessResult(true);
@@ -100,7 +100,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId)
         {
-            var periodsStatus = HttpContext.RequestServices.GetService<ReservationHelper>().GetAvailabelPeriodsByDateAndPlace(dt, placeId);
+            var periodsStatus = HttpContext.RequestServices.GetService<ReservationHelper>().GetAvailablePeriodsByDateAndPlace(dt, placeId);
             return Json(periodsStatus);
         }
 
@@ -118,7 +118,7 @@ namespace ActivityReservation.Controllers
                 if (ModelState.IsValid)
                 {
                     string msg;
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailabel(model, out msg))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out msg))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);

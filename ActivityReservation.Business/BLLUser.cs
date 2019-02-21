@@ -3,7 +3,7 @@ using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Business
 {
-    public partial class BLLUser : BaseBLL<User>, IBaseBLL<User>
+    public partial class BLLUser
     {
         /// <summary>
         /// login

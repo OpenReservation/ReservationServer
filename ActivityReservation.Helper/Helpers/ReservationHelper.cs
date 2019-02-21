@@ -37,7 +37,7 @@ namespace ActivityReservation.Helpers
         /// <param name="dt">预约日期</param>
         /// <param name="placeId">预约地点id</param>
         /// <returns></returns>
-        public List<ReservationPeriodViewModel> GetAvailabelPeriodsByDateAndPlace(DateTime dt, Guid placeId)
+        public List<ReservationPeriodViewModel> GetAvailablePeriodsByDateAndPlace(DateTime dt, Guid placeId)
         {
             //待审核和审核通过的预约时间段不能再被预约
             var reservationList = _bllReservation.Select(r => EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
@@ -56,21 +56,21 @@ namespace ActivityReservation.Helpers
         }
 
         /// <summary>
-        /// 判断预约日期是否在可预约范围内
+        /// 判断预约日期是否在可预约范围内以及所要预约的日期是否被禁用
         /// </summary>
         /// <param name="dt">预约日期</param>
         /// <param name="isAdmin">isAdmin</param>
         /// <param name="msg">errMsg</param>
         /// <returns></returns>
-        public bool IsReservationForDateAvailabel(DateTime dt, bool isAdmin, out string msg)
+        public bool IsReservationForDateAvailable(DateTime dt, bool isAdmin, out string msg)
         {
-            var daysdiff = dt.Subtract(DateTime.Today).Days;
-            if (daysdiff < 0)
+            var daysDiff = dt.Subtract(DateTime.Today).Days;
+            if (daysDiff < 0)
             {
                 msg = "预约日期不可预约";
                 return false;
             }
-            if (!isAdmin && daysdiff > MaxReservationDiffDays)
+            if (!isAdmin && daysDiff > MaxReservationDiffDays)
             {
                 msg = $"预约日期需要在{MaxReservationDiffDays}天内";
                 return false;
@@ -97,7 +97,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         private bool IsReservationForPeriodAvailable(DateTime dt, Guid placeId, string reservationForPeriodIds)
         {
-            var periods = GetAvailabelPeriodsByDateAndPlace(dt, placeId);
+            var periods = GetAvailablePeriodsByDateAndPlace(dt, placeId);
             // 预约时间段逻辑修改
             var periodIndexes = reservationForPeriodIds.Split(',').Select(_ => Convert.ToInt32(_)).ToArray();
             //
@@ -109,19 +109,19 @@ namespace ActivityReservation.Helpers
         }
 
         /// <summary>
-        /// 提交信息是否在黑名单中
+        /// 预约信息是否在黑名单中
         /// </summary>
         /// <param name="reservation">预约信息</param>
-        /// <param name="mesage">错误信息</param>
+        /// <param name="message">错误信息</param>
         /// <returns></returns>
-        private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string mesage)
+        private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string message)
         {
             var blockList = _bllBlockEntity.Select(b => b.IsActive);
-            mesage = "";
+            message = "";
             //预约人手机号
             if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonPhone)))
             {
-                mesage = "手机号已被拉黑";
+                message = "手机号已被拉黑";
                 return true;
             }
             //预约人IP地址
@@ -129,13 +129,13 @@ namespace ActivityReservation.Helpers
             var ip = DependencyResolver.Current.GetService<IHttpContextAccessor>().HttpContext.Connection.RemoteIpAddress.ToString();
             if (blockList.Any(b => b.BlockValue.Equals(ip)))
             {
-                mesage = "IP地址已被拉黑";
+                message = "IP地址已被拉黑";
                 return true;
             }
             //预约人姓名
             if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonName)))
             {
-                mesage = "预约人姓名已经被拉黑";
+                message = "预约人姓名已经被拉黑";
                 return true;
             }
             return false;
@@ -148,23 +148,29 @@ namespace ActivityReservation.Helpers
         /// <param name="msg">预约错误提示信息</param>
         /// <param name="isAdmin">是否是管理员预约</param>
         /// <returns></returns>
-        public bool IsReservationAvailabel(ReservationViewModel reservation, out string msg,
+        public bool IsReservationAvailable(ReservationViewModel reservation, out string msg,
             bool isAdmin = false)
         {
-            if (reservation == null || string.IsNullOrEmpty(reservation.ReservationPersonName) ||
+            if (reservation == null ||
+                string.IsNullOrEmpty(reservation.ReservationPersonName) ||
                 string.IsNullOrEmpty(reservation.ReservationPersonPhone) ||
-                string.IsNullOrEmpty(reservation.ReservationForTimeIds) || Guid.Empty == reservation.ReservationPlaceId)
+                string.IsNullOrEmpty(reservation.ReservationForTimeIds) ||
+                Guid.Empty == reservation.ReservationPlaceId)
             {
                 msg = "预约信息不完整";
                 return false;
             }
-
-            using (var redisLock = RedisManager.GetRedLockClient($"{reservation.ReservationPlaceId:N}_{reservation.ReservationForDate:yyyyMMdd}"))
+            if (IsReservationInfoInBlockList(reservation, out msg))
             {
-                if (redisLock.TryLock(TimeSpan.FromMinutes(1)))
+                return false;
+            }
+
+            using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
+            {
+                if (redisLock.TryLock(TimeSpan.FromSeconds(30)))
                 {
                     var reservationForDate = reservation.ReservationForDate;
-                    if (!IsReservationForDateAvailabel(reservationForDate, isAdmin, out msg))
+                    if (!IsReservationForDateAvailable(reservationForDate, isAdmin, out msg))
                     {
                         return false;
                     }
@@ -174,7 +180,7 @@ namespace ActivityReservation.Helpers
                         msg = "预约时间段冲突，请重新选择预约时间段";
                         return false;
                     }
-                    return !IsReservationInfoInBlockList(reservation, out msg);
+                    return true;
                 }
                 else
                 {

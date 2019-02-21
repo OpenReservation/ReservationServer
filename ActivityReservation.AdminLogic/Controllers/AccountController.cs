@@ -66,18 +66,22 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     var claims = new List<Claim>()
                     {
-                        new Claim(ClaimTypes.Name, u.UserName),
+                        new Claim(ClaimTypes.NameIdentifier, u.UserId.ToString("N")), //userId
+                        new Claim(ClaimTypes.Name, u.UserName), // userName
                         new Claim(ClaimTypes.Role, "user"),
                     };
                     if (u.IsSuper)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                     }
+
                     HttpContext.Session.SetString(AuthFormService.AuthCacheKey, u.ToJson());
-                    await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")), new AuthenticationProperties()
-                    {
-                        IsPersistent = model.RememberMe
-                    });
+                    await HttpContext.SignInAsync("Cookies",
+                        new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")),
+                        new AuthenticationProperties()
+                        {
+                            IsPersistent = model.RememberMe
+                        });
                     return Json("");
                 }
             }
