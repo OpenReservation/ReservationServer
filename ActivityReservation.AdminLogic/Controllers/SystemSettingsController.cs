@@ -1,19 +1,33 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Web.Mvc;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using ActivityReservation.Services;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     /// <summary>
     /// 系统设置
     /// </summary>
+    [AccessControl]
     public class SystemSettingsController : AdminBaseController
     {
+        private readonly IApplicationSettingService _applicationSettingService;
+        private readonly IBLLSystemSettings _systemSettingHelper;
+
+        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper, IApplicationSettingService applicationSettingService, IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
+        {
+            _applicationSettingService = applicationSettingService;
+            _systemSettingHelper = bLLSystemSettings;
+        }
+
         /// <summary>
         /// 系统设置首页
         /// </summary>
@@ -32,14 +46,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             //默认查询所有
             Expression<Func<SystemSettings, bool>> whereLambda = (s => 1 == 1);
-            var rowsCount = 0;
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
             }
-            var settingsList = BusinessHelper.SystemSettingsHelper.GetPagedList(search.PageIndex, search.PageSize,
-                out rowsCount, whereLambda, s => s.SettingName);
-            var data = settingsList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var settingsList = _systemSettingHelper.Paged(search.PageIndex, search.PageSize,
+                 whereLambda, s => s.SettingName);
+            var data = settingsList.ToPagedList(search.PageIndex, search.PageSize, settingsList.TotalCount);
             return View(data);
         }
 
@@ -53,12 +66,12 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 setting.SettingId = Guid.NewGuid();
-                var count = BusinessHelper.SystemSettingsHelper.Add(setting);
+                var count = _systemSettingHelper.Insert(setting);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(string.Format("新增系统设置 {0}：{1}", setting.SettingName, setting.SettingValue),
+                    _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
+                    OperLogHelper.AddOperLog($"新增系统设置 {setting.SettingName}：{setting.SettingValue}",
                         OperLogModule.Settings, Username);
-                    HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
                     return Json(true);
                 }
             }
@@ -78,13 +91,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var count = BusinessHelper.SystemSettingsHelper.Update(setting, "SettingValue");
+                var count = _systemSettingHelper.Update(s => s.SettingId == setting.SettingId, s => s.SettingValue, setting.SettingValue);
                 if (count == 1)
                 {
+                    _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog(
-                        string.Format("更新系统设置{0}---{1}：{2}", setting.SettingId, setting.SettingName,
-                            setting.SettingValue), OperLogModule.Settings, Username);
-                    HttpContext.ApplicationInstance.Application[setting.SettingName] = setting.SettingValue;
+                        $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, Username);
                     return Json(true);
                 }
             }

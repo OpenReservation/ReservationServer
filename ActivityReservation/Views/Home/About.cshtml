@@ -1,10 +1,12 @@
-﻿@{
+﻿@using ActivityReservation.Services
+@inject IApplicationSettingService applicationSettings
+@{
     ViewBag.Title = "关于";
 }
 <h3>关于活动室预约系统</h3>
 
 <div class="table-body" style="padding: 1em; font-size: 1em; line-height: 1.5em">
-    @HttpContext.Current.Application["SystemDescription"] <br />
-    联系电话：@HttpContext.Current.Application["SystemContactPhone"] <br />
-    联系邮箱：@HttpContext.Current.Application["SystemContactEmail"] <br />
+    @(applicationSettings.GetSettingValue("SystemDescription")) <br />
+    联系电话：@(applicationSettings.GetSettingValue("SystemContactPhone")) <br />
+    联系邮箱：@(applicationSettings.GetSettingValue("SystemContactEmail")) <br />
 </div>

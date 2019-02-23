@@ -25,7 +25,7 @@
                     "PageIndex": pageIndex,
                     "PageSize": pageSize
                 },
-                success: function(data, status) {
+                success: function (data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -40,16 +40,18 @@
         function Update(id, settingName, obj) {
             if (id) {
                 $(obj).attr("disabled", "disabled");
+                var beforeVal = $.trim($(obj).parent().prev().text());
                 //layer.propmt
                 layer.prompt({
-                        title: '请输入新的值',
-                        formType: 0 //prompt风格，支持0-2
-                    },
-                    function(param) {
+                    title: '请输入新的值',
+                    value: beforeVal,
+                    formType: 0 //prompt风格，支持0-2
+                },
+                    function (param) {
                         if (param) {
                             $.post("/Admin/SystemSettings/UpdateSettings",
                                 { "SettingId": id, "SettingName": settingName, "SettingValue": param },
-                                function(data) {
+                                function (data) {
                                     if (data) {
                                         layer.msg('更新成功');
                                         location.reload();
@@ -65,7 +67,7 @@
             }
         }
 
-        $(function() {
+        $(function () {
             loadData();
         });
     </script>

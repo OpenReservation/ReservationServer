@@ -3,7 +3,7 @@ using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Business
 {
-    public partial class BLLUser : BaseBLL<User>, IBaseBLL<User>
+    public partial class BLLUser
     {
         /// <summary>
         /// login
@@ -13,7 +13,7 @@ namespace ActivityReservation.Business
         public User Login(User u)
         {
             u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
-            var user = dbHandler.Fetch(m => m.UserName.Equals(u.UserName) && m.UserPassword.Equals(u.UserPassword));
+            var user = Fetch(m => m.UserName.Equals(u.UserName) && m.UserPassword.Equals(u.UserPassword));
             return user;
         }
     }

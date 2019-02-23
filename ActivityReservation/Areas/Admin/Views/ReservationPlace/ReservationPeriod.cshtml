@@ -5,7 +5,9 @@
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">
-            活动室预约时间段管理<small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
+            活动室预约时间段管理
+            <small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
+            <small>&nbsp;&nbsp;<a href="@Url.Action("Index","ReservationPlace", new{ area = "Admin"})">返回活动室管理</a></small>
         </h3>
     </div>
     <div class="table-body" id="div_main">
@@ -17,17 +19,21 @@
                     <th>时间段排序</th>
                     <th>创建人</th>
                     <th>创建时间</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr class="@("tr_"+item.PeriodId.ToString("N"))">
                         <td>@item.PeriodTitle</td>
                         <td>@item.PeriodDescription</td>
                         <td>@item.PeriodIndex</td>
                         <td>@item.CreateBy</td>
                         <td>@item.CreateTime</td>
+                        <td>
+                            <button type="button" class="btn btn-default" onclick="edit('@item.PeriodId.ToString("N")')">编辑</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -42,7 +48,7 @@
         </div>
         <div class="input-group">
             <label for="inputPeriodDesc">请输入时间段描述</label> <br />
-            <textarea type="text" required="required" class="form-control" id="inputPeriodDesc" placeholder="预约时间段标题"></textarea>
+            <textarea type="text" required="required" class="form-control" id="inputPeriodDesc" placeholder="请输入时间段描述"></textarea>
         </div>
         <div class="input-group">
             <label for="inputPeriodIndex">请输入时间段排序</label> <br />
@@ -52,8 +58,60 @@
     </form>
 </div>
 @section scripts{
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jqueryui-datepicker-zhCN.js"></script>
     <script>
-        $("#btnAdd").click(function() {
+        //
+        function edit(periodId) {
+            console.log(periodId);
+            $("#inputPeriodTitle").val($(".tr_" + periodId).find("td")[0].innerText);
+            $("#inputPeriodDesc").val($(".tr_" + periodId).find("td")[1].innerText);
+            $("#inputPeriodIndex").val($(".tr_" + periodId).find("td")[2].innerText);
+
+            $("#inputPeriodIndex").attr("disabled", "disabled");
+
+            layer.open({
+                type: 1,
+                title: "编辑预约时间段信息",
+                content: $("#editPlace"),
+                btn: ["保存", "取消"],
+                yes: function(index) {
+                    if (!$.trim($("#inputPeriodTitle").val())) {
+                        layer.msg("预约时间段不能为空");
+                        return;
+                    }
+                    if (!$("#inputPeriodIndex").val()) {
+                        layer.msg("预约时间段排序不能为空");
+                        return;
+                    }
+                    layer.close(index);
+                    $.post('@Url.Action("UpdateReservationPeriod")',
+                        {
+                            PlaceId: $("#hiddenPlaceId").val(),
+                            PeriodId: periodId,
+                            PeriodTitle: $("#inputPeriodTitle").val(),
+                            PeriodDescription: $("#inputPeriodDesc").val(),
+                            PeriodIndex: $("#inputPeriodIndex").val()
+                        }, function (data) {
+                            if (!data) {
+                                location.reload();
+                            } else {
+                                layer.alert(data);
+                            }
+                        });
+                },
+                cancel: function () {
+                    $("#inputPeriodIndex").removeAttr("disabled");
+                }
+            });
+        }
+
+        $("#btnAdd").click(function () {
+            $("#inputPeriodTitle").val("");
+            $("#inputPeriodDesc").val("");
+            $("#inputPeriodIndex").val(0);
+            $("#inputPeriodIndex").removeAttr("disabled");
             layer.open({
                 type: 1,
                 title: "添加预约时间段",

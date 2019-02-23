@@ -1,51 +1,37 @@
 ﻿using System;
-using System.Web.Mvc;
 using ActivityReservation.Common;
-using ActivityReservation.Filters;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.WorkContexts
 {
     [Authorize]
-    [PermissionRequired]
-#if !DEBUG
-    [RequireHttps]
-#endif
+    [Area("Admin")]
     public class AdminBaseController : Controller
     {
-        #region BusinessHelper 提供对Business层的访问对象
-
-        protected static IBusinessHelper BusinessHelper
-            => DependencyResolver.Current.GetService<IBusinessHelper>();
-
-        #endregion BusinessHelper 提供对Business层的访问对象
+        public AdminBaseController(ILogger logger, OperLogHelper operLogHelper)
+        {
+            Logger = logger;
+            OperLogHelper = operLogHelper;
+        }
 
         /// <summary>
         /// logger
         /// </summary>
-        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(AdminBaseController));
+        protected readonly ILogger Logger;
+
+        protected readonly OperLogHelper OperLogHelper;
 
         /// <summary>
         /// 管理员姓名
         /// </summary>
-        public string Username
-        {
-            get
-            {
-                if (CurrentUser != null)
-                {
-                    return CurrentUser.UserName;
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
+        public string Username => User.Identity.Name;
 
         private User _currentUser;
 
@@ -58,7 +44,10 @@ namespace ActivityReservation.WorkContexts
             {
                 if (_currentUser == null)
                 {
-                    _currentUser = AuthFormService.GetCurrentUser();
+                    if (HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
+                    {
+                        _currentUser = bytes.GetString().JsonToType<User>();
+                    }
                 }
                 return _currentUser;
             }
@@ -77,16 +66,16 @@ namespace ActivityReservation.WorkContexts
 
             if (recapchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
-                return GoogleRecaptchaHelper.IsValidRequest(recaptcha);
+                return HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>().IsValidRequest(recaptcha);
             }
 
             if (recapchaType.Equals("Geetest", StringComparison.OrdinalIgnoreCase))
             {
-                return new GeetestHelper()
+                return HttpContext.RequestServices.GetRequiredService<GeetestHelper>()
                     .ValidateRequest(JsonConvert.DeserializeObject<GeetestRequestModel>(recaptcha),
-                        Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
-                    Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
-                    () => { Session.Remove(GeetestConsts.GeetestUserId); });
+                        HttpContext.Session.TryGetValue(GeetestConsts.GeetestUserId, out var bytes) ? bytes.GetString() : "",
+                    Convert.ToByte(HttpContext.Session.TryGetValue(GeetestConsts.GtServerStatusSessionKey, out var bytesVal) ? bytesVal.GetString() : "0"),
+                    () => HttpContext.Session.Remove(GeetestConsts.GeetestUserId));
             }
 
             return false;

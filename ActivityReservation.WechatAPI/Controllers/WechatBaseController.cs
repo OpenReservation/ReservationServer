@@ -1,18 +1,23 @@
-﻿using System.Web.Mvc;
-using ActivityReservation.WechatAPI.Filters;
+﻿using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
     [WechatRequestValid]
+    [Area("Wechat")]
     public class WechatBaseController : Controller
     {
         /// <summary>
         /// logger
         /// </summary>
-        protected static ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatBaseController));
+        protected readonly ILogger Logger;
+
+        public WechatBaseController(ILogger logger)
+        {
+            Logger = logger;
+        }
 
         public ContentResult Wechat(WechatContext wechatContext)
         {

@@ -1,25 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Web.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ActivityReservation.AdminLogic.ViewModels;
-using ActivityReservation.Filters;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
     public class AccountController : AdminBaseController
     {
+        private readonly IBLLUser _bLLUser;
+
+        public AccountController(ILogger<AccountController> logger, OperLogHelper operLogHelper, IBLLUser bLLUser) : base(logger, operLogHelper)
+        {
+            _bLLUser = bLLUser;
+        }
+
         /// <summary>
         /// 管理员登录页面
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [NoPermissionRequired]
         [HttpGet]
         public ActionResult Login(string returnUrl)
         {
@@ -36,9 +50,8 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns>登录结果</returns>
         [AllowAnonymous]
-        [NoPermissionRequired]
         [HttpPost]
-        public ActionResult LogOn(LoginViewModel model)
+        public async Task<ActionResult> LogOn(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -48,11 +61,27 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 var u = new User { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
-                u = BusinessHelper.UserHelper.Login(u);
+                u = _bLLUser.Login(u);
                 if (u != null)
                 {
-                    AuthFormService.Login(model.UserName, model.RememberMe);
-                    AuthFormService.SetCurrentUser(u);
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, u.UserId.ToString("N")), //userId
+                        new Claim(ClaimTypes.Name, u.UserName), // userName
+                        new Claim(ClaimTypes.Role, "user"),
+                    };
+                    if (u.IsSuper)
+                    {
+                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+                    }
+
+                    HttpContext.Session.SetString(AuthFormService.AuthCacheKey, u.ToJson());
+                    await HttpContext.SignInAsync("Cookies",
+                        new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")),
+                        new AuthenticationProperties()
+                        {
+                            IsPersistent = model.RememberMe
+                        });
                     return Json("");
                 }
             }
@@ -74,7 +103,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
-        [NoPermissionRequired]
         public ActionResult ImageValidCode()
         {
             return null;
@@ -86,7 +114,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="code">验证码</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [NoPermissionRequired]
         public ActionResult ValidCode(string code)
         {
             return Json(false);
@@ -96,12 +123,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// 退出登录
         /// </summary>
         /// <returns></returns>
-        public ActionResult Logout()
+        public async Task<ActionResult> Logout()
         {
             Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
-            AuthFormService.Logout();
-            //redirect to login page
+            HttpContext.Session.Clear();
+            await HttpContext.SignOutAsync();
+            //redirect to homepage
             return RedirectToAction("Index", new { area = "", controller = "Home" });
         }
 
@@ -125,7 +153,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (CurrentUser.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        if (BusinessHelper.UserHelper.Update(CurrentUser, "UserPassword") > 0)
+                        if (_bLLUser.Update(u => u.UserId == CurrentUser.UserId, u => u.UserPassword, CurrentUser.UserPassword) > 0)
                         {
                             OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
                                 OperLogModule.Account, Username);
@@ -133,7 +161,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                             Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
 
                             //密码修改成功，需要重新登录
-                            AuthFormService.Logout();
+                            HttpContext.Session.Remove(AuthFormService.AuthCacheKey);
+                            HttpContext.SignOutAsync().ConfigureAwait(false);
+                            //
                             return Json(true);
                         }
                     }
@@ -158,7 +188,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ModifyEmail(string email)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(email))// 验证格式
             {
                 return Json(false);
             }
@@ -168,12 +198,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 u.UserMail = email;
                 try
                 {
-                    var count = BusinessHelper.UserHelper.Update(u, "UserMail");
+                    var count = _bLLUser.Update(user => user.UserId == u.UserId, ur => ur.UserMail, u.UserMail);
                     if (count == 1)
                     {
                         OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
                             OperLogModule.Account, Username);
-                        AuthFormService.SetCurrentUser(u);
+                        HttpContext.Session.Set(AuthFormService.AuthCacheKey, u.ToJson().GetBytes());
                         return Json(true);
                     }
                 }
@@ -191,20 +221,19 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="accountModel">账户信息实体</param>
         /// <returns></returns>
         [HttpPost]
-        [AdminPermissionRequired]
+        [AccessControl]
         public ActionResult CreateAccount(CreateAccountViewModel accountModel)
         {
             if (ModelState.IsValid)
             {
-                var userBLL = BusinessHelper.UserHelper;
                 //验证用户名唯一
-                var u = userBLL.Fetch(s => s.UserName == accountModel.Username);
+                var u = _bLLUser.Fetch(s => s.UserName == accountModel.Username);
                 if (u != null)
                 {
                     return Json(false);
                 }
                 //验证用户邮箱唯一
-                u = userBLL.Fetch(s => s.UserMail == accountModel.UserEmail);
+                u = _bLLUser.Fetch(s => s.UserMail == accountModel.UserEmail);
                 if (u != null)
                 {
                     return Json(false);
@@ -218,7 +247,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 };
                 try
                 {
-                    var count = userBLL.Add(u);
+                    var count = _bLLUser.Insert(u);
                     if (count == 1)
                     {
                         OperLogHelper.AddOperLog(
@@ -241,15 +270,15 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="u">账户信息</param>
         /// <returns></returns>
         [HttpPost]
-        [AdminPermissionRequired]
+        [AccessControl]
         public ActionResult DeleteAccount(User u)
         {
             try
             {
-                var count = BusinessHelper.UserHelper.Delete(u);
+                var count = _bLLUser.Delete(ur => ur.UserId == u.UserId);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(string.Format("删除用户 {0}", u.UserName), OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"删除用户 {u.UserId.ToString("N")} {u.UserName}", OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -266,14 +295,14 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="u">用户信息</param>
         /// <returns></returns>
         [HttpPost]
-        [AdminPermissionRequired]
+        [AccessControl]
         public ActionResult ResetPass(User u)
         {
             try
             {
                 //加密
                 u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
-                var count = BusinessHelper.UserHelper.Update(u, "UserPassword");
+                var count = _bLLUser.Update(ur => ur.UserId == u.UserId, ur => ur.UserPassword, u.UserPassword);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(string.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
@@ -297,10 +326,9 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </returns>
         [HttpPost]
         [AllowAnonymous]
-        [NoPermissionRequired]
         public ActionResult ValidUsername(string userName)
         {
-            var u = BusinessHelper.UserHelper.Fetch(s => s.UserName == userName);
+            var u = _bLLUser.Fetch(s => s.UserName == userName);
             if (u == null)
             {
                 return Json(true);
@@ -319,7 +347,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ValidUserMail(string userMail)
         {
-            var u = BusinessHelper.UserHelper.Fetch(s => s.UserMail == userMail);
+            var u = _bLLUser.Fetch(s => s.UserMail == userMail);
             if (u == null)
             {
                 return Json(true);
@@ -335,7 +363,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="password">用户密码</param>
         /// <returns></returns>
-        [PermissionRequired]
         public ActionResult ValidOldPassword(string password)
         {
             var u = CurrentUser;
@@ -349,13 +376,13 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        [AdminPermissionRequired]
+        [AccessControl]
         public ActionResult UserList()
         {
             return View();
         }
 
-        [AdminPermissionRequired]
+        [AccessControl]
         public ActionResult UserListTable(SearchHelperModel search)
         {
             //默认查询所有
@@ -364,10 +391,9 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 whereLambda = (u => u.UserName.Contains(search.SearchItem1) && u.IsSuper == false);
             }
-            var rowsCount = 0;
-            var userList = BusinessHelper.UserHelper.GetPagedList(search.PageIndex, search.PageSize, out rowsCount,
+            var pageList = _bLLUser.Paged(search.PageIndex, search.PageSize,
                 whereLambda, u => u.AddTime, false);
-            var data = userList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var data = pageList.ToPagedList(search.PageIndex, search.PageSize, pageList.TotalCount);
             return View(data);
         }
     }

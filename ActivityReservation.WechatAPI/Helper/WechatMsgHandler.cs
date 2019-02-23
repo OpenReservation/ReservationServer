@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Web;
 using System.Xml;
 using ActivityReservation.Common;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
 
@@ -14,7 +13,7 @@ namespace ActivityReservation.WechatAPI.Helper
     /// </summary>
     internal class WechatMsgHandler
     {
-        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatMsgHandler));
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatMsgHandler));
 
         public static string ReturnMessage(string postStr)
         {
@@ -76,7 +75,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
+                reply = ChatRobotHelper.GetBotReply(Content.InnerText.UrlEncode());
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -120,7 +119,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(HttpContext.Current.Server.UrlEncode(Content.InnerText));
+                reply = ChatRobotHelper.GetBotReply(Content.InnerText.UrlEncode());
                 if (reply == "error")
                 {
                     reply = Content.InnerText;

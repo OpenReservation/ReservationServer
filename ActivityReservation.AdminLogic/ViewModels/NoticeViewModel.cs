@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
 
 namespace ActivityReservation.AdminLogic.ViewModels
 {
@@ -19,7 +18,6 @@ namespace ActivityReservation.AdminLogic.ViewModels
         /// 公告内容
         /// </summary>
         [Required]
-        [AllowHtml]
         public string Content { get; set; }
 
         /// <summary>

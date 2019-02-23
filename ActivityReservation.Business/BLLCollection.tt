@@ -18,9 +18,9 @@
         "DisabledPeriod"
 	};
 #>
-using Autofac;
-using ActivityReservation.DataAccess;
+using ActivityReservation.Database;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 
 namespace ActivityReservation.Business
@@ -33,27 +33,27 @@ namespace ActivityReservation.Business
 
 	public partial class BLL<#= item #> : BaseBLL<<#= item #>>,  IBLL<#= item #>
     {
-        protected override void InitDbHandler()
+        public BLL<#= item #>(ReservationDbContext dbContext) : base(dbContext)
         {
-            dbHandler = DependencyResolver.Current.GetService<IDAL<#= item #>>();
         }
     }
 <#		 
     } 
 #>
 
-    public class BusinessModule : Autofac.Module
+    public static class BusinessExtensions
     {
-        protected override void Load(ContainerBuilder builder)
+        public static IServiceCollection AddBLL(this IServiceCollection services)
         {
 <# 
             foreach (var item in types)
             {
 #>
-                builder.RegisterType<BLL<#= item #>>().As<IBLL<#= item #>>();
+                services.AddScoped<IBLL<#= item #>, BLL<#= item #>>();
 <#		 
             }
 #>
+            return services;
         }
     }
 }

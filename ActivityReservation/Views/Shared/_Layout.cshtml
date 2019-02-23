@@ -1,26 +1,21 @@
-﻿<!DOCTYPE html>
+﻿@using ActivityReservation.Services
+@inject IApplicationSettingService applicationSettings
+<!DOCTYPE html>
 <html lang="zh-cn">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewBag.Title - @HttpContext.Current.Application["SystemTitle"]</title>
-    <meta name="keywords" content="@HttpContext.Current.Application["SystemKeywords"]" />
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <title>@($"{ViewBag.Title} -- {applicationSettings.GetSettingValue("SystemTitle")}") </title>
+    <meta name="keywords" content="@(applicationSettings.GetSettingValue("SystemKeywords"))" />
+    <environment names="Development">
+        <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    </environment>
+    <link href="~/Content/Site.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
-    <script type='text/javascript'>
-                                                                                                                                                                                                        //var appInsights=window.appInsights||function(config)
-                //{
-                //    function r(config){ t[config] = function(){ var i = arguments; t.queue.push(function(){ t[config].apply(t, i)})} }
-                //    var t = { config:config},u=document,e=window,o='script',s=u.createElement(o),i,f;for(s.src=config.url||'//az416426.vo.msecnd.net/scripts/a/ai.0.js',u.getElementsByTagName(o)[0].parentNode.appendChild(s),t.cookie=u.cookie,t.queue=[],i=['Event','Exception','Metric','PageView','Trace','Ajax'];i.length;)r('track'+i.pop());return r('setAuthenticatedUserContext'),r('clearAuthenticatedUserContext'),config.disableExceptionTracking||(i='onerror',r('_'+i),f=e[i],e[i]=function(config, r, u, e, o) { var s = f && f(config, r, u, e, o); return s !== !0 && t['_' + i](config, r, u, e, o),s}),t
-                //}({
-                //    instrumentationKey: '86951d29-2771-4aa0-bd49-e7a4a1f6cef6'
-                //});
-
-                //window.appInsights=appInsights;
-                //appInsights.trackPageView();
-    </script>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top hidden-print">
@@ -31,7 +26,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("活动室预约系统", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink(applicationSettings.GetSettingValue("SystemTitle"), "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -46,12 +41,19 @@
         <div class="main-content">@RenderBody()</div>
         <hr class="hidden-print" />
         <footer class="hidden-print">
-            <p>&copy; @DateTime.Now.Year - @HttpContext.Current.Application["SystemTitle"] &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
+            <p>&copy; @DateTime.Now.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
     </div>
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    <script src="~/Content/layer/layer.js"></script>
+    <environment names="Development">
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+        <script src="~/Content/layer/layer.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+    </environment>
     @RenderSection("scripts", required: false)
 </body>
 </html>

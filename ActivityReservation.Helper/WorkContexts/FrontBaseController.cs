@@ -1,17 +1,16 @@
-﻿using System.Web.Mvc;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.WorkContexts
 {
     /// <summary>
     /// 前台基类控制器
     /// </summary>
-    public class FrontBaseController : Controller
+    public abstract class FrontBaseController : Controller
     {
-        protected ILogHelper Logger;
+        protected ILogger Logger;
 
-        public FrontBaseController(ILogHelper logger)
+        protected FrontBaseController(ILogger logger)
         {
             Logger = logger;
         }

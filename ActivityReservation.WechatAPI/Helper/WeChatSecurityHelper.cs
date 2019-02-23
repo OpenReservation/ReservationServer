@@ -1,6 +1,6 @@
 ﻿using Tencent;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Logging;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
@@ -9,7 +9,7 @@ namespace ActivityReservation.WechatAPI.Helper
         private static readonly WXBizMsgCrypt Wxcpt =
             new WXBizMsgCrypt(WeChatConsts.Token, WeChatConsts.AESKey, WeChatConsts.AppId);
 
-        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatSecurityHelper));
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatSecurityHelper));
 
         private readonly string _signature, _timestamp, _nonce;
 

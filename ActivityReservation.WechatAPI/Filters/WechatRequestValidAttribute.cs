@@ -1,40 +1,19 @@
 ﻿using System;
-using System.Text;
-using System.Web.Mvc;
+using System.Linq;
 using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Logging;
 
 namespace ActivityReservation.WechatAPI.Filters
 {
-    public class WechatRequestValidAttribute : FilterAttribute, IAuthorizationFilter
+    public class WechatRequestValidAttribute : Attribute, IAuthorizationFilter
     {
-        private static readonly ILogHelper Logger = LogHelper.GetLogHelper(typeof(WechatRequestValidAttribute));
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatRequestValidAttribute));
 
-        public void OnAuthorization(AuthorizationContext filterContext)
-        {
-            var model = new WechatMsgRequestModel
-            {
-                Nonce = filterContext.HttpContext.Request.QueryString["nonce"],
-                Signature = filterContext.HttpContext.Request.QueryString["signature"],
-                Timestamp = filterContext.HttpContext.Request.QueryString["timestamp"],
-                Msg_Signature = filterContext.HttpContext.Request.QueryString["msg_signature"]
-            };
-            //验证
-            if (!CheckSignature(model))
-            {
-                Logger.Error("微信请求签名验证不通过");
-                filterContext.Result = new ContentResult
-                {
-                    Content = "微信请求验证失败",
-                    ContentEncoding = Encoding.UTF8,
-                    ContentType = "text/html"
-                };
-            }
-        }
-
-        private bool CheckSignature(WechatMsgRequestModel model)
+        private static bool CheckSignature(WechatMsgRequestModel model)
         {
             //获取请求来的参数
             var signature = model.Signature;
@@ -49,7 +28,29 @@ namespace ActivityReservation.WechatAPI.Filters
             //对字符串进行 SHA1加密
             tempStr = SecurityHelper.SHA1_Encrypt(tempStr);
             //判断signature 是否正确
-            return tempStr.Equals(signature.ToUpper());
+            return tempStr.Equals(signature?.ToUpper());
+        }
+
+        public void OnAuthorization(AuthorizationFilterContext filterContext)
+        {
+            var model = new WechatMsgRequestModel
+            {
+                Nonce = filterContext.HttpContext.Request.Query["nonce"].FirstOrDefault(),
+                Signature = filterContext.HttpContext.Request.Query["signature"].FirstOrDefault(),
+                Timestamp = filterContext.HttpContext.Request.Query["timestamp"].FirstOrDefault(),
+                Msg_Signature = filterContext.HttpContext.Request.Query["msg_signature"].FirstOrDefault()
+            };
+            //验证
+            if (!CheckSignature(model))
+            {
+                Logger.Error("微信请求签名验证不通过");
+                filterContext.Result = new ContentResult
+                {
+                    Content = "微信请求验证失败",
+                    StatusCode = 401,
+                    ContentType = "text/html"
+                };
+            }
         }
     }
 }

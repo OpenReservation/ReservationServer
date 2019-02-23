@@ -1,15 +1,18 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web.Mvc;
-using ActivityReservation.HelperModels;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Models;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -25,7 +28,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public ActionResult Reservate()
         {
-            var places = BusinessHelper.ReservationPlaceHelper.GetAll(s => s.PlaceName, true);
+            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(r => true).OrderBy(p => p.PlaceName).ToList();
             return View(places);
         }
 
@@ -35,17 +38,17 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">预约信息实体</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult MakeReservation(ReservationViewModel model)
+        public ActionResult MakeReservation([FromBody]ReservationViewModel model)
         {
-            var result = new JsonResultModel() { Data = false, Status = JsonResultStatus.RequestError };
+            var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
             try
             {
                 if (ModelState.IsValid)
                 {
                     string msg;
-                    if (!ReservationHelper.IsReservationAvailabel(model, out msg, true))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out msg, true))
                     {
-                        result.Msg = msg;
+                        result.ErrorMsg = msg;
                         return Json(result);
                     }
 
@@ -60,7 +63,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
-                        ReservationFromIp = HttpContext.Request.UserHostAddress, //记录预约人IP地址
+                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.ToString(), //记录预约人IP地址
 
                         //管理员预约自动审核通过
                         ReservationStatus = 1,
@@ -74,12 +77,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                     {
                         reservation.ReservationPeriod += (1 << item);
                     }
-                    BusinessHelper.ReservationHelper.Add(reservation);
+                    _reservationHelper.Insert(reservation);
                     OperLogHelper.AddOperLog(
                         $"管理员 {Username} 后台预约 {reservation.ReservationId}：{reservation.ReservationActivityContent}",
                         OperLogModule.Reservation, Username);
-                    result.Data = true;
-                    result.Msg = "预约成功";
+                    result.Result = true;
                     result.Status = JsonResultStatus.Success;
                     return Json(result);
                 }
@@ -88,7 +90,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 Logger.Error(ex);
                 result.Status = JsonResultStatus.ProcessFail;
-                result.Msg = ex.Message;
+                result.ErrorMsg = ex.Message;
             }
             return Json(result);
         }
@@ -101,9 +103,8 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             Expression<Func<Reservation, bool>> whereLambda = (m =>
-                DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 &&
-                DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
-            var rowsCount = 0;
+                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
+                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
             //类别，加载全部还是只加载待审核列表
             if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
             {
@@ -115,8 +116,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 else
                 {
                     whereLambda = (m =>
-                        DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) <= 7 &&
-                        DbFunctions.DiffDays(DateTime.Today, m.ReservationForDate) >= 0);
+                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
+                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
                 }
             }
             else
@@ -128,8 +129,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
             }
             //load data
-            var list = BusinessHelper.ReservationHelper.GetReservationList(search.PageIndex, search.PageSize,
-                out rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
+            var list = _reservationHelper.GetReservationList(search.PageIndex, search.PageSize,
+                out var rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
             var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
             return View(dataList);
         }
@@ -145,13 +146,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var reservation = BusinessHelper.ReservationHelper.Fetch(r => r.ReservationId == reservationId);
+                var reservation = _reservationHelper.Fetch(r => r.ReservationId == reservationId);
                 if (reservation == null)
                 {
                     return Json(false);
                 }
                 reservation.ReservationStatus = status > 0 ? 1 : 2;
-                var count = BusinessHelper.ReservationHelper.Update(reservation, "ReservationStatus");
+                var count = _reservationHelper.Update(reservation, new[] { "ReservationStatus" });
                 if (count == 1)
                 {
                     //记录操作日志
@@ -177,12 +178,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var reservation = BusinessHelper.ReservationHelper.Fetch(r => r.ReservationId == id);
+                var reservation = _reservationHelper.Fetch(r => r.ReservationId == id);
                 if (reservation == null)
                 {
                     return Json(false);
                 }
-                var count = BusinessHelper.ReservationHelper.Delete(reservation);
+                var count = _reservationHelper.Delete(r => r.ReservationId == id);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(
@@ -196,6 +197,13 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error("删除预约记录出错", ex);
             }
             return Json(false);
+        }
+
+        private readonly IBLLReservation _reservationHelper;
+
+        public ReservationManageController(ILogger<ReservationManageController> logger, OperLogHelper operLogHelper, IBLLReservation bLLReservation) : base(logger, operLogHelper)
+        {
+            _reservationHelper = bLLReservation;
         }
     }
 }

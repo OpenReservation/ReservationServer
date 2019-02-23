@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq.Expressions;
-using System.Web.Mvc;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Log;
+using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -52,12 +54,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                     whereLambda = (l => l.LogContent.Contains(search.SearchItem2));
                 }
             }
-            var rowsCount = 0;
             try
             {
-                var logList = BusinessHelper.OperationLogHelper.GetPagedList(search.PageIndex, search.PageSize,
-                    out rowsCount, whereLambda, l => l.OperTime, false);
-                var dataList = logList.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+                var logList = operationLogHelper.Paged(search.PageIndex, search.PageSize,
+                     whereLambda, l => l.OperTime, false);
+                var dataList = logList.ToPagedList(search.PageIndex, search.PageSize, logList.TotalCount);
                 return View(dataList);
             }
             catch (Exception ex)
@@ -65,6 +66,13 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error("ex");
                 throw ex;
             }
+        }
+
+        private readonly IBLLOperationLog operationLogHelper;
+
+        public OperationLogController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper, IBLLOperationLog bLLOperationLog) : base(logger, operLogHelper)
+        {
+            operationLogHelper = bLLOperationLog;
         }
     }
 }

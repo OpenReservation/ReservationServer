@@ -1,14 +1,16 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web.Mvc;
 using ActivityReservation.AdminLogic.ViewModels;
-using ActivityReservation.HelperModels;
+using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Models;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -32,7 +34,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(int activeStatus, int pageIndex, int pageSize)
         {
-            int totalCount;
             Expression<Func<DisabledPeriod, bool>> whereLambda = (p => !p.IsDeleted);
             if (activeStatus > 0)
             {
@@ -45,10 +46,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                     whereLambda = (p => !p.IsDeleted && !p.IsActive);
                 }
             }
-            var data = BusinessHelper.DisabledPeriodHelper.GetPagedList(pageIndex, pageSize, out totalCount,
+
+            var pageList = _bllDisabledPeriod.Paged(pageIndex, pageSize,
                 whereLambda, p => p.UpdatedTime, false);
-            var pager = data.ToPagedList(pageIndex, pageSize, totalCount);
-            return View(pager);
+            var data = pageList.ToPagedList(pageIndex, pageSize, pageList.TotalCount);
+            return View(data);
         }
 
         /// <summary>
@@ -65,18 +67,17 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (!model.IsModelValid())
                 {
                     result.Status = JsonResultStatus.RequestError;
-                    result.Msg = "结束日期必须大于开始日期";
+                    result.ErrorMsg = "结束日期必须大于开始日期";
                     return Json(result);
                 }
                 else
                 {
-                    var list = BusinessHelper.DisabledPeriodHelper.GetAll(p =>
-                        !p.IsDeleted && (DbFunctions.DiffDays(model.StartDate, p.StartDate) <= 0 &&
-                                         DbFunctions.DiffDays(model.EndDate, p.EndDate) >= 0));
+                    var list = _bllDisabledPeriod.Select(p =>
+                        !p.IsDeleted && EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
                     if (list != null && list.Any())
                     {
                         result.Status = JsonResultStatus.RequestError;
-                        result.Msg = "该时间段已经被禁用，不可重复添加！";
+                        result.ErrorMsg = "该时间段已经被禁用，不可重复添加！";
                         return Json(result);
                     }
                     var period = new DisabledPeriod
@@ -89,17 +90,17 @@ namespace ActivityReservation.AdminLogic.Controllers
                         UpdatedTime = DateTime.Now,
                         UpdatedBy = Username
                     };
-                    var count = BusinessHelper.DisabledPeriodHelper.Add(period);
+                    var count = _bllDisabledPeriod.Insert(period);
                     if (count > 0)
                     {
                         result.Status = JsonResultStatus.Success;
-                        result.Data = true;
-                        result.Msg = "添加成功";
+                        result.Result = true;
+                        result.ErrorMsg = "";
                     }
                     else
                     {
                         result.Status = JsonResultStatus.ProcessFail;
-                        result.Msg = "添加失败";
+                        result.ErrorMsg = "添加失败";
                     }
                     return Json(result);
                 }
@@ -107,7 +108,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             else
             {
                 result.Status = JsonResultStatus.RequestError;
-                result.Msg = "请求参数异常";
+                result.ErrorMsg = "请求参数异常";
                 return Json(result);
             }
         }
@@ -121,31 +122,30 @@ namespace ActivityReservation.AdminLogic.Controllers
         public JsonResult UpdatePeriodStatus(Guid periodId, int status)
         {
             var result = new JsonResultModel<bool>();
-            var period = BusinessHelper.DisabledPeriodHelper.Fetch(p => p.PeriodId == periodId);
+            var period = _bllDisabledPeriod.Fetch(p => p.PeriodId == periodId);
             if (period == null)
             {
-                result.Msg = "时间段不存在，请求参数异常";
+                result.ErrorMsg = "时间段不存在，请求参数异常";
                 result.Status = JsonResultStatus.RequestError;
                 return Json(result);
             }
             if ((status > 0 && period.IsActive) || (status <= 0 && !period.IsActive))
             {
-                result.Msg = "不需要更新状态";
-                result.Data = true;
+                result.ErrorMsg = "不需要更新状态";
+                result.Result = true;
                 result.Status = JsonResultStatus.Success;
             }
             else
             {
                 period.IsActive = status > 0;
-                var count = BusinessHelper.DisabledPeriodHelper.Update(period, "IsActive");
+                var count = _bllDisabledPeriod.Update(p => p.PeriodId == periodId, p => p.IsActive, period.IsActive);
                 if (count > 0)
                 {
                     OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}",
                         OperLogModule.DisabledPeriod, Username);
 
                     result.Status = JsonResultStatus.Success;
-                    result.Data = true;
-                    result.Msg = "更新成功";
+                    result.Result = true;
                 }
             }
             return Json(result);
@@ -158,13 +158,20 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult DeletePeriod(Guid periodId)
         {
-            var count = BusinessHelper.DisabledPeriodHelper.Delete(new DisabledPeriod { PeriodId = periodId });
+            var count = _bllDisabledPeriod.Delete(p => p.PeriodId == periodId);
             if (count > 0)
             {
                 OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, Username);
                 return Json("");
             }
             return Json("删除失败");
+        }
+
+        private readonly IBLLDisabledPeriod _bllDisabledPeriod;
+
+        public DisabledPeriodController(ILogger<DisabledPeriodController> logger, OperLogHelper operLogHelper, IBLLDisabledPeriod bllDisabledPeriod) : base(logger, operLogHelper)
+        {
+            _bllDisabledPeriod = bllDisabledPeriod;
         }
     }
 }

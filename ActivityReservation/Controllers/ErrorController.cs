@@ -1,7 +1,6 @@
-﻿using System.Web.Mvc;
-using ActivityReservation.WorkContexts;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Log;
+﻿using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.Controllers
 {
@@ -11,17 +10,13 @@ namespace ActivityReservation.Controllers
         /// 404
         /// </summary>
         /// <returns></returns>
-        public ActionResult NotFound(string aspxerrorpath)
+        public ActionResult NotFound(string errorpath)
         {
             Response.StatusCode = 404;
             return View();
         }
 
-        public ErrorController() : this(LogHelper.GetLogHelper<ErrorController>())
-        {
-        }
-
-        public ErrorController(ILogHelper logger) : base(logger)
+        public ErrorController(ILogger<ErrorController> logger) : base(logger)
         {
         }
     }
