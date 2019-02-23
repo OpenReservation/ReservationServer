@@ -112,6 +112,8 @@ namespace ActivityReservation.Controllers
         [HttpPost]
         public ActionResult MakeReservation([FromBody]ReservationViewModel model)
         {
+            // TODO:现在是没有验证用户的 Geetest 相关的信息，只是一个 Ajax 验证，如果直接调用这个接口预约Geetest就相当于没用了，现在问题不大以后可能要改一下
+
             var result = new JsonResultModel();
             try
             {

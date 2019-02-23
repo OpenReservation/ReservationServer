@@ -16,7 +16,7 @@
                 <th>预约人联系方式</th>
                 <th>预约时间</th>
                 <th>审核状态</th>
-                <th>审核操作</th>
+                <th>操作</th>
             </tr>
         </thead>
         <tbody>
@@ -72,6 +72,10 @@
                         {
                             <button onclick="UpdateStatus('@item.ReservationId', 1)" class="btn btn-success">通过</button>
                             <button onclick="UpdateStatus('@item.ReservationId', -1)" class="btn btn-warning">不通过</button>
+                        }
+                        @if (item.ReservationStatus == 1)
+                        {
+                            <button class="btn btn-default" onclick="ViewReservation('@item.ReservationId', '@item.ReservationPersonPhone')">打印</button>
                         }
                     </td>
                 </tr>

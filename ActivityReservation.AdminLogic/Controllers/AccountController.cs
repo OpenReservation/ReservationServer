@@ -42,6 +42,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                 returnUrl = "/Admin/Home/Index";
             }
             ViewData["returnUrl"] = returnUrl;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                return Redirect(returnUrl);
+            }
             return View();
         }
 

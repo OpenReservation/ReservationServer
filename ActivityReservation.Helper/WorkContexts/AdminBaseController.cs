@@ -3,6 +3,7 @@ using ActivityReservation.Common;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -13,18 +14,12 @@ namespace ActivityReservation.WorkContexts
 {
     [Authorize]
     [Area("Admin")]
-    public class AdminBaseController : Controller
+    public class AdminBaseController : BaseController
     {
-        public AdminBaseController(ILogger logger, OperLogHelper operLogHelper)
+        public AdminBaseController(ILogger logger, OperLogHelper operLogHelper) : base(logger)
         {
-            Logger = logger;
             OperLogHelper = operLogHelper;
         }
-
-        /// <summary>
-        /// logger
-        /// </summary>
-        protected readonly ILogger Logger;
 
         protected readonly OperLogHelper OperLogHelper;
 
@@ -73,8 +68,8 @@ namespace ActivityReservation.WorkContexts
             {
                 return HttpContext.RequestServices.GetRequiredService<GeetestHelper>()
                     .ValidateRequest(JsonConvert.DeserializeObject<GeetestRequestModel>(recaptcha),
-                        HttpContext.Session.TryGetValue(GeetestConsts.GeetestUserId, out var bytes) ? bytes.GetString() : "",
-                    Convert.ToByte(HttpContext.Session.TryGetValue(GeetestConsts.GtServerStatusSessionKey, out var bytesVal) ? bytesVal.GetString() : "0"),
+                        HttpContext.Session.GetString(GeetestConsts.GeetestUserId) ?? "",
+                    Convert.ToByte(HttpContext.Session.GetString(GeetestConsts.GtServerStatusSessionKey) ?? "0"),
                     () => HttpContext.Session.Remove(GeetestConsts.GeetestUserId));
             }
 

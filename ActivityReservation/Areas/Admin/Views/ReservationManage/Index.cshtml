@@ -3,11 +3,17 @@
 }
 @section styles{
     <style>
-        .table > thead > tr > th { vertical-align: middle; }
+        .table > thead > tr > th {
+            vertical-align: middle;
+        }
 
-        .table > tbody > tr > td { vertical-align: middle; }
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
 
-        td > .btn { margin-bottom: 4px; }
+        td > .btn {
+            margin-bottom: 4px;
+        }
     </style>
 }
 <div class="table-wraper">
@@ -31,6 +37,10 @@
         <span class="text-info">注：默认只显示最近7天的预约，不在预约范围内的预约可以根据预约人联系方式查询</span>
     </div>
     <div class="table-body" id="div_main"></div>
+    <form id="checkForm" class="hidden" asp-area="" asp-controller="Home" asp-action="Check" method="post">
+        <input name="id" id="reId" value="" />
+        <input name="phone" id="rePhone" />
+    </form>
 </div>
 @section scripts{
     <script>
@@ -53,7 +63,7 @@
                     "SearchItem1": $("#contactPhone").val(),
                     "SearchItem2": $("input[name='statusType']:radio:checked").val()
                 },
-                success: function(data, status) {
+                success: function (data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -70,15 +80,15 @@
                 {
                     btn: ["继续", "取消"],
                     title: "确认",
-                    yes: function(index) {
+                    yes: function (index) {
                         if (reservationId && status) {
                             var td = $("#td_" + reservationId);
-                            td.children("button").each(function(index, ele) {
+                            td.children("button").each(function (index, ele) {
                                 $(ele).attr("disabled", "disabled");
                             });
                             $.post("/Admin/ReservationManage/UpdateReservationStatus",
                                 { "reservationId": reservationId, "status": status },
-                                function(data) {
+                                function (data) {
                                     if (data) {
                                         layer.msg("更新成功");
                                         loadData(pageIndex);
@@ -91,7 +101,7 @@
                         }
                         layer.close(index);
                     },
-                    cancel: function() {
+                    cancel: function () {
 
                     }
                 }
@@ -103,11 +113,11 @@
                 {
                     btn: ["继续", "取消"],
                     title: "警告",
-                    yes: function(index) {
+                    yes: function (index) {
                         if (reservationId) {
                             $.post("/Admin/ReservationManage/DeleteReservation",
                                 { "id": reservationId },
-                                function(data) {
+                                function (data) {
                                     if (data) {
                                         layer.msg("删除预约记录成功");
                                         loadData(pageIndex);
@@ -120,23 +130,28 @@
                         }
                         layer.close(index);
                     },
-                    cancel: function() {
+                    cancel: function () {
 
                     }
                 }
             );
         }
-
+        //
+        function ViewReservation(reservationId, phone) {
+            $("#reId").val(reservationId);
+            $("#rePhone").val(phone);
+            $("#checkForm").submit();
+        }
         //
         $("#btnSearch").on("click",
-            function() {
+            function () {
                 loadData();
             });
         $("input[name='statusType']:radio").on("change",
-            function() {
+            function () {
                 loadData();
             });
-        $(function() {
+        $(function () {
             loadData();
         });
     </script>
