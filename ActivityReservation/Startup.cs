@@ -1,4 +1,5 @@
 ﻿using ActivityReservation.Business;
+using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Helpers;
 using ActivityReservation.Services;
@@ -71,6 +72,12 @@ namespace ActivityReservation
                 options.CachePrefix = "ActivityReservation";
                 options.DefaultDatabase = 2;
             });
+
+            services.Configure<GeetestOptions>(Configuration.GetSection("Geetest"));
+            services.AddGeetestHelper();
+            services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
+            services.AddGoogleRecaptchaHelper();
+
             services.AddBLL();
             services.AddSingleton<OperLogHelper>();
             services.AddScoped<ReservationHelper>();
@@ -90,7 +97,9 @@ namespace ActivityReservation
                 new WeihanLi.Common.Logging.Log4Net.Log4NetLogHelperProvider(),
                 new Common.SentryLogHelperProvider(),
             });
-            loggerFactory.AddLog4Net();
+            loggerFactory
+                .AddLog4Net()
+                .AddSentry(Configuration.GetAppSetting("SentryClientKey"));
 
             if (env.IsDevelopment())
             {

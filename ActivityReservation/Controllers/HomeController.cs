@@ -268,7 +268,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public JsonResult GetGeetestValidCode()
         {
-            var helper = new GeetestHelper();
+            var helper = HttpContext.RequestServices.GetRequiredService<GeetestHelper>();
             var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
             var gtServerStatus = helper.PreProcess(userIp);
             HttpContext.Session.SetString(GeetestConsts.GeetestUserId, userIp);
@@ -282,19 +282,18 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public JsonResult ValidateGeetestCode()
         {
-            //var geetestRequest = new GeetestRequestModel
-            //{
-            //    challenge = Request[GeetestConsts.FnGeetestChallenge],
-            //    validate = Request[GeetestConsts.FnGeetestValidate],
-            //    seccode = Request[GeetestConsts.FnGeetestSeccode]
-            //};
+            var geetestRequest = new GeetestRequestModel
+            {
+                challenge = Request.Form[GeetestConsts.FnGeetestChallenge],
+                validate = Request.Form[GeetestConsts.FnGeetestValidate],
+                seccode = Request.Form[GeetestConsts.FnGeetestSeccode]
+            };
 
-            //return Json(new GeetestHelper()
-            //    .ValidateRequest(geetestRequest,
-            //        Session[GeetestConsts.GeetestUserId]?.ToString() ?? "",
-            //        Convert.ToByte(Session[GeetestConsts.GtServerStatusSessionKey]),
-            //    () => { Session.Remove(GeetestConsts.GeetestUserId); }));
-            return Json(true);
+            return Json(HttpContext.RequestServices.GetRequiredService<GeetestHelper>()
+                .ValidateRequest(geetestRequest,
+                    HttpContext.Session.GetString(GeetestConsts.GeetestUserId)?.ToString() ?? "",
+                    Convert.ToByte(HttpContext.Session.GetString(GeetestConsts.GtServerStatusSessionKey)),
+                () => { HttpContext.Session.Remove(GeetestConsts.GeetestUserId); }));
         }
 
         /// <summary>
@@ -305,7 +304,8 @@ namespace ActivityReservation.Controllers
         [HttpPost]
         public JsonResult ValidateGoogleRecaptchaResponse(string response)
         {
-            return Json(GoogleRecaptchaHelper.IsValidRequest(response));
+            var helper = HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>();
+            return Json(helper.IsValidRequest(response));
         }
     }
 }

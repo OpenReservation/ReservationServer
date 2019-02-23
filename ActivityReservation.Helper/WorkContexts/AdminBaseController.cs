@@ -4,6 +4,7 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WeihanLi.Extensions;
@@ -65,12 +66,12 @@ namespace ActivityReservation.WorkContexts
 
             if (recapchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
-                return GoogleRecaptchaHelper.IsValidRequest(recaptcha);
+                return HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>().IsValidRequest(recaptcha);
             }
 
             if (recapchaType.Equals("Geetest", StringComparison.OrdinalIgnoreCase))
             {
-                return new GeetestHelper()
+                return HttpContext.RequestServices.GetRequiredService<GeetestHelper>()
                     .ValidateRequest(JsonConvert.DeserializeObject<GeetestRequestModel>(recaptcha),
                         HttpContext.Session.TryGetValue(GeetestConsts.GeetestUserId, out var bytes) ? bytes.GetString() : "",
                     Convert.ToByte(HttpContext.Session.TryGetValue(GeetestConsts.GtServerStatusSessionKey, out var bytesVal) ? bytesVal.GetString() : "0"),

@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
+using Microsoft.Extensions.Options;
 using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.Common
 {
+    public class GeetestOptions
+    {
+        public string PublicKey { get; set; }
+        public string PrivateKey { get; set; }
+    }
+
     /// <summary>
     ///   GreatestHelper 极验帮助类
     /// </summary>
@@ -17,22 +22,18 @@ namespace ActivityReservation.Common
         private readonly string _captchaId;
         private readonly string _privateKey;
 
-        public GeetestHelper() : this(GeetestConsts.PublicKey, GeetestConsts.PrivateKey)
-        {
-        }
-
         /// <summary>
         ///   GreatestHelper 构造函数
         /// </summary>
         /// <param name="publicKey">极验验证公钥</param>
         /// <param name="privateKey">极验验证私钥</param>
-        public GeetestHelper(string publicKey, string privateKey)
+        public GeetestHelper(IOptions<GeetestOptions> option)
         {
-            _privateKey = privateKey;
-            _captchaId = publicKey;
+            _privateKey = option.Value.PrivateKey;
+            _captchaId = option.Value.PublicKey;
             Response = new GeetestResponseModel
             {
-                gt = publicKey
+                gt = option.Value.PublicKey
             };
         }
 
@@ -186,27 +187,7 @@ namespace ActivityReservation.Common
         private string postValidate(string data)
         {
             var url = $"{GeetestConsts.ApiUrl}{GeetestConsts.ValidateUrl}";
-            var request = (HttpWebRequest)WebRequest.Create(url);
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = Encoding.UTF8.GetByteCount(data);
-            // 发送数据
-            var myRequestStream = request.GetRequestStream();
-            var requestBytes = Encoding.ASCII.GetBytes(data);
-            myRequestStream.Write(requestBytes, 0, requestBytes.Length);
-            myRequestStream.Close();
-            var res = (HttpWebResponse)request.GetResponse();
-            // 读取返回信息
-            using (var myResponseStream = res.GetResponseStream())
-            {
-                if (myResponseStream != null)
-                    using (var myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8))
-                    {
-                        return myStreamReader.ReadToEnd();
-                    }
-
-                return "";
-            }
+            return HttpHelper.HttpPost(url, Encoding.ASCII.GetBytes(data), false);
         }
 
         private int DecodeRandBase(string challenge)
@@ -349,15 +330,5 @@ namespace ActivityReservation.Common
         ///   判定为机器人结果字符串
         /// </summary>
         public const string ForbiddenResult = "forbidden";
-
-        /// <summary>
-        ///   public key
-        /// </summary>
-        internal static readonly string PublicKey = ConfigurationHelper.AppSetting("GeetestPublicKey");
-
-        /// <summary>
-        ///   private key
-        /// </summary>
-        internal static readonly string PrivateKey = ConfigurationHelper.AppSetting("GeetestPrivateKey");
     }
 }
