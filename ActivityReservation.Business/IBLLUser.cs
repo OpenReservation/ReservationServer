@@ -2,7 +2,7 @@
 
 namespace ActivityReservation.Business
 {
-    public partial interface IBLLUser : IBaseBLL<User>
+    public partial interface IBLLUser
     {
         User Login(User u);
     }

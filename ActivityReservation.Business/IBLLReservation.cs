@@ -5,7 +5,7 @@ using ActivityReservation.Models;
 
 namespace ActivityReservation.Business
 {
-    public partial interface IBLLReservation : IBaseBLL<Reservation>
+    public partial interface IBLLReservation
     {
         List<Reservation> GetReservationList<Tkey, TKey1>(int pageIndex, int pageSize, out int rowsCount,
             Expression<Func<Reservation, bool>> whereLambda, Expression<Func<Reservation, Tkey>> orderBy,

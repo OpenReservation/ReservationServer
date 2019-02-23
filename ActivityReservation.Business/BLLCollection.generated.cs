@@ -2,85 +2,85 @@
 using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.Extensions.DependencyInjection;
-using WeihanLi.Common;
+using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.Business
 {
-	public partial interface IBLLUser:IBaseBLL<User>{}
+	public partial interface IBLLUser: IEFRepository<ReservationDbContext, User>{}
 
-	public partial class BLLUser : BaseBLL<User>,  IBLLUser
+	public partial class BLLUser : EFRepository<ReservationDbContext, User>,  IBLLUser
     {
         public BLLUser(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLBlockType:IBaseBLL<BlockType>{}
+	public partial interface IBLLBlockType: IEFRepository<ReservationDbContext, BlockType>{}
 
-	public partial class BLLBlockType : BaseBLL<BlockType>,  IBLLBlockType
+	public partial class BLLBlockType : EFRepository<ReservationDbContext, BlockType>,  IBLLBlockType
     {
         public BLLBlockType(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLBlockEntity:IBaseBLL<BlockEntity>{}
+	public partial interface IBLLBlockEntity: IEFRepository<ReservationDbContext, BlockEntity>{}
 
-	public partial class BLLBlockEntity : BaseBLL<BlockEntity>,  IBLLBlockEntity
+	public partial class BLLBlockEntity : EFRepository<ReservationDbContext, BlockEntity>,  IBLLBlockEntity
     {
         public BLLBlockEntity(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLOperationLog:IBaseBLL<OperationLog>{}
+	public partial interface IBLLOperationLog: IEFRepository<ReservationDbContext, OperationLog>{}
 
-	public partial class BLLOperationLog : BaseBLL<OperationLog>,  IBLLOperationLog
+	public partial class BLLOperationLog : EFRepository<ReservationDbContext, OperationLog>,  IBLLOperationLog
     {
         public BLLOperationLog(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLReservation:IBaseBLL<Reservation>{}
+	public partial interface IBLLReservation: IEFRepository<ReservationDbContext, Reservation>{}
 
-	public partial class BLLReservation : BaseBLL<Reservation>,  IBLLReservation
+	public partial class BLLReservation : EFRepository<ReservationDbContext, Reservation>,  IBLLReservation
     {
         public BLLReservation(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLReservationPlace:IBaseBLL<ReservationPlace>{}
+	public partial interface IBLLReservationPlace: IEFRepository<ReservationDbContext, ReservationPlace>{}
 
-	public partial class BLLReservationPlace : BaseBLL<ReservationPlace>,  IBLLReservationPlace
+	public partial class BLLReservationPlace : EFRepository<ReservationDbContext, ReservationPlace>,  IBLLReservationPlace
     {
         public BLLReservationPlace(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLReservationPeriod:IBaseBLL<ReservationPeriod>{}
+	public partial interface IBLLReservationPeriod: IEFRepository<ReservationDbContext, ReservationPeriod>{}
 
-	public partial class BLLReservationPeriod : BaseBLL<ReservationPeriod>,  IBLLReservationPeriod
+	public partial class BLLReservationPeriod : EFRepository<ReservationDbContext, ReservationPeriod>,  IBLLReservationPeriod
     {
         public BLLReservationPeriod(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLSystemSettings:IBaseBLL<SystemSettings>{}
+	public partial interface IBLLSystemSettings: IEFRepository<ReservationDbContext, SystemSettings>{}
 
-	public partial class BLLSystemSettings : BaseBLL<SystemSettings>,  IBLLSystemSettings
+	public partial class BLLSystemSettings : EFRepository<ReservationDbContext, SystemSettings>,  IBLLSystemSettings
     {
         public BLLSystemSettings(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLNotice:IBaseBLL<Notice>{}
+	public partial interface IBLLNotice: IEFRepository<ReservationDbContext, Notice>{}
 
-	public partial class BLLNotice : BaseBLL<Notice>,  IBLLNotice
+	public partial class BLLNotice : EFRepository<ReservationDbContext, Notice>,  IBLLNotice
     {
         public BLLNotice(ReservationDbContext dbContext) : base(dbContext)
         {
         }
     }
-	public partial interface IBLLDisabledPeriod:IBaseBLL<DisabledPeriod>{}
+	public partial interface IBLLDisabledPeriod: IEFRepository<ReservationDbContext, DisabledPeriod>{}
 
-	public partial class BLLDisabledPeriod : BaseBLL<DisabledPeriod>,  IBLLDisabledPeriod
+	public partial class BLLDisabledPeriod : EFRepository<ReservationDbContext, DisabledPeriod>,  IBLLDisabledPeriod
     {
         public BLLDisabledPeriod(ReservationDbContext dbContext) : base(dbContext)
         {
