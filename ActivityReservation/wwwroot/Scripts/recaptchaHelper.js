@@ -1,6 +1,6 @@
 ﻿var recaptchaHelper = {
     _recaptchaStyles: '<style>.recaptcha{margin: 0.4em auto;}</style>',
-    _googleRecaptchaUrl: 'https://www.google.com/recaptcha/api.js',
+    _googleRecaptchaUrl: 'https://recaptcha.google.cn/recaptcha/api.js',
     _geetestRecaptchaUrl: 'https://static.geetest.com/static/tools/gt.js',
     _loadScript: function (url, onSuccess, onError) {
         var script = document.createElement('script');
