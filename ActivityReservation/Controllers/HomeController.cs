@@ -68,7 +68,10 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult Reservate()
         {
-            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(s => s.IsDel == false && s.IsActive).OrderBy(_ => _.PlaceIndex).ToList();
+            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
+                .Select(s => s.IsDel == false && s.IsActive)
+                .OrderBy(_ => _.PlaceIndex)
+                .ToList();
             return View(places);
         }
 
@@ -192,6 +195,8 @@ namespace ActivityReservation.Controllers
             {
                 return Content("请求异常，或者手机号输入有误");
             }
+            r.Place = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
+                .Fetch(p => p.PlaceId == r.ReservationPlaceId);
             return View(r);
         }
 
