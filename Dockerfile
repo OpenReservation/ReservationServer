@@ -14,7 +14,7 @@ RUN dotnet restore ActivityReservation/ActivityReservation.csproj
 
 # copy everything and build
 COPY . .
-RUN dotnet publish ActivityReservation/ActivityReservation.csproj -c Release -o out --no-restore
+RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csproj
 
 # build runtime image
 FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine
