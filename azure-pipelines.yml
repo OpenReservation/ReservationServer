@@ -7,14 +7,18 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
-  imageName: '$(dockerId)/activityreservation'
+  tagName: 'latest'
+  imageName: '$(dockerId)/activityreservation:$(tagName)'
 
 steps:
 
+- script: docker build -f Dockerfile -t $(imageName) .
+  displayName: 'Docker build Script'
+
 - script: |
-    docker build -f Dockerfile -t $(imageName) .
     docker login -u $(dockerId) -p $(pswd)
     docker push $(imageName)
+  displayName: 'Push docker image'
 
 - task: SSH@0
   displayName: 'Run shell inline on remote machine'
@@ -46,7 +50,7 @@ steps:
      fi
      
      
-     docker pull $(imageName):latest >> /dev/null 2>&1
+     docker pull $(imageName) >> /dev/null 2>&1
      rc=$?
      if [[ $rc != 0 ]];
      then
@@ -54,7 +58,7 @@ steps:
       exit $rc;
      fi
      
-     docker run -d -p 7010:80 --name activityreservation --link redis:redis-server $(imageName):latest >> /dev/null 2>&1
+     docker run -d -p 7010:80 --name activityreservation --link redis:redis-server $(imageName) >> /dev/null 2>&1
      rc=$?
      if [[ $rc != 0 ]];
      then
