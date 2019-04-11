@@ -182,17 +182,6 @@
                 });
         }
 
-        // reload configuration
-        $("#btnReloadCoonfig").on("click", function () {
-            $.post("ReloadConfiguration", function (status, data) {
-                if (status == 200) {
-                    layer.msg("updated");
-                } else {
-                    layer.msg("failed to reload");
-                }
-            });
-        });
-
         //搜索
         $("#btnSearch").on("click",
             function () {

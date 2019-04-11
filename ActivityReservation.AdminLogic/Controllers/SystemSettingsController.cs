@@ -119,11 +119,11 @@ namespace ActivityReservation.AdminLogic.Controllers
         public IActionResult ReloadConfiguration()
         {
             var configurationRoot = HttpContext.RequestServices.GetService<IConfiguration>() as IConfigurationRoot;
-            if (null != configurationRoot)
+            if (null == configurationRoot)
             {
                 return BadRequest();
             }
-            configurationRoot?.Reload();
+            configurationRoot.Reload();
             return Ok();
         }
     }
