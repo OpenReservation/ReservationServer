@@ -16,8 +16,8 @@
         
         // reload configuration
         $("#btnReloadConfig").on("click", function () {
-            $.post("/Admin/SystemSettings/ReloadConfiguration", function (status, data) {
-                if (status == 200) {
+            $.post("/Admin/SystemSettings/ReloadConfiguration", function (data,textStatus, xhr) {
+                if (xhr.status == 200) {
                     layer.msg("updated");
                 } else {
                     layer.msg("failed to reload");
