@@ -42,7 +42,7 @@
                     "pageSize": pageSize,
                     "placeName": $("#placeName").val()
                 },
-                success: function(data, status) {
+                success: function (data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -55,7 +55,7 @@
 
         //add place
         $("#btnAdd").on("click",
-            function() {
+            function () {
                 $("#inputPlaceName").val('');
                 $("#btnAdd").attr("disabled", "disabled");
                 layer.open({
@@ -63,7 +63,7 @@
                     title: "添加活动室",
                     btn: ["添加", "取消"],
                     content: $("#editPlace"),
-                    yes: function(index) {
+                    yes: function (index) {
                         var placeName = $("#inputPlaceName").val();
                         if (!placeName) {
                             layer.msg("活动室名称不能为空");
@@ -71,7 +71,7 @@
                         }
                         $.post("/Admin/ReservationPlace/AddPlace",
                             { "placeName": placeName },
-                            function(data) {
+                            function (data) {
                                 if (!data) {
                                     loadData();
                                     $("#btnAdd").removeAttr("disabled");
@@ -81,11 +81,11 @@
                                 }
                             });
                     },
-                    btn2: function(index) {
+                    btn2: function (index) {
                         $("#btnAdd").removeAttr("disabled");
                         layer.close(index);
                     },
-                    cancel: function() {
+                    cancel: function () {
                         $("#btnAdd").removeAttr("disabled");
                     }
                 });
@@ -102,7 +102,7 @@
                 title: "编辑活动室名称",
                 btn: ["更新", "取消"],
                 content: $("#editPlace"),
-                yes: function(index) {
+                yes: function (index) {
                     var newPlaceName = $("#inputPlaceName").val();
                     if (!newPlaceName) {
                         layer.msg('活动室名称不能为空');
@@ -110,7 +110,7 @@
                     }
                     $.post("/Admin/ReservationPlace/UpdatePlaceName",
                         { "placeId": placeId, "beforeName": placeName, "newName": newPlaceName },
-                        function(data) {
+                        function (data) {
                             if (!data) {
                                 loadData(pageIndex);
                                 $(obj).removeAttr("disabled");
@@ -120,11 +120,11 @@
                             }
                         });
                 },
-                btn2: function(index) {
+                btn2: function (index) {
                     $(obj).removeAttr("disabled");
                     layer.close(index);
                 },
-                cancel: function(index) {
+                cancel: function (index) {
                     $(obj).removeAttr("disabled");
                     layer.close(index);
                 }
@@ -139,10 +139,10 @@
                 {
                     title: "警告"
                 },
-                function(index) {
+                function (index) {
                     $.post("/Admin/ReservationPlace/DeletePlace",
                         { "placeId": placeId, "placeName": placeName },
-                        function(data) {
+                        function (data) {
                             if (!data) {
                                 loadData(pageIndex);
                                 $(obj).removeAttr("disabled");
@@ -152,7 +152,7 @@
                             }
                         });
                 },
-                function(index) {
+                function (index) {
                     $(obj).removeAttr("disabled");
                     layer.close(index);
                 });
@@ -164,10 +164,10 @@
             var oper = (parseInt(status) > 0 ? "启用" : "禁用");
             layer.confirm("将要 " + oper + " 活动室【" + placeName + "】，是否继续？",
                 { title: "警告" },
-                function(index) {
+                function (index) {
                     $.post("/Admin/ReservationPlace/UpdatePlaceStatus",
                         { "placeId": placeId, "placeName": placeName, "status": status },
-                        function(data) {
+                        function (data) {
                             if (!data) {
                                 loadData(pageIndex);
                                 $(obj).removeAttr("disabled");
@@ -177,17 +177,28 @@
                             }
                         });
                 },
-                function() {
+                function () {
                     $(obj).removeAttr("disabled");
                 });
         }
 
+        // reload configuration
+        $("#btnReloadCoonfig").on("click", function () {
+            $.post("ReloadConfiguration", function (status, data) {
+                if (status == 200) {
+                    layer.msg("updated");
+                } else {
+                    layer.msg("failed to reload");
+                }
+            });
+        });
+
         //搜索
         $("#btnSearch").on("click",
-            function() {
+            function () {
                 loadData();
             });
-        $(function() {
+        $(function () {
             loadData();
         });
     </script>

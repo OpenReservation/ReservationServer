@@ -6,6 +6,8 @@ using ActivityReservation.Models;
 using ActivityReservation.Services;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
@@ -22,7 +24,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBLLSystemSettings _systemSettingHelper;
 
-        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper, IApplicationSettingService applicationSettingService, IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
+        public SystemSettingsController(ILogger<SystemSettingsController> logger,
+            OperLogHelper operLogHelper,
+            IApplicationSettingService applicationSettingService,
+            IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
         {
             _applicationSettingService = applicationSettingService;
             _systemSettingHelper = bLLSystemSettings;
@@ -105,6 +110,21 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error(ex);
             }
             return Json(false);
+        }
+
+        /// <summary>
+        /// 重新加载系统配置
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult ReloadConfiguration()
+        {
+            var configurationRoot = HttpContext.RequestServices.GetService<IConfiguration>() as IConfigurationRoot;
+            if (null != configurationRoot)
+            {
+                return BadRequest();
+            }
+            configurationRoot?.Reload();
+            return Ok();
         }
     }
 }

@@ -51,7 +51,7 @@ namespace ActivityReservation.WorkContexts
         protected bool ValidateValidCode(string recapchaType, string recaptcha)
         {
 #if DEBUG
-            return true;
+            recapchaType = "None";
 #endif
 
             if (recapchaType.Equals("None", StringComparison.OrdinalIgnoreCase))

@@ -4,13 +4,16 @@
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">系统设置管理</h3>
+        <div class="form-inline" style="margin: 0.6em 0">
+            <button asp-access id="btnReloadConfig" type="button" class="btn btn-success">Reload Configuration</button>
+        </div>
     </div>
     <div class="table-body" id="div_main"></div>
 </div>
 @section scripts{
     <script>
         var pageSize = 10, pageIndex = 1;
-
+        $("#")
         //加载数据
         function loadData(pIndex) {
             if (!pIndex) {
