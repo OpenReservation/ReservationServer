@@ -47,6 +47,8 @@ namespace ActivityReservation
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             // TODO: DataProtection persist in redis
+            services.AddDataProtection()
+                ;
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
