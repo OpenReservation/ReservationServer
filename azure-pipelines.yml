@@ -22,4 +22,4 @@ steps:
     runOptions: inline
 
     inline: |
-      kubectl set image deployment/activityreservation-deployment activityreservation=$(imageName)
+      kubectl set image deployment/activityreservation activityreservation=$(imageName)
