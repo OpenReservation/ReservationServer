@@ -24,12 +24,12 @@ spec:
     spec:
       containers:
         - name: activityreservation
-          image: weihanli/activityreservation:latest
+          image: weihanli/activityreservation:20190412.6
           imagePullPolicy: IfNotPresent
           resources:
             limits:
               memory: "128Mi"
-              cpu: "500m"
+              cpu: "300m"
           readinessProbe:
             tcpSocket:
               port: 80
