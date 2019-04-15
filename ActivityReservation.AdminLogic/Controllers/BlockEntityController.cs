@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using ActivityReservation.Business;
 using ActivityReservation.Helpers;
@@ -20,7 +21,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
-            return View();
+            return View(HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true));
         }
 
         public JsonResult BlockTypes()
@@ -60,6 +61,19 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 var blockList = _blockEntityHelper.Paged(search.PageIndex, search.PageSize, whereLambda, b => b.BlockTime, false);
+                if (blockList.Data == null)
+                {
+                    blockList.Data = new BlockEntity[0];
+                }
+
+                if (blockList.Data.Count > 0)
+                {
+                    var blockTypes = HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true);
+                    foreach (var entity in blockList)
+                    {
+                        entity.BlockType = blockTypes.FirstOrDefault(_ => _.TypeId == entity.BlockTypeId);
+                    }
+                }
                 var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, blockList.TotalCount);
                 return View(dataList);
             }
