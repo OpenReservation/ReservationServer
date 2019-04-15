@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activityreservation-deployment
+  labels:
+    app: activityreservation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: activityreservation
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+
+  template:
+    metadata:
+      labels:
+        app: activityreservation
+    
+    spec:
+      containers:
+        - name: activityreservation
+          image: weihanli/activityreservation:20190412.6
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "300m"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 120
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /Health
+              port: 80
+            initialDelaySeconds: 120
+            periodSeconds: 60
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: activityreservation
+spec:
+  selector:
+    app: activityreservation
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31220
+  type: NodePort

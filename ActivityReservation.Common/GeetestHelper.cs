@@ -23,10 +23,8 @@ namespace ActivityReservation.Common
         private readonly string _privateKey;
 
         /// <summary>
-        ///   GreatestHelper 构造函数
+        ///   GeetestHelper 构造函数
         /// </summary>
-        /// <param name="publicKey">极验验证公钥</param>
-        /// <param name="privateKey">极验验证私钥</param>
         public GeetestHelper(IOptions<GeetestOptions> option)
         {
             _privateKey = option.Value.PrivateKey;

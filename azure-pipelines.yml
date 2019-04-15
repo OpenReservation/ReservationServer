@@ -2,7 +2,7 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
-  tagName: 'latest'
+  tagName: '$(Build.BuildNumber)'
   imageName: '$(dockerId)/activityreservation:$(tagName)'
 
 steps:
@@ -22,52 +22,4 @@ steps:
     runOptions: inline
 
     inline: |
-     containers=$(docker ps -q --filter name=activityreservation)
-     if test -n "$containers"; then
-      docker stop $(docker ps -q --filter name=activityreservation) >> /dev/null 2>&1
-      rc=$?
-      if [[ $rc != 0 ]];
-      then
-       echo 'failed to stop container...'
-       exit $rc;
-      fi
-     fi
-     
-     containers1=$(docker ps -q -a --filter name=activityreservation)
-     if test -n "$containers1"; then
-      docker rm $(docker ps -q -a --filter name=activityreservation) >> /dev/null 2>&1
-      rc=$?
-      if [[ $rc != 0 ]];
-      then
-       echo 'failed to remove container...'
-       exit $rc;
-      fi
-     fi
-     
-     
-     docker pull $(imageName) >> /dev/null 2>&1
-     rc=$?
-     if [[ $rc != 0 ]];
-     then
-      echo 'failed to pull container...'
-      exit $rc;
-     fi
-     
-     docker run -d -p 7010:80 --name activityreservation --link redis:redis-server $(imageName) >> /dev/null 2>&1
-     rc=$?
-     if [[ $rc != 0 ]];
-     then
-      echo 'failed to run container...'
-      exit $rc;
-     fi
-     
-     danglings=$(docker images -f "dangling=true" -q)
-     if test -n "$danglings"; then
-      docker rmi $(docker images -f "dangling=true" -q) >> /dev/null 2>&1
-      rc=$?
-      if [[ $rc != 0 ]];
-      then
-       echo 'failed to remove danglings container...'
-       exit $rc;
-      fi
-     fi
+      kubectl set image deployment/activityreservation activityreservation=$(imageName)
