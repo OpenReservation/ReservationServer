@@ -8,14 +8,14 @@
     else
     {
         int offset = (Model.GroupSize) / 2, temp = 0;
-        int pageStart = Model.PageIndex - offset, pageEnd = Model.PageIndex + offset, curPage = 0;
+        int pageStart = Model.PageNumber - offset, pageEnd = Model.PageNumber + offset, curPage = 0;
         <div style="text-align: center">
             <nav>
                 <ul class="pagination">
                     @if (Model.HasPreviousPage)
                     {
                         <li>
-                            <a href='@Model.OnPageChange(Model.PageIndex - 1)' aria-label="Previous">
+                            <a href='@Model.OnPageChange(Model.PageNumber - 1)' aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
@@ -35,11 +35,11 @@
                             curPage = pageStart + i;
                             if ((curPage >= 1) && (curPage <= Model.PageCount))
                             {
-                                if (curPage == Model.PageIndex)
+                                if (curPage == Model.PageNumber)
                                 {
                                     <li class="active">
                                         <a href="javascript:void(0)">
-                                            @Model.PageIndex<span class="sr-only">(current)</span>
+                                            @Model.PageNumber<span class="sr-only">(current)</span>
                                         </a>
                                     </li>
                                 }
@@ -67,18 +67,18 @@
                             <li class="disbaled">
                                 <a href="javascript:void(0)">...<span class="sr-only">...</span></a>
                             </li>
-                            temp = Model.PageIndex - offset / 2;
+                            temp = Model.PageNumber - offset / 2;
                             curPage = temp;
                             for (var i = 0; i <= offset / 2 + 1; i++)
                             {
                                 curPage = temp + i;
                                 if ((curPage >= 1) && (curPage <= Model.PageCount))
                                 {
-                                    if (curPage == Model.PageIndex)
+                                    if (curPage == Model.PageNumber)
                                     {
                                         <li class="active">
                                             <a href="javascript:void(0)">
-                                                @Model.PageIndex<span class="sr-only">(current)</span>
+                                                @Model.PageNumber<span class="sr-only">(current)</span>
                                             </a>
                                         </li>
                                         break;
@@ -101,11 +101,11 @@
                                 curPage = pageStart + i;
                                 if ((curPage >= 1) && (curPage <= Model.PageCount))
                                 {
-                                    if (curPage == Model.PageIndex)
+                                    if (curPage == Model.PageNumber)
                                     {
                                         <li class="active">
                                             <a href="javascript:void(0)">
-                                                @Model.PageIndex<span class="sr-only">(current)</span>
+                                                @Model.PageNumber<span class="sr-only">(current)</span>
                                             </a>
                                         </li>
                                         break;
@@ -123,7 +123,7 @@
                         }
                         if (pageEnd < Model.PageCount)
                         {
-                            temp = Model.PageIndex + 1;
+                            temp = Model.PageNumber + 1;
                             curPage = temp;
                             for (var i = 0; i <= offset / 2 && curPage <= Model.PageCount; i++)
                             {
@@ -153,17 +153,17 @@
                         }
                         else
                         {
-                            curPage = Model.PageIndex;
+                            curPage = Model.PageNumber;
                             for (var i = 0; i <= offset && curPage <= Model.PageCount; i++)
                             {
                                 curPage++;
                                 if ((curPage >= 1) && (curPage <= Model.PageCount))
                                 {
-                                    if (curPage == Model.PageIndex)
+                                    if (curPage == Model.PageNumber)
                                     {
                                         <li class="active">
                                             <a href="javascript:void(0)">
-                                                @Model.PageIndex<span class="sr-only">(current)</span>
+                                                @Model.PageNumber<span class="sr-only">(current)</span>
                                             </a>
                                         </li>
                                         break;
@@ -184,7 +184,7 @@
                     @if (Model.HasNextPage)
                     {
                         <li>
-                            <a href='@Model.OnPageChange(Model.PageIndex + 1)' aria-label="Next">
+                            <a href='@Model.OnPageChange(Model.PageNumber + 1)' aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
