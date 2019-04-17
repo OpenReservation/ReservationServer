@@ -1,5 +1,7 @@
 ﻿@using ActivityReservation.Helpers
 @using ActivityReservation.Services
+@using System.Net
+@using System.Net.Sockets
 @inject IApplicationSettingService applicationSettings
 <!DOCTYPE html>
 <html lang="zh-cn">
@@ -63,7 +65,7 @@
         </div>
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - @applicationSettings.GetSettingValue("SystemTitle")</p>
+            <p>&copy; @DateTime.Now.Year - @applicationSettings.GetSettingValue("SystemTitle") &nbsp;&nbsp; HostIp: <strong>@(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault(_ => _.AddressFamily == AddressFamily.InterNetwork)) </strong></p>
         </footer>
     </div>
     <environment names="Development">
