@@ -64,7 +64,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public bool IsReservationForDateAvailable(DateTime dt, bool isAdmin, out string msg)
         {
-            var daysDiff = dt.Subtract(DateTime.Today).Days;
+            var daysDiff = dt.Subtract(DateTime.UtcNow.AddHours(8).Date).Days;// 时间转换
             if (daysDiff < 0)
             {
                 msg = "预约日期不可预约";
