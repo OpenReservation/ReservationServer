@@ -28,7 +28,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public ActionResult Reservate()
         {
-            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(r => true).OrderBy(p => p.PlaceName).ToList();
+            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(r => r.IsActive && !r.IsDel).OrderBy(p => p.PlaceName).ToList();
             return View(places);
         }
 
