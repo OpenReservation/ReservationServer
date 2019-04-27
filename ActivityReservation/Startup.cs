@@ -46,6 +46,7 @@ namespace ActivityReservation
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 })
+                .AddXmlSerializerFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             // DataProtection persist in redis
