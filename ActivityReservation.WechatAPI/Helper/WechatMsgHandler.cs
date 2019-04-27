@@ -61,7 +61,7 @@ namespace ActivityReservation.WechatAPI.Helper
             }
             catch (Exception ex)
             {
-                Logger.Error("发生异常，异常信息：" + ex.Message + ex.StackTrace);
+                Logger.Error(ex, "发生异常，异常信息：" + ex.Message);
             }
             return responseContent;
         }
@@ -86,7 +86,7 @@ namespace ActivityReservation.WechatAPI.Helper
                     DateTime.Now.Ticks,
                     String.IsNullOrEmpty(reply) ? "Sorry,I can not follow you." : reply);
             }
-            Logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
+            //Logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 
@@ -130,7 +130,7 @@ namespace ActivityReservation.WechatAPI.Helper
                     DateTime.Now.Ticks,
                     reply);
             }
-            Logger.Info("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
+            //Logger.Info("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 

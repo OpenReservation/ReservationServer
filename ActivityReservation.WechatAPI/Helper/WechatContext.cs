@@ -1,5 +1,4 @@
 ﻿using ActivityReservation.WechatAPI.Model;
-using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
@@ -18,10 +17,10 @@ namespace ActivityReservation.WechatAPI.Helper
 
         public WechatContext(WechatMsgRequestModel request)
         {
-            Logger.Debug("微信服务器消息：" + JsonConvert.SerializeObject(request));
+            Logger.Log(LogHelperLevel.Debug, "微信服务器消息：" + request.ToJson(), null);
             _securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
             _requestMessage = _securityHelper.DecryptMsg(request.RequestContent);
-            Logger.Debug("收到微信消息：" + _requestMessage);
+            Logger.Log(LogHelperLevel.Debug, "收到微信消息：" + _requestMessage, null);
         }
 
         public string GetResponse()
@@ -29,7 +28,7 @@ namespace ActivityReservation.WechatAPI.Helper
             var responseMessage = WechatMsgHandler.ReturnMessage(_requestMessage);
             if (responseMessage.IsNotNullOrEmpty())
             {
-                Logger.Debug("返回消息：" + responseMessage);
+                Logger.Log(LogHelperLevel.Debug, "返回消息：" + responseMessage, null);
                 return _securityHelper.EncryptMsg(responseMessage);
             }
             return string.Empty;
