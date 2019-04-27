@@ -6,6 +6,7 @@ metadata:
     app: activityreservation
 spec:
   replicas: 2
+  revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
   selector:
     matchLabels:
       app: activityreservation
