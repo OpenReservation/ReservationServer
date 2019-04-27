@@ -47,7 +47,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         [ActionName("Index")]
         public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
         {
-            Logger.Info($"request msg: {model.ToJson()}");
+            Logger.LogInformation("request msg:" + model.ToJson());
             using (var ms = new MemoryStream())
             {
                 await Request.Body.CopyToAsync(ms);
@@ -55,7 +55,6 @@ namespace ActivityReservation.WechatAPI.Controllers
 
                 using (var reader = new StreamReader(ms))
                 {
-                    Logger.Debug($"Request Length:{Request.Body.Length}");
                     model.RequestContent = await reader.ReadToEndAsync();
                     Logger.Debug($"RequestContent from Request.Body:{model.RequestContent}");
                 }
