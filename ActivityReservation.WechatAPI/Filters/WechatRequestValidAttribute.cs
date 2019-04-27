@@ -48,7 +48,7 @@ namespace ActivityReservation.WechatAPI.Filters
                 {
                     Content = "微信请求验证失败",
                     StatusCode = 401,
-                    ContentType = "text/html"
+                    ContentType = "text/plain;charset=utf-8",
                 };
             }
         }

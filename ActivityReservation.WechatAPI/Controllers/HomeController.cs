@@ -19,7 +19,7 @@ namespace ActivityReservation.WechatAPI.Controllers
 
         [HttpGet]
         [ActionName("Index")]
-        public void Get(WechatMsgRequestModel model)
+        public void Get([FromQuery]WechatMsgRequestModel model)
         {
             if (ModelState.IsValid)
             {

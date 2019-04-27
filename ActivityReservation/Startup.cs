@@ -48,7 +48,7 @@ namespace ActivityReservation
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-            // TODO: DataProtection persist in redis
+            // DataProtection persist in redis
             services.AddDataProtection()
                 .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
                 ;
@@ -102,7 +102,7 @@ namespace ActivityReservation
         {
             LogHelper.AddLogProvider(new ILogHelperProvider[] {
                 new WeihanLi.Common.Logging.Log4Net.Log4NetLogHelperProvider(),
-                new Common.SentryLogHelperProvider(),
+                new Common.SentryLogHelperProvider(Configuration.GetAppSetting("SentryClientKey")),
             });
             loggerFactory
                 .AddLog4Net()

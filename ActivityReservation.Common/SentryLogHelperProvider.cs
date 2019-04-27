@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using SharpRaven;
 using SharpRaven.Data;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
 
@@ -13,9 +12,19 @@ namespace ActivityReservation.Common
     /// </summary>
     public class SentryLogHelperProvider : ILogHelperProvider
     {
+        /// <summary>
+        /// client
+        /// </summary>
+        private readonly RavenClient _client;
+
+        public SentryLogHelperProvider(string sentryKey)
+        {
+            _client = new RavenClient(sentryKey);
+        }
+
         private readonly ConcurrentDictionary<int, SentryLogHelperLogger> _logHelpers = new ConcurrentDictionary<int, SentryLogHelperLogger>();
 
-        public ILogHelperLogger CreateLogger(string categoryName) => _logHelpers.GetOrAdd(1, k => new SentryLogHelperLogger());
+        public ILogHelperLogger CreateLogger(string categoryName) => _logHelpers.GetOrAdd(1, k => new SentryLogHelperLogger(_client));
     }
 
     internal class SentryLogHelperLogger : ILogHelperLogger
@@ -23,13 +32,9 @@ namespace ActivityReservation.Common
         /// <summary>
         /// client
         /// </summary>
-        private static readonly RavenClient SentryClient;
+        private readonly RavenClient SentryClient;
 
-        static SentryLogHelperLogger()
-        {
-            SentryClient =
-                new RavenClient(ConfigurationHelper.AppSetting("SentryClientKey"));
-        }
+        public SentryLogHelperLogger(RavenClient client) => SentryClient = client;
 
         public void Log(LogHelperLevel loggerLevel, string message, Exception exception)
         {
