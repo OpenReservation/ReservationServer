@@ -45,7 +45,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromForm]WechatMsgRequestModel model)
+        public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
         {
             Logger.Info($"request msg: {model.ToJson()}");
             using (var ms = new MemoryStream())
