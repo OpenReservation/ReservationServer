@@ -51,11 +51,12 @@ namespace ActivityReservation.WechatAPI.Controllers
             using (var ms = new MemoryStream())
             {
                 await Request.Body.CopyToAsync(ms);
+                ms.Seek(0, SeekOrigin.Begin);
 
-                using (var reader = new StreamReader(ms))
+                using (var reader = new StreamReader(ms, System.Text.Encoding.UTF8))
                 {
                     model.RequestContent = await reader.ReadToEndAsync();
-                    Logger.Debug($"RequestContent from Request.Body:{model.RequestContent}");
+                    Logger.LogDebug("RequestContent from Request:" + model.RequestContent);
                 }
             }
             if (string.IsNullOrEmpty(model.RequestContent))
