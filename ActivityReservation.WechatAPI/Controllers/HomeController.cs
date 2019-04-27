@@ -45,13 +45,20 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult Post([FromForm]WechatMsgRequestModel model)
+        public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromForm]WechatMsgRequestModel model)
         {
-            using (var reader = new StreamReader(Request.Body))
+            Logger.Info($"request msg: {model.ToJson()}");
+            using (var ms = new MemoryStream())
             {
-                Logger.Debug($"Request Length:{Request.Body.Length}");
-                model.RequestContent = reader.ReadToEnd();
-                Logger.Debug($"RequestContent from Request.Body:{model.RequestContent}");
+                await Request.Body.CopyToAsync(ms);
+                Request.Body.Seek(0, SeekOrigin.Begin);
+
+                using (var reader = new StreamReader(ms))
+                {
+                    Logger.Debug($"Request Length:{Request.Body.Length}");
+                    model.RequestContent = await reader.ReadToEndAsync();
+                    Logger.Debug($"RequestContent from Request.Body:{model.RequestContent}");
+                }
             }
             if (string.IsNullOrEmpty(model.RequestContent))
             {
