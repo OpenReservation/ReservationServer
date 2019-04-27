@@ -51,7 +51,6 @@ namespace ActivityReservation.WechatAPI.Controllers
             using (var ms = new MemoryStream())
             {
                 await Request.Body.CopyToAsync(ms);
-                Request.Body.Seek(0, SeekOrigin.Begin);
 
                 using (var reader = new StreamReader(ms))
                 {
