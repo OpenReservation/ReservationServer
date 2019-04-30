@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: activityreservation
-          image: weihanli/activityreservation:20190501.1
+          image: weihanli/activityreservation:20190501.2
           imagePullPolicy: IfNotPresent
           resources:
             limits:
