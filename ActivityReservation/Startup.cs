@@ -83,6 +83,7 @@ namespace ActivityReservation
 
             services.Configure<GeetestOptions>(Configuration.GetSection("Geetest"));
             services.AddGeetestHelper();
+
             services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
             services.AddGoogleRecaptchaHelper();
 
@@ -93,7 +94,7 @@ namespace ActivityReservation
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
-
+            services.AddHealthChecks();
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
@@ -108,6 +109,8 @@ namespace ActivityReservation
             loggerFactory
                 .AddLog4Net()
                 .AddSentry(Configuration.GetAppSetting("SentryClientKey"));
+
+            app.UseHealthChecks(new PathString("/health"));
 
             if (env.IsDevelopment())
             {

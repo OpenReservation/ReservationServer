@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: activityreservation-deployment
+  name: activityreservation
   labels:
     app: activityreservation
 spec:
@@ -29,18 +29,18 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "128Mi"
+              memory: "512Mi"
               cpu: "300m"
           readinessProbe:
             tcpSocket:
               port: 80
-            initialDelaySeconds: 120
+            initialDelaySeconds: 60
             periodSeconds: 30
           livenessProbe:
             httpGet:
               path: /Health
               port: 80
-            initialDelaySeconds: 120
+            initialDelaySeconds: 60
             periodSeconds: 60
           ports:
             - containerPort: 80
