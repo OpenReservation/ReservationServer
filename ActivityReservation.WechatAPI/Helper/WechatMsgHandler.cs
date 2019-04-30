@@ -15,7 +15,7 @@ namespace ActivityReservation.WechatAPI.Helper
     {
         private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatMsgHandler));
 
-        public static string ReturnMessage(string postStr)
+        public static async System.Threading.Tasks.Task<string> ReturnMessageAsync(string postStr)
         {
             var responseContent = "";
             try
@@ -27,7 +27,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 if (msgId.IsNullOrEmpty())
                 {
                     var firewall = RedisManager.GetFirewallClient($"wechatMsgFirewall-{msgId}", TimeSpan.FromSeconds(2));
-                    if (!firewall.Hit())
+                    if (!await firewall.HitAsync())
                     {
                         return string.Empty;
                     }
@@ -43,7 +43,7 @@ namespace ActivityReservation.WechatAPI.Helper
                             break;
 
                         case "text":
-                            responseContent = TextMsgHandle(xmldoc); //接受文本消息处理
+                            responseContent = await TextMsgHandleAsync(xmldoc); //接受文本消息处理
                             break;
 
                         case "image":
@@ -61,7 +61,7 @@ namespace ActivityReservation.WechatAPI.Helper
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "发生异常，异常信息：" + ex.Message);
+                Logger.Error(ex, "回复消息发生异常，异常信息：" + ex.Message);
             }
             return responseContent;
         }
@@ -110,7 +110,7 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private static string TextMsgHandle(XmlDocument xmldoc)
+        private static async System.Threading.Tasks.Task<string> TextMsgHandleAsync(XmlDocument xmldoc)
         {
             string responseContent = "", reply = "";
             var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
@@ -119,7 +119,7 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(Content.InnerText.UrlEncode());
+                reply = await ChatRobotHelper.GetBotReplyAsync(Content.InnerText.UrlEncode());
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -130,7 +130,6 @@ namespace ActivityReservation.WechatAPI.Helper
                     DateTime.Now.Ticks,
                     reply);
             }
-            //Logger.Info("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Common
 {
@@ -31,10 +32,10 @@ namespace ActivityReservation.Common
         {
             try
             {
-                var response = HttpHelper.HttpGetString(String.Format(QingyunkeRequestUrlFormat, request));
+                var response = HttpHelper.HttpGetString(string.Format(QingyunkeRequestUrlFormat, request));
                 if (!string.IsNullOrEmpty(response))
                 {
-                    var res = ConvertHelper.JsonToObject<QingyunkeResponseModel>(response);
+                    var res = response.JsonToType<QingyunkeResponseModel>();
                     if (res != null && res.Result == 0)
                     {
                         return res.Content;
@@ -57,10 +58,10 @@ namespace ActivityReservation.Common
         {
             try
             {
-                var response = await HttpHelper.HttpGetStringAsync(String.Format(QingyunkeRequestUrlFormat, request));
+                var response = await HttpHelper.HttpGetStringAsync(string.Format(QingyunkeRequestUrlFormat, request));
                 if (!string.IsNullOrEmpty(response))
                 {
-                    var res = ConvertHelper.JsonToObject<QingyunkeResponseModel>(response);
+                    var res = response.JsonToType<QingyunkeResponseModel>();
                     if (res != null && res.Result == 0)
                     {
                         return res.Content;

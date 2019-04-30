@@ -6,7 +6,6 @@ using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
@@ -63,8 +62,9 @@ namespace ActivityReservation.WechatAPI.Controllers
             {
                 return Content("RequestContent 为空");
             }
+
             var context = new WechatContext(model);
-            return Wechat(context);
+            return await WechatAsync(context);
         }
     }
 }

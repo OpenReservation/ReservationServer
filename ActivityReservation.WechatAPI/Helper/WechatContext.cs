@@ -7,9 +7,9 @@ namespace ActivityReservation.WechatAPI.Helper
 {
     public class WechatContext
     {
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatContext));
         private readonly WechatSecurityHelper _securityHelper;
         private readonly string _requestMessage;
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger<WechatContext>();
 
         public WechatContext()
         {
@@ -17,18 +17,17 @@ namespace ActivityReservation.WechatAPI.Helper
 
         public WechatContext(WechatMsgRequestModel request)
         {
-            Logger.Log(LogHelperLevel.Debug, "微信服务器消息：" + request.ToJson(), null);
             _securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
-            _requestMessage = _securityHelper.DecryptMsg(request.RequestContent);
-            Logger.Log(LogHelperLevel.Debug, "收到微信消息：" + _requestMessage, null);
+            _requestMessage = request.RequestContent;
         }
 
-        public string GetResponse()
+        public async System.Threading.Tasks.Task<string> GetResponseAsync()
         {
-            var responseMessage = WechatMsgHandler.ReturnMessage(_requestMessage);
+            var requestMessage = _securityHelper.DecryptMsg(_requestMessage);
+            var responseMessage = await WechatMsgHandler.ReturnMessageAsync(requestMessage);
             if (responseMessage.IsNotNullOrEmpty())
             {
-                Logger.Log(LogHelperLevel.Debug, "返回消息：" + responseMessage, null);
+                Logger.Debug($"request:{requestMessage}, response:{responseMessage}");
                 return _securityHelper.EncryptMsg(responseMessage);
             }
             return string.Empty;
