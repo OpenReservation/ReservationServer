@@ -7,6 +7,9 @@ variables:
 
 steps:
 
+- script: dotnet build -c Release
+  displayName: 'dotnet build'
+
 - script: docker build -f Dockerfile -t $(imageName) .
   displayName: 'Docker build Script'
 

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
-using WeihanLi.Extensions;
 
 namespace ActivityReservation.Common
 {
@@ -19,7 +18,7 @@ namespace ActivityReservation.Common
         /// <summary>
         /// GoogleRecaptchaVerifyUrl
         /// </summary>
-        private const string GoogleRecaptchaVerifyUrl = "https://www.google.com/recaptcha/api/siteverify";
+        private const string GoogleRecaptchaVerifyUrl = "https://www.google.cn/recaptcha/api/siteverify";
 
         private static readonly string GoogleRecaptchaSecret = ConfigurationHelper.AppSetting("GoogleRecaptchaSecret");
         private readonly GoogleRecaptchaOptions _recaptchaOptions;
@@ -33,11 +32,14 @@ namespace ActivityReservation.Common
 
         public bool IsValidRequest(string recaptchaResponse)
         {
-            var response = HttpHelper.HttpPost(GoogleRecaptchaVerifyUrl, new Dictionary<string, string>
-            {
-                {"response", recaptchaResponse},
-                {"secret", GoogleRecaptchaSecret }
-            }).JsonToType<GoogleRecaptchaVerifyResponse>();
+            var response =
+                new HttpRequester(GoogleRecaptchaVerifyUrl, System.Net.Http.HttpMethod.Post)
+                .WithFormParameters(new Dictionary<string, string>
+                {
+                    {"response", recaptchaResponse},
+                    {"secret", GoogleRecaptchaSecret }
+                })
+                .ExecuteForJson<GoogleRecaptchaVerifyResponse>();
             if (response.Success)
             {
                 return true;
