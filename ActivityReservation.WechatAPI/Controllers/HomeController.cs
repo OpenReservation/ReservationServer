@@ -18,7 +18,7 @@ namespace ActivityReservation.WechatAPI.Controllers
 
         [HttpGet]
         [ActionName("Index")]
-        public void Get([FromQuery]WechatMsgRequestModel model)
+        public async System.Threading.Tasks.Task GetAsync([FromQuery]WechatMsgRequestModel model)
         {
             if (ModelState.IsValid)
             {
@@ -27,8 +27,7 @@ namespace ActivityReservation.WechatAPI.Controllers
                     var echoStr = HttpContext.Request.Query["echostr"].FirstOrDefault();
                     if (!string.IsNullOrEmpty(echoStr))
                     {
-                        //将随机生成的 echostr 参数 原样输出
-                        Response.Body.Write(echoStr.GetBytes());
+                        await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
                     }
                 }
                 catch (Exception ex)
