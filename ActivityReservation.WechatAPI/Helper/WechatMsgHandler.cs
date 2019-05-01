@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using ActivityReservation.Common;
+using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
@@ -51,7 +52,7 @@ namespace ActivityReservation.WechatAPI.Helper
                             break;
 
                         case "voice":
-                            responseContent = VoiceMsgHandleAsync(xmldoc); //语音消息
+                            responseContent = await VoiceMsgHandleAsync(xmldoc); //语音消息
                             break;
 
                         default:
@@ -66,7 +67,7 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private static string VoiceMsgHandleAsync(XmlDocument xmldoc)
+        private static async System.Threading.Tasks.Task<string> VoiceMsgHandleAsync(XmlDocument xmldoc)
         {
             string responseContent = "", reply = null;
             var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
@@ -75,7 +76,8 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = ChatRobotHelper.GetBotReply(Content.InnerText.UrlEncode());
+                reply = await DependencyResolver.Current.ResolveService<ChatBotHelper>()
+                    .GetBotReplyAsync(Content.InnerText);
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -119,7 +121,8 @@ namespace ActivityReservation.WechatAPI.Helper
             if (Content != null)
             {
                 //设置回复消息
-                reply = await ChatRobotHelper.GetBotReplyAsync(Content.InnerText.UrlEncode());
+                reply = await DependencyResolver.Current.ResolveService<ChatBotHelper>()
+                    .GetBotReplyAsync(Content.InnerText);
                 if (reply == "error")
                 {
                     reply = Content.InnerText;
@@ -136,16 +139,16 @@ namespace ActivityReservation.WechatAPI.Helper
         private static string EventHandle(XmlDocument xmldoc)
         {
             var responseContent = "";
-            var Event = xmldoc.SelectSingleNode("/xml/Event");
-            var EventKey = xmldoc.SelectSingleNode("/xml/EventKey");
+            var @event = xmldoc.SelectSingleNode("/xml/Event")?.InnerText;
+            var eventKey = xmldoc.SelectSingleNode("/xml/EventKey")?.InnerText;
             var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
             var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
-            if (Event != null)
+            if (@event != null)
             {
                 //菜单单击事件
-                if (Event.InnerText.Equals("CLICK"))
+                if (@event.Equals("CLICK"))
                 {
-                    if (EventKey.InnerText.Equals("click_one")) //click_one
+                    if (eventKey == "click_one") //click_one
                     {
                         responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
@@ -153,30 +156,21 @@ namespace ActivityReservation.WechatAPI.Helper
                             DateTime.Now.Ticks,
                             "你点击的是click_one");
                     }
-                    else if (EventKey.InnerText.Equals("click_two")) //click_two
+                    else if (eventKey == "click_two") //click_two
                     {
-                        responseContent = string.Format(ReplyMessageType.MessageNewsMain,
+                        responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
                             DateTime.Now.Ticks,
-                            "2",
-                            string.Format(ReplyMessageType.MessageNewsItem, "我要寄件", "",
-                                "http://www.soso.com/orderPlace.jpg",
-                                "http://www.soso.com/") +
-                            string.Format(ReplyMessageType.MessageNewsItem, "订单管理", "",
-                                "http://www.soso.com/orderManage.jpg",
-                                "http://www.soso.com/"));
+                            $"你点击的是 {eventKey}");
                     }
-                    else if (EventKey.InnerText.Equals("click_three")) //click_three
+                    else if (eventKey == "click_three") //click_three
                     {
-                        responseContent = string.Format(ReplyMessageType.MessageNewsMain,
+                        responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
                             DateTime.Now.Ticks,
-                            "1",
-                            string.Format(ReplyMessageType.MessageNewsItem, "标题", "摘要",
-                                "http://www.soso.com/jieshao.jpg",
-                                "http://www.soso.com/"));
+                            $"你点击的是 {eventKey}");
                     }
                 }
             }

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.Common
@@ -10,7 +11,7 @@ namespace ActivityReservation.Common
     /// <summary>
     /// ChatBotHelper
     /// </summary>
-    public static class ChatRobotHelper
+    public class ChatBotHelper
     {
         /// <summary>
         /// 青云客请求地址格式，详情参见 http://api.qingyunke.com/
@@ -21,32 +22,14 @@ namespace ActivityReservation.Common
         /// <summary>
         /// logger
         /// </summary>
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(ChatRobotHelper));
+        private readonly ILogger _logger;
 
-        /// <summary>
-        /// 获取机器人回复
-        /// </summary>
-        /// <param name="request">请求</param>
-        /// <returns>回复信息</returns>
-        public static string GetBotReply(string request)
+        private readonly HttpClient _httpClient;
+
+        public ChatBotHelper(HttpClient httpClient, ILogger<ChatBotHelper> logger)
         {
-            try
-            {
-                var response = HttpHelper.HttpGetString(string.Format(QingyunkeRequestUrlFormat, request));
-                if (!string.IsNullOrEmpty(response))
-                {
-                    var res = response.JsonToType<QingyunkeResponseModel>();
-                    if (res != null && res.Result == 0)
-                    {
-                        return res.Content;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
-            return "error";
+            _httpClient = httpClient;
+            _logger = logger;
         }
 
         /// <summary>
@@ -54,50 +37,57 @@ namespace ActivityReservation.Common
         /// </summary>
         /// <param name="request">请求</param>
         /// <returns>回复信息</returns>
-        public static async Task<string> GetBotReplyAsync(string request)
+        public async Task<string> GetBotReplyAsync(string request, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (request.IsNullOrWhiteSpace())
+            {
+                return string.Empty;
+            }
             try
             {
-                var response = await HttpHelper.HttpGetStringAsync(string.Format(QingyunkeRequestUrlFormat, request));
-                if (!string.IsNullOrEmpty(response))
+                var response = await _httpClient.
+                    GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode()), cancellationToken);
+                var responseText = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(responseText))
                 {
-                    var res = response.JsonToType<QingyunkeResponseModel>();
+                    var res = responseText.JsonToType<QingyunkeResponseModel>();
                     if (res != null && res.Result == 0)
                     {
                         return res.Content;
                     }
                 }
+                return string.Empty;
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                _logger.Error(ex);
             }
             return "error";
         }
-    }
 
-    internal class QingyunkeResponseModel
-    {
-        /// <summary>
-        /// result
-        /// </summary>
-        [JsonProperty("result")]
-        public int Result { get; set; }
-
-        private string _content;
-
-        /// <summary>
-        /// content
-        /// </summary>
-        [JsonProperty("content")]
-        public string Content
+        private class QingyunkeResponseModel
         {
-            get => _content;
-            set
+            /// <summary>
+            /// result
+            /// </summary>
+            [JsonProperty("result")]
+            public int Result { get; set; }
+
+            private string _content;
+
+            /// <summary>
+            /// content
+            /// </summary>
+            [JsonProperty("content")]
+            public string Content
             {
-                if (!string.IsNullOrEmpty(value))
+                get => _content;
+                set
                 {
-                    _content = value.Replace("{br}", "\n");
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        _content = value.Replace("{br}", "\n");
+                    }
                 }
             }
         }

@@ -12,7 +12,7 @@ namespace ActivityReservation.WechatAPI.Helper
 
         public override void ExecuteResult(ActionContext context)
         {
-            context.HttpContext.Response.ContentType = "text/xml";
+            context.HttpContext.Response.ContentType = "text/xml;charset=utf-8";
             context.HttpContext.Response.Body.Write((Content ?? "").Replace("\r\n", "\n").ToByteArray());
         }
     }

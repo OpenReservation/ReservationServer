@@ -1,4 +1,5 @@
-﻿using ActivityReservation.Business;
+﻿using System;
+using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Helpers;
@@ -38,7 +39,7 @@ namespace ActivityReservation
         {
             services.AddMemoryCache();
             // services.AddDistributedRedisCache(options => options.Configuration = Configuration.GetConnectionString("Redis"));
-
+            services.AddHealthChecks();
             services.AddSession();
             services.AddMvc()
                 .AddJsonOptions(options =>
@@ -94,7 +95,17 @@ namespace ActivityReservation
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
-            services.AddHealthChecks();
+
+            services
+                .AddHttpClient<ChatBotHelper>(client =>
+                {
+                    client.Timeout = TimeSpan.FromSeconds(3);
+                })
+                .SetHandlerLifetime(TimeSpan.FromDays(1))
+                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+            ;
+            services.TryAddSingleton<ChatBotHelper>();
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
