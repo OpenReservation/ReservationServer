@@ -52,7 +52,7 @@ namespace ActivityReservation.Controllers
             //根据预约人联系方式查询
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLambda = m => m.ReservationPersonPhone.Contains(search.SearchItem1);
+                whereLambda = m => m.ReservationPersonPhone == search.SearchItem1;
             }
             //load data
             var list = _reservertionBLL.GetReservationList(search.PageIndex, search.PageSize, out var rowsCount,
