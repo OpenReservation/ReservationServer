@@ -50,10 +50,6 @@ namespace ActivityReservation.WorkContexts
 
         protected bool ValidateValidCode(string recapchaType, string recaptcha)
         {
-#if DEBUG
-            recapchaType = "None";
-#endif
-
             if (recapchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
@@ -61,7 +57,8 @@ namespace ActivityReservation.WorkContexts
 
             if (recapchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
-                return HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>().IsValidRequest(recaptcha);
+                return HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>()
+                    .IsValidRequest(recaptcha);
             }
 
             if (recapchaType.Equals("Geetest", StringComparison.OrdinalIgnoreCase))

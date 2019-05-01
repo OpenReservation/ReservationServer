@@ -233,71 +233,71 @@ namespace ActivityReservation.AdminLogic.Controllers
         public HomeController(ILogger<HomeController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
         {
         }
-    }
 
-    public class NameSorter : IComparer
-    {
-        public int Compare(object x, object y)
+        private class NameSorter : IComparer
         {
-            if (x == null && y == null)
+            public int Compare(object x, object y)
             {
-                return 0;
+                if (x == null && y == null)
+                {
+                    return 0;
+                }
+                if (x == null)
+                {
+                    return -1;
+                }
+                if (y == null)
+                {
+                    return 1;
+                }
+                var xInfo = new FileInfo(x.ToString());
+                var yInfo = new FileInfo(y.ToString());
+                return xInfo.FullName.CompareTo(yInfo.FullName);
             }
-            if (x == null)
-            {
-                return -1;
-            }
-            if (y == null)
-            {
-                return 1;
-            }
-            var xInfo = new FileInfo(x.ToString());
-            var yInfo = new FileInfo(y.ToString());
-            return xInfo.FullName.CompareTo(yInfo.FullName);
         }
-    }
 
-    public class SizeSorter : IComparer
-    {
-        public int Compare(object x, object y)
+        private class SizeSorter : IComparer
         {
-            if (x == null && y == null)
+            public int Compare(object x, object y)
             {
-                return 0;
+                if (x == null && y == null)
+                {
+                    return 0;
+                }
+                if (x == null)
+                {
+                    return -1;
+                }
+                if (y == null)
+                {
+                    return 1;
+                }
+                var xInfo = new FileInfo(x.ToString());
+                var yInfo = new FileInfo(y.ToString());
+                return xInfo.Length.CompareTo(yInfo.Length);
             }
-            if (x == null)
-            {
-                return -1;
-            }
-            if (y == null)
-            {
-                return 1;
-            }
-            var xInfo = new FileInfo(x.ToString());
-            var yInfo = new FileInfo(y.ToString());
-            return xInfo.Length.CompareTo(yInfo.Length);
         }
-    }
 
-    public class TypeSorter : IComparer
-    {
-        public int Compare(object x, object y)
+        private class TypeSorter : IComparer
         {
-            if (x == null && y == null)
+            public int Compare(object x, object y)
             {
-                return 0;
+                if (x == null && y == null)
+                {
+                    return 0;
+                }
+                if (x == null)
+                {
+                    return -1;
+                }
+                if (y == null)
+                {
+                    return 1;
+                }
+                var xInfo = new FileInfo(x.ToString());
+                var yInfo = new FileInfo(y.ToString());
+                return xInfo.Extension.CompareTo(yInfo.Extension);
             }
-            if (x == null)
-            {
-                return -1;
-            }
-            if (y == null)
-            {
-                return 1;
-            }
-            var xInfo = new FileInfo(x.ToString());
-            var yInfo = new FileInfo(y.ToString());
-            return xInfo.Extension.CompareTo(yInfo.Extension);
         }
     }
 }

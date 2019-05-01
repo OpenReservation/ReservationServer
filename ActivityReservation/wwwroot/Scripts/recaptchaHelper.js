@@ -25,14 +25,15 @@
         recaptchaHelper.recaptchaType = 'Google';
         if (location.href.indexOf('weihanli.xyz') < 1) {
             $(".btnSubmit").eq(0)
-                .before(
-                '<div class="g-recaptcha recaptcha" data-sitekey="6Lc-vz0UAAAAAG38zeZKM7_pQL5k4Z7FpnrtU_3A"></div>');
+                .before('<div class="g-recaptcha recaptcha" data-sitekey="6Lc-vz0UAAAAAG38zeZKM7_pQL5k4Z7FpnrtU_3A"></div>');
         } else {
-            $(".btnSubmit").eq(0).before('<div class="g-recaptcha recaptcha" data-sitekey="6Lc56zkUAAAAAOGHzUyKh5pCW2c7bPlNmra0R3NW"></div>');
+            $(".btnSubmit").eq(0)
+                .before('<div class="g-recaptcha recaptcha" data-sitekey="6Lc56zkUAAAAAOGHzUyKh5pCW2c7bPlNmra0R3NW"></div>');
         }
     },
     _onGoogleRecaptchaLoadError: function () {
         $("script").last().remove();
+        // GoogleRecaptcha 加载失败自动使用极验验证码
         recaptchaHelper._loadScript(recaptchaHelper._geetestRecaptchaUrl, recaptchaHelper._onGeetestRecaptchaLoadSuccess, recaptchaHelper._onGeetestRecaptchaLoadError);
     },
     _onGeetestRecaptchaLoadSuccess: function () {
@@ -77,6 +78,7 @@
         recaptchaHelper.recaptchaType = 'None';
     },
     _geetestRecaptchaResponse: '',
+
     init: function () {
         document.write(recaptchaHelper._recaptchaStyles);
         // loadGoogleRecaptcha firstly
@@ -84,7 +86,7 @@
         // load geetest only
         // recaptchaHelper._loadScript(recaptchaHelper._geetestRecaptchaUrl, recaptchaHelper._onGeetestRecaptchaLoadSuccess, recaptchaHelper._onGeetestRecaptchaLoadError);
     },
-    recaptchaType: 'None',
+    recaptchaType: 'Google',
     getRecaptchaResponse: function () {
         if (recaptchaHelper.recaptchaType === 'None')
             return 'recaptchaType none';
