@@ -87,11 +87,11 @@
         }
         var username = $("#inputUsername").val();
         var password = $("#inputPassword").val();
-        var gResponse = recaptchaHelper.getRecaptchaResponse();
-        if (!gResponse) {
-            layer.msg("请先进行人机验证");
-            return;
-        }
+        //var gResponse = recaptchaHelper.getRecaptchaResponse();
+        //if (!gResponse) {
+        //    layer.msg("请先进行人机验证");
+        //    return;
+        //}
 
         var remember = $("#rememberMe").checked;
         var returnUrl = '@ViewData["returnUrl"]';
@@ -102,8 +102,8 @@
                 "UserName": username,
                 "Password": password,
                 "RememberMe": remember,
-                "Recaptcha": gResponse,
-                'RecaptchaType': recaptchaHelper.recaptchaType
+                "Recaptcha": "123",
+                'RecaptchaType': "None"
             },
             function(data, status) {
                 if (status === "success") {

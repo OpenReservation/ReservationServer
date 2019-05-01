@@ -60,7 +60,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!ValidateValidCode(model.RecaptchaType, model.Recaptcha))
+                if (!await ValidateValidCodeAsync(model.RecaptchaType, model.Recaptcha))
                 {
                     return Json("验证码有误");
                 }

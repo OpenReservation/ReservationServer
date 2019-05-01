@@ -48,7 +48,7 @@ namespace ActivityReservation.WorkContexts
             }
         }
 
-        protected bool ValidateValidCode(string recapchaType, string recaptcha)
+        protected async System.Threading.Tasks.Task<bool> ValidateValidCodeAsync(string recapchaType, string recaptcha)
         {
             if (recapchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
             {
@@ -57,8 +57,8 @@ namespace ActivityReservation.WorkContexts
 
             if (recapchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
-                return HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>()
-                    .IsValidRequest(recaptcha);
+                return await HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>()
+                    .IsValidRequestAsync(recaptcha);
             }
 
             if (recapchaType.Equals("Geetest", StringComparison.OrdinalIgnoreCase))
