@@ -86,6 +86,10 @@ namespace ActivityReservation
             services.AddGeetestHelper();
 
             services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
+            services.AddHttpClient<GoogleRecaptchaHelper>(client =>
+                {
+                    client.Timeout = TimeSpan.FromSeconds(3);
+                });
             services.AddGoogleRecaptchaHelper();
 
             services.AddBLL();
