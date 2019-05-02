@@ -7,16 +7,18 @@ namespace ActivityReservation.Models
     [Table("tabWechatMenuConfig")]
     public class WechatMenuConfig
     {
-        [Column]
         [Key]
         public Guid ConfigId { get; set; }
 
         public Guid ParentId { get; set; }
 
+        [Required]
         public string ButtonKey { get; set; }
 
+        [Required]
         public string ButtonType { get; set; }
 
+        [Required]
         public string Remark { get; set; }
     }
 }

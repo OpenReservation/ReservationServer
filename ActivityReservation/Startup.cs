@@ -82,14 +82,14 @@ namespace ActivityReservation
                 options.DefaultDatabase = 2;
             });
 
+            services.AddHttpClient<GoogleRecaptchaHelper>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(3);
+            });
             services.Configure<GeetestOptions>(Configuration.GetSection("Geetest"));
             services.AddGeetestHelper();
 
             services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
-            services.AddHttpClient<GoogleRecaptchaHelper>(client =>
-                {
-                    client.Timeout = TimeSpan.FromSeconds(3);
-                });
             services.AddGoogleRecaptchaHelper();
 
             services.AddBLL();
@@ -100,15 +100,17 @@ namespace ActivityReservation
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
 
-            services
-                .AddHttpClient<ChatBotHelper>(client =>
+            services.AddHttpClient<ChatBotHelper>(client =>
                 {
                     client.Timeout = TimeSpan.FromSeconds(3);
                 })
                 .SetHandlerLifetime(TimeSpan.FromDays(1))
-                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler())
             ;
             services.TryAddSingleton<ChatBotHelper>();
+
+            services.AddHttpClient<WechatAPI.Helper.WechatHelper>();
+            services.TryAddSingleton<WechatAPI.Helper.WechatHelper>();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);

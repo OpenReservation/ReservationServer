@@ -15,7 +15,8 @@
         "ReservationPeriod",
 		"SystemSettings",
 		"Notice",
-        "DisabledPeriod"
+        "DisabledPeriod",
+        "WechatMenuConfig"
 	};
 #>
 using ActivityReservation.Database;

@@ -86,6 +86,14 @@ namespace ActivityReservation.Business
         {
         }
     }
+	public partial interface IBLLWechatMenuConfig: IEFRepository<ReservationDbContext, WechatMenuConfig>{}
+
+	public partial class BLLWechatMenuConfig : EFRepository<ReservationDbContext, WechatMenuConfig>,  IBLLWechatMenuConfig
+    {
+        public BLLWechatMenuConfig(ReservationDbContext dbContext) : base(dbContext)
+        {
+        }
+    }
 
     public static class BusinessExtensions
     {
@@ -101,6 +109,7 @@ namespace ActivityReservation.Business
                 services.AddScoped<IBLLSystemSettings, BLLSystemSettings>();
                 services.AddScoped<IBLLNotice, BLLNotice>();
                 services.AddScoped<IBLLDisabledPeriod, BLLDisabledPeriod>();
+                services.AddScoped<IBLLWechatMenuConfig, BLLWechatMenuConfig>();
             return services;
         }
     }
