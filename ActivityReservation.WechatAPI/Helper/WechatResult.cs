@@ -3,7 +3,7 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
-    public class WechatResult : ContentResult
+    internal class WechatResult : ContentResult
     {
         public WechatResult(string content)
         {

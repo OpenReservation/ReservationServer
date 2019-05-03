@@ -5,7 +5,7 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
-    public class WechatContext
+    internal class WechatContext
     {
         private readonly WechatSecurityHelper _securityHelper;
         private readonly string _requestMessage;
@@ -25,9 +25,9 @@ namespace ActivityReservation.WechatAPI.Helper
         {
             var requestMessage = _securityHelper.DecryptMsg(_requestMessage);
             var responseMessage = await WechatMsgHandler.ReturnMessageAsync(requestMessage);
+            Logger.Debug($"request:{requestMessage}, response:{responseMessage}");
             if (responseMessage.IsNotNullOrEmpty())
             {
-                Logger.Debug($"request:{requestMessage}, response:{responseMessage}");
                 return _securityHelper.EncryptMsg(responseMessage);
             }
             return string.Empty;

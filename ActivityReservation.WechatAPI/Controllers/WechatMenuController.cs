@@ -16,7 +16,10 @@ namespace ActivityReservation.WechatAPI.Controllers
     {
         private readonly IBLLWechatMenuConfig _bllWechatMenuConfig;
 
-        public WechatMenuController(ILogger<WechatMenuController> logger, IBLLWechatMenuConfig wechatMenuConfig, OperLogHelper operLogHelper) : base(logger, operLogHelper)
+        public WechatMenuController(
+            ILogger<WechatMenuController> logger,
+            IBLLWechatMenuConfig wechatMenuConfig,
+            OperLogHelper operLogHelper) : base(logger, operLogHelper)
         {
             _bllWechatMenuConfig = wechatMenuConfig;
         }

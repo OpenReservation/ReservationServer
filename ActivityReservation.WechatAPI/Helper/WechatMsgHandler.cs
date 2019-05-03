@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Xml;
 using ActivityReservation.Common;
 using WeihanLi.Common;
@@ -16,7 +17,7 @@ namespace ActivityReservation.WechatAPI.Helper
     {
         private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatMsgHandler));
 
-        public static async System.Threading.Tasks.Task<string> ReturnMessageAsync(string postStr)
+        public static async Task<string> ReturnMessageAsync(string postStr)
         {
             var responseContent = "";
             try
@@ -67,7 +68,7 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private static async System.Threading.Tasks.Task<string> VoiceMsgHandleAsync(XmlDocument xmldoc)
+        private static async Task<string> VoiceMsgHandleAsync(XmlDocument xmldoc)
         {
             string responseContent = "", reply = null;
             var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");
@@ -112,7 +113,7 @@ namespace ActivityReservation.WechatAPI.Helper
             return responseContent;
         }
 
-        private static async System.Threading.Tasks.Task<string> TextMsgHandleAsync(XmlDocument xmldoc)
+        private static async Task<string> TextMsgHandleAsync(XmlDocument xmldoc)
         {
             string responseContent = "", reply = "";
             var ToUserName = xmldoc.SelectSingleNode("/xml/ToUserName");

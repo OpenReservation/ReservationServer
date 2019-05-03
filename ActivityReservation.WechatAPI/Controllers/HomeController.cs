@@ -10,6 +10,9 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
+    /// <summary>
+    /// 微信入口
+    /// </summary>
     public class HomeController : WechatBaseController
     {
         public HomeController(ILogger<HomeController> logger) : base(logger)

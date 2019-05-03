@@ -18,12 +18,6 @@ namespace ActivityReservation.WechatAPI.Controllers
             return View();
         }
 
-        [HttpPost]
-        public JsonResult SaveMenuConfig()
-        {
-            return Json("");
-        }
-
         public WechatConfigController(ILogger<WechatConfigController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
         {
         }
