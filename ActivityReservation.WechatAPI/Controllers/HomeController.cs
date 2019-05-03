@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ namespace ActivityReservation.WechatAPI.Controllers
     /// <summary>
     /// 微信入口
     /// </summary>
+    [WechatRequestValid]
     public class HomeController : WechatBaseController
     {
         public HomeController(ILogger<HomeController> logger) : base(logger)

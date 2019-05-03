@@ -6,7 +6,6 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    [WechatRequestValid]
     [Area("Wechat")]
     public class WechatBaseController : Controller
     {
@@ -20,7 +19,7 @@ namespace ActivityReservation.WechatAPI.Controllers
             Logger = logger;
         }
 
-        public async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatContext wechatContext)
+        internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatContext wechatContext)
         {
             var response = await wechatContext.GetResponseAsync();
             if (response.IsNullOrEmpty())
