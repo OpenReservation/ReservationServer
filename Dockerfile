@@ -17,7 +17,7 @@ COPY . .
 RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csproj
 
 # build runtime image
-FROM microsoft/dotnet:2.2-aspnetcore-runtime
+FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/ActivityReservation/out .

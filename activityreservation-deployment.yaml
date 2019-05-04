@@ -23,6 +23,10 @@ spec:
         app: activityreservation
     
     spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
       containers:
         - name: activityreservation
           image: weihanli/activityreservation:20190501.2
