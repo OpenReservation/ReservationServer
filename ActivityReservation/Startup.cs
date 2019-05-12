@@ -2,6 +2,7 @@
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
+using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -85,7 +86,8 @@ namespace ActivityReservation
             services.AddHttpClient<GoogleRecaptchaHelper>(client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(3);
-            });
+            })
+            ;
             services.Configure<GeetestOptions>(Configuration.GetSection("Geetest"));
             services.AddGeetestHelper();
 
@@ -104,7 +106,7 @@ namespace ActivityReservation
                 {
                     client.Timeout = TimeSpan.FromSeconds(3);
                 })
-                .SetHandlerLifetime(TimeSpan.FromDays(1))
+                .SetHandlerLifetime(System.Threading.Timeout.InfiniteTimeSpan)// disable handler expiry
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler())
             ;
             services.TryAddSingleton<ChatBotHelper>();
@@ -137,8 +139,8 @@ namespace ActivityReservation
             {
                 app.UseExceptionHandler("/Error");
             }
-
             app.UseStaticFiles();
+            app.UseDependencyReslover();
             app.UseSession();
             app.UseAuthentication();
             app.UseMvc(routes =>
