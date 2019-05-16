@@ -30,17 +30,17 @@ namespace ActivityReservation.Common
             return services.AddGoogleRecaptchaHelper();
         }
 
-        public static IServiceCollection AddGeetestHelper(this IServiceCollection services)
+        public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services)
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
-            services.TryAddSingleton<GeetestHelper>();
+            services.TryAddSingleton<TencentCaptchaHelper>();
             return services;
         }
 
-        public static IServiceCollection AddGeetestHelper(this IServiceCollection services, Action<GoogleRecaptchaOptions> action)
+        public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<TencentCaptchaOptions> action)
         {
             if (services == null)
             {
@@ -51,7 +51,7 @@ namespace ActivityReservation.Common
                 throw new ArgumentNullException(nameof(action));
             }
             services.Configure(action);
-            return services.AddGeetestHelper();
+            return services.AddGoogleRecaptchaHelper();
         }
     }
 }

@@ -1,13 +1,10 @@
-﻿using System;
-using ActivityReservation.Common;
-using ActivityReservation.Helpers;
+﻿using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WorkContexts
@@ -48,29 +45,10 @@ namespace ActivityReservation.WorkContexts
             }
         }
 
-        protected async System.Threading.Tasks.Task<bool> ValidateValidCodeAsync(string recapchaType, string recaptcha)
+        protected System.Threading.Tasks.Task<bool> ValidateValidCodeAsync(string recaptchaType, string recaptcha)
         {
-            if (recapchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            if (recapchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
-            {
-                return await HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>()
-                    .IsValidRequestAsync(recaptcha);
-            }
-
-            if (recapchaType.Equals("Geetest", StringComparison.OrdinalIgnoreCase))
-            {
-                return HttpContext.RequestServices.GetRequiredService<GeetestHelper>()
-                    .ValidateRequest(JsonConvert.DeserializeObject<GeetestRequestModel>(recaptcha),
-                        HttpContext.Session.GetString(GeetestConsts.GeetestUserId) ?? "",
-                    Convert.ToByte(HttpContext.Session.GetString(GeetestConsts.GtServerStatusSessionKey) ?? "0"),
-                    () => HttpContext.Session.Remove(GeetestConsts.GeetestUserId));
-            }
-
-            return false;
+            return HttpContext.RequestServices.GetRequiredService<CaptchaVerifyHelper>()
+                .ValidateVerifyCodeAsync(recaptchaType, recaptcha);
         }
     }
 }

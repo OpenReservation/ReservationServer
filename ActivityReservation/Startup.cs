@@ -88,11 +88,16 @@ namespace ActivityReservation
                 client.Timeout = TimeSpan.FromSeconds(3);
             })
             ;
-            services.Configure<GeetestOptions>(Configuration.GetSection("Geetest"));
-            services.AddGeetestHelper();
-
             services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
             services.AddGoogleRecaptchaHelper();
+
+            services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
+                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+            services.AddTencentCaptchaHelper(options =>
+            {
+                options.AppId = Configuration["Tencent:Captcha:AppId"];
+                options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
+            });
 
             services.AddBLL();
             services.AddSingleton<OperLogHelper>();
@@ -113,6 +118,8 @@ namespace ActivityReservation
 
             services.AddHttpClient<WechatAPI.Helper.WechatHelper>();
             services.TryAddSingleton<WechatAPI.Helper.WechatHelper>();
+
+            services.TryAddSingleton<CaptchaVerifyHelper>();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);

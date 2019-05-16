@@ -279,49 +279,13 @@ namespace ActivityReservation.Controllers
         }
 
         /// <summary>
-        /// 获取Geetest验证码
+        /// 验证验证码
         /// </summary>
-        /// <returns></returns>
-        public JsonResult GetGeetestValidCode()
-        {
-            var helper = HttpContext.RequestServices.GetRequiredService<GeetestHelper>();
-            var userIp = HttpContext.Connection.RemoteIpAddress.ToString();
-            var gtServerStatus = helper.PreProcess(userIp);
-            HttpContext.Session.SetString(GeetestConsts.GeetestUserId, userIp);
-            HttpContext.Session.SetString(GeetestConsts.GtServerStatusSessionKey, gtServerStatus.ToString());
-            return Json(helper.Response);
-        }
-
-        /// <summary>
-        /// 验证Geetest验证码
-        /// </summary>
-        /// <returns></returns>
-        public JsonResult ValidateGeetestCode()
-        {
-            var geetestRequest = new GeetestRequestModel
-            {
-                challenge = Request.Form[GeetestConsts.FnGeetestChallenge],
-                validate = Request.Form[GeetestConsts.FnGeetestValidate],
-                seccode = Request.Form[GeetestConsts.FnGeetestSeccode]
-            };
-
-            return Json(HttpContext.RequestServices.GetRequiredService<GeetestHelper>()
-                .ValidateRequest(geetestRequest,
-                    HttpContext.Session.GetString(GeetestConsts.GeetestUserId)?.ToString() ?? "",
-                    Convert.ToByte(HttpContext.Session.GetString(GeetestConsts.GtServerStatusSessionKey)),
-                () => { HttpContext.Session.Remove(GeetestConsts.GeetestUserId); }));
-        }
-
-        /// <summary>
-        /// 验证谷歌验证码
-        /// </summary>
-        /// <param name="response">response</param>
-        /// <returns></returns>
         [HttpPost]
-        public JsonResult ValidateGoogleRecaptchaResponse(string response)
+        public JsonResult ValidateCaptcha(string recaptchaType, string recaptcha)
         {
-            var helper = HttpContext.RequestServices.GetRequiredService<GoogleRecaptchaHelper>();
-            return Json(helper.IsValidRequest(response));
+            var helper = HttpContext.RequestServices.GetRequiredService<CaptchaVerifyHelper>();
+            return Json(helper.ValidateVerifyCodeAsync(recaptchaType, recaptcha));
         }
     }
 }
