@@ -182,7 +182,7 @@
                     };
                     $scope.tencentRecaptcha = new TencentCaptcha(
                         document.getElementById('TencentCaptcha1'),
-                        '@(configuration[" Tencent:Captcha:AppId"])',
+                        '@(configuration["Tencent:Captcha:AppId"])',
                         function(res) {
                             $scope.isCodeValid = false;
 
@@ -224,14 +224,21 @@
                     $scope.ReservationPeriods = [];
                     //submit
                     $scope.submitForm = function () {
-                        if(!$scope.isCodeValid){                            
+                        if(!$scope.isCodeValid){
                             $scope.tencentRecaptcha.show(); // show tencent captcha
                             return;
                         }
                         $scope.isSubmit = true;
-                        $http.post("/Home/MakeReservation", $scope.reservationModel)
+                        var loading = layer.load(2);
+                        $http.post("/Home/MakeReservation", $scope.reservationModel, {
+                            headers: {
+                                "captchaType": "Tencent",
+                                "captcha": JSON.stringify($scope.tCode)
+                            }
+                        })
                             .success(function(response) {
                                 //console.log(response);
+                                layer.close(loading);
                                 if (response.Status == 200) {
                                     layer.msg('预约成功！');
                                     location.href = "/";
@@ -240,7 +247,8 @@
                                     $scope.isSubmit = false;
                                 }
                             })
-                            .error(function(response) {
+                            .error(function (response) {
+                                layer.close(loading);
                                 layer.msg('预约失败，请稍后重试！');
                                 $scope.isSubmit = false;
                             });
@@ -270,7 +278,7 @@
                                 $scope.reservationModel.ReservationPlaceName =
                                     $("input[name='place']:radio:checked").parent().text().trim();
                                 //请求服务器端接口，判断可用预约时间段
-                                var loading;
+                                var loading= layer.load(2);
                                 $.ajax({
                                     url: "/Home/GetAvailablePeriods",
                                     data: {
@@ -280,10 +288,10 @@
                                     type: "post",
                                     async: false,
                                     success: function(response) {
-                                        layer.close(loading);
                                         if (response) {
                                             $scope.ReservationPeriods = response;
                                         }
+                                        layer.close(loading);
                                     },
                                     beforeSend: function() {
                                         loading = layer.load(2);

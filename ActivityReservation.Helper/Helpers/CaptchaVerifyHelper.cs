@@ -1,6 +1,9 @@
 ﻿using System;
 using ActivityReservation.Common;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using WeihanLi.Common;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Helpers
 {
@@ -16,19 +19,24 @@ namespace ActivityReservation.Helpers
             _tencentCaptchaHelper = tencentCaptchaHelper;
         }
 
-        public async System.Threading.Tasks.Task<bool> ValidateVerifyCodeAsync(string recaptchaType, string recaptcha)
+        public async System.Threading.Tasks.Task<bool> ValidateVerifyCodeAsync(string captchaType, string captchaInfo)
         {
-            if (recaptchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
+            if (captchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
-            if (recaptchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
+            if (captchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
-                return await _googleRecaptchaHelper.IsValidRequestAsync(recaptcha);
+                return await _googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
             }
-            if (recaptchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
+            if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
             {
-                return await _tencentCaptchaHelper.IsValidRequestAsync(JsonConvert.DeserializeObject<TencentCaptchaRequest>(recaptcha));
+                var request = JsonConvert.DeserializeObject<TencentCaptchaRequest>(captchaInfo);
+                if (request.UserIP.IsNullOrWhiteSpace())
+                {
+                    request.UserIP = DependencyResolver.Current.ResolveService<IHttpContextAccessor>().HttpContext.Connection.RemoteIpAddress.ToString();
+                }
+                return await _tencentCaptchaHelper.IsValidRequestAsync(request);
             }
 
             return false;

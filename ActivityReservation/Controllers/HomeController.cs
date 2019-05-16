@@ -112,11 +112,20 @@ namespace ActivityReservation.Controllers
         /// <param name="model">预约信息实体</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult MakeReservation([FromBody]ReservationViewModel model)
+        public async System.Threading.Tasks.Task<ActionResult> MakeReservation(
+            [FromBody]ReservationViewModel model,
+            [FromHeader]string captcha,
+            [FromHeader]string captchaType = "Tencent")
         {
-            // TODO:现在是没有验证用户的 Geetest 相关的信息，只是一个 Ajax 验证，如果直接调用这个接口预约Geetest就相当于没用了，现在问题不大以后可能要改一下
-
             var result = new JsonResultModel();
+            var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
+                .ValidateVerifyCodeAsync(captchaType, captcha);
+            if (!isCodeValid)
+            {
+                result.Status = JsonResultStatus.RequestError;
+                result.ErrorMsg = "验证码有误, 请重新验证";
+                return Json(result);
+            }
             try
             {
                 if (ModelState.IsValid)
@@ -151,7 +160,7 @@ namespace ActivityReservation.Controllers
                     {
                         reservation.ReservationPeriod += (1 << item);
                     }
-                    var bValue = _reservertionBLL.Insert(reservation);
+                    var bValue = await _reservertionBLL.InsertAsync(reservation);
                     if (bValue > 0)
                     {
                         result.Result = true;
@@ -276,16 +285,6 @@ namespace ActivityReservation.Controllers
         public ActionResult About()
         {
             return View();
-        }
-
-        /// <summary>
-        /// 验证验证码
-        /// </summary>
-        [HttpPost]
-        public JsonResult ValidateCaptcha(string recaptchaType, string recaptcha)
-        {
-            var helper = HttpContext.RequestServices.GetRequiredService<CaptchaVerifyHelper>();
-            return Json(helper.ValidateVerifyCodeAsync(recaptchaType, recaptcha));
         }
     }
 }
