@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-@if (Model.Data.Count() > 0)
+@if (Model.Data.Count > 0)
 {
     <table class="table table-hover">
         <thead>
@@ -15,6 +15,7 @@
                 <th>预约人姓名</th>
                 <th>预约人联系方式</th>
                 <th>预约时间</th>
+                <th>预约人IP</th>
                 <th>审核状态</th>
                 <th>操作</th>
             </tr>
@@ -62,6 +63,9 @@
                     </td>
                     <td>
                         @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    </td>
+                    <td>
+                        @item.ReservationFromIp
                     </td>
                     <td>
                         @Html.Raw(status)
