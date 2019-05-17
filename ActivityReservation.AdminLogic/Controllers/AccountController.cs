@@ -16,7 +16,6 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -80,7 +79,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                         claims.Add(new Claim(ClaimTypes.Role, "Admin"));
                     }
 
-                    HttpContext.Session.SetString(AuthFormService.AuthCacheKey, u.ToJson());
                     await HttpContext.SignInAsync("Cookies",
                         new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")),
                         new AuthenticationProperties()
@@ -132,7 +130,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
             //logout
-            HttpContext.Session.Clear();
             await HttpContext.SignOutAsync();
             //redirect to homepage
             return RedirectToAction("Index", new { area = "", controller = "Home" });
@@ -166,7 +163,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                             Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
 
                             //密码修改成功，需要重新登录
-                            HttpContext.Session.Remove(AuthFormService.AuthCacheKey);
                             HttpContext.SignOutAsync().ConfigureAwait(false);
                             //
                             return Json(true);
@@ -208,7 +204,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                     {
                         OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
                             OperLogModule.Account, Username);
-                        HttpContext.Session.Set(AuthFormService.AuthCacheKey, u.ToJson().GetBytes());
                         return Json(true);
                     }
                 }

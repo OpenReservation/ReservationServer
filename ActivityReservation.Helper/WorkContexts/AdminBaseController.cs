@@ -1,11 +1,14 @@
-﻿using ActivityReservation.Helpers;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
+using ActivityReservation.Business;
+using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Extensions;
 
 namespace ActivityReservation.WorkContexts
 {
@@ -36,10 +39,14 @@ namespace ActivityReservation.WorkContexts
             {
                 if (_currentUser == null)
                 {
-                    if (HttpContext.Session.TryGetValue(AuthFormService.AuthCacheKey, out var bytes))
+                    var userIdStr = HttpContext.User.Claims.FirstOrDefault(_ => _.Type == ClaimTypes.NameIdentifier)?.Value;
+                    if (string.IsNullOrWhiteSpace(userIdStr))
                     {
-                        _currentUser = bytes.GetString().JsonToType<User>();
+                        return _currentUser;
                     }
+
+                    var userId = Guid.Parse(userIdStr);
+                    _currentUser = HttpContext.RequestServices.GetService<IBLLUser>().Fetch(_ => _.UserId == userId);
                 }
                 return _currentUser;
             }
