@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Models;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -63,11 +62,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
-                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.ToString(), //记录预约人IP地址
+                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(), //记录预约人IP地址
 
                         //管理员预约自动审核通过
                         ReservationStatus = 1,
-                        ReservationTime = DateTime.Now,
+                        ReservationTime = DateTime.UtcNow,
 
                         UpdateBy = model.ReservationPersonName,
                         UpdateTime = DateTime.Now,
