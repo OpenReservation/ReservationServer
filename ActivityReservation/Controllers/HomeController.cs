@@ -110,6 +110,8 @@ namespace ActivityReservation.Controllers
         /// 预约接口
         /// </summary>
         /// <param name="model">预约信息实体</param>
+        /// <param name="captcha">验证码</param>
+        /// <param name="captchaType">captchaType</param>
         /// <returns></returns>
         [HttpPost]
         public async System.Threading.Tasks.Task<ActionResult> MakeReservation(

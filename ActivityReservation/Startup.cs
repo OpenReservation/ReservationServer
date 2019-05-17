@@ -38,10 +38,8 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMemoryCache();
-            // services.AddDistributedRedisCache(options => options.Configuration = Configuration.GetConnectionString("Redis"));
             services.AddHealthChecks();
-            services.AddSession();
+
             services.AddMvc()
                 .AddJsonOptions(options =>
                 {
@@ -147,8 +145,13 @@ namespace ActivityReservation
                 app.UseExceptionHandler("/Error");
             }
             app.UseStaticFiles();
-            app.UseDependencyReslover();
-            app.UseSession();
+            app.UseDependencyResolver();
+            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
+            app.UseForwardedHeaders(new ForwardedHeadersOptions()
+            {
+                ForwardedForHeaderName = "X-Real-IP",
+            });
+
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
