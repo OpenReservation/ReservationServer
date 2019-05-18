@@ -117,8 +117,12 @@ namespace ActivityReservation.Controllers
         public async System.Threading.Tasks.Task<ActionResult> MakeReservation(
             [FromBody]ReservationViewModel model,
             [FromHeader]string captcha,
-            [FromHeader]string captchaType = "Tencent")
+            [FromHeader]string captchaType)
         {
+            if (string.IsNullOrWhiteSpace(captchaType))
+            {
+                captchaType = "Tencent";
+            }
             var result = new JsonResultModel();
             var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
                 .ValidateVerifyCodeAsync(captchaType, captcha);
