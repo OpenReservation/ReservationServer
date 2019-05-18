@@ -120,13 +120,6 @@ namespace ActivityReservation
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.OriginalForHeaderName = "X-Real-IP";
-                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor;
-                options.ForwardLimit = null;
-            });
-
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
@@ -157,7 +150,11 @@ namespace ActivityReservation
             app.UseDependencyResolver();
 
             // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
-            app.UseForwardedHeaders();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                OriginalForHeaderName = "X-Real-IP",
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor
+            });
 
             app.UseAuthentication();
             app.UseMvc(routes =>
