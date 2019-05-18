@@ -6,6 +6,7 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,8 +63,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
-                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(), //记录预约人IP地址
-
+                        ReservationFromIp = HttpContext.GetUserIP(),
                         //管理员预约自动审核通过
                         ReservationStatus = 1,
                         ReservationTime = DateTime.UtcNow,

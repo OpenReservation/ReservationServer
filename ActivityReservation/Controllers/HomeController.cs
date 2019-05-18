@@ -154,7 +154,7 @@ namespace ActivityReservation.Controllers
                         ReservationPersonName = model.ReservationPersonName,
                         ReservationPersonPhone = model.ReservationPersonPhone,
 
-                        ReservationFromIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(), //记录预约人IP地址
+                        ReservationFromIp = HttpContext.GetUserIP(), //记录预约人IP地址
 
                         UpdateBy = model.ReservationPersonName,
                         UpdateTime = DateTime.Now,
