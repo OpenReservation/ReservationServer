@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -149,12 +148,12 @@ namespace ActivityReservation
             app.UseRequestLog();
             app.UseDependencyResolver();
 
-            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                OriginalForHeaderName = "X-Real-IP",
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor
-            });
+            //// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
+            //app.UseForwardedHeaders(new ForwardedHeadersOptions
+            //{
+            //    OriginalForHeaderName = "X-Real-IP",
+            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor
+            //});
 
             app.UseAuthentication();
             app.UseMvc(routes =>
