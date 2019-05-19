@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Xml;
 using ActivityReservation.Common;
+using Microsoft.Extensions.Configuration;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
@@ -146,8 +147,18 @@ namespace ActivityReservation.WechatAPI.Helper
             var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
             if (@event != null)
             {
+                if (@event.EqualsIgnoreCase("subscribe"))
+                {
+                    responseContent = string.Format(ReplyMessageType.MessageText,
+                            FromUserName.InnerText,
+                            ToUserName.InnerText,
+                            DateTime.Now.Ticks,
+                            DependencyResolver.Current.ResolveService<IConfiguration>()
+                                .GetAppSetting("WechatSubscribeReply")
+                            );
+                }
                 //菜单单击事件
-                if (@event.Equals("CLICK"))
+                else if (@event.Equals("CLICK"))
                 {
                     if (eventKey == "click_one") //click_one
                     {
