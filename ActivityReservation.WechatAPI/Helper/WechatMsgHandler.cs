@@ -27,11 +27,12 @@ namespace ActivityReservation.WechatAPI.Helper
                 xmldoc.LoadXml(postStr);
 
                 var msgId = xmldoc.SelectSingleNode("/xml/MsgId")?.InnerText;
-                if (msgId.IsNullOrEmpty())
+                if (msgId.IsNotNullOrEmpty())
                 {
                     var firewall = RedisManager.GetFirewallClient($"wechatMsgFirewall-{msgId}", TimeSpan.FromSeconds(2));
                     if (!await firewall.HitAsync())
                     {
+                        Logger.Info($"duplicate msg blocked, msg id: {msgId}");
                         return string.Empty;
                     }
                 }
@@ -147,8 +148,9 @@ namespace ActivityReservation.WechatAPI.Helper
             var FromUserName = xmldoc.SelectSingleNode("/xml/FromUserName");
             if (@event != null)
             {
-                if (@event.EqualsIgnoreCase("subscribe"))
+                if ("subscribe".EqualsIgnoreCase(@event))
                 {
+                    // 关注
                     responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
@@ -157,33 +159,21 @@ namespace ActivityReservation.WechatAPI.Helper
                                 .GetAppSetting("WechatSubscribeReply")
                             );
                 }
+                else if ("unsubscribe".EqualsIgnoreCase(@event))
+                {
+                    //  取消关注
+                }
                 //菜单单击事件
                 else if (@event.Equals("CLICK"))
                 {
-                    if (eventKey == "click_one") //click_one
-                    {
-                        responseContent = string.Format(ReplyMessageType.MessageText,
-                            FromUserName.InnerText,
-                            ToUserName.InnerText,
-                            DateTime.Now.Ticks,
-                            "你点击的是click_one");
-                    }
-                    else if (eventKey == "click_two") //click_two
-                    {
-                        responseContent = string.Format(ReplyMessageType.MessageText,
-                            FromUserName.InnerText,
-                            ToUserName.InnerText,
-                            DateTime.Now.Ticks,
-                            $"你点击的是 {eventKey}");
-                    }
-                    else if (eventKey == "click_three") //click_three
-                    {
-                        responseContent = string.Format(ReplyMessageType.MessageText,
-                            FromUserName.InnerText,
-                            ToUserName.InnerText,
-                            DateTime.Now.Ticks,
-                            $"你点击的是 {eventKey}");
-                    }
+                    //if (eventKey == "click_one") //click_one
+                    //{
+                    //    responseContent = string.Format(ReplyMessageType.MessageText,
+                    //        FromUserName.InnerText,
+                    //        ToUserName.InnerText,
+                    //        DateTime.Now.Ticks,
+                    //        $"你点击的是 {eventKey}");
+                    //}
                 }
             }
             return responseContent;
@@ -196,7 +186,7 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <summary>
         /// 普通文本消息
         /// </summary>
-        public static string MessageText => @"<xml>
+        public const string MessageText = @"<xml>
                             <ToUserName><![CDATA[{0}]]></ToUserName>
                             <FromUserName><![CDATA[{1}]]></FromUserName>
                             <CreateTime>{2}</CreateTime>
@@ -207,7 +197,7 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <summary>
         /// 图文消息主体
         /// </summary>
-        public static string MessageNewsMain => @"<xml>
+        public const string MessageNewsMain = @"<xml>
                             <ToUserName><![CDATA[{0}]]></ToUserName>
                             <FromUserName><![CDATA[{1}]]></FromUserName>
                             <CreateTime>{2}</CreateTime>
@@ -221,14 +211,14 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <summary>
         /// 图文消息项
         /// </summary>
-        public static string MessageNewsItem => @"<item>
+        public const string MessageNewsItem = @"<item>
                             <Title><![CDATA[{0}]]></Title>
                             <Description><![CDATA[{1}]]></Description>
                             <PicUrl><![CDATA[{2}]]></PicUrl>
                             <Url><![CDATA[{3}]]></Url>
                          </item>";
 
-        public static string MessageImage => @"<xml>
+        public const string MessageImage = @"<xml>
                             <ToUserName><![CDATA[{0}]]></ToUserName>
                             <FromUserName><![CDATA[{1}]]></FromUserName>
                             <CreateTime>{2}</CreateTime>
