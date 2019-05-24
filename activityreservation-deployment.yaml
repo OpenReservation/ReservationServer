@@ -29,11 +29,11 @@ spec:
             value: "1"
       containers:
         - name: activityreservation
-          image: weihanli/activityreservation:20190504.1
+          image: weihanli/activityreservation:20190524.1
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "512Mi"
+              memory: "256Mi"
               cpu: "300m"
           readinessProbe:
             tcpSocket:
