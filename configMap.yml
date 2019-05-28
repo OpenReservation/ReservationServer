@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appsettings
+  namespace: default
+data:
+  appsettings.json: |
+    {      
+      "ConnectionStrings": {
+        "Redis": "redis-server",
+        "Reservation": "Server=mysql;uid=liweihan;pwd=Admin888;database=Reservation",
+        "ElasticSearch": "elasticsearch"
+      },
+      "MpWechat":{
+        "AppId": "wx4a41d3773ae55543",
+        "AppSecret": "**********",
+        "Token": "AmazingDotNet"
+        "AESKey": "------------",
+      }
+      "AppSettings": {
+        "WechatSubscribeReply": "",
+        "SentryClientKey": "https://04ad3ad1e74b44a2a6fda72b517d1657:131cf95155564816bdbfcc2b7f7be62a@sentry.io/189603"
+      },
+      "Tencent": {
+        "Captcha": {
+          "AppId": "2062135016",
+          "AppSecret": "0rmYRRJFzOfyUBi26ylSJjg**"
+        }
+      },
+      "GoogleRecaptcha": {
+        "SiteKey": "6Lc-vz0UAAAAAG38zeZKM7_pQL5k4Z7FpnrtU_3A",
+        "Secret": "6Lc-vz0UAAAAAEOFBcj_2WeoGjnSBf5lmh4j5DH9"
+      },
+      "Logging": {
+        "LogLevel": {
+          "Default": "Warning",
+          "ActivityReservation": "Debug",
+          "RequestLog": "Debug"
+        }
+      }
+    }
