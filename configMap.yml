@@ -14,8 +14,8 @@ data:
       "MpWechat":{
         "AppId": "wx4a41d3773ae55543",
         "AppSecret": "**********",
-        "Token": "AmazingDotNet"
-        "AESKey": "------------",
+        "Token": "AmazingDotNet",
+        "AESKey": "------------"
       },
       "AppSettings": {
         "WechatSubscribeReply": "",
