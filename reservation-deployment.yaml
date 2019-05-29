@@ -28,7 +28,7 @@ spec:
             value: "1"
       containers:        
         - name: activityreservation
-          image: weihanli/activityreservation:20190529.1
+          image: weihanli/activityreservation:20190529.2
           imagePullPolicy: IfNotPresent
           resources:
             limits:
