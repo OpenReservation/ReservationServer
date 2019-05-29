@@ -151,13 +151,19 @@ namespace ActivityReservation.WechatAPI.Helper
                 if ("subscribe".EqualsIgnoreCase(@event))
                 {
                     // 关注
-                    responseContent = string.Format(ReplyMessageType.MessageText,
+                    var reply = DependencyResolver.Current.ResolveService<IConfiguration>()
+                                .GetAppSetting("WechatSubscribeReply");
+                    if(string.IsNullOrEmpty(reply)){
+                        responseContent = "";
+                    }
+                    else{
+                        responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
                             DateTime.Now.Ticks,
-                            DependencyResolver.Current.ResolveService<IConfiguration>()
-                                .GetAppSetting("WechatSubscribeReply")
+                            reply
                             );
+                    }
                 }
                 else if ("unsubscribe".EqualsIgnoreCase(@event))
                 {
