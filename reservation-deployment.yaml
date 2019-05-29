@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: activityreservation
+  namespace: default
   labels:
     app: activityreservation
 spec:
@@ -16,18 +17,16 @@ spec:
     rollingUpdate:
       maxUnavailable: 1
       maxSurge: 1
-
   template:
     metadata:
       labels:
         app: activityreservation
-    
     spec:
       dnsConfig:
         options:
           - name: ndots
             value: "1"
-      containers:
+      containers:        
         - name: activityreservation
           image: weihanli/activityreservation:20190524.1
           imagePullPolicy: IfNotPresent
@@ -48,6 +47,17 @@ spec:
             periodSeconds: 60
           ports:
             - containerPort: 80
+          volumeMounts:
+          - name: settings
+            mountPath: /app
+
+      volumes:
+        - name: settings
+          configMap:
+            name: reservation-configs
+            items:
+            - key: appsettings
+              path: appsettings.json
 
 ---
 apiVersion: v1

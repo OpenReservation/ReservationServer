@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: appsettings
+  name: reservation-configs
   namespace: default
 data:
-  appsettings.json: |
+  appsettings: |
     {      
       "ConnectionStrings": {
         "Redis": "redis-server",
-        "Reservation": "Server=mysql;uid=liweihan;pwd=Admin888;database=Reservation",
+        "Reservation": "Server=localhost;uid=liweihan;pwd=Admin888;database=Reservation",
         "ElasticSearch": "elasticsearch"
       },
       "MpWechat":{
@@ -16,7 +16,7 @@ data:
         "AppSecret": "**********",
         "Token": "AmazingDotNet"
         "AESKey": "------------",
-      }
+      },
       "AppSettings": {
         "WechatSubscribeReply": "",
         "SentryClientKey": "https://04ad3ad1e74b44a2a6fda72b517d1657:131cf95155564816bdbfcc2b7f7be62a@sentry.io/189603"
