@@ -50,14 +50,12 @@ spec:
           volumeMounts:
           - name: settings
             mountPath: /app/appsettings.json
+            subPath: appsettings
 
       volumes:
         - name: settings
           configMap:
             name: reservation-configs
-            items:
-            - key: appsettings
-              path: appsettings.json
 
 ---
 apiVersion: v1
