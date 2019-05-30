@@ -152,11 +152,13 @@ namespace ActivityReservation.WechatAPI.Helper
                 {
                     // 关注
                     var reply = DependencyResolver.Current.ResolveService<IConfiguration>()
-                                .GetAppSetting("WechatSubscribeReply");
-                    if(string.IsNullOrEmpty(reply)){
+                                .GetAppSetting("WeChatSubscribeReply");
+                    if (string.IsNullOrEmpty(reply))
+                    {
                         responseContent = "";
                     }
-                    else{
+                    else
+                    {
                         responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
