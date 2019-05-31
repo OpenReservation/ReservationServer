@@ -9,7 +9,7 @@ namespace ActivityReservation.Extensions
         {
             applicationBuilder.Use(async (context, next) =>
             {
-                DependencyResolver.SetDependencyResolver(context.RequestServices.GetService);
+                DependencyResolver.SetDependencyResolver(context.RequestServices);
                 await next();
             });
             return applicationBuilder;
