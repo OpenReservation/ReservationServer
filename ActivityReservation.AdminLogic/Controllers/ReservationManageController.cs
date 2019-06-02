@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -45,8 +46,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string msg;
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out msg, true))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out var msg, true))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);

@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Controllers
 {
@@ -136,8 +137,7 @@ namespace ActivityReservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    string msg;
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out msg))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out var msg))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);
