@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -72,12 +73,10 @@ namespace ActivityReservation
             services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")));
             services.AddRedisConfig(options =>
             {
-#if !DEBUG
                 options.RedisServers = new[]
                 {
                     new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
                 };
-#endif
                 options.CachePrefix = "ActivityReservation";
                 options.DefaultDatabase = 2;
             });
@@ -134,10 +133,6 @@ namespace ActivityReservation
             loggerFactory
                 .AddLog4Net()
                 .AddSentry(Configuration.GetAppSetting("SentryClientKey"));
-
-            app.UseHealthChecks(new PathString("/health"));
-            // app.UseHealthCheck("/health");
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -146,16 +141,18 @@ namespace ActivityReservation
             {
                 app.UseExceptionHandler("/Error");
             }
-            app.UseStaticFiles();
-            app.UseRequestLog();
-            app.UseDependencyResolver();
+            app.UseHealthChecks(new PathString("/health"));
+            // app.UseHealthCheck("/health");
 
-            //// https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
-            //app.UseForwardedHeaders(new ForwardedHeadersOptions
-            //{
-            //    OriginalForHeaderName = "X-Real-IP",
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor
-            //});
+            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost
+            });
+
+            app.UseStaticFiles();
+            app.UseDependencyResolver();
+            app.UseRequestLog();
 
             app.UseAuthentication();
             app.UseMvc(routes =>
