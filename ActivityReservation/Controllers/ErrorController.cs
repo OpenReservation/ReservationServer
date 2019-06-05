@@ -10,7 +10,7 @@ namespace ActivityReservation.Controllers
         /// 404
         /// </summary>
         /// <returns></returns>
-        public ActionResult NotFound(string errorpath)
+        public ActionResult NotFound(string errorPath)
         {
             Response.StatusCode = 404;
             return View();

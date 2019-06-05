@@ -24,7 +24,6 @@ using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.Redis;
-using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation
 {
@@ -155,9 +154,7 @@ namespace ActivityReservation
             });
 
             app.UseStaticFiles();
-            app.UseDependencyResolver();
             app.UseRequestLog();
-
             app.UseAuthentication();
             app.UseMvc(routes =>
             {

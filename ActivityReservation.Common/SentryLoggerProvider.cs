@@ -44,6 +44,7 @@ namespace ActivityReservation.Common
             {
                 case LogLevel.Critical:
                 case LogLevel.Error:
+                    return true;
 
                 default:
                     return false;
