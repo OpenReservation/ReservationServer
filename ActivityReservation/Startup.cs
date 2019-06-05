@@ -75,7 +75,11 @@ namespace ActivityReservation
             {
                 options.RedisServers = new[]
                 {
+#if DEBUG
+                    new RedisServerConfiguration("127.0.0.1"),
+#else
                     new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
+#endif
                 };
                 options.CachePrefix = "ActivityReservation";
                 options.DefaultDatabase = 2;

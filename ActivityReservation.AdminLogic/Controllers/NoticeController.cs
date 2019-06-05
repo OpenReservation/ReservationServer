@@ -8,7 +8,6 @@ using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -34,7 +33,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="search">查询信息</param>
         /// <returns></returns>
-        public ActionResult List(SearchHelperModel search)
+        public ActionResult List([FromQuery]SearchHelperModel search)
         {
             Expression<Func<Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
             if (!string.IsNullOrEmpty(search.SearchItem1))
@@ -70,8 +69,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">公告信息</param>
         /// <returns></returns>
         [HttpPost]
-        // [ValidateInput(false)]
-        public ActionResult Create(NoticeViewModel model)
+        public ActionResult Create([FromForm]NoticeViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -97,17 +95,15 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     if (n.NoticeCustomPath.EndsWith(".html"))
                     {
-                        n.NoticePath = n.NoticeCustomPath;
-                    }
-                    else
-                    {
-                        n.NoticePath = n.NoticeCustomPath + ".html";
+                        n.NoticeCustomPath = n.NoticeCustomPath.Substring(0, n.NoticeCustomPath.Length - 5); // trim end ".html"
                     }
                 }
                 else
                 {
-                    n.NoticePath = DateTime.Now.ToString("yyyyMMddHHmmss") + ".html";
+                    n.NoticeCustomPath = DateTime.Now.ToString("yyyyMMddHHmmss");
                 }
+                n.NoticePath = $"{n.NoticeCustomPath}.html";
+
                 var c = _bLLNotice.Insert(n);
                 if (c == 1)
                 {
