@@ -73,7 +73,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(model);
             }
             try
             {
@@ -113,7 +113,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    return View();
+                    return View(model);
                 }
             }
             catch (Exception ex)
@@ -158,13 +158,9 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         [HttpPost]
-        public ActionResult Preview(NoticeViewModel model)
+        public ActionResult Preview([FromForm]NoticeViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                return View(model);
-            }
-            return View();
+            return View(model);
         }
 
         public JsonResult Delete(Guid noticeId)

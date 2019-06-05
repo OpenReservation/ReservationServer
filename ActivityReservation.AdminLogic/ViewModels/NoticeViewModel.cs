@@ -11,7 +11,7 @@ namespace ActivityReservation.AdminLogic.ViewModels
         /// 公告标题
         /// </summary>
         [Required]
-        [StringLength(20, MinimumLength = 2)]
+        [StringLength(200, MinimumLength = 2)]
         public string Title { get; set; }
 
         /// <summary>
