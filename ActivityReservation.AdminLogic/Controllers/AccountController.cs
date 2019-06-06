@@ -372,7 +372,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             var pageList = _bLLUser.Paged(search.PageIndex, search.PageSize,
                 whereLambda, u => u.AddTime, false);
-            var data = pageList.ToPagedList(search.PageIndex, search.PageSize, pageList.TotalCount);
+            var data = pageList.ToPagedList();
             return View(data);
         }
     }

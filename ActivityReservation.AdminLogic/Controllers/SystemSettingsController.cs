@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -57,7 +56,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             var settingsList = _systemSettingHelper.Paged(search.PageIndex, search.PageSize,
                  whereLambda, s => s.SettingName);
-            var data = settingsList.ToPagedList(search.PageIndex, search.PageSize, settingsList.TotalCount);
+            var data = settingsList.ToPagedList();
             return View(data);
         }
 

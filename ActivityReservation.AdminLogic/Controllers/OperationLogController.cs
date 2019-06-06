@@ -7,7 +7,6 @@ using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -58,7 +57,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 var logList = operationLogHelper.Paged(search.PageIndex, search.PageSize,
                      whereLambda, l => l.OperTime, false);
-                var dataList = logList.ToPagedList(search.PageIndex, search.PageSize, logList.TotalCount);
+                var dataList = logList.ToPagedList();
                 return View(dataList);
             }
             catch (Exception ex)

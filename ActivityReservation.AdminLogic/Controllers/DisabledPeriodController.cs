@@ -49,7 +49,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
             var pageList = _bllDisabledPeriod.Paged(pageIndex, pageSize,
                 whereLambda, p => p.UpdatedTime, false);
-            var data = pageList.ToPagedList(pageIndex, pageSize, pageList.TotalCount);
+            var data = pageList.ToPagedList();
             return View(data);
         }
 

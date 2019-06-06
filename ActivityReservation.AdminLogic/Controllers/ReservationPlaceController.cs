@@ -8,7 +8,6 @@ using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -45,7 +44,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             var list = _reservationPlaceHelper.Paged(pageIndex, pageSize,
                 whereLambda, p => p.UpdateTime, false);
-            var data = list.ToPagedList(pageIndex, pageSize, list.TotalCount);
+            var data = list.ToPagedList();
             return View(data);
         }
 

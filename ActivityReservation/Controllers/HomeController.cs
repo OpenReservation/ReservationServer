@@ -239,7 +239,7 @@ namespace ActivityReservation.Controllers
             {
                 var noticeList = HttpContext.RequestServices.GetService<IBLLNotice>().Paged(search.PageIndex, search.PageSize, whereLamdba,
                     n => n.NoticePublishTime, false);
-                var data = noticeList.ToPagedList(search.PageIndex, search.PageSize, noticeList.TotalCount);
+                var data = noticeList.ToPagedList();
                 return View(data);
             }
             catch (Exception ex)

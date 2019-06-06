@@ -44,7 +44,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 var list = _bLLNotice.Paged(search.PageIndex, search.PageSize,
                     whereExpression, n => n.NoticePublishTime, false);
-                return View(list.Data.ToPagedList(search.PageIndex, search.PageSize, list.TotalCount));
+                return View(list.ToPagedList());
             }
             catch (Exception ex)
             {

@@ -61,7 +61,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 var blockList = _blockEntityHelper.Paged(whereLambda, q => q.OrderByDescending(b => b.BlockTime), q => q.Include(b => b.BlockType), search.PageIndex, search.PageSize);
-                var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, blockList.TotalCount);
+                var dataList = blockList.ToPagedList();
                 return View(dataList);
             }
             catch (Exception ex)
