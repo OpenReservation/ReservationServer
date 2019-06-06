@@ -102,27 +102,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         /// <summary>
-        /// 图片验证码
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        public ActionResult ImageValidCode()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// 验证验证码是否填写正确
-        /// </summary>
-        /// <param name="code">验证码</param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        public ActionResult ValidCode(string code)
-        {
-            return Json(false);
-        }
-
-        /// <summary>
         /// 退出登录
         /// </summary>
         /// <returns></returns>
@@ -251,7 +230,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count == 1)
                     {
                         OperLogHelper.AddOperLog(
-                            string.Format("添加用户 {0}-{1} 成功", accountModel.Username, accountModel.UserEmail),
+                            $"添加用户 {accountModel.Username}-{accountModel.UserEmail} 成功",
                             OperLogModule.Account, Username);
                         return Json(true);
                     }
@@ -278,7 +257,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = _bLLUser.Delete(ur => ur.UserId == u.UserId);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog($"删除用户 {u.UserId.ToString("N")} {u.UserName}", OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"删除用户 {u.UserId:N} {u.UserName}", OperLogModule.Account, Username);
                     return Json(true);
                 }
             }
@@ -305,7 +284,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = _bLLUser.Update(ur => ur.UserId == u.UserId, ur => ur.UserPassword, u.UserPassword);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(string.Format("重置用户 {0} 密码", u.UserName), OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"重置用户 {u.UserName} 密码", OperLogModule.Account, Username);
                     return Json(true);
                 }
             }

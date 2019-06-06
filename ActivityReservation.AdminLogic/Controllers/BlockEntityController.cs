@@ -6,10 +6,10 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -60,20 +60,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var blockList = _blockEntityHelper.Paged(search.PageIndex, search.PageSize, whereLambda, b => b.BlockTime, false);
-                if (blockList.Data == null)
-                {
-                    blockList.Data = new BlockEntity[0];
-                }
-
-                if (blockList.Data.Count > 0)
-                {
-                    var blockTypes = HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true);
-                    foreach (var entity in blockList)
-                    {
-                        entity.BlockType = blockTypes.FirstOrDefault(_ => _.TypeId == entity.BlockTypeId);
-                    }
-                }
+                var blockList = _blockEntityHelper.Paged(whereLambda, q => q.OrderByDescending(b => b.BlockTime), q => q.Include(b => b.BlockType), search.PageIndex, search.PageSize);
                 var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, blockList.TotalCount);
                 return View(dataList);
             }
