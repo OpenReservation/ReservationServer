@@ -254,7 +254,7 @@ namespace ActivityReservation.Controllers
         /// </summary>
         /// <param name="path">访问路径</param>
         /// <returns></returns>
-        public async Task<ActionResult> NoticeDetailsAsync(string path)
+        public async Task<ActionResult> NoticeDetails(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
