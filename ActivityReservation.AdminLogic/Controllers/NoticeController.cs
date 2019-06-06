@@ -35,15 +35,15 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List([FromQuery]SearchHelperModel search)
         {
-            Expression<Func<Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
+            Expression<Func<Notice, bool>> whereExpression = (n => n.IsDeleted == false);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1);
+                whereExpression = n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1);
             }
             try
             {
                 var list = _bLLNotice.Paged(search.PageIndex, search.PageSize,
-                    whereLamdba, n => n.NoticePublishTime, false);
+                    whereExpression, n => n.NoticePublishTime, false);
                 return View(list.Data.ToPagedList(search.PageIndex, search.PageSize, list.TotalCount));
             }
             catch (Exception ex)
@@ -99,6 +99,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                     }
                 }
                 else
+                {
+                    n.NoticeCustomPath = DateTime.Now.ToString("yyyyMMddHHmmss");
+                }
+                var existStatus = _bLLNotice.Exist(nx => nx.NoticeCustomPath.ToLower().Equals(n.NoticeCustomPath.ToLower()));
+                if (existStatus)
                 {
                     n.NoticeCustomPath = DateTime.Now.ToString("yyyyMMddHHmmss");
                 }

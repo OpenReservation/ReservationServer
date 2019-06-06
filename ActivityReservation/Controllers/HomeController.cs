@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Helpers;
@@ -253,7 +254,7 @@ namespace ActivityReservation.Controllers
         /// </summary>
         /// <param name="path">访问路径</param>
         /// <returns></returns>
-        public ActionResult NoticeDetails(string path)
+        public async Task<ActionResult> NoticeDetailsAsync(string path)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -261,9 +262,13 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var notice = HttpContext.RequestServices.GetService<IBLLNotice>().Fetch(n => n.NoticeCustomPath == path);
+                var noticeBll = HttpContext.RequestServices.GetService<IBLLNotice>();
+                var notice = await noticeBll.FetchAsync(n => n.NoticeCustomPath == path);
                 if (notice != null)
                 {
+                    notice.NoticeVisitCount += 1;
+                    await noticeBll.UpdateAsync(notice, x => x.NoticeVisitCount).ConfigureAwait(false);
+
                     return View(notice);
                 }
                 else

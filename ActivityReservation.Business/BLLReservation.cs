@@ -13,9 +13,8 @@ namespace ActivityReservation.Business
             Expression<Func<Reservation, bool>> whereLambda, Expression<Func<Reservation, TKey>> orderBy,
             Expression<Func<Reservation, TKey1>> orderby1, bool isAsc, bool isAsc1)
         {
-            var count = Count(whereLambda);
-            rowsCount = (int)count;
-            if (count == 0)
+            rowsCount = Count(whereLambda);
+            if (rowsCount == 0)
             {
                 return new List<Reservation>();
             }
