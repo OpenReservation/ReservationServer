@@ -52,6 +52,7 @@ namespace ActivityReservation
 
             // DataProtection persist in redis
             services.AddDataProtection()
+                .SetApplicationName("ActivityReservation")
                 .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
                 ;
 
@@ -150,7 +151,8 @@ namespace ActivityReservation
             // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedHost
+                ForwardedHeaders = ForwardedHeaders.All,
+                ForwardLimit = null
             });
 
             app.UseStaticFiles();
