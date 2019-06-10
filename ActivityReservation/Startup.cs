@@ -47,7 +47,6 @@ namespace ActivityReservation
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 })
-                .AddXmlSerializerFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
             // DataProtection persist in redis
@@ -148,15 +147,18 @@ namespace ActivityReservation
             app.UseHealthChecks(new PathString("/health"));
             // app.UseHealthCheck("/health");
 
-            // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.All,
-                ForwardLimit = null
-            });
-
+            
             app.UseStaticFiles();
-            app.UseRequestLog();
+            
+            // seems not work for me
+            // // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
+            // app.UseForwardedHeaders(new ForwardedHeadersOptions
+            // {
+            //     ForwardedHeaders = ForwardedHeaders.All,
+            //     ForwardLimit = null // disable limit
+            // });
+            //app.UseRequestLog();
+
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
