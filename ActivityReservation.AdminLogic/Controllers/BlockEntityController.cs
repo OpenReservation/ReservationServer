@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -60,7 +61,12 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var blockList = _blockEntityHelper.Paged(whereLambda, q => q.OrderByDescending(b => b.BlockTime), q => q.Include(b => b.BlockType), search.PageIndex, search.PageSize);
+                var queryBuilder = EFRepoQueryBuilder<BlockEntity>.New()
+                        .WithPredict(whereLambda)
+                        .WithInclude(q => q.Include(b => b.BlockType))
+                        .WithOrderBy(q => q.OrderByDescending(b => b.BlockTime))
+                    ;
+                var blockList = _blockEntityHelper.Paged(queryBuilder, search.PageIndex, search.PageSize);
                 var dataList = blockList.ToPagedList();
                 return View(dataList);
             }
@@ -74,7 +80,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <summary>
         /// 添加到黑名单
         /// </summary>
-        /// <param name="model">黑名单model</param>
         /// <returns></returns>
         public ActionResult AddEntity(Guid typeId, string blockValue)
         {
@@ -114,6 +119,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// 更新黑名单实体状态
         /// </summary>
         /// <param name="entityId">黑名单数据id</param>
+        /// <param name="entityName"></param>
         /// <param name="status">状态</param>
         /// <returns></returns>
         public ActionResult UpdateEntityStatus(Guid entityId, string entityName, int status)
@@ -124,7 +130,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count > 0)
                 {
                     OperLogHelper.AddOperLog(
-                        string.Format("更改黑名单 {0} 状态为 {1}", entityName, status > 0 ? "启用" : "禁用"),
+                        $"更改黑名单 {entityName} 状态为 {(status > 0 ? "启用" : "禁用")}",
                         OperLogModule.BlockEntity, Username);
                     return Json(true);
                 }
