@@ -61,12 +61,9 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var queryBuilder = EFRepoQueryBuilder<BlockEntity>.New()
-                        .WithPredict(whereLambda)
-                        .WithInclude(q => q.Include(b => b.BlockType))
-                        .WithOrderBy(q => q.OrderByDescending(b => b.BlockTime))
-                    ;
-                var blockList = _blockEntityHelper.Paged(queryBuilder, search.PageIndex, search.PageSize);
+                var blockList = _blockEntityHelper.Paged(queryBuilder => queryBuilder.WithPredict(whereLambda)
+                    .WithInclude(q => q.Include(b => b.BlockType))
+                    .WithOrderBy(q => q.OrderByDescending(b => b.BlockTime)), search.PageIndex, search.PageSize);
                 var dataList = blockList.ToPagedList();
                 return View(dataList);
             }
