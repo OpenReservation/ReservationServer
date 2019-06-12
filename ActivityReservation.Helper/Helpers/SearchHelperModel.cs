@@ -2,22 +2,21 @@
 {
     public class SearchHelperModel
     {
-        private int pageIndex, pageSize;
+        private int pageNumber = 1, pageSize = 10;
 
         /// <summary>
         /// 当前页码索引
         /// </summary>
         public int PageIndex
         {
-            get
+            get => pageNumber;
+            set
             {
-                if (pageIndex <= 0)
+                if (value > 0)
                 {
-                    pageIndex = 1;
+                    pageNumber = value;
                 }
-                return pageIndex;
             }
-            set { pageIndex = value; }
         }
 
         /// <summary>
@@ -25,15 +24,14 @@
         /// </summary>
         public int PageSize
         {
-            get
+            get => pageSize;
+            set
             {
-                if (pageSize <= 0)
+                if (value > 0)
                 {
-                    pageSize = 10;
+                    pageSize = value;
                 }
-                return pageSize;
             }
-            set { pageSize = value; }
         }
 
         public string SearchItem0 { get; set; }
@@ -41,13 +39,5 @@
         public string SearchItem1 { get; set; }
 
         public string SearchItem2 { get; set; }
-
-        public string SearchItem3 { get; set; }
-
-        public string SearchItem4 { get; set; }
-
-        public string SearchItem5 { get; set; }
-
-        public string SearchItem6 { get; set; }
     }
 }

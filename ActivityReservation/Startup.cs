@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -106,7 +105,7 @@ namespace ActivityReservation
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
             // register access control service
-            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStragety>();
+            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
 
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
@@ -147,18 +146,9 @@ namespace ActivityReservation
             app.UseHealthChecks(new PathString("/health"));
             // app.UseHealthCheck("/health");
 
-            
             app.UseStaticFiles();
-            
-            // seems not work for me
-            // // https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/proxy-load-balancer?view=aspnetcore-2.2#forwarded-headers-middleware-options
-            // app.UseForwardedHeaders(new ForwardedHeadersOptions
-            // {
-            //     ForwardedHeaders = ForwardedHeaders.All,
-            //     ForwardLimit = null // disable limit
-            // });
-            //app.UseRequestLog();
 
+            app.UseRequestLog();
             app.UseAuthentication();
             app.UseMvc(routes =>
             {

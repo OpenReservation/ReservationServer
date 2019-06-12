@@ -128,9 +128,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
             }
             //load data
-            var list = _reservationHelper.GetReservationList(search.PageIndex, search.PageSize,
-                out var rowsCount, whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
-            var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var list = _reservationHelper.Paged(queryBuilder => queryBuilder
+                    .WithPredict(whereLambda)
+                    .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
+                    .WithInclude(query => query.Include(r => r.Place))
+                    , search.PageIndex, search.PageSize);
+            var dataList = list.ToPagedList();
             return View(dataList);
         }
 

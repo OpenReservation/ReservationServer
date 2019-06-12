@@ -22,11 +22,11 @@ namespace ActivityReservation.Controllers
 {
     public class HomeController : FrontBaseController
     {
-        private readonly IBLLReservation _reservertionBLL;
+        private readonly IBLLReservation _reservationBLL;
 
-        public HomeController(ILogger<HomeController> logger, IBLLReservation reservertionBLL) : base(logger)
+        public HomeController(ILogger<HomeController> logger, IBLLReservation reservationBLL) : base(logger)
         {
-            _reservertionBLL = reservertionBLL;
+            _reservationBLL = reservationBLL;
         }
 
         public ActionResult Index()
@@ -57,9 +57,12 @@ namespace ActivityReservation.Controllers
                 whereLambda = m => m.ReservationPersonPhone == search.SearchItem1;
             }
             //load data
-            var list = _reservertionBLL.GetReservationList(search.PageIndex, search.PageSize, out var rowsCount,
-                whereLambda, m => m.ReservationForDate, m => m.ReservationTime, false, false);
-            var dataList = list.ToPagedList(search.PageIndex, search.PageSize, rowsCount);
+            var list = _reservationBLL.Paged(queryBuilder => queryBuilder
+                    .WithPredict(whereLambda)
+                    .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
+                    .WithInclude(query => query.Include(r => r.Place))
+                    , search.PageIndex, search.PageSize);
+            var dataList = list.ToPagedList();
             return View(dataList);
         }
 
@@ -167,7 +170,7 @@ namespace ActivityReservation.Controllers
                     {
                         reservation.ReservationPeriod += (1 << item);
                     }
-                    var bValue = await _reservertionBLL.InsertAsync(reservation);
+                    var bValue = await _reservationBLL.InsertAsync(reservation);
                     if (bValue > 0)
                     {
                         result.Result = true;
@@ -205,7 +208,7 @@ namespace ActivityReservation.Controllers
             {
                 return Content("请求异常，请验证手机号");
             }
-            var r = _reservertionBLL.Fetch(re => re.ReservationId == id);
+            var r = _reservationBLL.Fetch(re => re.ReservationId == id);
             if (r.ReservationPersonPhone != phone.Trim())
             {
                 return Content("请求异常，或者手机号输入有误");

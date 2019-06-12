@@ -27,7 +27,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public JsonResult BlockTypes()
         {
-            return Json(HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true));
+            return Json(HttpContext.RequestServices.GetService<IBLLBlockType>().Get());
         }
 
         /// <summary>
@@ -61,7 +61,8 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var blockList = _blockEntityHelper.Paged(queryBuilder => queryBuilder.WithPredict(whereLambda)
+                var blockList = _blockEntityHelper.Paged(queryBuilder => queryBuilder
+                    .WithPredict(whereLambda)
                     .WithInclude(q => q.Include(b => b.BlockType))
                     .WithOrderBy(q => q.OrderByDescending(b => b.BlockTime)), search.PageIndex, search.PageSize);
                 var dataList = blockList.ToPagedList();
@@ -95,7 +96,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     if (count == 1)
                     {
                         //记录日志
-                        OperLogHelper.AddOperLog(string.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity,
+                        OperLogHelper.AddOperLog($"添加 {blockValue} 到黑名单", OperLogModule.BlockEntity,
                             Username);
                         return Json(true);
                     }

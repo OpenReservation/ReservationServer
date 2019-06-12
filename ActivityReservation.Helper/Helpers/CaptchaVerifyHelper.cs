@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
 {
@@ -34,7 +35,8 @@ namespace ActivityReservation.Helpers
                 var request = JsonConvert.DeserializeObject<TencentCaptchaRequest>(captchaInfo);
                 if (request.UserIP.IsNullOrWhiteSpace())
                 {
-                    request.UserIP = DependencyResolver.Current.ResolveService<IHttpContextAccessor>().HttpContext.Connection.RemoteIpAddress.ToString();
+                    request.UserIP = DependencyResolver.Current.ResolveService<IHttpContextAccessor>()
+                        .HttpContext.GetUserIP();
                 }
                 return await _tencentCaptchaHelper.IsValidRequestAsync(request);
             }

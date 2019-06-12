@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Extensions;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
 {
@@ -29,8 +30,8 @@ namespace ActivityReservation.Helpers
         /// <param name="logContent">日志内容</param>
         /// <param name="logModule">日志模块</param>
         /// <param name="operBy">操作人</param>
-        /// <returns></returns>
-        private bool AddOperLog(string logContent, string logModule, string operBy)
+        /// <returns>是否添加成功</returns>
+        public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
         {
             var httpContext = _httpContextAccessor.HttpContext;
             try
@@ -39,9 +40,9 @@ namespace ActivityReservation.Helpers
                 {
                     LogId = Guid.NewGuid(),
                     LogContent = logContent,
-                    LogModule = logModule,
-                    IpAddress = httpContext.Connection.RemoteIpAddress.ToString(),
-                    OperBy = operBy,
+                    LogModule = logModule.GetDescription(),
+                    IpAddress = httpContext.GetUserIP(),
+                    OperBy = operBy ?? httpContext.User.Identity.Name,
                     OperTime = DateTime.Now
                 };
                 return httpContext.RequestServices.GetService<IBLLOperationLog>().Insert(log) > 0;
@@ -52,16 +53,6 @@ namespace ActivityReservation.Helpers
             }
             return false;
         }
-
-        /// <summary>
-        /// 添加操作日志
-        /// </summary>
-        /// <param name="logContent">日志内容</param>
-        /// <param name="logModule">日志模块</param>
-        /// <param name="operBy">操作人</param>
-        /// <returns>是否添加成功</returns>
-        public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
-            => AddOperLog(logContent, logModule.GetDescription(), operBy);
     }
 
     /// <summary>
@@ -91,7 +82,7 @@ namespace ActivityReservation.Helpers
         DisabledPeriod = 6, //禁用时间段
 
         [Description("微信")]
-        Wechat = 7, //微信
+        WeChat = 7, //微信
 
         [Description("其它")]
         Other = 127,

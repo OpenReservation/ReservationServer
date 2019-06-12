@@ -6,7 +6,7 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.Extensions
 {
-    public static class RequestLogExtenssion
+    public static class RequestLogExtension
     {
         public static IApplicationBuilder UseRequestLog(this IApplicationBuilder applicationBuilder)
         {

@@ -186,7 +186,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     new ReservationPlace() { PlaceId = placeId, UpdateBy = Username, IsActive = bStatus }, new[] { "IsActive",
                     "UpdateBy", "UpdateTime" });
                 OperLogHelper.AddOperLog(
-                    string.Format("修改活动室{0}:{1}状态，{2}", placeId.ToString(), placeName, (status > 0) ? "启用" : "禁用"),
+                    $"修改活动室{placeId.ToString()}:{placeName}状态，{((status > 0) ? "启用" : "禁用")}",
                     OperLogModule.ReservationPlace, Username);
                 return Json("");
             }
