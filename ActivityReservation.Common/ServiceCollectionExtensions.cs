@@ -51,7 +51,7 @@ namespace ActivityReservation.Common
                 throw new ArgumentNullException(nameof(action));
             }
             services.Configure(action);
-            return services.AddGoogleRecaptchaHelper();
+            return services.AddTencentCaptchaHelper();
         }
     }
 }
