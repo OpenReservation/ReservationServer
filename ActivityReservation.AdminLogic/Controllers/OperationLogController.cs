@@ -36,7 +36,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
             if (!string.IsNullOrWhiteSpace(search.SearchItem1)) // 日志模块名称
             {
-                whereLambda = whereLambda.And((l => l.LogModule.Contains(search.SearchItem1.Trim())));
+                whereLambda = whereLambda.And((l => l.LogModule == search.SearchItem1.Trim()));
             }
             if (!string.IsNullOrWhiteSpace(search.SearchItem2)) // 日志内容
             {
