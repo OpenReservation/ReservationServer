@@ -57,7 +57,7 @@ namespace ActivityReservation.Controllers
                 whereLambda = m => m.ReservationPersonPhone == search.SearchItem1;
             }
             //load data
-            var list = _reservationBLL.Paged(queryBuilder => queryBuilder
+            var list = _reservationBLL.GetPagedList(queryBuilder => queryBuilder
                     .WithPredict(whereLambda)
                     .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
                     .WithInclude(query => query.Include(r => r.Place))

@@ -128,7 +128,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
             }
             //load data
-            var list = _reservationHelper.Paged(queryBuilder => queryBuilder
+            var list = _reservationHelper.GetPagedList(queryBuilder => queryBuilder
                     .WithPredict(whereLambda)
                     .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
                     .WithInclude(query => query.Include(r => r.Place))
