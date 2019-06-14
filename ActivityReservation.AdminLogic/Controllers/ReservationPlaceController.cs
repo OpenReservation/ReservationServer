@@ -79,7 +79,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         PlaceName = newName,
                         UpdateBy = Username,
                         UpdateTime = DateTime.Now
-                    }, new[] { "PlaceName", "UpdateBy", "UpdateTime" });
+                    }, x => x.PlaceName, x => x.UpdateBy, x => x.UpdateTime);
                 OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}",
                     OperLogModule.ReservationPlace, Username);
                 return Json("");
@@ -148,8 +148,8 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 _reservationPlaceHelper.Update(
-                    new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = Username }, new[] { "IsDel", "UpdateBy",
-                    "UpdateTime" });
+                    new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = Username }, x => x.IsDel, x => x.UpdateBy,
+                    x => x.UpdateTime);
                 OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", OperLogModule.ReservationPlace,
                     Username);
                 return Json("");
@@ -183,8 +183,16 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 var bStatus = (status > 0);
                 _reservationPlaceHelper.Update(
-                    new ReservationPlace() { PlaceId = placeId, UpdateBy = Username, IsActive = bStatus }, new[] { "IsActive",
-                    "UpdateBy", "UpdateTime" });
+                    new ReservationPlace()
+                    {
+                        PlaceId = placeId,
+                        UpdateBy = Username,
+                        IsActive = bStatus
+                    },
+                    x => x.IsActive,
+                    x => x.UpdateBy,
+                    x => x.UpdateTime
+                    );
                 OperLogHelper.AddOperLog(
                     $"修改活动室{placeId.ToString()}:{placeName}状态，{((status > 0) ? "启用" : "禁用")}",
                     OperLogModule.ReservationPlace, Username);
@@ -272,7 +280,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             model.UpdateBy = Username;
             model.UpdateTime = DateTime.Now;
 
-            var result = _reservationPeriodHelper.Update(model, new[] { "PeriodTitle", "PeriodDescription", "UpdateBy", "UpdateTime" });
+            var result = _reservationPeriodHelper.Update(model, x => x.PeriodTitle, x => x.PeriodDescription, x => x.UpdateBy, x => x.UpdateTime);
             if (result > 0)
             {
                 OperLogHelper.AddOperLog($"更新预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);

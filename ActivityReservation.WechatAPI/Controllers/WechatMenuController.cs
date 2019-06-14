@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Data;
+using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {

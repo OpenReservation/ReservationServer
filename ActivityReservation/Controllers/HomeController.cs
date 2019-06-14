@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
+using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 
@@ -270,7 +271,7 @@ namespace ActivityReservation.Controllers
                 if (notice != null)
                 {
                     notice.NoticeVisitCount += 1;
-                    await noticeBll.UpdateAsync(notice, x => x.NoticeVisitCount).ConfigureAwait(false);
+                    await noticeBll.UpdateAsync(notice, x => x.NoticeVisitCount);
 
                     return View(notice);
                 }

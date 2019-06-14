@@ -154,7 +154,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                     return Json(false);
                 }
                 reservation.ReservationStatus = status > 0 ? 1 : 2;
-                var count = _reservationHelper.Update(reservation, new[] { "ReservationStatus" });
+
+                var count = _reservationHelper.Update(reservation, r => r.ReservationStatus);
                 if (count == 1)
                 {
                     //记录操作日志
