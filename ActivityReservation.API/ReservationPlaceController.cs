@@ -23,7 +23,7 @@ namespace ActivityReservation.API
         {
             var result = await _repository.GetAsync(builder => builder
             .WithPredict(x => x.IsActive)
-            .WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex).ThenBy(x => x.UpdateTime)),
+            .WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex).ThenBy(_ => _.UpdateTime)),
             cancellationToken: cancellationToken);
             return Ok(result);
         }
