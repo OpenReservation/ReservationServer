@@ -22,6 +22,7 @@ using StackExchange.Redis;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
+using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
 
 namespace ActivityReservation
@@ -99,7 +100,10 @@ namespace ActivityReservation
                 options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
             });
 
-            services.AddBLL();
+            services
+                .AddEFRepository()
+                .AddBLL();
+
             services.AddSingleton<OperLogHelper>();
             services.AddScoped<ReservationHelper>();
             // registerApplicationSettingService
