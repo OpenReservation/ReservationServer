@@ -33,7 +33,7 @@ spec:
           resources:
             limits:
               memory: "256Mi"
-              cpu: "300m"
+              cpu: "100m"
           readinessProbe:
             tcpSocket:
               port: 80
