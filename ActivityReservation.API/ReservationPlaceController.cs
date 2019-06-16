@@ -21,7 +21,10 @@ namespace ActivityReservation.API
         [HttpGet]
         public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
         {
-            var result = await _repository.GetAsync(builder => builder.WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex)), cancellationToken: cancellationToken);
+            var result = await _repository.GetAsync(builder => builder
+            .WithPredict(x => x.IsActive)
+            .WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex).ThenBy(x => x.UpdateTime)),
+            cancellationToken: cancellationToken);
             return Ok(result);
         }
     }

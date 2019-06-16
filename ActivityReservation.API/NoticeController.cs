@@ -50,7 +50,6 @@ namespace ActivityReservation.API
                 , queryBuilder => queryBuilder
                      .WithPredict(predict)
                      .WithOrderBy(q => q.OrderBy(_ => _.NoticePublishTime))
-
                 , pageNumber, pageSize, HttpContext.RequestAborted);
 
             return Ok(result);
