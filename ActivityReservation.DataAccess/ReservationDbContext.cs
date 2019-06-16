@@ -9,6 +9,13 @@ namespace ActivityReservation.Database
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ReservationPlace>().HasQueryFilter(x => !x.IsDel);
+            modelBuilder.Entity<DisabledPeriod>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
+        }
+
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<BlockType> BlockTypes { get; set; }
         public virtual DbSet<BlockEntity> BlockEntities { get; set; }
