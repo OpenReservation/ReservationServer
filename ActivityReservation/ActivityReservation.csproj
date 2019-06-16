@@ -11,6 +11,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj" />
+    <ProjectReference Include="..\ActivityReservation.API\ActivityReservation.API.csproj" />
     <ProjectReference Include="..\ActivityReservation.Common\ActivityReservation.Common.csproj" />
     <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj" />
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj" />

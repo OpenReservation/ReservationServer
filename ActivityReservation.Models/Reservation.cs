@@ -100,6 +100,7 @@ namespace ActivityReservation.Models
         /// 预约人姓名
         /// </summary>
         [Column]
+        [Required]
         public string ReservationPersonName
         {
             get { return reservationPersonName; }
@@ -111,6 +112,7 @@ namespace ActivityReservation.Models
         /// 预约人联系方式
         /// </summary>
         [Column]
+        [Required]
         public string ReservationPersonPhone
         {
             get { return reservationPersonPhone; }
@@ -141,6 +143,7 @@ namespace ActivityReservation.Models
         }
 
         [Column]
+        [Required]
         public string ReservationUnit
         {
             get { return reservationUnit; }
