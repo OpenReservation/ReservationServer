@@ -9,6 +9,7 @@ COPY ActivityReservation.Business/*.csproj ActivityReservation.Business/
 COPY ActivityReservation.Helper/*.csproj ActivityReservation.Helper/
 COPY ActivityReservation.WechatAPI/*.csproj ActivityReservation.WechatAPI/
 COPY ActivityReservation.AdminLogic/*.csproj ActivityReservation.AdminLogic/
+COPY ActivityReservation.API/*.csproj ActivityReservation.API/
 COPY ActivityReservation/ActivityReservation.csproj ActivityReservation/
 RUN dotnet restore ActivityReservation/ActivityReservation.csproj
 
