@@ -3,6 +3,30 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ActivityReservation.ViewModels
 {
+    public class ReservationListViewModel
+    {
+        [Display(Name = "预约日期")]
+        public DateTime ReservationForDate { get; set; }
+
+        [Display(Name = "预约时间段")]
+        public string ReservationForTime { get; set; }
+
+        public string ReservationPersonPhone { get; set; }
+
+        public string ReservationPersonName { get; set; }
+
+        public string ReservationUnit { get; set; }
+
+        public string ReservationPlaceName { get; set; }
+
+        [Display(Name = "预约活动内容")]
+        public string ReservationActivityContent { get; set; }
+
+        public Guid ReservationId { get; set; }
+
+        public DateTime ReservationTime { get; set; }
+    }
+
     public class ReservationViewModel
     {
         [Required]

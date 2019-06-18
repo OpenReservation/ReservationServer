@@ -48,25 +48,30 @@ namespace ActivityReservation.API
                 EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
                 EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
             }
-            var result = await _repository.GetPagedListAsync(
+            var result = await _repository.GetPagedListResultAsync(
+                x => new ReservationListViewModel
+                {
+                    ReservationForDate = x.ReservationForDate,
+                    ReservationForTime = x.ReservationForTime,
+                    ReservationId = x.ReservationId,
+                    ReservationUnit = x.ReservationUnit,
+                    ReservationTime = x.ReservationTime,
+                    ReservationPlaceName = x.Place.PlaceName,
+                    ReservationActivityContent = x.ReservationActivityContent,
+                    ReservationPersonName = x.ReservationPersonName,
+                    ReservationPersonPhone = x.ReservationPersonPhone
+                },
                 queryBuilder => queryBuilder
                      .WithPredict(predict)
                      .WithOrderBy(q => q.OrderBy(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
                      .WithInclude(q => q.Include(x => x.Place))
                 , pageNumber, pageSize, HttpContext.RequestAborted);
 
-            return Ok(result.Select(x => new
+            foreach (var model in result)
             {
-                x.ReservationForDate,
-                x.ReservationForTime,
-                x.ReservationId,
-                x.ReservationUnit,
-                x.ReservationTime,
-                x.Place.PlaceName,
-                x.ReservationPeriod,
-                x.ReservationPersonName,
-                ReservationPersonPhone = StringHelper.HideTelDetails(x.ReservationPersonPhone),
-            }));
+                model.ReservationPersonPhone = StringHelper.HideTelDetails(model.ReservationPersonPhone);
+            }
+            return Ok();
         }
 
         /// <summary>
