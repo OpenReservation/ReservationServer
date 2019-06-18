@@ -174,6 +174,8 @@ namespace ActivityReservation
                 });
 
             app.UseRequestLog();
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
             app.UseAuthentication();
             app.UseMvc(routes =>
             {
