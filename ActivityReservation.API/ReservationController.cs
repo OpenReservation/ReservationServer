@@ -94,12 +94,12 @@ namespace ActivityReservation.API
         /// <summary>
         /// 提交预约信息
         /// </summary>
+        /// <param name="model">预约信息</param>
         /// <param name="captcha">captcha info</param>
         /// <param name="captchaType">captchaType</param>
-        /// <param name="model">预约信息</param>
         /// <returns></returns>
         /// [HttpPost]
-        public async Task<IActionResult> MakeReservation([FromHeader]string captcha, [FromHeader]string captchaType = "Tencent", [FromBody]ReservationViewModel model)
+        public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType = "Tencent")
         {
             var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
             if (string.IsNullOrWhiteSpace(captchaType))
