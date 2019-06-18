@@ -135,8 +135,7 @@ namespace ActivityReservation.API
                     ReservationPersonPhone = model.ReservationPersonPhone,
 
                     ReservationFromIp = HttpContext.GetUserIP(),
-                    //管理员预约自动审核通过
-                    ReservationStatus = 1,
+
                     ReservationTime = DateTime.UtcNow,
 
                     UpdateBy = model.ReservationPersonName,
