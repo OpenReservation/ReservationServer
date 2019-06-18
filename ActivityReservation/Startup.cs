@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
+using ActivityReservation.API;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
+using ActivityReservation.Models;
 using ActivityReservation.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -19,11 +22,13 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using StackExchange.Redis;
+using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation
 {
@@ -51,7 +56,7 @@ namespace ActivityReservation
 
             // DataProtection persist in redis
             services.AddDataProtection()
-                .SetApplicationName("ActivityReservation")
+                .SetApplicationName(ApplicationHelper.ApplicationName)
                 .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
                 ;
 
@@ -80,7 +85,7 @@ namespace ActivityReservation
                     new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
 #endif
                 };
-                options.CachePrefix = "ActivityReservation";
+                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
                 options.DefaultDatabase = 2;
             });
 
@@ -125,6 +130,14 @@ namespace ActivityReservation
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Info { Title = "活动室预约系统 API", Version = "1.0" });
+
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
+            });
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
@@ -139,6 +152,7 @@ namespace ActivityReservation
             loggerFactory
                 .AddLog4Net()
                 .AddSentry(Configuration.GetAppSetting("SentryClientKey"));
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -147,10 +161,17 @@ namespace ActivityReservation
             {
                 app.UseExceptionHandler("/Error");
             }
-            app.UseHealthChecks(new PathString("/health"));
-            // app.UseHealthCheck("/health");
+            app.UseHealthCheck("/health");
 
             app.UseStaticFiles();
+
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    // c.RoutePrefix = string.Empty; //
+                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
+                    c.DocumentTitle = "活动室预约系统 API";
+                });
 
             app.UseRequestLog();
             app.UseAuthentication();

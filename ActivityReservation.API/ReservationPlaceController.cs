@@ -18,6 +18,11 @@ namespace ActivityReservation.API
             _repository = repository;
         }
 
+        /// <summary>
+        /// 预约活动室列表
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
         {

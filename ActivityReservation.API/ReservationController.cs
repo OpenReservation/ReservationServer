@@ -27,6 +27,13 @@ namespace ActivityReservation.API
             _repository = repository;
         }
 
+        /// <summary>
+        /// 活动室预约列表
+        /// </summary>
+        /// <param name="phone">手机号</param>
+        /// <param name="pageNumber">pageNumber</param>
+        /// <param name="pageSize">pageSize</param>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetAsync(string phone, int pageNumber = 1, int pageSize = 10)
         {
@@ -62,6 +69,13 @@ namespace ActivityReservation.API
             }));
         }
 
+        /// <summary>
+        /// 获取预约详情
+        /// </summary>
+        /// <param name="id">预约id</param>
+        /// <param name="phone">预约人手机号</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDetails(Guid id, string phone, CancellationToken cancellationToken)
         {
@@ -77,6 +91,11 @@ namespace ActivityReservation.API
             return Ok(detail);
         }
 
+        /// <summary>
+        /// 提交预约信息
+        /// </summary>
+        /// <param name="model">预约信息</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult MakeReservation([FromBody]ReservationViewModel model)
         {

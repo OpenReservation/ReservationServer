@@ -42,7 +42,6 @@ namespace ActivityReservation.API
                 x.NoticeTitle,
                 x.NoticeVisitCount,
                 x.NoticeCustomPath,
-                x.NoticePath,
                 x.NoticePublisher,
                 x.NoticePublishTime,
                 x.NoticeImagePath
