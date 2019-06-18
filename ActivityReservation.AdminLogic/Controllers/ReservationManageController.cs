@@ -69,7 +69,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         ReservationTime = DateTime.UtcNow,
 
                         UpdateBy = model.ReservationPersonName,
-                        UpdateTime = DateTime.Now,
+                        UpdateTime = DateTime.UtcNow,
                         ReservationId = Guid.NewGuid()
                     };
                     foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))

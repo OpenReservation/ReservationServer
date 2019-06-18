@@ -87,7 +87,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         EndDate = model.EndDate,
                         RepeatYearly = model.RepeatYearly,
                         IsActive = model.IsActive,
-                        UpdatedTime = DateTime.Now,
+                        UpdatedTime = DateTime.UtcNow,
                         UpdatedBy = Username
                     };
                     var count = _bllDisabledPeriod.Insert(period);

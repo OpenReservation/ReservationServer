@@ -117,7 +117,7 @@ namespace ActivityReservation.API
             try
             {
                 if (!HttpContext.RequestServices.GetService<ReservationHelper>()
-                    .IsReservationAvailable(model, out var msg, true))
+                    .IsReservationAvailable(model, out var msg))
                 {
                     result.ErrorMsg = msg;
                     return BadRequest(result);
@@ -139,7 +139,7 @@ namespace ActivityReservation.API
                     ReservationTime = DateTime.UtcNow,
 
                     UpdateBy = model.ReservationPersonName,
-                    UpdateTime = DateTime.Now,
+                    UpdateTime = DateTime.UtcNow,
                     ReservationId = Guid.NewGuid()
                 };
                 foreach (var item in model.ReservationForTimeIds.Split(',')

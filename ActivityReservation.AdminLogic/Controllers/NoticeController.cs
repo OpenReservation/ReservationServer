@@ -86,9 +86,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                     NoticeTitle = model.Title,
                     NoticeCustomPath = model.CustomPath,
                     NoticePublisher = Username,
-                    NoticePublishTime = DateTime.Now,
+                    NoticePublishTime = DateTime.UtcNow,
                     UpdateBy = Username,
-                    UpdateTime = DateTime.Now
+                    UpdateTime = DateTime.UtcNow
                 };
                 //
                 if (!string.IsNullOrEmpty(n.NoticeCustomPath))
@@ -100,12 +100,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    n.NoticeCustomPath = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    n.NoticeCustomPath = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                 }
                 var existStatus = _bLLNotice.Exist(nx => nx.NoticeCustomPath.ToLower().Equals(n.NoticeCustomPath.ToLower()));
                 if (existStatus)
                 {
-                    n.NoticeCustomPath = DateTime.Now.ToString("yyyyMMddHHmmss");
+                    n.NoticeCustomPath = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                 }
                 n.NoticePath = $"{n.NoticeCustomPath}.html";
 

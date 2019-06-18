@@ -72,7 +72,7 @@
         </div>
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - @applicationSettings.GetSettingValue("SystemTitle") &nbsp;&nbsp; HostIp: <strong>@(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault(_ => _.AddressFamily == AddressFamily.InterNetwork)) </strong></p>
+            <p>&copy; @DateTime.UtcNow.Year - @applicationSettings.GetSettingValue("SystemTitle") &nbsp;&nbsp; HostIp: <strong>@(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault(_ => _.AddressFamily == AddressFamily.InterNetwork)) </strong></p>
         </footer>
     </div>
     <environment names="Development">

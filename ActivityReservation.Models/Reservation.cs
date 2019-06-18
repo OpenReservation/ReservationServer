@@ -32,7 +32,7 @@ namespace ActivityReservation.Models
         /// <summary>
         /// 预约时间
         /// </summary>
-        private DateTime reservationTime = DateTime.Now;
+        private DateTime reservationTime = DateTime.UtcNow;
 
         /// <summary>
         /// 预约使用的日期

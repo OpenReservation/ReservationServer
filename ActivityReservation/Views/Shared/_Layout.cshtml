@@ -42,7 +42,7 @@
         <div class="main-content">@RenderBody()</div>
         <hr class="hidden-print" />
         <footer class="hidden-print">
-            <p>&copy; @DateTime.Now.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
+            <p>&copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
     </div>
     <environment names="Development">

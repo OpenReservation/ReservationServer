@@ -17,7 +17,7 @@ namespace ActivityReservation.Models
         /// <summary>
         /// operation time
         /// </summary>
-        private DateTime operTime = DateTime.Now;
+        private DateTime operTime = DateTime.UtcNow;
 
         /// <summary>
         /// logContent

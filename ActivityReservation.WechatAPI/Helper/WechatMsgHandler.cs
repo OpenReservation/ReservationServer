@@ -88,7 +88,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 responseContent = string.Format(ReplyMessageType.MessageText,
                     FromUserName.InnerText,
                     ToUserName.InnerText,
-                    DateTime.Now.Ticks,
+                    DateTime.UtcNow.Ticks,
                     String.IsNullOrEmpty(reply) ? "Sorry,I can not follow you." : reply);
             }
             //Logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
@@ -107,7 +107,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 responseContent = string.Format(ReplyMessageType.MessageImage,
                     FromUserName.InnerText,
                     ToUserName.InnerText,
-                    DateTime.Now.Ticks,
+                    DateTime.UtcNow.Ticks,
                     //"您发送的消息是："+Content.InnerText+"\r\n 我的回复："+reply + "\r\n<a href=\"http://private.chinacloudsites.cn/\">点击进入我们官网</a>"
                     MediaId.InnerText
                 );
@@ -133,7 +133,7 @@ namespace ActivityReservation.WechatAPI.Helper
                 responseContent = string.Format(ReplyMessageType.MessageText,
                     FromUserName.InnerText,
                     ToUserName.InnerText,
-                    DateTime.Now.Ticks,
+                    DateTime.UtcNow.Ticks,
                     reply);
             }
             return responseContent;
@@ -162,7 +162,7 @@ namespace ActivityReservation.WechatAPI.Helper
                         responseContent = string.Format(ReplyMessageType.MessageText,
                             FromUserName.InnerText,
                             ToUserName.InnerText,
-                            DateTime.Now.Ticks,
+                            DateTime.UtcNow.Ticks,
                             reply
                             );
                     }
@@ -179,7 +179,7 @@ namespace ActivityReservation.WechatAPI.Helper
                     //    responseContent = string.Format(ReplyMessageType.MessageText,
                     //        FromUserName.InnerText,
                     //        ToUserName.InnerText,
-                    //        DateTime.Now.Ticks,
+                    //        DateTime.UtcNow.Ticks,
                     //        $"你点击的是 {eventKey}");
                     //}
                 }

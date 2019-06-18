@@ -43,7 +43,7 @@ namespace ActivityReservation.Helpers
                     LogModule = logModule.GetDescription(),
                     IpAddress = httpContext.GetUserIP(),
                     OperBy = operBy ?? httpContext.User.Identity.Name,
-                    OperTime = DateTime.Now
+                    OperTime = DateTime.UtcNow
                 };
                 return httpContext.RequestServices.GetService<IBLLOperationLog>().Insert(log) > 0;
             }

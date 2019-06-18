@@ -76,14 +76,14 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 Directory.CreateDirectory(dirPath);
             }
-            var ymd = DateTime.Now.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
+            var ymd = DateTime.UtcNow.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
             dirPath += ymd + "/";
             saveUrl += ymd + "/";
             if (!Directory.Exists(dirPath))
             {
                 Directory.CreateDirectory(dirPath);
             }
-            var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss_ffff", DateTimeFormatInfo.InvariantInfo) + fileExt;
+            var newFileName = DateTime.UtcNow.ToString("yyyyMMddHHmmss_ffff", DateTimeFormatInfo.InvariantInfo) + fileExt;
             var filePath = dirPath + newFileName;
             //save file
             using (var stream = System.IO.File.Create(filePath))

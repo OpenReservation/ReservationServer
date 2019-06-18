@@ -88,7 +88,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     BlockId = Guid.NewGuid(),
                     BlockTypeId = typeId,
                     BlockValue = blockValue,
-                    BlockTime = DateTime.Now
+                    BlockTime = DateTime.UtcNow
                 };
                 try
                 {

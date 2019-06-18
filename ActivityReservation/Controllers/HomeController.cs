@@ -162,7 +162,7 @@ namespace ActivityReservation.Controllers
                         ReservationFromIp = HttpContext.GetUserIP(), //记录预约人IP地址
 
                         UpdateBy = model.ReservationPersonName,
-                        UpdateTime = DateTime.Now,
+                        UpdateTime = DateTime.UtcNow,
                         ReservationId = Guid.NewGuid()
                     };
                     //TODO:验证最大可预约时间段，同一个手机号，同一个IP地址

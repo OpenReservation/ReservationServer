@@ -53,9 +53,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "8:00~10:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now,
+                        CreateTime = DateTime.UtcNow,
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                     new ReservationPeriod
                     {
@@ -65,9 +65,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "10:00~12:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now.AddSeconds(2),
+                        CreateTime = DateTime.UtcNow.AddSeconds(2),
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                     new ReservationPeriod
                     {
@@ -77,9 +77,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "13:00~16:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now.AddSeconds(3),
+                        CreateTime = DateTime.UtcNow.AddSeconds(3),
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                     new ReservationPeriod
                     {
@@ -89,9 +89,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "08:00~18:00",
                         PlaceId = placeId1,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now.AddSeconds(3),
+                        CreateTime = DateTime.UtcNow.AddSeconds(3),
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                 });
                     //sys settings init

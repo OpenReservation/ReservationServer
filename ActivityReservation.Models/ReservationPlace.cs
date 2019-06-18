@@ -23,7 +23,7 @@ namespace ActivityReservation.Models
         /// <summary>
         /// 更新时间
         /// </summary>
-        private DateTime updateTime = DateTime.Now;
+        private DateTime updateTime = DateTime.UtcNow;
 
         /// <summary>
         /// 更新人

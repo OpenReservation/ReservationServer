@@ -78,7 +78,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         PlaceId = placeId,
                         PlaceName = newName,
                         UpdateBy = Username,
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     }, x => x.PlaceName, x => x.UpdateBy, x => x.UpdateTime);
                 OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}",
                     OperLogModule.ReservationPlace, Username);
@@ -237,9 +237,9 @@ namespace ActivityReservation.AdminLogic.Controllers
 
             model.PeriodId = Guid.NewGuid();
             model.CreateBy = Username;
-            model.CreateTime = DateTime.Now;
+            model.CreateTime = DateTime.UtcNow;
             model.UpdateBy = Username;
-            model.UpdateTime = DateTime.Now;
+            model.UpdateTime = DateTime.UtcNow;
 
             var result = _reservationPeriodHelper.Insert(model);
             if (result > 0)
@@ -278,7 +278,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             //}
 
             model.UpdateBy = Username;
-            model.UpdateTime = DateTime.Now;
+            model.UpdateTime = DateTime.UtcNow;
 
             var result = _reservationPeriodHelper.Update(model, x => x.PeriodTitle, x => x.PeriodDescription, x => x.UpdateBy, x => x.UpdateTime);
             if (result > 0)

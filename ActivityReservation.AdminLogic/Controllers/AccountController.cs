@@ -107,7 +107,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Logout()
         {
-            Logger.Info($"{Username} logout at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+            Logger.Info($"{Username} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
             //logout
             await HttpContext.SignOutAsync();
             //redirect to homepage
@@ -136,10 +136,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                         CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
                         if (_bLLUser.Update(u => u.UserId == CurrentUser.UserId, u => u.UserPassword, CurrentUser.UserPassword) > 0)
                         {
-                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
                                 OperLogModule.Account, Username);
 
-                            Logger.Info($"{Username} modify password at {DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                            Logger.Info($"{Username} modify password at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
 
                             //密码修改成功，需要重新登录
                             HttpContext.SignOutAsync().ConfigureAwait(false);
@@ -181,7 +181,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     var count = _bLLUser.Update(user => user.UserId == u.UserId, ur => ur.UserMail, u.UserMail);
                     if (count == 1)
                     {
-                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
+                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
                             OperLogModule.Account, Username);
                         return Json(true);
                     }

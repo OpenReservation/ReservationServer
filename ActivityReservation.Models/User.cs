@@ -13,7 +13,7 @@ namespace ActivityReservation.Models
 
         private bool isEnabled = true;
 
-        private DateTime addTime = DateTime.Now;
+        private DateTime addTime = DateTime.UtcNow;
 
         #endregion Private Field
 
