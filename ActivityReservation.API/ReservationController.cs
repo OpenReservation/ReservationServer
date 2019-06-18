@@ -98,7 +98,7 @@ namespace ActivityReservation.API
         /// <param name="captcha">captcha info</param>
         /// <param name="captchaType">captchaType</param>
         /// <returns></returns>
-        /// [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType = "Tencent")
         {
             var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
