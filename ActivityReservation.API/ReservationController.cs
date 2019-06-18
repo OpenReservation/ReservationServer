@@ -94,12 +94,26 @@ namespace ActivityReservation.API
         /// <summary>
         /// 提交预约信息
         /// </summary>
+        /// <param name="captcha">captcha info</param>
+        /// <param name="captchaType">captchaType</param>
         /// <param name="model">预约信息</param>
         /// <returns></returns>
-        [HttpPost]
-        public ActionResult MakeReservation([FromBody]ReservationViewModel model)
+        /// [HttpPost]
+        public async Task<IActionResult> MakeReservation([FromHeader]string captcha, [FromHeader]string captchaType = "Tencent", [FromBody]ReservationViewModel model)
         {
             var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
+            if (string.IsNullOrWhiteSpace(captchaType))
+            {
+                captchaType = "Tencent";
+            }
+            var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
+                .ValidateVerifyCodeAsync(captchaType, captcha);
+            if (!isCodeValid)
+            {
+                result.Status = JsonResultStatus.RequestError;
+                result.ErrorMsg = "验证码有误, 请重新验证";
+                return BadRequest(result);
+            }
             try
             {
                 if (!HttpContext.RequestServices.GetService<ReservationHelper>()
@@ -134,7 +148,7 @@ namespace ActivityReservation.API
                 {
                     reservation.ReservationPeriod += (1 << item);
                 }
-                _repository.Insert(reservation);
+                await _repository.InsertAsync(reservation);
                 result.Result = true;
                 result.Status = JsonResultStatus.Success;
                 return Ok(result);
