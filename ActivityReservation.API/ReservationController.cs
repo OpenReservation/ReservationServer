@@ -42,12 +42,7 @@ namespace ActivityReservation.API
             {
                 predict = n => n.ReservationPersonPhone == phone.Trim();
             }
-            else
-            {
-                predict = (m =>
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
-            }
+
             var result = await _repository.GetPagedListResultAsync(
                 x => new ReservationListViewModel
                 {
@@ -71,7 +66,7 @@ namespace ActivityReservation.API
             {
                 model.ReservationPersonPhone = StringHelper.HideTelDetails(model.ReservationPersonPhone);
             }
-            return Ok();
+            return Ok(result);
         }
 
         /// <summary>
