@@ -38,7 +38,6 @@ namespace ActivityReservation.API
             }
             var result = await _repository.GetPagedListResultAsync(x => new
             {
-                x.NoticeId,
                 x.NoticeTitle,
                 x.NoticeVisitCount,
                 x.NoticeCustomPath,
