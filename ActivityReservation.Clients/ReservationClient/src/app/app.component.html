@@ -3,19 +3,14 @@
   <mat-sidenav #sidenav mode="over" class="app-sidenav" color="primary">
   </mat-sidenav>
 
-  <mat-toolbar color="primary">
+  <mat-toolbar color="primary" style="position: fixed; left:0;top:0;">
     <button mat-button class="app-menu-button" (click)="sidenav.toggle()">
       <i class="material-icons">menu</i>
     </button>
     <span class="title">{{title}}</span>
   </mat-toolbar>
 
-  <div class="app-content">
-    <!-- <mat-card>
-      <mat-card-content>
-        <app-reservation-list></app-reservation-list>
-      </mat-card-content>
-    </mat-card> -->
+  <div class="app-content" style="margin-top: 58px">
     <div>
       <app-reservation-list></app-reservation-list>
     </div>    

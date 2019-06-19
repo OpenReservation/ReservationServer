@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PagedListData } from '../../models/PagedListData';
 import { Reservation } from '../../models/Reservation';
 import { ReservationService } from '../../services/ReservationService';
+import { ColumnInfo } from 'src/app/models/ColumnInfo';
 
 @Component({
   selector: 'app-reservation-list',
@@ -15,18 +16,46 @@ export class ReservationListComponent implements OnInit {
   public pageSize = 10;
   public total = 10;
 
-  displayedColumns: string[] = [
-    'ReservationForDate', 
-    'ReservationForTime', 
-    'ReservationPlaceName',
-    'ReservationPersonName',
-    'ReservationPersonPhone',
-    'ReservationUnit',
-    'ReservationActivityContent',
-    'ReservationTime'
+  columns: Array<ColumnInfo> = [
+    { 
+      ColumnName: 'ReservationPlaceName',
+      DisplayName: "活动室名称" 
+    },
+    { 
+      ColumnName: 'ReservationForDate',
+      DisplayName: "预约使用日期" 
+    }, 
+    { 
+      ColumnName: 'ReservationForTime',
+      DisplayName: "预约使用时间" 
+    }, 
+    { 
+      ColumnName: 'ReservationPersonName',
+      DisplayName: "预约人名称" 
+    },
+    { 
+      ColumnName: 'ReservationPersonPhone',
+      DisplayName: "预约人手机号" 
+    },
+    { 
+      ColumnName: 'ReservationUnit',
+      DisplayName: "预约单位" 
+    },
+    { 
+      ColumnName: 'ReservationActivityContent',
+      DisplayName: "活动内容" 
+    },
+    { 
+      ColumnName:'ReservationTime',
+      DisplayName: "预约时间" 
+    }
   ];
 
-  constructor(private svc: ReservationService) { }
+  displayedColumns: Array<string>;
+
+  constructor(private svc: ReservationService) {
+    this.displayedColumns = this.columns.map(c=>c.ColumnName);
+   }
 
   ngOnInit() {
     
