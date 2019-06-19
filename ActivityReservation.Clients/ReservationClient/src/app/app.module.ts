@@ -3,16 +3,22 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ReservationComponent } from './reservation/reservation.component';
+import { AppMaterialModule } from './app.material.module';
+import { HttpClientModule } from '@angular/common/http';
+import { ReservationListComponent } from './reservation/reservation-list/reservation-list.component';
+import { NoticeListComponent } from './notice/notice-list/notice-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    ReservationComponent
+    ReservationListComponent,
+    NoticeListComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    AppMaterialModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

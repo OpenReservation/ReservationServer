@@ -1,0 +1,14 @@
+<div class="mat-elevation-z8">
+  <table mat-table #table [dataSource]="noticeList" class="mat-elevation-z8">
+    <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
+        <mat-header-cell *matHeaderCellDef> {{column}} </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+    </ng-container>
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator showFirstLastButtons [length]="total" [pageIndex]="pageNumber-1" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
+  </mat-paginator>
+</div>

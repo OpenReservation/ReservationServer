@@ -1,3 +1,3 @@
 export class ReservationPlace{
-    
+    prop
 }
