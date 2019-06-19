@@ -15,7 +15,6 @@
                 <th>预约人姓名</th>
                 <th>预约人联系方式</th>
                 <th>预约时间</th>
-                <th>预约人IP</th>
                 <th>审核状态</th>
                 <th>操作</th>
             </tr>
@@ -41,7 +40,7 @@
                 }
                 <tr class="@className">
                     <td>
-                        @item.Place?.PlaceName
+                        @item.ReservationPlaceName
                     </td>
                     <td>
                         @item.ReservationForDate.ToString("yyyy-MM-dd")
@@ -63,9 +62,6 @@
                     </td>
                     <td>
                         @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
-                    </td>
-                    <td>
-                        @item.ReservationFromIp
                     </td>
                     <td>
                         @Html.Raw(status)
