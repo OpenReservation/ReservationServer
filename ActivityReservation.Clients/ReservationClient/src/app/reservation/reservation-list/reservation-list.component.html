@@ -1,8 +1,8 @@
 <div class="mat-elevation-z8">
   <table mat-table #table [dataSource]="reservations" class="mat-elevation-z8">
     <ng-container matColumnDef="{{column}}" *ngFor="let column of displayedColumns">
-        <mat-header-cell *matHeaderCellDef> {{column}} </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+        <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
     </ng-container>
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->

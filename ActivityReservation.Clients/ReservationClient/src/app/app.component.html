@@ -10,8 +10,15 @@
     <span class="title">{{title}}</span>
   </mat-toolbar>
 
-  <mat-sidenav-content class="app-content">
-    <app-reservation-list></app-reservation-list>
+  <div class="app-content">
+    <!-- <mat-card>
+      <mat-card-content>
+        <app-reservation-list></app-reservation-list>
+      </mat-card-content>
+    </mat-card> -->
+    <div>
+      <app-reservation-list></app-reservation-list>
+    </div>    
     <!-- <app-notice-list></app-notice-list> -->
-  </mat-sidenav-content>
+  </div>
 </mat-sidenav-container>
