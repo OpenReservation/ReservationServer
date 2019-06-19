@@ -128,7 +128,20 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
             }
             //load data
-            var list = _reservationHelper.GetPagedList(queryBuilder => queryBuilder
+            var list = _reservationHelper.GetPagedListResult(
+                x => new ReservationListViewModel
+                {
+                    ReservationForDate = x.ReservationForDate,
+                    ReservationForTime = x.ReservationForTime,
+                    ReservationId = x.ReservationId,
+                    ReservationUnit = x.ReservationUnit,
+                    ReservationTime = x.ReservationTime,
+                    ReservationPlaceName = x.Place.PlaceName,
+                    ReservationActivityContent = x.ReservationActivityContent,
+                    ReservationPersonName = x.ReservationPersonName,
+                    ReservationPersonPhone = x.ReservationPersonPhone,
+                    ReservationStatus = x.ReservationStatus,
+                }, queryBuilder => queryBuilder
                     .WithPredict(whereLambda)
                     .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
                     .WithInclude(query => query.Include(r => r.Place))

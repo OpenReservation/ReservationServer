@@ -45,18 +45,32 @@ namespace ActivityReservation.Controllers
             Expression<Func<Reservation, bool>> whereLambda = (m => true);
             //补充查询条件
             //根据预约日期查询
-            if (!string.IsNullOrEmpty(search.SearchItem0))
+            if (!string.IsNullOrWhiteSpace(search.SearchItem0))
             {
                 whereLambda = m =>
                     EF.Functions.DateDiffDay(DateTime.Parse(search.SearchItem0), m.ReservationForDate) == 0;
             }
             //根据预约人联系方式查询
-            if (!string.IsNullOrEmpty(search.SearchItem1))
+            if (!string.IsNullOrWhiteSpace(search.SearchItem1))
             {
-                whereLambda = m => m.ReservationPersonPhone == search.SearchItem1;
+                whereLambda = m => m.ReservationPersonPhone == search.SearchItem1.Trim();
             }
             //load data
-            var list = _reservationBLL.GetPagedList(queryBuilder => queryBuilder
+            var list = _reservationBLL.GetPagedListResult(
+                x => new ReservationListViewModel
+                {
+                    ReservationForDate = x.ReservationForDate,
+                    ReservationForTime = x.ReservationForTime,
+                    ReservationId = x.ReservationId,
+                    ReservationUnit = x.ReservationUnit,
+                    ReservationTime = x.ReservationTime,
+                    ReservationPlaceName = x.Place.PlaceName,
+                    ReservationActivityContent = x.ReservationActivityContent,
+                    ReservationPersonName = x.ReservationPersonName,
+                    ReservationPersonPhone = x.ReservationPersonPhone,
+                    ReservationStatus = x.ReservationStatus,
+                },
+                queryBuilder => queryBuilder
                     .WithPredict(whereLambda)
                     .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
                     .WithInclude(query => query.Include(r => r.Place))
@@ -74,6 +88,7 @@ namespace ActivityReservation.Controllers
             var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
                 .Select(s => s.IsDel == false && s.IsActive)
                 .OrderBy(_ => _.PlaceIndex)
+                .ThenBy(_ => _.PlaceName)
                 .ToList();
             return View(places);
         }

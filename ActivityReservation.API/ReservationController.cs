@@ -54,7 +54,8 @@ namespace ActivityReservation.API
                     ReservationPlaceName = x.Place.PlaceName,
                     ReservationActivityContent = x.ReservationActivityContent,
                     ReservationPersonName = x.ReservationPersonName,
-                    ReservationPersonPhone = x.ReservationPersonPhone
+                    ReservationPersonPhone = x.ReservationPersonPhone,
+                    ReservationStatus = x.ReservationStatus,
                 },
                 queryBuilder => queryBuilder
                      .WithPredict(predict)

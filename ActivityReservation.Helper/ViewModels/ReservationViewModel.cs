@@ -25,6 +25,8 @@ namespace ActivityReservation.ViewModels
         public Guid ReservationId { get; set; }
 
         public DateTime ReservationTime { get; set; }
+
+        public int ReservationStatus { get; set; }
     }
 
     public class ReservationViewModel

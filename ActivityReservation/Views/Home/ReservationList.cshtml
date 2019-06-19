@@ -1,8 +1,8 @@
-﻿@model IPagedListModel<ActivityReservation.Models.Reservation>
+﻿@model IPagedListModel<ActivityReservation.ViewModels.ReservationListViewModel>
 @{
     Layout = null;
 }
-@if (Model.Data != null && Model.Data.Count() > 0)
+@if (Model.Data != null && Model.Data.Count > 0)
 {
     <table class="table table-hover">
         <thead>
@@ -42,7 +42,7 @@
                 }
                 <tr class="@className">
                     <td>
-                        @item.Place?.PlaceName
+                        @item.ReservationPlaceName
                     </td>
                     <td>
                         @item.ReservationForDate.ToString("yyyy-MM-dd")
