@@ -42,9 +42,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult ReservationList(SearchHelperModel search)
         {
-            Expression<Func<Reservation, bool>> whereLambda = (m =>
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
+            Expression<Func<Reservation, bool>> whereLambda = (m => true);
             //补充查询条件
             //根据预约日期查询
             if (!string.IsNullOrEmpty(search.SearchItem0))
