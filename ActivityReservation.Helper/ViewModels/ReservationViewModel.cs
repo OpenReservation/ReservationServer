@@ -1,11 +1,14 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
+using WeihanLi.Common.Json;
 
 namespace ActivityReservation.ViewModels
 {
     public class ReservationListViewModel
     {
         [Display(Name = "预约日期")]
+        [JsonConverter(typeof(DateTimeFormatConverter), "yyyy-MM-dd")]
         public DateTime ReservationForDate { get; set; }
 
         [Display(Name = "预约时间段")]
