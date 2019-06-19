@@ -67,7 +67,7 @@ namespace ActivityReservation.API
                      .WithInclude(q => q.Include(x => x.Place))
                 , pageNumber, pageSize, HttpContext.RequestAborted);
 
-            foreach (var model in result)
+            foreach (var model in result.Data)
             {
                 model.ReservationPersonPhone = StringHelper.HideTelDetails(model.ReservationPersonPhone);
             }
