@@ -9,6 +9,6 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator showFirstLastButtons [length]="total" [pageIndex]="pageNumber-1" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
+  <mat-paginator showFirstLastButtons (page)="onPageEvent($event)" [length]="total" [pageIndex]="pageNumber-1" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
   </mat-paginator>
 </div>

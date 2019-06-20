@@ -57,16 +57,25 @@ export class ReservationListComponent implements OnInit {
     this.displayedColumns = this.columns.map(c=>c.ColumnName);
    }
 
-  ngOnInit() {
-    
-    this.svc.Get()
+  ngOnInit() {    
+    this.loadData();
+  }
+
+  private loadData(params?:object): void{
+    this.svc.Get(params)
     .subscribe(data => {
       console.log(data);
       this.pageNumber = data.PageNumber;
       this.pageSize = data.PageSize;
       this.total = data.TotalCount;
-      this.reservations = data.Data;
+      this.noticeList = data.Data;
     });
   }
 
+  onPageEvent(pageParams){
+    this.loadData({
+      pageNumber: pageParams.pageIndex + 1,
+      pageSize: pageParams.pageSize
+    });
+  }
 }

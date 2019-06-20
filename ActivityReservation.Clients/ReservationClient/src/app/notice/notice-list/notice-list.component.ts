@@ -12,19 +12,16 @@ export class NoticeListComponent implements OnInit {
   public pageNumber = 1;
   public pageSize = 10;
   public total = 10;
-  displayedColumns: string[] = [
-    "NoticeTitle",
-    "NoticeVisitCount",
-    "NoticeCustomPath",
-    "NoticePublisher",
-    "NoticePublishTime"
-  ];
 
   constructor(private svc: NoticeService) { }
 
   ngOnInit() {
         
-    this.svc.Get()
+    this.loadData();
+  }
+
+  private loadData(params?:object): void{
+    this.svc.Get(params)
     .subscribe(data => {
       console.log(data);
       this.pageNumber = data.PageNumber;
@@ -34,5 +31,11 @@ export class NoticeListComponent implements OnInit {
     });
   }
 
+  onPageEvent(pageParams){
+    this.loadData({
+      pageNumber: pageParams.pageIndex + 1,
+      pageSize: pageParams.pageSize
+    });
+  }
 }
 
