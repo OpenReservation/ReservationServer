@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MenuItem } from './models/MenuItem';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  title = '活动室预约系统';
+  title = '活动室预约系统';  
+
+  menus: Array<MenuItem> = [
+    { Title: "首页", Link: "/" },
+    { Title: "公告", Link: "/notice" },
+    { Title: "关于", Link: "/about" },
+  ];
 }

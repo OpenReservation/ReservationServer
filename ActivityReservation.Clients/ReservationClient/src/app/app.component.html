@@ -1,6 +1,11 @@
 <mat-sidenav-container>
 
   <mat-sidenav #sidenav mode="over" class="app-sidenav" color="primary">
+      <mat-list>
+        <mat-list-item>
+          <a [title]="item.Title" [routerLink]="item.Link" *ngFor="let item of menus">{{item.Title}}</a>
+        </mat-list-item>
+      </mat-list>
   </mat-sidenav>
 
   <mat-toolbar color="primary" style="position: fixed; left:0;top:0;">
@@ -11,9 +16,8 @@
   </mat-toolbar>
 
   <div class="app-content" style="margin-top: 58px">
-    <div>
-      <app-reservation-list></app-reservation-list>
-      <!-- <app-notice-list></app-notice-list> -->
-    </div>    
+    <router-outlet></router-outlet>
+    <!-- <app-reservation-list></app-reservation-list> -->
+    <!-- <app-notice-list></app-notice-list> -->
   </div>
 </mat-sidenav-container>

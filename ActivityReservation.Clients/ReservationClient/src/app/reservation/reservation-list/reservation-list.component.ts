@@ -68,7 +68,7 @@ export class ReservationListComponent implements OnInit {
       this.pageNumber = data.PageNumber;
       this.pageSize = data.PageSize;
       this.total = data.TotalCount;
-      this.noticeList = data.Data;
+      this.reservations = data.Data;
     });
   }
 
