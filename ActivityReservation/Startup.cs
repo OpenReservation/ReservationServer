@@ -25,6 +25,7 @@ using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;

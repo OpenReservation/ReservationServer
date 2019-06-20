@@ -66,7 +66,7 @@ namespace ActivityReservation.API
             foreach (var model in result.Data)
             {
                 model.ReservationPersonPhone = StringHelper.HideTelDetails(model.ReservationPersonPhone);
-                model.ReservationPersonName = StringHelper.HideSensitiveInfo(model.ReservationPersonName, 1, 0, true, sensitiveCharCount:2);
+                model.ReservationPersonName = StringHelper.HideSensitiveInfo(model.ReservationPersonName, 1, 0, 2);
             }
             return Ok(result);
         }

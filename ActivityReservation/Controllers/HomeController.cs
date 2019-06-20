@@ -142,7 +142,7 @@ namespace ActivityReservation.Controllers
             {
                 captchaType = "Tencent";
             }
-            var result = new JsonResultModel();
+            var result = new JsonResultModel<bool>();
             var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
