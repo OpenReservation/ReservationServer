@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NoticeService } from '../../services/NoticeService';
+import { Notice } from '../../models/Notice';
+
 
 @Component({
   selector: 'app-notice-detail',
@@ -7,9 +10,20 @@ import { NoticeService } from '../../services/NoticeService';
 })
 export class NoticeDetailComponent implements OnInit {
 
-  constructor(private svc: NoticeService) { }
+  notice: Notice;
+  constructor(
+    private route: ActivatedRoute,
+    private svc: NoticeService
+  ) { }
 
   ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      let noticePath = params.get('noticePath');
+      this.svc.GetDetails(noticePath)
+      .subscribe(data => {
+        this.notice = data;
+      });
+    });
   }
 
 }

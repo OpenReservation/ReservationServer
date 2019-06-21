@@ -8,13 +8,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReservationListComponent } from './reservation/reservation-list/reservation-list.component';
 import { NoticeListComponent } from './notice/notice-list/notice-list.component';
 import { NoticeDetailComponent } from './notice/notice-detail/notice-detail.component';
+import { AboutComponent } from './about/about.component';
+import { SanitizeHtmlPipe } from './pipes/safe-html';
 
 @NgModule({
   declarations: [
     AppComponent,
     ReservationListComponent,
     NoticeListComponent,
-    NoticeDetailComponent
+    NoticeDetailComponent,
+    AboutComponent,
+    SanitizeHtmlPipe
   ],
   imports: [
     BrowserModule,

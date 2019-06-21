@@ -1,23 +1,22 @@
-<mat-sidenav-container>
+<mat-sidenav-container style="min-height:30rem;">
 
   <mat-sidenav #sidenav mode="over" class="app-sidenav" color="primary">
-      <mat-list>
-        <mat-list-item>
-          <a [title]="item.Title" [routerLink]="item.Link" *ngFor="let item of menus">{{item.Title}}</a>
-        </mat-list-item>
-      </mat-list>
+    <mat-toolbar>
+      <mat-toolbar-row *ngFor="let item of menus">
+         <span><a [title]="item.Title" [routerLink]="item.Link">{{item.Title}}</a></span>
+      </mat-toolbar-row>
+      <mat-divider></mat-divider>
+    </mat-toolbar>
   </mat-sidenav>
 
   <mat-toolbar color="primary" style="position: fixed; left:0;top:0;">
     <button mat-button class="app-menu-button" (click)="sidenav.toggle()">
       <i class="material-icons">menu</i>
     </button>
-    <span class="title">{{title}}</span>
+    <span class="title" routerLink="/">{{title}}</span>
   </mat-toolbar>
 
   <div class="app-content" style="margin-top: 58px">
     <router-outlet></router-outlet>
-    <!-- <app-reservation-list></app-reservation-list> -->
-    <!-- <app-notice-list></app-notice-list> -->
   </div>
 </mat-sidenav-container>
