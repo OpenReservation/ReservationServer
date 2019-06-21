@@ -5,10 +5,10 @@
     </h2>
     </header>
     <section style="text-align:center">
-        发布时间：{{notice?.NoticePublishTime}} &nbsp;&nbsp; 
+        发布时间：{{notice?.NoticePublishTime}} &nbsp;&nbsp;
         浏览次数：{{notice?.NoticeVisitCount}}
     </section>
-    <section [innerHTML]="notice?.NoticeContent | sanitizeHtml">
+    <section style="margin:0 auto;max-width:800px" [innerHTML]="notice?.NoticeContent | sanitizeHtml">
     </section>
     <footer>
     </footer>
