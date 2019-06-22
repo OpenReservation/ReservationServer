@@ -64,7 +64,7 @@ namespace ActivityReservation.ViewModels
 
         [Required]
         [Display(Name = "预约人姓名")]
-        [StringLength(4, MinimumLength = 2, ErrorMessage = "联系人姓名不合法")]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "联系人姓名不合法")]
         public string ReservationPersonName { get; set; }
 
         [Required]

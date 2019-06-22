@@ -39,13 +39,8 @@
         </header>*@
     <div class="container" ng-controller="ReservateCtrl">
         <form id="form1" name="form1">
-            @* 选择预约日期 *@
-            <section id="secPickDate" ng-class="{'show':step==0}">
-                <p class="lead">选择预约日期</p>
-                <div id="datepicker"></div>
-            </section>
             @* 选择预约活动室 *@
-            <section id="secActivityRoom" ng-class="{'show':step==1}">
+            <section id="secActivityRoom" ng-class="{'show':step==0}">
                 <p class="lead">选择预约活动室</p>
                 <div id="placesList">
                     @if (Model.Count > 0)
@@ -63,6 +58,12 @@
                     }
                 </div>
             </section>
+            @* 选择预约日期 *@
+            <section id="secPickDate" ng-class="{'show':step==1}">
+                <p class="lead">选择预约日期</p>
+                <div id="datepicker"></div>
+            </section>
+
             @* 选择预约时间段 *@
             <section id="secPickTimePeriod" ng-class="{'show':step==2}">
                 <p class="lead">选择预约时间段</p>
@@ -260,7 +261,7 @@
                     $scope.nextStep = function() {
                         console.log(`current step: ${$scope.step}`);
                         switch ($scope.step) {
-                        case 0:
+                        case 1:
                             //预约日期判断处理
                             var date = $("#datepicker").val();
                             if (!date) {
@@ -270,16 +271,6 @@
                             } else {
                                 //TODO:从服务器端判断日期是否合法，不合法则提示用户重新选择
                                 $scope.reservationModel.ReservationForDate = date;
-                            }
-                            break;
-                        case 1:
-                            //预约地点 判断
-                            var place = $("input[name='place']:radio:checked").val();
-                            if (place) {
-                                $scope.reservationModel.ReservationPlaceId =
-                                    $("input[name='place']:radio:checked").val();
-                                $scope.reservationModel.ReservationPlaceName =
-                                    $("input[name='place']:radio:checked").parent().text().trim();
                                 //请求服务器端接口，判断可用预约时间段
                                 var loading= layer.load(2);
                                 $.ajax({
@@ -304,6 +295,16 @@
                                         layer.alert(res);
                                     }
                                 });
+                            }
+                            break;
+                        case 0:
+                            //预约地点 判断
+                            var place = $("input[name='place']:radio:checked").val();
+                            if (place) {
+                                $scope.reservationModel.ReservationPlaceId =
+                                    $("input[name='place']:radio:checked").val();
+                                $scope.reservationModel.ReservationPlaceName =
+                                    $("input[name='place']:radio:checked").parent().text().trim();
                             } else {
                                 layer.msg('请选择要预约的活动室');
                                 console.log('请选择要预约的活动室');
