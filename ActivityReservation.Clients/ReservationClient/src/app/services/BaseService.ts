@@ -36,7 +36,7 @@ export class BaseService<TModel>{
   }
 
 
-  public Post(model: TModel): Observable<TModel> {
-    return this.http.post<TModel>(`${this.apiBaseUrl}/api/${this.apiPath}`, model);
+  public Post(model: TModel): Observable<any> {
+    return this.http.post(`${this.apiBaseUrl}/api/${this.apiPath}`, model);
   }
 }

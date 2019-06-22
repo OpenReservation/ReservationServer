@@ -51,6 +51,16 @@ export class Reservation{
     public set ReservationPlaceName(v : string) {
         this._ReservationPlaceName = v;
     }
+
+    
+    private _ReservationPlaceId : string;
+    public get ReservationPlaceId() : string {
+        return this._ReservationPlaceId;
+    }
+    public set ReservationPlaceId(v : string) {
+        this._ReservationPlaceId = v;
+    }
+    
     
     
     private _ReservationActivityContent : string;

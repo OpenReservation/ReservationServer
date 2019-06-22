@@ -10,21 +10,28 @@ import { NoticeListComponent } from './notice/notice-list/notice-list.component'
 import { NoticeDetailComponent } from './notice/notice-detail/notice-detail.component';
 import { AboutComponent } from './about/about.component';
 import { SanitizeHtmlPipe } from './pipes/safe-html';
+import { NewReservationComponent } from './reservation/new-reservation/new-reservation.component';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
     AppComponent,
+    NewReservationComponent,
     ReservationListComponent,
     NoticeListComponent,
     NoticeDetailComponent,
     AboutComponent,
-    SanitizeHtmlPipe
+    SanitizeHtmlPipe,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     AppMaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

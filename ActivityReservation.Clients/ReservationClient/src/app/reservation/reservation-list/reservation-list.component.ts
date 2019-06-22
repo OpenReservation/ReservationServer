@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { PagedListData } from '../../models/PagedListData';
 import { Reservation } from '../../models/Reservation';
 import { ReservationService } from '../../services/ReservationService';
 import { ColumnInfo } from 'src/app/models/ColumnInfo';
