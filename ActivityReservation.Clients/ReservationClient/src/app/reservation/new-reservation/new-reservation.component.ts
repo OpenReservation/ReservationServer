@@ -44,6 +44,10 @@ export class NewReservationComponent implements OnInit {
       periodCtrl: ['', Validators.required]
     });
     this.personFormGroup = this._formBuilder.group({
+      unitCtrl: ['', Validators.required],
+      contentCtrl: ['', Validators.required],
+      personNameCtrl: ['', Validators.required],
+      phoneCtrl: ['', Validators.required]
     });
 
     this.loadData();
@@ -71,11 +75,12 @@ export class NewReservationComponent implements OnInit {
       case 1:
         console.log(this.placeFormGroup.value.placeCtrl);
         this.reservation.ReservationPlaceId = this.placeFormGroup.value.placeCtrl;
+        this.reservation.ReservationPlaceName = this.reservationPlaces.filter(p=>p.PlaceId== this.reservation.ReservationPlaceId)[0].PlaceName;
         break;
 
       case 2:
         let date = new Date(this.dateFormGroup.value.dateCtrl);
-        let dt = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+        let dt = `${date.getFullYear()}-${date.getMonth()<9? `0${date.getMonth()+1}` : date.getMonth()+1}-${date.getDate()}`;
         console.log(dt);
         this.reservation.ReservationForDate = dt;
         // load periods

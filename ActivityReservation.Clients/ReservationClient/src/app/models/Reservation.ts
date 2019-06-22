@@ -1,101 +1,101 @@
 export class Reservation{
     
-    private _ReservationForDate : string;
+    private reservationForDate : string;
     public get ReservationForDate() : string {
-        return this._ReservationForDate;
+        return this.reservationForDate;
     }
     public set ReservationForDate(v : string) {
-        this._ReservationForDate = v;
+        this.reservationForDate = v;
     }
     
-    private _ReservationForTime : string;
+    private reservationForTime : string;
     public get ReservationForTime() : string {
-        return this._ReservationForTime;
+        return this.reservationForTime;
     }
     public set ReservationForTime(v : string) {
-        this._ReservationForTime = v;
+        this.reservationForTime = v;
     }
     
-    private _ReservationPersonPhone : string;
+    private reservationPersonPhone : string;
     public get ReservationPersonPhone() : string {
-        return this._ReservationPersonPhone;
+        return this.reservationPersonPhone;
     }
     public set ReservationPersonPhone(v : string) {
-        this._ReservationPersonPhone = v;
+        this.reservationPersonPhone = v;
     }
     
 
     
-    private _ReservationPersonName : string;
+    private reservationPersonName : string;
     public get ReservationPersonName() : string {
-        return this._ReservationPersonName;
+        return this.reservationPersonName;
     }
     public set ReservationPersonName(v : string) {
-        this._ReservationPersonName = v;
+        this.reservationPersonName = v;
     }
     
     
-    private _ReservationUnit : string;
+    private reservationUnit : string;
     public get ReservationUnit() : string {
-        return this._ReservationUnit;
+        return this.reservationUnit;
     }
     public set ReservationUnit(v : string) {
-        this._ReservationUnit = v;
+        this.reservationUnit = v;
     }
     
     
-    private _ReservationPlaceName : string;
+    private reservationPlaceName : string;
     public get ReservationPlaceName() : string {
-        return this._ReservationPlaceName;
+        return this.reservationPlaceName;
     }
     public set ReservationPlaceName(v : string) {
-        this._ReservationPlaceName = v;
+        this.reservationPlaceName = v;
     }
 
     
-    private _ReservationPlaceId : string;
+    private reservationPlaceId : string;
     public get ReservationPlaceId() : string {
-        return this._ReservationPlaceId;
+        return this.reservationPlaceId;
     }
     public set ReservationPlaceId(v : string) {
-        this._ReservationPlaceId = v;
+        this.reservationPlaceId = v;
     }
     
     
     
-    private _ReservationActivityContent : string;
+    private reservationActivityContent : string;
     public get ReservationActivityContent() : string {
-        return this._ReservationActivityContent;
+        return this.reservationActivityContent;
     }
     public set ReservationActivityContent(v : string) {
-        this._ReservationActivityContent = v;
+        this.reservationActivityContent = v;
     }
     
     
-    private _ReservationId : string;
+    private reservationId : string;
     public get ReservationId() : string {
-        return this._ReservationId;
+        return this.reservationId;
     }
     public set ReservationId(v : string) {
-        this._ReservationId = v;
+        this.reservationId = v;
     }
     
     
-    private _ReservationTime : Date;
+    private reservationTime : Date;
     public get ReservationTime() : Date {
-        return this._ReservationTime;
+        return this.reservationTime;
     }
     public set ReservationTime(v : Date) {
-        this._ReservationTime = v;
+        this.reservationTime = v;
     }
     
     
-    private _ReservationStatus : number;
+    private reservationStatus : number;
     public get ReservationStatus() : number {
-        return this._ReservationStatus;
+        return this.reservationStatus;
     }
     public set ReservationStatus(v : number) {
-        this._ReservationStatus = v;
+        this.reservationStatus = v;
     }
     
 }
