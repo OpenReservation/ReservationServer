@@ -68,6 +68,9 @@ export class ReservationListComponent implements OnInit {
       this.pageSize = data.PageSize;
       this.total = data.TotalCount;
       this.reservations = data.Data;
+      
+      // 修改父组件的 isLoading
+      // isLoading = false;
     });
   }
 

@@ -9,6 +9,8 @@ import { MenuItem } from './models/MenuItem';
 export class AppComponent {
   title = '活动室预约系统';  
 
+  isLoading = false;
+
   menus: Array<MenuItem> = [
     { Title: "首页", Link: "/" },
     { Title: "预约", Link: "/reservation/new"},

@@ -17,8 +17,11 @@
   </mat-toolbar>
 
   <section class="app-content" style="margin: 58px auto 0;">
-    <router-outlet></router-outlet>
+    <router-outlet></router-outlet>    
+    <mat-progress-bar [ngStyle]="{'display': isLoading?'':'none'}" mode="query"></mat-progress-bar>
   </section>
+
+
   <footer>
     <p style="text-align: center">© 2019 - 活动室预约系统 &nbsp;&nbsp; </p>
   </footer>
