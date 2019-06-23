@@ -34,7 +34,13 @@
                 <ng-template matStepLabel>选择要预约的时间段</ng-template>
                 <!-- https://stackoverflow.com/questions/46749251/angular-material-how-to-handle-multiple-checkboxes-with-formgroup -->
                 <section>
-                  <mat-checkbox formControlName="periodCtrl" *ngFor="let period of reservationPeriods" [(ngModel)]="period.Checked" [value]="period.PeriodId">{{period.PeriodTitle}}</mat-checkbox>
+                    <ng-container formArrayName="periods">
+                        <div *ngFor="let period of reservationPeriods; let i = index" >
+                           <mat-checkbox [disabled]="!period.IsCanReservate" [formControlName]="i" [value]="period.PeriodId" [(ngModel)]="period.Checked">
+                             {{period.PeriodTitle}}
+                           </mat-checkbox>
+                        </div>
+                     </ng-container>
                 </section>
                 <div>
                   <button mat-button matStepperPrevious>上一步</button>
@@ -80,7 +86,7 @@
                 </tr>
                 <tr>
                     <td>预约时间段</td>
-                    <td>{{reservation.ReservationForPeriods}}</td>
+                    <td>{{reservation.ReservationForTime}}</td>
                 </tr>
                 <tr>
                     <td>预约单位</td>

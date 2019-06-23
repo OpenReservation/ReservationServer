@@ -16,6 +16,14 @@ export class Reservation{
         this.reservationForTime = v;
     }
     
+    private reservationForTimeIds : string;
+    public get ReservationForTimeIds() : string {
+        return this.reservationForTimeIds;
+    }
+    public set ReservationForTimeIds(v : string) {
+        this.reservationForTimeIds = v;
+    }
+    
     private reservationPersonPhone : string;
     public get ReservationPersonPhone() : string {
         return this.reservationPersonPhone;
@@ -23,8 +31,6 @@ export class Reservation{
     public set ReservationPersonPhone(v : string) {
         this.reservationPersonPhone = v;
     }
-    
-
     
     private reservationPersonName : string;
     public get ReservationPersonName() : string {
