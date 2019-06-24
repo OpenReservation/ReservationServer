@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Reservation } from '../../models/Reservation';
 import { ReservationService } from '../../services/ReservationService';
+import { LoadingService } from '../../services/LoadingService';
 import { ColumnInfo } from 'src/app/models/ColumnInfo';
 
 @Component({
@@ -52,7 +53,7 @@ export class ReservationListComponent implements OnInit {
 
   displayedColumns: Array<string>;
 
-  constructor(private svc: ReservationService) {
+  constructor(private svc: ReservationService, private loadingSvc: LoadingService) {
     this.displayedColumns = this.columns.map(c=>c.ColumnName);
    }
 
@@ -69,8 +70,8 @@ export class ReservationListComponent implements OnInit {
       this.total = data.TotalCount;
       this.reservations = data.Data;
       
-      // 修改父组件的 isLoading
-      // isLoading = false;
+      // 修改 LoadingService 的 isLoading
+      this.loadingSvc.isLoading = false;
     });
   }
 

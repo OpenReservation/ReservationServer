@@ -52,15 +52,16 @@
             <form [formGroup]="personFormGroup">
               <ng-template matStepLabel>填写预约人信息</ng-template>
               <div>
+              
                   <mat-form-field>
                     <input matInput formControlName="unitCtrl" [(ngModel)]="reservation.ReservationUnit" required placeholder="预约单位">
-                  </mat-form-field>
+                  </mat-form-field> <br/>
                   <mat-form-field>
                     <input matInput formControlName="contentCtrl" [(ngModel)]="reservation.ReservationActivityContent" required placeholder="活动内容">
-                  </mat-form-field>
+                  </mat-form-field> <br/>
                   <mat-form-field>
                     <input matInput formControlName="personNameCtrl" [(ngModel)]="reservation.ReservationPersonName" required placeholder="预约人姓名">
-                  </mat-form-field>
+                  </mat-form-field> <br/>
                   <mat-form-field>
                     <input matInput formControlName="phoneCtrl"  [(ngModel)]="reservation.ReservationPersonPhone" required placeholder="预约人联系方式">
                   </mat-form-field>

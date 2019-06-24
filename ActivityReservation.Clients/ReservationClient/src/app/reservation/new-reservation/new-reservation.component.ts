@@ -5,6 +5,8 @@ import { ReservationPlaceService } from 'src/app/services/ReservationPlaceServic
 import { ReservationPlace } from 'src/app/models/ReservationPlace';
 import {FormBuilder, FormGroup, Validators, FormArray, FormControl} from '@angular/forms';
 import { ReservationPeriod } from 'src/app/models/ReservationPeriod';
+import { LoadingService } from '../../services/LoadingService';
+import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-new-reservation',
@@ -29,7 +31,9 @@ export class NewReservationComponent implements OnInit {
 
   constructor(private reservationSvc: ReservationService, 
     private reservationPlaceSvc: ReservationPlaceService,
-    private _formBuilder: FormBuilder) {
+    private _formBuilder: FormBuilder,
+    private loadingSvc: LoadingService,
+    private router: Router) {
     var now = new Date();
     this.minDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     this.maxDate = new Date(this.minDate.getTime()+ 24 *60*60*1000*7);
@@ -62,17 +66,17 @@ export class NewReservationComponent implements OnInit {
     this.reservationPlaceSvc.GetAll()
     .subscribe(data => {
       this.reservationPlaces = data;
+      this.loadingSvc.isLoading = false;
     });
   }
 
   onSelectionChange(event): void{
     let stepIndex = event.selectedIndex;
-    console.log(`stepIndex: ${stepIndex}`);
+    console.log(`stepIndex: ${stepIndex}, reservation:${this.reservation}`);
     //
     switch(stepIndex)
     {
       case 0:
-        //
         break;
 
       case 1:
@@ -88,12 +92,12 @@ export class NewReservationComponent implements OnInit {
         this.reservation.ReservationForDate = dt;
         // load periods
         this.reservationPlaceSvc.getAvailablePeriods(this.reservation.ReservationPlaceId, this.reservation.ReservationForDate)
-        .subscribe(x=> 
-        {
-          this.reservationPeriods = x;
-          this.checkedPeriodsFormArray.clear();
-          this.reservationPeriods.forEach(x => this.checkedPeriodsFormArray.push(new FormControl(false)));
-        });
+          .subscribe(x=> 
+          {
+            this.reservationPeriods = x;
+            this.checkedPeriodsFormArray.clear();
+            this.reservationPeriods.forEach(x => this.checkedPeriodsFormArray.push(new FormControl(x.Checked)));
+          });       
         
         break;
       
@@ -109,17 +113,23 @@ export class NewReservationComponent implements OnInit {
 
       case 4:
         console.log(this.personFormGroup);
-        console.log(this.reservation);
         break;
 
       default:
-        console.log(this.reservation);
         break;
     }
   }
 
   onSubmitReservation(): void{
     this.reservationSvc.NewReservation(this.reservation, 'None', '')
-    .subscribe(x=> console.log(x));
+    .subscribe(x=> {
+      console.log(x);
+      if(x.Status === 200 || x.Status === 'Success'){
+        //
+        this.router.navigateByUrl("");
+      }else{
+        alert(x.ErrorMsg);
+      }
+    });
   }
 }

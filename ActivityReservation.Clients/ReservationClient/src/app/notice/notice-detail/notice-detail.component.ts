@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NoticeService } from '../../services/NoticeService';
+import { LoadingService } from '../../services/LoadingService';
 import { Notice } from '../../models/Notice';
 
 
@@ -13,7 +14,8 @@ export class NoticeDetailComponent implements OnInit {
   notice: Notice;
   constructor(
     private route: ActivatedRoute,
-    private svc: NoticeService
+    private svc: NoticeService,
+    private loadingSvc: LoadingService,
   ) { }
 
   ngOnInit() {
@@ -22,6 +24,7 @@ export class NoticeDetailComponent implements OnInit {
       this.svc.GetDetails(noticePath)
       .subscribe(data => {
         this.notice = data;
+        this.loadingSvc.isLoading = false;
       });
     });
   }
