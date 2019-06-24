@@ -52,8 +52,8 @@ export class NewReservationComponent implements OnInit {
     this.personFormGroup = this._formBuilder.group({
       unitCtrl: ['', Validators.required],
       contentCtrl: ['', Validators.required],
-      personNameCtrl: ['', Validators.required],
-      phoneCtrl: ['', Validators.required]
+      personNameCtrl: ['', Validators.minLength(2)],
+      phoneCtrl: ['', Validators.pattern(/1[3-9]\d{9}/)]
     });
     this.checkedPeriodsFormArray = this.periodFormGroup.get('periods') as FormArray;
 
@@ -70,7 +70,7 @@ export class NewReservationComponent implements OnInit {
     });
   }
 
-  onSelectionChange(event): void{
+  onStepChange(event): void{
     let stepIndex = event.selectedIndex;
     console.log(`stepIndex: ${stepIndex}, reservation:${this.reservation}`);
     //

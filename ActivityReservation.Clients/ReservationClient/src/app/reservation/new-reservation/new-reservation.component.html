@@ -1,10 +1,10 @@
 <div>
-    <mat-vertical-stepper linear #stepper (selectionChange)="onSelectionChange($event)">
+    <mat-vertical-stepper linear #stepper (selectionChange)="onStepChange($event)">
         <mat-step [stepControl]="placeFormGroup">
             <form [formGroup]="placeFormGroup">
                 <ng-template matStepLabel>选择要预约的活动室</ng-template>
                 <mat-form-field>
-                  <mat-select formControlName="placeCtrl">
+                  <mat-select formControlName="placeCtrl" (selectionChange)="stepper.next()">
                     <mat-option *ngFor="let place of reservationPlaces" [value]="place.PlaceId">
                       {{place.PlaceName}}
                     </mat-option>
@@ -19,7 +19,7 @@
           <form [formGroup]="dateFormGroup">
             <ng-template matStepLabel>选择要预约的日期</ng-template>
             <mat-form-field>
-                <input formControlName="dateCtrl" [min]="minDate" [max]="maxDate" (click)="picker.open()" matInput [matDatepicker]="picker" placeholder="选择要预约的日期" readonly disabled required />
+                <input formControlName="dateCtrl" (dateChange)="stepper.next()" [min]="minDate" [max]="maxDate" (click)="picker.open()" matInput [matDatepicker]="picker" placeholder="选择要预约的日期" readonly disabled required />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker disabled="false" touchUi #picker></mat-datepicker>
               </mat-form-field>
@@ -63,7 +63,7 @@
                     <input matInput formControlName="personNameCtrl" [(ngModel)]="reservation.ReservationPersonName" required placeholder="预约人姓名">
                   </mat-form-field> <br/>
                   <mat-form-field>
-                    <input matInput formControlName="phoneCtrl"  [(ngModel)]="reservation.ReservationPersonPhone" required placeholder="预约人联系方式">
+                    <input matInput formControlName="phoneCtrl"  [(ngModel)]="reservation.ReservationPersonPhone" required placeholder="预约人手机号码">
                   </mat-form-field>
               </div>
               <div>
