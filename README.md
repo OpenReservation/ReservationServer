@@ -8,6 +8,7 @@
 目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，
 
 演示地址：<https://reservation.weihanli.xyz>
+新版预览版演示地址：<https://reservation-preview.weihanli.xyz>
 
 后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
 
