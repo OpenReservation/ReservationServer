@@ -17,7 +17,7 @@
     </mat-toolbar>
   </header>  
   <section class="app-content" style="margin: 58px auto 0;">
-    <mat-progress-bar color="accent" [ngStyle]="{'display': loadingSvc.isLoading ?'':'none'}" mode="query"></mat-progress-bar>
+    <mat-progress-bar color="accent" [ngStyle]="{ 'display': loadingSvc.isLoading?'block':'none'}" mode="query"></mat-progress-bar>
     <router-outlet></router-outlet>
   </section>
   <footer>
