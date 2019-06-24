@@ -109,7 +109,7 @@
           </div>
           <div>
             <button mat-button matStepperPrevious>上一步</button>
-            <button mat-button (click)="onSubmitReservation()">提交</button>
+            <button mat-button [disabled]="submiting" (click)="onSubmitReservation()">提交</button>
           </div>
         </mat-step>
       </mat-vertical-stepper>

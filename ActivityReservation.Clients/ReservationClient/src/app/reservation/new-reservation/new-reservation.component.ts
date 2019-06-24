@@ -4,6 +4,7 @@ import { ReservationService } from '../../services/ReservationService';
 import { ReservationPlaceService } from 'src/app/services/ReservationPlaceService';
 import { ReservationPlace } from 'src/app/models/ReservationPlace';
 import {FormBuilder, FormGroup, Validators, FormArray, FormControl} from '@angular/forms';
+import {MatSnackBar} from '@angular/material';
 import { ReservationPeriod } from 'src/app/models/ReservationPeriod';
 import { LoadingService } from '../../services/LoadingService';
 import { Router } from '@angular/router'; 
@@ -29,11 +30,14 @@ export class NewReservationComponent implements OnInit {
 
   reservation: Reservation;
 
+  submiting: boolean = false;
+
   constructor(private reservationSvc: ReservationService, 
     private reservationPlaceSvc: ReservationPlaceService,
     private _formBuilder: FormBuilder,
     private loadingSvc: LoadingService,
-    private router: Router) {
+    private router: Router,
+    public snackBar: MatSnackBar) {
     var now = new Date();
     this.minDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     this.maxDate = new Date(this.minDate.getTime()+ 24 *60*60*1000*7);
@@ -121,15 +125,20 @@ export class NewReservationComponent implements OnInit {
   }
 
   onSubmitReservation(): void{
+    this.submiting = true;
     this.reservationSvc.NewReservation(this.reservation, 'None', '')
     .subscribe(x=> {
       console.log(x);
       if(x.Status === 200 || x.Status === 'Success'){
         //
-        this.router.navigateByUrl("");
+        let snackBarRef = this.snackBar.open("预约成功", "" , {
+          duration: 2000,
+        });
+        snackBarRef.afterDismissed().subscribe(x=>{ this.router.navigateByUrl(""); });
       }else{
         alert(x.ErrorMsg);
       }
+      this.submiting = false;      
     });
   }
 }
