@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div>
   <table mat-table #table [dataSource]="reservations" class="mat-elevation-z8">
     <ng-container matColumnDef="{{column.ColumnName}}" *ngFor="let column of columns">
         <th mat-header-cell *matHeaderCellDef> {{column.DisplayName}} </th>

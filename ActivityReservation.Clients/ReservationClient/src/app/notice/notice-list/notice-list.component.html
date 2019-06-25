@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<div>
   <mat-nav-list>
     <mat-list-item *ngFor="let notice of noticeList">
       <a matLine [title]="notice.NoticeTitle" [routerLink]="['/notice', notice.NoticeCustomPath]">{{ notice.NoticeTitle }} -- {{ notice.NoticePublishTime }}</a>
