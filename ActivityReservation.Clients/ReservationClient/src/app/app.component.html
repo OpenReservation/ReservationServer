@@ -1,5 +1,5 @@
 <mat-sidenav-container style="min-height:30rem;">  
-  <mat-sidenav #sidenav mode="over" class="app-sidenav" color="primary">
+  <mat-sidenav #sidenav style="margin-top:60px;max-height:16.2rem;" mode="over" class="app-sidenav" color="primary">
     <mat-toolbar>
       <mat-toolbar-row *ngFor="let item of menus">
          <span><a [title]="item.Title" [routerLink]="item.Link">{{item.Title}}</a></span>

@@ -1,5 +1,5 @@
 <div>
-  <table mat-table #table [dataSource]="reservations" class="mat-elevation-z8">
+  <table mat-table #table [dataSource]="reservations">
     <ng-container matColumnDef="{{column.ColumnName}}" *ngFor="let column of columns">
         <th mat-header-cell *matHeaderCellDef> {{column.DisplayName}} </th>
         <td mat-cell *matCellDef="let element"> {{element[column.ColumnName]}} </td>
