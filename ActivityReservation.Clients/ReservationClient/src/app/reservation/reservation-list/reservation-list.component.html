@@ -2,7 +2,7 @@
   <table mat-table #table [dataSource]="reservations">
     <ng-container matColumnDef="{{column.ColumnName}}" *ngFor="let column of columns">
         <th mat-header-cell *matHeaderCellDef> {{column.DisplayName}} </th>
-        <td mat-cell *matCellDef="let element"> {{element[column.ColumnName]}} </td>
+        <td mat-cell *matCellDef="let element" [innerHTML]='(column.ColumnName === "ReservationForTime" ? element[column.ColumnName].replace(",","<br>") : element[column.ColumnName]) | sanitizeHtml'></td>
     </ng-container>
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
