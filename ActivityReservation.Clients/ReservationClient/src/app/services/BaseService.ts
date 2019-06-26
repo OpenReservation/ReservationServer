@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PagedListData } from '../models/PagedListData';
 
-@Injectable()
 export class BaseService<TModel>{
   protected readonly apiBaseUrl = "https://reservation.weihanli.xyz";
 

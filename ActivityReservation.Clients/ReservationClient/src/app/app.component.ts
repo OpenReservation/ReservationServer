@@ -9,7 +9,7 @@ import { LoadingService } from './services/LoadingService';
   styleUrls: ['./app.component.less']
 })
 export class AppComponent {
-  constructor(private loadingSvc: LoadingService, private router:Router) { 
+  constructor(public loadingSvc: LoadingService, private router:Router) { 
     this.loadingSvc.isLoading = true;
     this.router.events.subscribe((e) => { if(e instanceof NavigationStart) {this.loadingSvc.isLoading = true;} });
   }
