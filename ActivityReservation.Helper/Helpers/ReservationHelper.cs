@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 using WeihanLi.Redis;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
 {
@@ -126,7 +127,7 @@ namespace ActivityReservation.Helpers
             }
             //预约人IP地址
             // TODO: need debug
-            var ip = DependencyResolver.Current.GetService<IHttpContextAccessor>().HttpContext.Connection.RemoteIpAddress.ToString();
+            var ip = DependencyResolver.Current.GetService<IHttpContextAccessor>().HttpContext.GetUserIP();
             if (blockList.Any(b => b.BlockValue.Equals(ip)))
             {
                 message = "IP地址已被拉黑";

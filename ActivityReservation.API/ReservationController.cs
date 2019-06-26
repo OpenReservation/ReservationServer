@@ -59,7 +59,7 @@ namespace ActivityReservation.API
                 },
                 queryBuilder => queryBuilder
                      .WithPredict(predict)
-                     .WithOrderBy(q => q.OrderBy(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
+                     .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
                      .WithInclude(q => q.Include(x => x.Place))
                 , pageNumber, pageSize, HttpContext.RequestAborted);
 
@@ -68,6 +68,7 @@ namespace ActivityReservation.API
                 model.ReservationPersonPhone = StringHelper.HideTelDetails(model.ReservationPersonPhone);
                 model.ReservationPersonName = StringHelper.HideSensitiveInfo(model.ReservationPersonName, 1, 0, 2);
             }
+
             return Ok(result);
         }
 
