@@ -21,6 +21,8 @@ EXPOSE 80
 # set author info
 LABEL maintainer="WeihanLi"
 
+COPY ./conf/nginx.default.conf /etc/nginx/conf.d/default.conf
+
 # run nginx in foreground
 # https://stackoverflow.com/questions/18861300/how-to-run-nginx-within-a-docker-container-without-halting
 CMD ["nginx", "-g", "daemon off;"]
