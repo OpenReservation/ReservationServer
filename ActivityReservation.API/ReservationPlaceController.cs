@@ -37,8 +37,7 @@ namespace ActivityReservation.API
                 p.MaxReservationPeriodNum
             }, builder => builder
          .WithPredict(x => x.IsActive)
-         .WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex).ThenBy(_ => _.UpdateTime)),
-            cancellationToken: cancellationToken);
+         .WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex).ThenBy(_ => _.UpdateTime)), cancellationToken);
             return Ok(result);
         }
 
@@ -47,10 +46,9 @@ namespace ActivityReservation.API
         /// </summary>
         /// <param name="placeId">活动室id</param>
         /// <param name="dt"></param>
-        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpGet("{placeId}/periods")]
-        public IActionResult GetPeriodsAsync(Guid placeId, DateTime dt, CancellationToken cancellationToken)
+        public IActionResult GetPeriodsAsync(Guid placeId, DateTime dt)
         {
             var result = HttpContext.RequestServices.GetService<ReservationHelper>()
                 .GetAvailablePeriodsByDateAndPlace(dt, placeId);

@@ -158,7 +158,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult DeletePeriod(Guid periodId)
         {
-            var count = _bllDisabledPeriod.Delete(p => p.PeriodId == periodId);
+            var count = _bllDisabledPeriod.Delete(new DisabledPeriod() { PeriodId = periodId });
             if (count > 0)
             {
                 OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, Username);

@@ -94,8 +94,7 @@ namespace ActivityReservation
             services.AddHttpClient<GoogleRecaptchaHelper>(client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(3);
-            })
-            ;
+            });
             services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
             services.AddGoogleRecaptchaHelper();
 
@@ -107,12 +106,12 @@ namespace ActivityReservation
                 options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
             });
 
-            services
-                .AddEFRepository()
-                .AddBLL();
+            services.AddEFRepository();
+            services.AddBLL();
 
             services.AddSingleton<OperLogHelper>();
             services.AddScoped<ReservationHelper>();
+
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
             // register access control service
@@ -122,12 +121,11 @@ namespace ActivityReservation
                 {
                     client.Timeout = TimeSpan.FromSeconds(3);
                 })
-                .SetHandlerLifetime(System.Threading.Timeout.InfiniteTimeSpan)// disable handler expiry
-                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler())
-            ;
+                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.TryAddSingleton<ChatBotHelper>();
 
-            services.AddHttpClient<WechatAPI.Helper.WechatHelper>();
+            services.AddHttpClient<WechatAPI.Helper.WechatHelper>()
+                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.TryAddSingleton<WechatAPI.Helper.WechatHelper>();
 
             services.TryAddSingleton<CaptchaVerifyHelper>();

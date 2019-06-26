@@ -150,7 +150,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var c = _blockEntityHelper.Delete(b => b.BlockId == entityId);
+                var c = _blockEntityHelper.Delete(new BlockEntity() { BlockId = entityId });
                 if (c == 1)
                 {
                     //记录日志

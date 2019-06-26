@@ -199,7 +199,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     return Json(false);
                 }
-                var count = _reservationHelper.Delete(r => r.ReservationId == id);
+                var count = _reservationHelper.Delete(reservation);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog(

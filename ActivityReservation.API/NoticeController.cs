@@ -44,10 +44,9 @@ namespace ActivityReservation.API
                 x.NoticePublisher,
                 x.NoticePublishTime,
                 x.NoticeImagePath
-            }
-                , queryBuilder => queryBuilder
-                     .WithPredict(predict)
-                     .WithOrderBy(q => q.OrderBy(_ => _.NoticePublishTime))
+            }, queryBuilder => queryBuilder
+                   .WithPredict(predict)
+                   .WithOrderBy(q => q.OrderBy(_ => _.NoticePublishTime))
                 , pageNumber, pageSize, HttpContext.RequestAborted);
 
             return Ok(result);
