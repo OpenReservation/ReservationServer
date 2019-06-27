@@ -24,7 +24,7 @@
                         @item.NoticePublisher
                     </td>
                     <td>
-                        @item.NoticePublishTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                        @item.NoticePublishTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td>
                         <a href="/Notice/@item.NoticePath" target="_blank">查看</a> &nbsp;

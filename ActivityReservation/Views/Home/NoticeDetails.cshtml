@@ -9,7 +9,7 @@
     </h2>
 </header>
 <section style="text-align:center">
-    发布时间：@Model.NoticePublishTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") &nbsp;&nbsp;
+    发布时间：@Model.NoticePublishTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss") &nbsp;&nbsp;
     浏览次数：@Model.NoticeVisitCount
 </section>
 <section>

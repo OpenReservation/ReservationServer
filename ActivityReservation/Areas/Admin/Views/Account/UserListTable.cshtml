@@ -24,7 +24,7 @@
                         @item.UserMail
                     </td>
                     <td>
-                        @item.AddTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                        @item.AddTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td>
                         <button type="button" class="btn btn-default" onclick="UpdatePassword('@item.UserId', '@item.UserName', this)">重置密码</button>

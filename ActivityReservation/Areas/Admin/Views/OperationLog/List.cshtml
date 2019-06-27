@@ -27,7 +27,7 @@
                         @item.OperBy
                     </td>
                     <td>
-                        @item.OperTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                        @item.OperTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                 </tr>
             }

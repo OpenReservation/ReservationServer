@@ -10,7 +10,7 @@
             <li>
                 <a href="/Notice/@item.NoticePath" target="_blank">
                     <span class="notice-title">@item.NoticeTitle</span>
-                    <span class="pub-time">@item.NoticePublishTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")</span>
+                    <span class="pub-time">@item.NoticePublishTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")</span>
                 </a>
             </li>
         }

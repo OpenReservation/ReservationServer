@@ -63,7 +63,7 @@
                         @(WeihanLi.Common.Helpers.StringHelper.HideTelDetails(item.ReservationPersonPhone))
                     </td>
                     <td>
-                        @item.ReservationTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
+                        @item.ReservationTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td>
                         @Html.Raw(status)
