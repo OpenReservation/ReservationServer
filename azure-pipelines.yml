@@ -1,3 +1,14 @@
+trigger:
+  branches:
+    include:
+    - '*'  # must quote since "*" is a YAML reserved character; we want a string
+  paths:
+    include:
+    - '*'
+    exclude:
+    - '*.md'
+    - 'ActivityReservation.Clients/**'
+
 pool:
   vmImage: 'Ubuntu 16.04'
 
