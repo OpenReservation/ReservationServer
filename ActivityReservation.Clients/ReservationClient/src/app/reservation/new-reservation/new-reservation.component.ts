@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Reservation } from '../../models/Reservation';
 import { ReservationService } from '../../services/ReservationService';
 import { ReservationPlaceService } from 'src/app/services/ReservationPlaceService';
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   selector: 'app-new-reservation',
   templateUrl: './new-reservation.component.html'
 })
-export class NewReservationComponent implements OnInit {
+export class NewReservationComponent implements OnInit, OnDestroy {
 
   public reservationPlaces: Array<ReservationPlace>;
   public reservationPeriods: Array<ReservationPeriod>;
@@ -37,7 +37,7 @@ export class NewReservationComponent implements OnInit {
     ticket: ''
   };
 
-  tencentRecaptcha:TencentCaptcha;
+  tencentRecaptcha:TencentCaptcha = null;
 
 
   constructor(private reservationSvc: ReservationService, 
@@ -73,11 +73,16 @@ export class NewReservationComponent implements OnInit {
 
     this.reservation = new Reservation();
 
-    //
-    this.loadScript();
+    this.loadCaptcha();
   }
 
-  private loadScript() : void{
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    this.tencentRecaptcha = null;
+  }
+
+  private loadCaptcha() : void{
     var tCaptcha = document.getElementById("tCaptcha");
     if(tCaptcha){
       this.InitCaptcha();
@@ -102,11 +107,15 @@ export class NewReservationComponent implements OnInit {
   }
 
   private InitCaptcha():void{
-    if(this.tencentRecaptcha){
+    if(this.tencentRecaptcha != null){
+      return;
+    }
+    let captchaDom = document.getElementById('TencentCaptcha1');
+    if(!captchaDom){
       return;
     }
     this.tencentRecaptcha = new TencentCaptcha(
-      document.getElementById('TencentCaptcha1'),
+      captchaDom,
       '2062135016', (res) => {
           this.captchaValid = false;
           console.log(res);
@@ -189,6 +198,7 @@ export class NewReservationComponent implements OnInit {
 
   onSubmitReservation(): void{
     if(this.captchaValid === false){
+      this.loadCaptcha();
       this.tencentRecaptcha.show(); // show tencent captcha
       return;
     }
