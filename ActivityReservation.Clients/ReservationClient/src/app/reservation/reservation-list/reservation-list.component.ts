@@ -62,6 +62,9 @@ export class ReservationListComponent implements OnInit {
   }
 
   private loadData(params?:object): void{
+    if(this.loadingSvc.isLoading === false){
+      this.loadingSvc.isLoading = true;
+    }
     this.svc.Get(params)
     .subscribe(data => {
       console.log(data);

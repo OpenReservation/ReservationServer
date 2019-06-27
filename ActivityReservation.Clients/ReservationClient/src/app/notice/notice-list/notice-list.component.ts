@@ -21,6 +21,9 @@ export class NoticeListComponent implements OnInit {
   }
 
   private loadData(params?:object): void{
+    if(this.loadingSvc.isLoading === false){
+      this.loadingSvc.isLoading = true;
+    }
     this.svc.Get(params)
     .subscribe(data => {
       this.pageNumber = data.PageNumber;

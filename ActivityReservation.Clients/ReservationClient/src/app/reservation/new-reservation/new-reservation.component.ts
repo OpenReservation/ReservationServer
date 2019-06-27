@@ -31,6 +31,14 @@ export class NewReservationComponent implements OnInit {
   reservation: Reservation;
 
   submiting: boolean = false;
+  captchaValid: boolean = false;
+  captchaInfo = {
+    nonce: '',
+    ticket: ''
+  };
+
+  tencentRecaptcha:TencentCaptcha;
+
 
   constructor(private reservationSvc: ReservationService, 
     private reservationPlaceSvc: ReservationPlaceService,
@@ -64,9 +72,55 @@ export class NewReservationComponent implements OnInit {
     this.loadData();
 
     this.reservation = new Reservation();
+
+    //
+    this.loadScript();
+  }
+
+  private loadScript() : void{
+    let script = <any>document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "https://ssl.captcha.qq.com/TCaptcha.js"
+    if (script.readyState) {  //IE
+        script.onreadystatechange = () => {
+            if (script.readyState === "loaded" || script.readyState === "complete") {
+              this.InitCaptcha();
+            }
+        };
+    } else {  //Others
+        script.onload = () => {
+            this.InitCaptcha();
+        };
+    }
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  private InitCaptcha():void{
+    this.tencentRecaptcha = new TencentCaptcha(
+      document.getElementById('TencentCaptcha1'),
+      '2062135016', (res) => {
+          this.captchaValid = false;
+          console.log(res);
+          // res（用户主动关闭验证码）= {ret: 2, ticket: null}
+          // res（验证成功） = {ret: 0, ticket: "String", randstr: "String"}
+          if (res.ret === 0) {
+              this.captchaInfo.nonce = res.randstr;
+              this.captchaInfo.ticket = res.ticket;
+              this.captchaValid = true;
+              this.tencentRecaptcha.destroy();
+
+              // 验证通过自动提交预约信息
+              this.onSubmitReservation();
+          }
+      }
+    );
+    console.log(`captcha inited`);
   }
 
   private loadData(): void{
+    if(this.loadingSvc.isLoading === false){
+      this.loadingSvc.isLoading = true;
+    }
     this.reservationPlaceSvc.GetAll()
     .subscribe(data => {
       this.reservationPlaces = data;
@@ -125,12 +179,19 @@ export class NewReservationComponent implements OnInit {
   }
 
   onSubmitReservation(): void{
+    if(this.captchaValid === false){
+      this.tencentRecaptcha.show(); // show tencent captcha
+      return;
+    }
+    if(this.submiting){
+      return;
+    }
     this.submiting = true;
-    this.reservationSvc.NewReservation(this.reservation, 'None', '')
+    console.log(this.captchaInfo);
+    this.reservationSvc.NewReservation(this.reservation, 'Tencent', JSON.stringify(this.captchaInfo))
     .subscribe(x=> {
       console.log(x);
       if(x.Status === 200 || x.Status === 'Success'){
-        //
         let snackBarRef = this.snackBar.open("预约成功", "" , {
           duration: 2000,
         });
