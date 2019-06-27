@@ -15,6 +15,7 @@
         <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     </environment>
     <link href="~/Content/Site.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://tajs.qq.com/stats?sId=66446871" charset="UTF-8"></script>
     @RenderSection("styles", required: false)
 </head>
 <body>
@@ -44,8 +45,7 @@
         <footer class="hidden-print">
             <p>&copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
-    </div>
-    <script type="text/javascript" src="http://tajs.qq.com/stats?sId=66446871" charset="UTF-8"></script>
+    </div>    
     <environment names="Development">
         <script src="~/Scripts/jquery-1.10.2.min.js"></script>
         <script src="~/Scripts/bootstrap.min.js"></script>
