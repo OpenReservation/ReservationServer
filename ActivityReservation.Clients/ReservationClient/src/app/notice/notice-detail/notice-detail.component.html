@@ -5,7 +5,7 @@
     </h2>
     </header>
     <section style="text-align:center">
-        发布时间：{{notice?.NoticePublishTime}} &nbsp;&nbsp;
+        发布时间：{{notice?.NoticePublishTime| date:'yyyy-MM-dd HH:mm:ss'}} &nbsp;&nbsp;
         浏览次数：{{notice?.NoticeVisitCount}}
     </section>
     <section style="margin:0 auto;max-width:800px" [innerHTML]="notice?.NoticeContent | sanitizeHtml">

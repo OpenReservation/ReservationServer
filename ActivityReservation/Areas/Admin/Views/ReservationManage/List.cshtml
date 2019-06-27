@@ -61,7 +61,7 @@
                         @item.ReservationPersonPhone
                     </td>
                     <td>
-                        @item.ReservationTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        @item.ReservationTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td>
                         @Html.Raw(status)
