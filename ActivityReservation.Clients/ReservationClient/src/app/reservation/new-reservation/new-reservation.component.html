@@ -1,4 +1,4 @@
-<div>
+<div id="reservationContainer">
     <mat-vertical-stepper linear #stepper (selectionChange)="onStepChange($event)">
         <mat-step [stepControl]="placeFormGroup">
             <form [formGroup]="placeFormGroup">
@@ -109,11 +109,11 @@
           </div>
           <div>
             <span>请检查以上预约信息是否正确</span>
-            <button id="TencentCaptcha1" style="visibility:hidden;width:10rem;height:1rem"></button>
+            <button id="TencentCaptcha1" style="display:none;visibility:hidden;width:10rem;height:1rem"></button>
           </div>
           <div>
             <button mat-button matStepperPrevious>上一步</button>
-            <button mat-button [disabled]="submiting" (click)="onSubmitReservation()">提交</button>
+            <button id="btnSubmit" mat-button [disabled]="submiting" (click)="onSubmitReservation()">提 交</button>
           </div>
         </mat-step>
       </mat-vertical-stepper>

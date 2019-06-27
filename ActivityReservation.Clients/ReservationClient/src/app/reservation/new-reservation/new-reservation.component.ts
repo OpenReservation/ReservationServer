@@ -78,7 +78,13 @@ export class NewReservationComponent implements OnInit {
   }
 
   private loadScript() : void{
+    var tCaptcha = document.getElementById("tCaptcha");
+    if(tCaptcha){
+      this.InitCaptcha();
+      return;
+    }
     let script = <any>document.createElement('script');
+    script.id = "tCaptcha";
     script.type = 'text/javascript';
     script.src = "https://ssl.captcha.qq.com/TCaptcha.js"
     if (script.readyState) {  //IE
@@ -96,6 +102,9 @@ export class NewReservationComponent implements OnInit {
   }
 
   private InitCaptcha():void{
+    if(this.tencentRecaptcha){
+      return;
+    }
     this.tencentRecaptcha = new TencentCaptcha(
       document.getElementById('TencentCaptcha1'),
       '2062135016', (res) => {
@@ -108,9 +117,9 @@ export class NewReservationComponent implements OnInit {
               this.captchaInfo.ticket = res.ticket;
               this.captchaValid = true;
               this.tencentRecaptcha.destroy();
-
-              // 验证通过自动提交预约信息
-              this.onSubmitReservation();
+              
+              let button = <HTMLElement>document.getElementById("btnSubmit");
+              button.click();
           }
       }
     );
@@ -183,11 +192,11 @@ export class NewReservationComponent implements OnInit {
       this.tencentRecaptcha.show(); // show tencent captcha
       return;
     }
-    if(this.submiting){
+    console.log(`submit reservation`);
+    if(this.submiting === true){
       return;
     }
     this.submiting = true;
-    console.log(this.captchaInfo);
     this.reservationSvc.NewReservation(this.reservation, 'Tencent', JSON.stringify(this.captchaInfo))
     .subscribe(x=> {
       console.log(x);
@@ -195,11 +204,15 @@ export class NewReservationComponent implements OnInit {
         let snackBarRef = this.snackBar.open("预约成功", "" , {
           duration: 2000,
         });
-        snackBarRef.afterDismissed().subscribe(x=>{ this.router.navigateByUrl(""); });
+        snackBarRef.afterDismissed()
+        .subscribe(x=>{ 
+          this.submiting = false;
+          this.router.navigateByUrl(""); 
+        });
       }else{
         alert(x.ErrorMsg);
-      }
-      this.submiting = false;      
+        this.submiting = false;
+      }      
     });
   }
 }
