@@ -109,12 +109,13 @@
           </div>
           <div>
             <span>请检查以上预约信息是否正确</span>
-            <button id="TencentCaptcha1" style="visibility:hidden;width:10rem;height:1rem"></button>
+            <button id="TencentCaptcha1" style="display: none;width:10rem;height:1rem"></button>
+            <mat-spinner [ngStyle]="{'display': submiting?'':'none' }"></mat-spinner>
           </div>
           <div>
             <button mat-button matStepperPrevious>上一步</button>
             <button id="btnSubmit" mat-button [disabled]="submiting" (click)="onSubmitReservation()">提 交</button>
           </div>
         </mat-step>
-      </mat-vertical-stepper>
+    </mat-vertical-stepper>
 </div>

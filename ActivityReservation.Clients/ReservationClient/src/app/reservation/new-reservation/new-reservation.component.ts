@@ -118,8 +118,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
       return;
     }
     this.tencentRecaptcha = new TencentCaptcha(
-      captchaDom,
-      '2062135016', (res) => {
+      captchaDom, '2062135016', (res) => {
           this.captchaValid = false;
           console.log(res);
           // res（用户主动关闭验证码）= {ret: 2, ticket: null}
@@ -187,7 +186,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
 
       case 2:
         let date = new Date(this.dateFormGroup.value.dateCtrl);
-        let dt = `${date.getFullYear()}-${date.getMonth()<9? `0${date.getMonth()+1}` : date.getMonth()+1}-${date.getDate()}`;
+        let dt = `${date.getFullYear()}-${date.getMonth()<9? `0${date.getMonth()+1}` : date.getMonth()+1}-${date.getDate()<=9? `0${date.getDate()}` : date.getDate()}`;
         console.log(dt);
         this.reservation.ReservationForDate = dt;
         // load periods
