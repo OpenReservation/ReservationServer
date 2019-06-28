@@ -36,7 +36,7 @@
                 <section>
                     <ng-container formArrayName="periods">
                         <div *ngFor="let period of reservationPeriods; let i = index" >
-                           <mat-checkbox [disabled]="!period.IsCanReservate" [formControlName]="i" [value]="period.PeriodId" [(ngModel)]="period.Checked">
+                           <mat-checkbox [formControlName]="i" [value]="period.PeriodId" [disabled]="(!period.Checked && checkedPeriodNum == maxReservationPeriod) || !period.IsCanReservate" (change)="onPeriodClick(i, period)" [checked]="period.Checked">
                              {{period.PeriodTitle}}
                            </mat-checkbox>
                         </div>

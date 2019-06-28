@@ -26,4 +26,13 @@ export class ReservationPlace{
         this._PlaceIndex = v;
     }
     
+    
+    private _MaxReservationPeriodNum : number;
+    public get MaxReservationPeriodNum() : number {
+        return this._MaxReservationPeriodNum;
+    }
+    public set MaxReservationPeriodNum(v : number) {
+        this._MaxReservationPeriodNum = v;
+    }
+    
 }

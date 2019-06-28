@@ -30,6 +30,9 @@ export class NewReservationComponent implements OnInit, OnDestroy {
 
   reservation: Reservation;
 
+  maxReservationPeriod: number = 2;
+  checkedPeriodNum: number = 0;
+
   submiting: boolean = false;
   captchaValid: boolean = false;
   captchaInfo = {
@@ -48,7 +51,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     public snackBar: MatSnackBar) {
     var now = new Date();
     this.minDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    this.maxDate = new Date(this.minDate.getTime()+ 24 *60*60*1000*7);
+    this.maxDate = new Date(this.minDate.getTime()+ 24*60*60*1000*7);
   }
 
   ngOnInit() {    
@@ -65,7 +68,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
       unitCtrl: ['', Validators.required],
       contentCtrl: ['', Validators.required],
       personNameCtrl: ['', Validators.minLength(2)],
-      phoneCtrl: ['', Validators.pattern(/1[3-9]\d{9}/)]
+      phoneCtrl: ['', Validators.pattern(/^1[3-9]\d{9}$/)]
     });
     this.checkedPeriodsFormArray = this.periodFormGroup.get('periods') as FormArray;
 
@@ -146,9 +149,24 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     });
   }
 
+  onPeriodClick(pIndex: number, period: ReservationPeriod):void{
+    console.group(`onPeriodClick ${pIndex}`);
+    console.log(`click period ${pIndex}, ${period.PeriodTitle}, checked:${period.Checked}`);
+    if(period.Checked === true){
+      period.Checked = false;
+      this.checkedPeriodNum = this.checkedPeriodNum-1;
+      console.log(`uncheck ${period.PeriodTitle}, checked:${period.Checked}, checkedPeriodNum:${this.checkedPeriodNum}`);
+    }else{
+      period.Checked = true;
+      this.checkedPeriodNum = this.checkedPeriodNum+1;
+      console.log(`check ${period.PeriodTitle}, checked:${period.Checked}, checkedPeriodNum:${this.checkedPeriodNum}`);      
+    }
+    console.groupEnd();
+  }
+
   onStepChange(event): void{
     let stepIndex = event.selectedIndex;
-    console.log(`stepIndex: ${stepIndex}, reservation:${this.reservation}`);
+    console.log(`stepIndex: ${stepIndex}, reservation:${JSON.stringify(this.reservation)}`);
     //
     switch(stepIndex)
     {
@@ -158,7 +176,13 @@ export class NewReservationComponent implements OnInit, OnDestroy {
       case 1:
         console.log(this.placeFormGroup.value.placeCtrl);
         this.reservation.ReservationPlaceId = this.placeFormGroup.value.placeCtrl;
-        this.reservation.ReservationPlaceName = this.reservationPlaces.filter(p=>p.PlaceId== this.reservation.ReservationPlaceId)[0].PlaceName;
+        let checkedPlace = this.reservationPlaces.filter(p=>p.PlaceId == this.reservation.ReservationPlaceId)[0];
+        this.reservation.ReservationPlaceName = checkedPlace.PlaceName;
+        if(checkedPlace.MaxReservationPeriodNum > 0){
+          this.maxReservationPeriod = checkedPlace.MaxReservationPeriodNum;
+        }
+        this.checkedPeriodNum = 0;
+        console.log(`checked place:${JSON.stringify(checkedPlace)}`);
         break;
 
       case 2:

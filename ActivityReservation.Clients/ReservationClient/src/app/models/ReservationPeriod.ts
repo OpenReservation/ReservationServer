@@ -8,7 +8,19 @@ export class ReservationPeriod{
     
     public IsCanReservate : boolean;
     
-    public Checked : boolean;
+    
+    private _Checked : boolean = false;
+    public get Checked() : boolean {
+        return this._Checked;
+    }
+    public set Checked(v : boolean) {
+        if(v){
+            this._Checked = true;
+        }else{
+            this._Checked = false;
+        }
+    }
+    
 
     constructor() {
         this.Checked = false;
