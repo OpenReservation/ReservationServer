@@ -1,5 +1,5 @@
 <mat-sidenav-container style="min-height:30rem;">  
-  <mat-sidenav #sidenav style="margin-top:60px;max-height:16.2rem;" mode="over" class="app-sidenav" color="primary">
+  <mat-sidenav #sidenav style="margin-top:4rem;max-height:16.2rem;z-index: 19941110" mode="over" class="app-sidenav" color="primary">
     <mat-toolbar>
       <mat-toolbar-row *ngFor="let item of menus">
          <span><a [title]="item.Title" [routerLink]="item.Link">{{item.Title}}</a></span>
@@ -9,7 +9,7 @@
   </mat-sidenav>
 
   <header>
-    <mat-toolbar color="primary" style="position: fixed; left:0;top:0;">      
+    <mat-toolbar color="primary" style="position: fixed; left:0;top:0;width: 100%;z-index: 19941008">      
       <button mat-button class="app-menu-button" (click)="sidenav.toggle()">
         <i class="material-icons">menu</i>
       </button>
