@@ -104,7 +104,7 @@ namespace ActivityReservation.API
         [HttpPost]
         public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType = "Tencent")
         {
-            var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
+            var result = new JsonResultModel<bool> { Status = JsonResultStatus.RequestError };
             if (string.IsNullOrWhiteSpace(captchaType))
             {
                 captchaType = "Tencent";
@@ -113,9 +113,8 @@ namespace ActivityReservation.API
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
             {
-                result.Status = JsonResultStatus.RequestError;
                 result.ErrorMsg = "验证码有误, 请重新验证";
-                return BadRequest(result);
+                return Ok(result);
             }
             try
             {
@@ -123,7 +122,7 @@ namespace ActivityReservation.API
                     .IsReservationAvailable(model, out var msg))
                 {
                     result.ErrorMsg = msg;
-                    return BadRequest(result);
+                    return Ok(result);
                 }
 
                 var reservation = new Reservation()
@@ -157,7 +156,7 @@ namespace ActivityReservation.API
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.Error(ex, $"活动室预约失败：{ex.Message}");
                 result.Status = JsonResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
                 return Ok(result);
