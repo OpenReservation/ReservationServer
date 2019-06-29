@@ -11,7 +11,7 @@
     <!--- Note that these columns can be defined in any order.
           The actual rendered columns are set as a property on the row definition" -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngStyle]="{'background-color': row['ReservationStatus'] == 1? '#dff0d8': row['ReservationStatus']==2?'#f2dede':''}"></tr>
   </table>
   <mat-paginator showFirstLastButtons (page)="onPageEvent($event)" [length]="total" [pageIndex]="pageNumber-1" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
   </mat-paginator>
