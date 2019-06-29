@@ -38,10 +38,6 @@ export class ReservationListComponent implements OnInit {
       DisplayName: "预约人名称" 
     },
     { 
-      ColumnName: 'ReservationPersonPhone',
-      DisplayName: "预约人手机号" 
-    },
-    { 
       ColumnName: 'ReservationUnit',
       DisplayName: "预约单位" 
     },
