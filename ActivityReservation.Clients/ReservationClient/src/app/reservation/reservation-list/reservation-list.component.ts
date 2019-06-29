@@ -28,7 +28,11 @@ export class ReservationListComponent implements OnInit {
     { 
       ColumnName: 'ReservationForTime',
       DisplayName: "预约使用时间" 
-    }, 
+    },
+    { 
+      ColumnName: 'ReservationUnit',
+      DisplayName: "预约单位" 
+    },
     { 
       ColumnName: 'ReservationActivityContent',
       DisplayName: "活动内容" 
@@ -36,10 +40,6 @@ export class ReservationListComponent implements OnInit {
     { 
       ColumnName: 'ReservationPersonName',
       DisplayName: "预约人名称" 
-    },
-    { 
-      ColumnName: 'ReservationUnit',
-      DisplayName: "预约单位" 
     },
     { 
       ColumnName:'ReservationTime',
