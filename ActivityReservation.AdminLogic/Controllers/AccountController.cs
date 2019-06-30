@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -172,24 +173,24 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 return Json(false);
             }
-            var u = CurrentUser;
-            if (u != null)
+            var u = new User()
             {
-                u.UserMail = email;
-                try
+                UserId = User.GetUserId<Guid>(),
+                UserMail = email,
+            };
+            try
+            {
+                var count = _bLLUser.Update(u, ur => ur.UserMail);
+                if (count == 1)
                 {
-                    var count = _bLLUser.Update(user => user.UserId == u.UserId, ur => ur.UserMail, u.UserMail);
-                    if (count == 1)
-                    {
-                        OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
-                            OperLogModule.Account, Username);
-                        return Json(true);
-                    }
+                    OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
+                        OperLogModule.Account, Username);
+                    return Json(true);
                 }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
             return Json(false);
         }
@@ -344,7 +345,8 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult ValidOldPassword(string password)
         {
-            var u = CurrentUser;
+            var uid = User.GetUserId<Guid>();
+            var u = _bLLUser.Fetch(x => x.UserId == uid);
             if (u != null)
             {
                 if (u.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(password)))
