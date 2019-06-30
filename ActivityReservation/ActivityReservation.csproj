@@ -10,7 +10,7 @@
     <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
-    <PackageReference Include="WeihanLi.Common.Logging.Log4Net" Version="1.0.22.3" />
+    <PackageReference Include="WeihanLi.Common.Logging.Log4Net" Version="1.0.22.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj" />
