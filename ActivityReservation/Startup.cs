@@ -154,18 +154,17 @@ namespace ActivityReservation
                 .AddLog4Net()
                 .AddSentry(Configuration.GetAppSetting("SentryClientKey"));
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-            }
+            //if (env.IsDevelopment())
+            //{
+            //    app.UseDeveloperExceptionPage();
+            //}
+            //else
+            //{
+            //    app.UseExceptionHandler("/Error");
+            //}
+            app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
-
             app.UseStaticFiles();
-
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
