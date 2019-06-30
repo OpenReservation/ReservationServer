@@ -98,7 +98,8 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult Index()
         {
-            var u = CurrentUser;
+            var userId = User.GetUserId<Guid>();
+            var u = _bLLUser.Fetch(x => x.UserId == userId);
             return View(u);
         }
 
@@ -108,7 +109,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public async Task<ActionResult> Logout()
         {
-            Logger.Info($"{Username} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
+            Logger.Info($"{UserName} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
             //logout
             await HttpContext.SignOutAsync();
             //redirect to homepage
@@ -125,22 +126,24 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (CurrentUser == null)
+                var userId = User.GetUserId<Guid>();
+                var user = _bLLUser.Fetch(x => x.UserId == userId);
+                if (user == null)
                 {
                     return Json(false);
                 }
                 try
                 {
                     //判断原密码是否正确，原密码正确的情况才能修改密码
-                    if (CurrentUser.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
+                    if (user.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
                     {
-                        CurrentUser.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
-                        if (_bLLUser.Update(u => u.UserId == CurrentUser.UserId, u => u.UserPassword, CurrentUser.UserPassword) > 0)
+                        user.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
+                        if (_bLLUser.Update(user, u => u.UserPassword) > 0)
                         {
-                            OperLogHelper.AddOperLog($"{Username} 修改密码 {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
-                                OperLogModule.Account, Username);
+                            OperLogHelper.AddOperLog($"{UserName} 修改密码 {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
+                                OperLogModule.Account, UserName);
 
-                            Logger.Info($"{Username} modify password at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
+                            Logger.Info($"{UserName} modify password at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
 
                             //密码修改成功，需要重新登录
                             HttpContext.SignOutAsync().ConfigureAwait(false);
@@ -183,8 +186,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = _bLLUser.Update(u, ur => ur.UserMail);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog($"{Username} 修改邮箱账号为{email} {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
-                        OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"{UserName} 修改邮箱账号为{email} {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
+                        OperLogModule.Account, UserName);
                     return Json(true);
                 }
             }
@@ -207,18 +210,18 @@ namespace ActivityReservation.AdminLogic.Controllers
             if (ModelState.IsValid)
             {
                 //验证用户名唯一
-                var u = _bLLUser.Fetch(s => s.UserName == accountModel.Username);
-                if (u != null)
+                var uEx = _bLLUser.Exist(s => s.UserName == accountModel.Username);
+                if (uEx)
                 {
                     return Json(false);
                 }
                 //验证用户邮箱唯一
-                u = _bLLUser.Fetch(s => s.UserMail == accountModel.UserEmail);
-                if (u != null)
+                uEx = _bLLUser.Exist(s => s.UserMail == accountModel.UserEmail);
+                if (uEx)
                 {
                     return Json(false);
                 }
-                u = new User()
+                var u = new User()
                 {
                     UserId = Guid.NewGuid(),
                     UserName = accountModel.Username,
@@ -232,7 +235,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     {
                         OperLogHelper.AddOperLog(
                             $"添加用户 {accountModel.Username}-{accountModel.UserEmail} 成功",
-                            OperLogModule.Account, Username);
+                            OperLogModule.Account, UserName);
                         return Json(true);
                     }
                 }
@@ -258,7 +261,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = _bLLUser.Delete(ur => ur.UserId == u.UserId);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog($"删除用户 {u.UserId:N} {u.UserName}", OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"删除用户 {u.UserId:N} {u.UserName}", OperLogModule.Account, UserName);
                     return Json(true);
                 }
             }
@@ -280,12 +283,13 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
+                u.UserId = User.GetUserId<Guid>();
                 //加密
                 u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
-                var count = _bLLUser.Update(ur => ur.UserId == u.UserId, ur => ur.UserPassword, u.UserPassword);
+                var count = _bLLUser.Update(u, ur => ur.UserPassword);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog($"重置用户 {u.UserName} 密码", OperLogModule.Account, Username);
+                    OperLogHelper.AddOperLog($"重置用户 {u.UserName} 密码", OperLogModule.Account, UserName);
                     return Json(true);
                 }
             }
@@ -308,15 +312,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [AllowAnonymous]
         public ActionResult ValidUsername(string userName)
         {
-            var u = _bLLUser.Fetch(s => s.UserName == userName);
-            if (u == null)
-            {
-                return Json(true);
-            }
-            else
-            {
-                return Json(false);
-            }
+            return Json(_bLLUser.Exist(s => s.UserName == userName));
         }
 
         /// <summary>
@@ -327,15 +323,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ValidUserMail(string userMail)
         {
-            var u = _bLLUser.Fetch(s => s.UserMail == userMail);
-            if (u == null)
-            {
-                return Json(true);
-            }
-            else
-            {
-                return Json(false);
-            }
+            return Json(_bLLUser.Exist(s => s.UserMail == userMail));
         }
 
         /// <summary>

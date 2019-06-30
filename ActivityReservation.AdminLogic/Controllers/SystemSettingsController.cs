@@ -75,7 +75,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog($"新增系统设置 {setting.SettingName}：{setting.SettingValue}",
-                        OperLogModule.Settings, Username);
+                        OperLogModule.Settings, UserName);
                     return Json(true);
                 }
             }
@@ -100,7 +100,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog(
-                        $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, Username);
+                        $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, UserName);
                     return Json(true);
                 }
             }

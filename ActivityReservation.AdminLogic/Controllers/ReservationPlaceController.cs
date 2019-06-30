@@ -77,11 +77,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                     {
                         PlaceId = placeId,
                         PlaceName = newName,
-                        UpdateBy = Username,
+                        UpdateBy = UserName,
                         UpdateTime = DateTime.UtcNow
                     }, x => x.PlaceName, x => x.UpdateBy, x => x.UpdateTime);
                 OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}",
-                    OperLogModule.ReservationPlace, Username);
+                    OperLogModule.ReservationPlace, UserName);
                 return Json("");
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     PlaceId = Guid.NewGuid(),
                     PlaceName = placeName,
-                    UpdateBy = Username
+                    UpdateBy = UserName
                 };
                 try
                 {
@@ -148,10 +148,10 @@ namespace ActivityReservation.AdminLogic.Controllers
             try
             {
                 _reservationPlaceHelper.Update(
-                    new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = Username }, x => x.IsDel, x => x.UpdateBy,
+                    new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = UserName }, x => x.IsDel, x => x.UpdateBy,
                     x => x.UpdateTime);
                 OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", OperLogModule.ReservationPlace,
-                    Username);
+                    UserName);
                 return Json("");
             }
             catch (Exception ex)
@@ -186,7 +186,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     new ReservationPlace()
                     {
                         PlaceId = placeId,
-                        UpdateBy = Username,
+                        UpdateBy = UserName,
                         IsActive = bStatus
                     },
                     x => x.IsActive,
@@ -195,7 +195,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     );
                 OperLogHelper.AddOperLog(
                     $"修改活动室{placeId.ToString()}:{placeName}状态，{((status > 0) ? "启用" : "禁用")}",
-                    OperLogModule.ReservationPlace, Username);
+                    OperLogModule.ReservationPlace, UserName);
                 return Json("");
             }
             catch (Exception ex)
@@ -236,15 +236,15 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
 
             model.PeriodId = Guid.NewGuid();
-            model.CreateBy = Username;
+            model.CreateBy = UserName;
             model.CreateTime = DateTime.UtcNow;
-            model.UpdateBy = Username;
+            model.UpdateBy = UserName;
             model.UpdateTime = DateTime.UtcNow;
 
             var result = _reservationPeriodHelper.Insert(model);
             if (result > 0)
             {
-                OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);
+                OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, UserName);
             }
             return Json(result > 0 ? "" : "创建预约时间段失败");
         }
@@ -277,13 +277,13 @@ namespace ActivityReservation.AdminLogic.Controllers
             //    return Json("排序重复，请修改");
             //}
 
-            model.UpdateBy = Username;
+            model.UpdateBy = UserName;
             model.UpdateTime = DateTime.UtcNow;
 
             var result = _reservationPeriodHelper.Update(model, x => x.PeriodTitle, x => x.PeriodDescription, x => x.UpdateBy, x => x.UpdateTime);
             if (result > 0)
             {
-                OperLogHelper.AddOperLog($"更新预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, Username);
+                OperLogHelper.AddOperLog($"更新预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, UserName);
             }
             return Json(result > 0 ? "" : "更新预约时间段信息失败");
         }
@@ -303,7 +303,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var result = _reservationPeriodHelper.Delete(p => p.PeriodId == periodId);
             if (result > 0)
             {
-                OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, Username);
+                OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, UserName);
             }
             return Json(result > 0 ? "" : "删除失败");
         }

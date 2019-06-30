@@ -88,7 +88,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         RepeatYearly = model.RepeatYearly,
                         IsActive = model.IsActive,
                         UpdatedTime = DateTime.UtcNow,
-                        UpdatedBy = Username
+                        UpdatedBy = UserName
                     };
                     var count = _bllDisabledPeriod.Insert(period);
                     if (count > 0)
@@ -142,7 +142,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (count > 0)
                 {
                     OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}",
-                        OperLogModule.DisabledPeriod, Username);
+                        OperLogModule.DisabledPeriod, UserName);
 
                     result.Status = JsonResultStatus.Success;
                     result.Result = true;
@@ -161,7 +161,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var count = _bllDisabledPeriod.Delete(new DisabledPeriod() { PeriodId = periodId });
             if (count > 0)
             {
-                OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, Username);
+                OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, UserName);
                 return Json("");
             }
             return Json("删除失败");

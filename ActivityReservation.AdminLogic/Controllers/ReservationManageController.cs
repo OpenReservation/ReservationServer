@@ -78,8 +78,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                     }
                     _reservationHelper.Insert(reservation);
                     OperLogHelper.AddOperLog(
-                        $"管理员 {Username} 后台预约 {reservation.ReservationId}：{reservation.ReservationActivityContent}",
-                        OperLogModule.Reservation, Username);
+                        $"管理员 {UserName} 后台预约 {reservation.ReservationId}：{reservation.ReservationActivityContent}",
+                        OperLogModule.Reservation, UserName);
                     result.Result = true;
                     result.Status = JsonResultStatus.Success;
                     return Json(result);
@@ -174,7 +174,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     //记录操作日志
                     OperLogHelper.AddOperLog(
                         $"更新 {reservationId}:{reservation.ReservationActivityContent} 预约状态",
-                        OperLogModule.Reservation, Username);
+                        OperLogModule.Reservation, UserName);
                     return Json(true);
                 }
             }
@@ -204,7 +204,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     OperLogHelper.AddOperLog(
                         $"删除预约记录 {id}:{reservation.ReservationActivityContent}",
-                        OperLogModule.Reservation, Username);
+                        OperLogModule.Reservation, UserName);
                     return Json(true);
                 }
             }

@@ -1,13 +1,9 @@
-﻿using System;
-using ActivityReservation.Business;
-using ActivityReservation.Helpers;
-using ActivityReservation.Models;
+﻿using ActivityReservation.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.WorkContexts
 {
@@ -25,31 +21,7 @@ namespace ActivityReservation.WorkContexts
         /// <summary>
         /// 管理员姓名
         /// </summary>
-        public string Username => User.Identity.Name;
-
-        private User _currentUser;
-
-        /// <summary>
-        /// 当前用户
-        /// </summary>
-        public User CurrentUser
-        {
-            get
-            {
-                if (_currentUser == null)
-                {
-                    var userId = User.GetUserId<Guid>();
-                    if (userId == Guid.Empty)
-                    {
-                        return _currentUser;
-                    }
-
-                    _currentUser = HttpContext.RequestServices.GetService<IBLLUser>()
-                        .Fetch(_ => _.UserId == userId);
-                }
-                return _currentUser;
-            }
-        }
+        public string UserName => User.Identity.Name;
 
         protected System.Threading.Tasks.Task<bool> ValidateValidCodeAsync(string recaptchaType, string recaptcha)
         {

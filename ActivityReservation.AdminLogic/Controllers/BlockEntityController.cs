@@ -97,7 +97,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     {
                         //记录日志
                         OperLogHelper.AddOperLog($"添加 {blockValue} 到黑名单", OperLogModule.BlockEntity,
-                            Username);
+                            UserName);
                         return Json(true);
                     }
                 }
@@ -129,7 +129,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     OperLogHelper.AddOperLog(
                         $"更改黑名单 {entityName} 状态为 {(status > 0 ? "启用" : "禁用")}",
-                        OperLogModule.BlockEntity, Username);
+                        OperLogModule.BlockEntity, UserName);
                     return Json(true);
                 }
             }
@@ -154,7 +154,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (c == 1)
                 {
                     //记录日志
-                    OperLogHelper.AddOperLog($"删除黑名单 {entityName}", OperLogModule.BlockEntity, Username);
+                    OperLogHelper.AddOperLog($"删除黑名单 {entityName}", OperLogModule.BlockEntity, UserName);
                     return Json(true);
                 }
             }

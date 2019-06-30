@@ -85,9 +85,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                     NoticeContent = model.Content,
                     NoticeTitle = model.Title,
                     NoticeCustomPath = model.CustomPath,
-                    NoticePublisher = Username,
+                    NoticePublisher = UserName,
                     NoticePublishTime = DateTime.UtcNow,
-                    UpdateBy = Username,
+                    UpdateBy = UserName,
                     UpdateTime = DateTime.UtcNow
                 };
                 //
@@ -112,8 +112,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var c = _bLLNotice.Insert(n);
                 if (c == 1)
                 {
-                    OperLogHelper.AddOperLog($"{Username}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
-                        OperLogModule.Notice, Username);
+                    OperLogHelper.AddOperLog($"{UserName}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
+                        OperLogModule.Notice, UserName);
                     return RedirectToAction("Index");
                 }
                 else
@@ -173,7 +173,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var result = _bLLNotice.Delete(new Notice() { NoticeId = noticeId });
             if (result > 0)
             {
-                OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, Username);
+                OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, UserName);
                 return Json("");
             }
             return Json("删除失败");
