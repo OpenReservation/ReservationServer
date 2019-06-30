@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
@@ -9,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.WorkContexts
 {
@@ -39,14 +38,14 @@ namespace ActivityReservation.WorkContexts
             {
                 if (_currentUser == null)
                 {
-                    var userIdStr = HttpContext.User.Claims.FirstOrDefault(_ => _.Type == ClaimTypes.NameIdentifier)?.Value;
-                    if (string.IsNullOrWhiteSpace(userIdStr))
+                    var userId = User.GetUserId<Guid>();
+                    if (userId == Guid.Empty)
                     {
                         return _currentUser;
                     }
 
-                    var userId = Guid.Parse(userIdStr);
-                    _currentUser = HttpContext.RequestServices.GetService<IBLLUser>().Fetch(_ => _.UserId == userId);
+                    _currentUser = HttpContext.RequestServices.GetService<IBLLUser>()
+                        .Fetch(_ => _.UserId == userId);
                 }
                 return _currentUser;
             }
