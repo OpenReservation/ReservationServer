@@ -5,7 +5,7 @@ namespace ActivityReservation.API
 {
     [ApiController]
     [Route("/api/[controller]")]
-    public class ApiControllerBase : ControllerBase
+    public abstract class ApiControllerBase : ControllerBase
     {
         protected readonly ILogger Logger;
 

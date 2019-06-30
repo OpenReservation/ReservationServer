@@ -7,6 +7,5 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" Version="2.2.0" />
     <PackageReference Include="WeihanLi.Common" Version="1.0.22" />
-    <PackageReference Include="SharpRaven" Version="2.4.0" />
   </ItemGroup>
 </Project>

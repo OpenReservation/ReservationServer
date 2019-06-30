@@ -30,11 +30,11 @@ namespace ActivityReservation.Helpers
                     });
 
                     var blockTypes = new List<BlockType>
-                {
-                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
-                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
-                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
-                };
+                    {
+                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
+                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
+                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
+                    };
                     dbContext.BlockTypes.AddRange(blockTypes);
 
                     var placeId = Guid.NewGuid();

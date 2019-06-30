@@ -148,11 +148,15 @@ namespace ActivityReservation
         {
             LogHelper.AddLogProvider(new ILogHelperProvider[] {
                 new WeihanLi.Common.Logging.Log4Net.Log4NetLogHelperProvider(),
-                new Common.SentryLogHelperProvider(Configuration.GetAppSetting("SentryClientKey")),
             });
             loggerFactory
                 .AddLog4Net()
-                .AddSentry(Configuration.GetAppSetting("SentryClientKey"));
+                .AddSentry(options =>
+                {
+                    options.Dsn = Configuration.GetAppSetting("SentryClientKey");
+                    options.Environment = env.EnvironmentName;
+                    options.MinimumEventLevel = LogLevel.Error;
+                });
 
             //if (env.IsDevelopment())
             //{
