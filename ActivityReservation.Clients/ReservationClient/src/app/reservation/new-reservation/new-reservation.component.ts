@@ -75,8 +75,6 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     this.loadData();
 
     this.reservation = new Reservation();
-
-    this.loadCaptcha();
   }
 
   ngOnDestroy(): void {
@@ -85,7 +83,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     this.tencentRecaptcha = null;
   }
 
-  private loadCaptcha() : void{
+  private loadCaptcha() : Promise{
     var tCaptcha = document.getElementById("tCaptcha");
     if(tCaptcha){
       this.InitCaptcha();
@@ -106,7 +104,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
             this.InitCaptcha();
         };
     }
-    document.getElementsByTagName('head')[0].appendChild(script);
+    document.getElementsByTagName('body')[0].appendChild(script);
   }
 
   private InitCaptcha():void{
@@ -135,6 +133,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
       }
     );
     console.log(`captcha inited`);
+    this.tencentRecaptcha.show();
   }
 
   private loadData(): void{
@@ -222,7 +221,6 @@ export class NewReservationComponent implements OnInit, OnDestroy {
   onSubmitReservation(): void{
     if(this.captchaValid === false){
       this.loadCaptcha();
-      this.tencentRecaptcha.show(); // show tencent captcha
       return;
     }
     console.log(`submit reservation`);
