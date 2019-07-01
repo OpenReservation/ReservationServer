@@ -83,7 +83,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     this.tencentRecaptcha = null;
   }
 
-  private loadCaptcha() : Promise{
+  private loadCaptcha(): void {
     var tCaptcha = document.getElementById("tCaptcha");
     if(tCaptcha){
       this.InitCaptcha();
