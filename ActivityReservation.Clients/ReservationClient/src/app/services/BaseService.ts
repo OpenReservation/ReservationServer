@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PagedListData } from '../models/PagedListData';
+import { environment } from '../../environments/environment';
 
 export class BaseService<TModel>{
-  protected readonly apiBaseUrl = "https://reservation.weihanli.xyz";
+  protected readonly apiBaseUrl;
 
-  constructor(protected http:HttpClient, protected apiPath:string){}
+  constructor(protected http:HttpClient, protected apiPath:string){
+    this.apiBaseUrl = environment.apiBaseUrl;
+  }
 
   public Get(params?:object): Observable<PagedListData<TModel>> {
     let url = `${this.apiBaseUrl}/api/${this.apiPath}`;
