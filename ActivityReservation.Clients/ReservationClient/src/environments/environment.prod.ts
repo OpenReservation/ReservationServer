@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: "http://activityreservation"
+  apiBaseUrl: "https://reservation.weihanli.xyz"
 };
