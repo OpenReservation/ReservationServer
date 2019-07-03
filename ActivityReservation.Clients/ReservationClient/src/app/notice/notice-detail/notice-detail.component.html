@@ -8,7 +8,7 @@
         发布时间：{{notice?.NoticePublishTime| date:'yyyy-MM-dd HH:mm:ss'}} &nbsp;&nbsp;
         浏览次数：{{notice?.NoticeVisitCount}}
     </section>
-    <section style="margin:0 auto;max-width:800px" [innerHTML]="notice?.NoticeContent | sanitizeHtml">
+    <section style="margin:0 auto;" [innerHTML]="notice?.NoticeContent | sanitizeHtml">
     </section>
     <footer>
     </footer>
