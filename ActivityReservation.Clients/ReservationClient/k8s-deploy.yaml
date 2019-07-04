@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: reservation-client
-          image: weihanli/reservation-client:786
+          image: weihanli/reservation-client:latest
           imagePullPolicy: IfNotPresent # 默认是IfNotPresent，如果设置成Always，则每一次部署都会重新拉取容器映像（否则，如果本地存在指定的镜像版本，就不会再去拉取）
           resources:
             limits:
