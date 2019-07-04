@@ -187,15 +187,17 @@ export class NewReservationComponent implements OnInit, OnDestroy {
         let date = new Date(this.dateFormGroup.value.dateCtrl);
         let dt = `${date.getFullYear()}-${date.getMonth()<9? `0${date.getMonth()+1}` : date.getMonth()+1}-${date.getDate()<=9? `0${date.getDate()}` : date.getDate()}`;
         console.log(dt);
-        this.reservation.ReservationForDate = dt;
-        // load periods
-        this.reservationPlaceSvc.getAvailablePeriods(this.reservation.ReservationPlaceId, this.reservation.ReservationForDate)
-          .subscribe(x=> 
-          {
-            this.reservationPeriods = x;
-            this.checkedPeriodsFormArray.clear();
-            this.reservationPeriods.forEach(x => this.checkedPeriodsFormArray.push(new FormControl(x.Checked)));
-          });       
+        if(this.reservation.ReservationForDate != dt){
+          this.reservation.ReservationForDate = dt;
+          // load periods
+          this.reservationPlaceSvc.getAvailablePeriods(this.reservation.ReservationPlaceId, this.reservation.ReservationForDate)
+            .subscribe(x=> 
+            {
+              this.reservationPeriods = x;
+              this.checkedPeriodsFormArray.clear();
+              this.reservationPeriods.forEach(x => this.checkedPeriodsFormArray.push(new FormControl(x.Checked)));
+            });
+        }
         
         break;
       
