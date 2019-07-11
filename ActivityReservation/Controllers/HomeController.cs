@@ -273,14 +273,14 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public async Task<ActionResult> NoticeDetails(string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return RedirectToAction("Notice");
             }
             try
             {
                 var noticeBll = HttpContext.RequestServices.GetService<IBLLNotice>();
-                var notice = await noticeBll.FetchAsync(n => n.NoticeCustomPath == path);
+                var notice = await noticeBll.FetchAsync(n => n.NoticeCustomPath == path.Trim());
                 if (notice != null)
                 {
                     notice.NoticeVisitCount += 1;
