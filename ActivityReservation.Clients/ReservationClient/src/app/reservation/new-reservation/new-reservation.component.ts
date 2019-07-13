@@ -160,6 +160,8 @@ export class NewReservationComponent implements OnInit, OnDestroy {
   }
 
   onStepChange(event): void{
+    console.log(event);
+
     let stepIndex = event.selectedIndex;
     console.log(`stepIndex: ${stepIndex}, reservation:${JSON.stringify(this.reservation)}`);
     //
@@ -204,6 +206,9 @@ export class NewReservationComponent implements OnInit, OnDestroy {
         console.log(this.reservationPeriods);
         //
         let checkedPeriods = this.reservationPeriods.filter(p=>p.Checked);
+        if(checkedPeriods.length == 0){
+          alert(`至少要选中一个时间段`);
+        }
         this.reservation.ReservationForTime = checkedPeriods.map(p=>p.PeriodTitle).join(","); 
         this.reservation.ReservationForTimeIds = checkedPeriods.map(p=>p.PeriodIndex).join(",");
         break;
@@ -218,6 +223,10 @@ export class NewReservationComponent implements OnInit, OnDestroy {
   }
 
   onSubmitReservation(): void{
+    if(!this.reservation.ReservationForTime){
+      alert(`至少要选中一个时间段`);
+      return;
+    }
     if(this.captchaValid === false){
       this.loadCaptcha();
       return;
