@@ -135,9 +135,9 @@ namespace ActivityReservation.AdminLogic.Controllers
                 try
                 {
                     //判断原密码是否正确，原密码正确的情况才能修改密码
-                    if (user.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(model.OldPassword)))
+                    if (user.UserPassword.Equals(HashHelper.GetHashedString(HashType.SHA256, model.OldPassword)))
                     {
-                        user.UserPassword = SecurityHelper.SHA256_Encrypt(model.NewPassword);
+                        user.UserPassword = HashHelper.GetHashedString(HashType.SHA256, model.NewPassword);
                         if (_bLLUser.Update(user, u => u.UserPassword) > 0)
                         {
                             OperLogHelper.AddOperLog($"{UserName} 修改密码 {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}",
@@ -225,7 +225,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     UserId = Guid.NewGuid(),
                     UserName = accountModel.Username,
-                    UserPassword = SecurityHelper.SHA256_Encrypt(accountModel.UserPassword),
+                    UserPassword = HashHelper.GetHashedString(HashType.SHA256, accountModel.UserPassword),
                     UserMail = accountModel.UserEmail
                 };
                 try
@@ -285,7 +285,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 u.UserId = User.GetUserId<Guid>();
                 //加密
-                u.UserPassword = SecurityHelper.SHA256_Encrypt(u.UserPassword);
+                u.UserPassword = HashHelper.GetHashedString(HashType.SHA256, u.UserPassword);
                 var count = _bLLUser.Update(u, ur => ur.UserPassword);
                 if (count == 1)
                 {
@@ -337,7 +337,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var u = _bLLUser.Fetch(x => x.UserId == uid);
             if (u != null)
             {
-                if (u.UserPassword.Equals(SecurityHelper.SHA256_Encrypt(password)))
+                if (u.UserPassword.Equals(HashHelper.GetHashedString(HashType.SHA256, password)))
                 {
                     return Json(true);
                 }

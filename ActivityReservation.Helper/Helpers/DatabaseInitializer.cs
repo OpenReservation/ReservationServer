@@ -25,7 +25,7 @@ namespace ActivityReservation.Helpers
                     {
                         UserId = Guid.NewGuid(),
                         UserName = "admin",
-                        UserPassword = SecurityHelper.SHA256_Encrypt("Admin888"),
+                        UserPassword = HashHelper.GetHashedString(HashType.SHA256, "Admin888"),
                         IsSuper = true
                     });
 

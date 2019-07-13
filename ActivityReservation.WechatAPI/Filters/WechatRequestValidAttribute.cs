@@ -26,7 +26,7 @@ namespace ActivityReservation.WechatAPI.Filters
             //拼接为一个字符串
             var tempStr = string.Join("", array);
             //对字符串进行 SHA1加密
-            tempStr = SecurityHelper.SHA1_Encrypt(tempStr);
+            tempStr = SecurityHelper.SHA1(tempStr);
             //判断signature 是否正确
             return tempStr.Equals(signature?.ToUpper());
         }
