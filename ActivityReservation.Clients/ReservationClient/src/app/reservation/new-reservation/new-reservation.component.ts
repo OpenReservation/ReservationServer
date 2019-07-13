@@ -108,9 +108,6 @@ export class NewReservationComponent implements OnInit, OnDestroy {
   }
 
   private InitCaptcha():void{
-    if(this.tencentRecaptcha != null){
-      return;
-    }
     let captchaDom = document.getElementById('TencentCaptcha1');
     if(!captchaDom){
       return;
@@ -244,8 +241,9 @@ export class NewReservationComponent implements OnInit, OnDestroy {
         });
       }else{
         alert(x.ErrorMsg);
+        this.captchaValid = false;
         this.submiting = false;
-      }      
+      }
     });
   }
 }
