@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
+using WeihanLi.Extensions;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 
@@ -41,9 +42,15 @@ namespace ActivityReservation.Helpers
         public List<ReservationPeriodViewModel> GetAvailablePeriodsByDateAndPlace(DateTime dt, Guid placeId)
         {
             //待审核和审核通过的预约时间段不能再被预约
-            var reservationList = _bllReservation.Select(r => EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0 && r.ReservationPlaceId == placeId &&
-                r.ReservationStatus != 2);
-            var reservationPeriod = _bllReservationPeriod.Select(_ => _.PlaceId == placeId).OrderBy(_ => _.CreateTime);
+            var reservationList = _bllReservation.Select(r =>
+                EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0
+                && r.ReservationPlaceId == placeId
+                && r.ReservationStatus != 2);
+
+            var reservationPeriod = _bllReservationPeriod
+                .Select(_ => _.PlaceId == placeId)
+                .OrderBy(_ => _.PeriodIndex)
+                .ThenBy(_ => _.CreateTime);
 
             return reservationPeriod.Select((_, index) => new ReservationPeriodViewModel
             {
@@ -52,7 +59,7 @@ namespace ActivityReservation.Helpers
                 PeriodIndex = _.PeriodIndex,
                 PeriodTitle = _.PeriodTitle,
                 PeriodDescription = _.PeriodDescription,
-                IsCanReservate = reservationList.All(r => (r.ReservationPeriod & (1 << index)) == 0)
+                IsCanReservate = !reservationList.Any(r => (r.ReservationPeriod & (1 << _.PeriodIndex)) != 0)
             }).OrderBy(_ => _.PeriodIndex).ToList();
         }
 
@@ -100,9 +107,8 @@ namespace ActivityReservation.Helpers
         {
             var periods = GetAvailablePeriodsByDateAndPlace(dt, placeId);
             // 预约时间段逻辑修改
-            var periodIndexes = reservationForPeriodIds.Split(',').Select(_ => Convert.ToInt32(_)).ToArray();
-            //
-            if (periodIndexes.All(p => periods.Any(_ => _.IsCanReservate && _.PeriodIdx == p)))
+            var periodIndexes = reservationForPeriodIds.SplitArray<int>();
+            if (periodIndexes.All(p => periods.Any(_ => _.IsCanReservate && _.PeriodIndex == p)))
             {
                 return true;
             }
@@ -168,15 +174,14 @@ namespace ActivityReservation.Helpers
 
             using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
             {
-                if (redisLock.TryLock(TimeSpan.FromSeconds(30)))
+                if (redisLock.TryLock())
                 {
                     var reservationForDate = reservation.ReservationForDate;
                     if (!IsReservationForDateAvailable(reservationForDate, isAdmin, out msg))
                     {
                         return false;
                     }
-                    if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId,
-                        reservation.ReservationForTimeIds))
+                    if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId, reservation.ReservationForTimeIds))
                     {
                         msg = "预约时间段冲突，请重新选择预约时间段";
                         return false;

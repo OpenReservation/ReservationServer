@@ -68,7 +68,7 @@
             <section id="secPickTimePeriod" ng-class="{'show':step==2}">
                 <p class="lead">选择预约时间段</p>
                 <div>
-                    <div ng-repeat="item in ReservationPeriods"><label><input type="checkbox" ng-disabled="!item.IsCanReservate" name="cbPeriod" data-periodIndex="{{item.PeriodIdx}}" title="{{item.PeriodDescription}}" />{{item.PeriodTitle}}</label></div>
+                    <div ng-repeat="item in ReservationPeriods"><label><input type="checkbox" ng-disabled="!item.IsCanReservate" name="cbPeriod" data-periodIndex="{{item.PeriodIndex}}" title="{{item.PeriodDescription}}" />{{item.PeriodTitle}}</label></div>
                 </div>
             </section>
             @* 填写预约人信息 *@
