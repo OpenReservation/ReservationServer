@@ -15,6 +15,7 @@ namespace ActivityReservation.Helpers
         public static void Initialize(this IServiceProvider serviceProvider)
         {
             IReadOnlyCollection<SystemSettings> settings;
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
@@ -25,7 +26,7 @@ namespace ActivityReservation.Helpers
                     {
                         UserId = Guid.NewGuid(),
                         UserName = "admin",
-                        UserPassword = HashHelper.GetHashedString(HashType.SHA256, "Admin888"),
+                        UserPassword = HashHelper.GetHashedString(HashType.SHA256, "Admin888"), // SecurityHelper.SHA256("Admin888")
                         IsSuper = true
                     });
 
@@ -41,8 +42,8 @@ namespace ActivityReservation.Helpers
                     var placeId1 = Guid.NewGuid();
                     //Places init
                     dbContext.ReservationPlaces.AddRange(new[] {
-                    new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0 },
-                    new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1 }});
+                    new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0,MaxReservationPeriodNum = 2 },
+                    new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1,MaxReservationPeriodNum = 2}});
                     dbContext.ReservationPeriods.AddRange(new[]
                     {
                     new ReservationPeriod
@@ -65,7 +66,7 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "10:00~12:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.UtcNow.AddSeconds(2),
+                        CreateTime = DateTime.UtcNow,
                         UpdateBy = "System",
                         UpdateTime = DateTime.UtcNow
                     },
@@ -77,7 +78,7 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "13:00~16:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.UtcNow.AddSeconds(3),
+                        CreateTime = DateTime.UtcNow,
                         UpdateBy = "System",
                         UpdateTime = DateTime.UtcNow
                     },
@@ -123,7 +124,7 @@ namespace ActivityReservation.Helpers
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemContactPhone",
                         DisplayName = "系统联系人联系电话",
-                        SettingValue = "15601655489"
+                        SettingValue = "13245642365"
                     },
                     new SystemSettings
                     {
@@ -143,6 +144,7 @@ namespace ActivityReservation.Helpers
                     .ToArray();
                 }
             }
+
             if (settings.Count > 0) // init settings cache
             {
                 var applicationSettingService = serviceProvider.GetRequiredService<IApplicationSettingService>();

@@ -59,7 +59,7 @@ namespace ActivityReservation.Helpers
                 PeriodIndex = _.PeriodIndex,
                 PeriodTitle = _.PeriodTitle,
                 PeriodDescription = _.PeriodDescription,
-                IsCanReservate = !reservationList.Any(r => (r.ReservationPeriod & (1 << _.PeriodIndex)) != 0)
+                IsCanReservate = reservationList.All(r => (r.ReservationPeriod & (1 << _.PeriodIndex)) == 0)
             }).OrderBy(_ => _.PeriodIndex).ToList();
         }
 

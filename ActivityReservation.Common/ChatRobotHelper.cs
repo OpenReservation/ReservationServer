@@ -36,6 +36,7 @@ namespace ActivityReservation.Common
         /// 获取机器人回复【异步】
         /// </summary>
         /// <param name="request">请求</param>
+        /// <param name="cancellationToken"></param>
         /// <returns>回复信息</returns>
         public async Task<string> GetBotReplyAsync(string request, CancellationToken cancellationToken = default(CancellationToken))
         {
