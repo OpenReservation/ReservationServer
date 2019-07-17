@@ -4,6 +4,7 @@ using ActivityReservation.API;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
+using ActivityReservation.Events;
 using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
@@ -24,11 +25,13 @@ using Newtonsoft.Json.Serialization;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
+using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
-using WeihanLi.Common.Logging;
+using WeihanLi.Common.Logging.Log4Net;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
+using WeihanLi.Redis.Event;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation
@@ -138,17 +141,21 @@ namespace ActivityReservation
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
             });
+            services.AddSingleton<IEventBus, RedisEventBus>();
+            services.AddSingleton<IEventStore, EventStoreInRedis>();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
-            LogHelper.AddLogProvider(new ILogHelperProvider[] {
-                new WeihanLi.Common.Logging.Log4Net.Log4NetLogHelperProvider(),
-            });
+            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
+            eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
+
+            LogHelper.LogFactory.AddLog4Net();
+
             loggerFactory
                 .AddLog4Net()
                 .AddSentry(options =>
@@ -158,14 +165,6 @@ namespace ActivityReservation
                     options.MinimumEventLevel = LogLevel.Error;
                 });
 
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Error");
-            //}
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
             app.UseStaticFiles();

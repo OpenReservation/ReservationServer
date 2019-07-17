@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
+using ActivityReservation.Events;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
@@ -14,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
@@ -99,18 +101,17 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult IsReservationForDateValid(DateTime reservationForDate)
         {
-            var jsonResult = new JsonResultModel<bool>() { Status = JsonResultStatus.Success };
             var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailable(reservationForDate, false, out var msg);
             if (isValid)
             {
-                jsonResult.SetSuccessResult(true);
+                return Json(JsonResultModel.Success(true));
             }
             else
             {
-                jsonResult.Result = false;
-                jsonResult.ErrorMsg = msg;
+                var jsonResult =
+                    new JsonResultModel<bool> { Status = JsonResultStatus.Success, Result = false, ErrorMsg = msg };
+                return Json(jsonResult);
             }
-            return Json(jsonResult);
         }
 
         /// <summary>
@@ -121,7 +122,8 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId)
         {
-            var periodsStatus = HttpContext.RequestServices.GetService<ReservationHelper>().GetAvailablePeriodsByDateAndPlace(dt, placeId);
+            var periodsStatus = HttpContext.RequestServices.GetService<ReservationHelper>()
+                .GetAvailablePeriodsByDateAndPlace(dt, placeId);
             return Json(periodsStatus);
         }
 
@@ -178,8 +180,7 @@ namespace ActivityReservation.Controllers
                         UpdateTime = DateTime.UtcNow,
                         ReservationId = Guid.NewGuid()
                     };
-                    //TODO:验证最大可预约时间段，同一个手机号，同一个IP地址
-                    // 需要验证这种预约判断是否可以通用，可能有bug
+                    //验证最大可预约时间段，同一个手机号，同一个IP地址
                     foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
                     {
                         reservation.ReservationPeriod += (1 << item);
@@ -270,8 +271,9 @@ namespace ActivityReservation.Controllers
         /// 公告详情
         /// </summary>
         /// <param name="path">访问路径</param>
+        /// <param name="eventBus"></param>
         /// <returns></returns>
-        public async Task<ActionResult> NoticeDetails(string path)
+        public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -283,8 +285,7 @@ namespace ActivityReservation.Controllers
                 var notice = await noticeBll.FetchAsync(n => n.NoticeCustomPath == path.Trim());
                 if (notice != null)
                 {
-                    notice.NoticeVisitCount += 1;
-                    await noticeBll.UpdateAsync(notice, x => x.NoticeVisitCount);
+                    eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
 
                     return View(notice);
                 }
@@ -300,14 +301,17 @@ namespace ActivityReservation.Controllers
             }
         }
 
-        public async System.Threading.Tasks.Task<IActionResult> Chat(string msg)
+        public async Task<IActionResult> Chat(string msg)
         {
             if (string.IsNullOrWhiteSpace(msg))
             {
                 return Ok();
             }
-            return Content(await HttpContext.RequestServices.GetService<ChatBotHelper>()
-                .GetBotReplyAsync(msg, HttpContext.RequestAborted));
+            return Ok(new
+            {
+                text = await HttpContext.RequestServices.GetService<ChatBotHelper>()
+                    .GetBotReplyAsync(msg, HttpContext.RequestAborted)
+            });
         }
 
         public ActionResult About()
