@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Helpers;
@@ -40,7 +39,7 @@ namespace ActivityReservation.Events
             _operationLogRepo = operationLogRepo;
         }
 
-        public async Task Handle(OperationLogEvent @event, CancellationToken cancellationToken = new CancellationToken())
+        public async Task Handle(OperationLogEvent @event)
         {
             try
             {
@@ -52,7 +51,7 @@ namespace ActivityReservation.Events
                     LogModule = @event.Module.ToString(),
                     OperBy = @event.OperBy,
                     OperTime = @event.EventAt.UtcDateTime,
-                }, cancellationToken);
+                });
             }
             catch (Exception ex)
             {

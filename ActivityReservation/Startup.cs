@@ -31,7 +31,6 @@ using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging.Log4Net;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
-using WeihanLi.Redis.Event;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation
@@ -141,8 +140,12 @@ namespace ActivityReservation
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
             });
+
             services.AddSingleton<IEventBus, RedisEventBus>();
             services.AddSingleton<IEventStore, EventStoreInRedis>();
+
+            services.AddSingleton<OperationLogEventHandler>();
+            services.AddSingleton<NoticeViewEventHandler>(); //register EventHandlers
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);

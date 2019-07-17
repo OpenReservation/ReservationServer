@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using ActivityReservation.Database;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +19,7 @@ namespace ActivityReservation.Events
 
     public class NoticeViewEventHandler : IEventHandler<NoticeViewEvent>
     {
-        public Task Handle(NoticeViewEvent @event, CancellationToken cancellationToken = new CancellationToken())
+        public Task Handle(NoticeViewEvent @event)
         {
             return DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
                {
