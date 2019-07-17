@@ -143,9 +143,9 @@ namespace ActivityReservation
 
             services.AddSingleton<IEventBus, RedisEventBus>();
             services.AddSingleton<IEventStore, EventStoreInRedis>();
-
+            //register EventHandlers
             services.AddSingleton<OperationLogEventHandler>();
-            services.AddSingleton<NoticeViewEventHandler>(); //register EventHandlers
+            services.AddSingleton<NoticeViewEventHandler>();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
