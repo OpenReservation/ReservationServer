@@ -59,16 +59,15 @@ namespace ActivityReservation.API
         /// <param name="cancellationToken">cancellationToken</param>
         /// <returns></returns>
         [HttpGet("{path}")]
-        public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus)
         {
             var notice = await _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken);
-            if (notice != null)
+            if (notice == null)
             {
-                notice.NoticeVisitCount += 1;
-                await _repository.UpdateAsync(notice, new Expression<Func<Notice, object>>[] { n => n.NoticeVisitCount }, cancellationToken);
-                return Ok(notice);
+                return NotFound();
             }
-            return NotFound();
+            eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
+            return Ok(notice);
         }
     }
 }
