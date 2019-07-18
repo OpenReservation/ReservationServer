@@ -1,6 +1,10 @@
 ﻿@{
     Layout = null;
 }
+@using ActivityReservation.Services
+@using System.Net
+@using System.Net.Sockets
+@inject IApplicationSettingService applicationSettings
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,7 +38,7 @@
             </form>
         </section>
         <footer>
-            <p>&copy; @DateTime.UtcNow.Year - 活动室预约系统 </p>
+            <p>&copy; @DateTime.UtcNow.Year - @applicationSettings.GetSettingValue("SystemTitle") &nbsp;&nbsp; HostIp: <strong>@(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault(_ => _.AddressFamily == AddressFamily.InterNetwork)) </strong></p>
         </footer>
     </div>
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
