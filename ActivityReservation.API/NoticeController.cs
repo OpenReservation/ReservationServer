@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ActivityReservation.Events;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
@@ -7,6 +8,7 @@ using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WeihanLi.Common.Event;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 
@@ -57,6 +59,7 @@ namespace ActivityReservation.API
         /// </summary>
         /// <param name="path">path</param>
         /// <param name="cancellationToken">cancellationToken</param>
+        /// <param name="eventBus">eventBus</param>
         /// <returns></returns>
         [HttpGet("{path}")]
         public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus)
