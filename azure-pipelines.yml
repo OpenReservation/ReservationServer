@@ -8,6 +8,7 @@ trigger:
     exclude:
     - '*.md'
     - /ActivityReservation.Clients/
+    - /docs/
 
 pool:
   vmImage: 'Ubuntu 16.04'
