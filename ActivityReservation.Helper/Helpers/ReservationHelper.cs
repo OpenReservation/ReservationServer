@@ -4,11 +4,9 @@ using System.Linq;
 using ActivityReservation.Business;
 using ActivityReservation.ViewModels;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
-using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
@@ -42,9 +40,7 @@ namespace ActivityReservation.Helpers
         public List<ReservationPeriodViewModel> GetAvailablePeriodsByDateAndPlace(DateTime dt, Guid placeId)
         {
             //待审核和审核通过的预约时间段不能再被预约
-            var reservationList = _bllReservation.Select(r =>
-                EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0
-                && r.ReservationPlaceId == placeId
+            var reservationList = _bllReservation.Select(r => r.ReservationPlaceId == placeId
                 && r.ReservationStatus != 2);
 
             var reservationPeriod = _bllReservationPeriod
@@ -85,9 +81,8 @@ namespace ActivityReservation.Helpers
             }
 
             var disabledPeriods = _bllDisabledPeriod.Select(p =>
-                !p.IsDeleted && p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
-                EF.Functions.DateDiffDay(dt, p.EndDate) >= 0);
-            if (disabledPeriods == null || !disabledPeriods.Any())
+                !p.IsDeleted && p.IsActive).Where(p => dt > p.StartDate && dt <= p.EndDate).ToArray();
+            if (disabledPeriods.Length == 0)
             {
                 msg = "";
                 return true;
@@ -132,7 +127,6 @@ namespace ActivityReservation.Helpers
                 return true;
             }
             //预约人IP地址
-            // TODO: need debug
             var ip = DependencyResolver.Current.GetService<IHttpContextAccessor>().HttpContext.GetUserIP();
             if (blockList.Any(b => b.BlockValue.Equals(ip)))
             {
@@ -147,6 +141,8 @@ namespace ActivityReservation.Helpers
             }
             return false;
         }
+
+        private readonly object _lock = new object();
 
         /// <summary>
         /// 判断预约是否合法
@@ -172,27 +168,19 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
-            using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
+            lock (_lock)
             {
-                if (redisLock.TryLock())
+                var reservationForDate = reservation.ReservationForDate;
+                if (!IsReservationForDateAvailable(reservationForDate, isAdmin, out msg))
                 {
-                    var reservationForDate = reservation.ReservationForDate;
-                    if (!IsReservationForDateAvailable(reservationForDate, isAdmin, out msg))
-                    {
-                        return false;
-                    }
-                    if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId, reservation.ReservationForTimeIds))
-                    {
-                        msg = "预约时间段冲突，请重新选择预约时间段";
-                        return false;
-                    }
-                    return true;
-                }
-                else
-                {
-                    msg = "系统繁忙，请稍后重试！";
                     return false;
                 }
+                if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId, reservation.ReservationForTimeIds))
+                {
+                    msg = "预约时间段冲突，请重新选择预约时间段";
+                    return false;
+                }
+                return true;
             }
         }
     }

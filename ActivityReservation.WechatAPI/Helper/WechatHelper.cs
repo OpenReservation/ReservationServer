@@ -2,10 +2,10 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using ActivityReservation.WechatAPI.Entities;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
-using WeihanLi.Redis;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
@@ -13,9 +13,11 @@ namespace ActivityReservation.WechatAPI.Helper
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
+        private readonly IMemoryCache _memoryCache;
 
-        public WechatHelper(HttpClient httpClient, ILogger<WechatHelper> logger)
+        public WechatHelper(HttpClient httpClient, ILogger<WechatHelper> logger, IMemoryCache memoryCache)
         {
+            _memoryCache = memoryCache;
             _httpClient = httpClient;
             _logger = logger;
         }
@@ -46,11 +48,17 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <returns>AccessToken</returns>
         public async Task<string> GetAccessTokenAsync()
         {
-            var token = await RedisManager.CacheClient.GetOrSetAsync("wechat_access_token",
-                () => RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(WeChatConsts.AppId, WeChatConsts.AppSecret))
-                .ContinueWith(r => r.Result.JsonToType<AccessTokenEntity>()),
-                result => result.AccessToken.IsNotNullOrWhiteSpace()),
-                TimeSpan.FromSeconds(7140));
+            var token = await _memoryCache.GetOrCreateAsync("wechat_access_token",
+                 async (entry) =>
+                {
+                    var tokenRes = await RetryHelper.TryInvokeAsync(() => _httpClient
+                            .GetStringAsync(
+                                GetAccessTokenUrlFormat.FormatWith(WeChatConsts.AppId, WeChatConsts.AppSecret))
+                            .ContinueWith(r => r.Result.JsonToType<AccessTokenEntity>()),
+                        result => result.AccessToken.IsNotNullOrWhiteSpace());
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(7140);
+                    return tokenRes;
+                });
             return token?.AccessToken;
         }
 

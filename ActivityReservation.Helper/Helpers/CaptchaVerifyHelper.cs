@@ -2,7 +2,6 @@
 using ActivityReservation.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
@@ -11,13 +10,10 @@ namespace ActivityReservation.Helpers
 {
     public class CaptchaVerifyHelper
     {
-        private readonly GoogleRecaptchaHelper _googleRecaptchaHelper;
         private readonly TencentCaptchaHelper _tencentCaptchaHelper;
 
-        public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper,
-            TencentCaptchaHelper tencentCaptchaHelper)
+        public CaptchaVerifyHelper(TencentCaptchaHelper tencentCaptchaHelper)
         {
-            _googleRecaptchaHelper = googleRecaptchaHelper;
             _tencentCaptchaHelper = tencentCaptchaHelper;
         }
 
@@ -27,13 +23,9 @@ namespace ActivityReservation.Helpers
             {
                 return true;
             }
-            if (captchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
-            {
-                return await _googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
-            }
             if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
             {
-                var request = JsonConvert.DeserializeObject<TencentCaptchaRequest>(captchaInfo);
+                var request = captchaInfo.JsonToType<TencentCaptchaRequest>();
                 if (request.UserIP.IsNullOrWhiteSpace())
                 {
                     request.UserIP = DependencyResolver.Current.GetRequiredService<IHttpContextAccessor>()

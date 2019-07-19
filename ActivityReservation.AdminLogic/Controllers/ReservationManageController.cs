@@ -101,9 +101,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(SearchHelperModel search)
         {
-            Expression<Func<Reservation, bool>> whereLambda = (m =>
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
+            Expression<Func<Reservation, bool>> whereLambda = (m => m.ReservationStatus == 0);
             //类别，加载全部还是只加载待审核列表
             if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
             {
@@ -111,12 +109,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                 if (!string.IsNullOrEmpty(search.SearchItem1))
                 {
                     whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
-                }
-                else
-                {
-                    whereLambda = (m =>
-                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
-                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
                 }
             }
             else

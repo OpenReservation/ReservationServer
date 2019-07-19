@@ -22,7 +22,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
@@ -30,7 +29,6 @@ using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging.Log4Net;
 using WeihanLi.EntityFramework;
-using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation
@@ -59,11 +57,7 @@ namespace ActivityReservation
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-            // DataProtection persist in redis
-            services.AddDataProtection()
-                .SetApplicationName(ApplicationHelper.ApplicationName)
-                .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
-                ;
+            services.AddDataProtection().SetApplicationName(ApplicationHelper.ApplicationName);
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -79,27 +73,7 @@ namespace ActivityReservation
                 });
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")));
-            services.AddRedisConfig(options =>
-            {
-                options.RedisServers = new[]
-                {
-#if DEBUG
-                    new RedisServerConfiguration("127.0.0.1"),
-#else
-                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
-#endif
-                };
-                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
-                options.DefaultDatabase = 2;
-            });
-
-            services.AddHttpClient<GoogleRecaptchaHelper>(client =>
-            {
-                client.Timeout = TimeSpan.FromSeconds(3);
-            });
-            services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
-            services.AddGoogleRecaptchaHelper();
+            services.AddDbContext<ReservationDbContext>(option => option.UseSqlite(Configuration.GetConnectionString("Reservation")));
 
             services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
@@ -116,7 +90,7 @@ namespace ActivityReservation
             services.AddScoped<ReservationHelper>();
 
             // registerApplicationSettingService
-            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
+            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
 
@@ -141,8 +115,8 @@ namespace ActivityReservation
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
             });
 
-            services.AddSingleton<IEventBus, RedisEventBus>();
-            services.AddSingleton<IEventStore, EventStoreInRedis>();
+            services.AddSingleton<IEventBus, EventBus>();
+            services.AddSingleton<IEventStore, EventStoreInMemory>();
             //register EventHandlers
             services.AddSingleton<OperationLogEventHandler>();
             services.AddSingleton<NoticeViewEventHandler>();

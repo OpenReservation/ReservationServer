@@ -5,7 +5,7 @@
 活动室预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
 修改为线上预约+线下盖章审批的方式来预约学校的活动室。
 
-目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，
+目前使用 ASP.NET Core 开发, 这是单机版
 
 演示地址：<https://reservation.weihanli.xyz>
 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>
@@ -33,6 +33,13 @@ CI/CD:
 
 appveyor => travis => Azure Pipeline
 
-## Roadmap
+## Fetures
 
-Check it [here](./Roadmap.md)
+- [x] 活动室预约
+- [x] 预约管理
+- [x] 活动室管理
+- [x] 公告管理
+- [x] 用户管理
+- [x] 预约黑名单管理
+- [x] 系统设置管理
+- [x] 某段时间段禁用预约，如节假日/寒（暑）假等

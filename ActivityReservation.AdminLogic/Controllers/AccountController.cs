@@ -60,10 +60,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!await ValidateValidCodeAsync(model.RecaptchaType, model.Recaptcha))
-                {
-                    return Json("验证码有误");
-                }
+                //if (!await ValidateValidCodeAsync(model.RecaptchaType, model.Recaptcha))
+                //{
+                //    return Json("验证码有误");
+                //}
                 var u = new User { UserName = model.UserName, UserPassword = model.Password };
                 //是否登录成功逻辑添加
                 u = _bLLUser.Login(u);

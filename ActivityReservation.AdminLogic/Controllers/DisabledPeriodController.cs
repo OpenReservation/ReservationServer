@@ -7,7 +7,6 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
@@ -72,9 +71,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
+                    //  && EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0
                     var list = _bllDisabledPeriod.Select(p =>
-                        !p.IsDeleted && EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
-                    if (list != null && list.Any())
+                        !p.IsDeleted)
+                        .Where(p => p.StartDate <= model.StartDate && p.EndDate >= model.EndDate)
+                        .ToArray();
+                    if (list.Length > 0)
                     {
                         result.Status = JsonResultStatus.RequestError;
                         result.ErrorMsg = "该时间段已经被禁用，不可重复添加！";

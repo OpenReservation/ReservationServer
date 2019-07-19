@@ -7,7 +7,6 @@ using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
-using WeihanLi.Redis;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
@@ -29,12 +28,12 @@ namespace ActivityReservation.WechatAPI.Helper
                 var msgId = xmldoc.SelectSingleNode("/xml/MsgId")?.InnerText;
                 if (msgId.IsNotNullOrEmpty())
                 {
-                    var firewall = RedisManager.GetFirewallClient($"wechatMsgFirewall-{msgId}", TimeSpan.FromSeconds(2));
-                    if (!await firewall.HitAsync())
-                    {
-                        Logger.Info($"duplicate msg blocked, msg id: {msgId}");
-                        return string.Empty;
-                    }
+                    //var firewall = RedisManager.GetFirewallClient($"wechatMsgFirewall-{msgId}", TimeSpan.FromSeconds(2));
+                    //if (!await firewall.HitAsync())
+                    //{
+                    //    Logger.Info($"duplicate msg blocked, msg id: {msgId}");
+                    //    return string.Empty;
+                    //}
                 }
                 var msgType = xmldoc.SelectSingleNode("/xml/MsgType");
 
