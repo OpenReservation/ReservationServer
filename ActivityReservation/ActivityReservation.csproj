@@ -29,7 +29,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Update="db\reservation.db">
+    <None Update="reservation.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -14,3 +14,4 @@ LICENSE
 .vs
 *.yaml
 ActivityReservation.Clients
+out
