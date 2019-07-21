@@ -147,6 +147,8 @@ namespace ActivityReservation
             services.AddSingleton<OperationLogEventHandler>();
             services.AddSingleton<NoticeViewEventHandler>();
 
+            services.AddHostedService<RemoveOverduedReservtaionService>();
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
