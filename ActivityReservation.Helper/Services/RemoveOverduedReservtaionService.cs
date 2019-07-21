@@ -67,7 +67,7 @@ namespace ActivityReservation.Services
 
     public class RemoveOverduedReservtaionService : ScheduedService
     {
-        public RemoveOverduedReservtaionService(ILogger<RemoveOverduedReservtaionService> logger) : base(TimeSpan.FromSeconds(10), logger)
+        public RemoveOverduedReservtaionService(ILogger<RemoveOverduedReservtaionService> logger) : base(TimeSpan.FromDays(1), logger)
         { }
 
         protected override Task ExecuteAsync()
