@@ -3,7 +3,7 @@
 ## Intro
 
 活动室预约项目是基于 asp.net core 2.2 的，支持 docker，支持跨平台部署，单机版对应 standalone 分支，
-单机版默认使用 Sqlite 数据库，如果要使用别的数据库，可以自行修改源代码，换成想要的数据库即可，基于 Entity Framework Core，大多数数据库都支持，换成相应数据库的 Provider 就可以了。
+单机版默认使用 Sqlite 数据库，数据库访问基于 Entity Framework Core，大多数数据库都支持，如果要使用别的数据库，可以自行修改源代码，换成相应数据库的 Provider 就可以了。
 
 ## Docker 部署
 
@@ -28,14 +28,14 @@ docker run -d -p 8900:80 --name=reservation -v ./appsettings.json:/app/appsettin
 
 ## 源码编译
 
-需要安装 dotnet core 2.2 sdk 以及 git
+源码编译需要安装 dotnet core 2.2 sdk 以及 git
 
 ``` bash
 git clone https://github.com/WeihanLi/ActivityReservation.git
 
 cd ActivityReservation
 
-dotnet build
+git checkout standalone
 
 # 发布
 cd ActivityReservation
