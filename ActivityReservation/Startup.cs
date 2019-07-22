@@ -133,14 +133,7 @@ namespace ActivityReservation
 
             LogHelper.LogFactory.AddLog4Net();
 
-            loggerFactory
-                .AddLog4Net()
-                .AddSentry(options =>
-                {
-                    options.Dsn = Configuration.GetAppSetting("SentryClientKey");
-                    options.Environment = env.EnvironmentName;
-                    options.MinimumEventLevel = LogLevel.Error;
-                });
+            loggerFactory.AddLog4Net();
 
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
