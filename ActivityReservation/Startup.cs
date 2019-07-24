@@ -22,13 +22,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Serilog;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
-using WeihanLi.Common.Logging.Log4Net;
+using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
@@ -159,10 +160,10 @@ namespace ActivityReservation
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 
-            LogHelper.LogFactory.AddLog4Net();
+            LogHelper.LogFactory.AddSerilog(loggingConfig => loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName}"));
 
             loggerFactory
-                .AddLog4Net()
+                .AddSerilog()
                 .AddSentry(options =>
                 {
                     options.Dsn = Configuration.GetAppSetting("SentryClientKey");

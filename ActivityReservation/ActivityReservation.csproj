@@ -8,8 +8,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.4" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="7.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
-    <PackageReference Include="WeihanLi.Common.Logging.Log4Net" Version="1.0.22.6" />
+    <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.22-preview-20190713-163639" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj" />
@@ -22,9 +24,6 @@
   <ItemGroup>
     <Content Update="Areas\Wechat\Views\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="log4net.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
