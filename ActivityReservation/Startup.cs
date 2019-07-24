@@ -160,7 +160,8 @@ namespace ActivityReservation
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 
-            LogHelper.LogFactory.AddSerilog(loggingConfig => loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName}"));
+            LogHelper.LogFactory.AddSerilog(loggingConfig =>
+                loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}"));
 
             loggerFactory
                 .AddSerilog()
