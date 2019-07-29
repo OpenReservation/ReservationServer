@@ -1,4 +1,5 @@
-﻿@model IPagedListModel<ActivityReservation.ViewModels.ReservationListViewModel>
+﻿@using ActivityReservation.Models
+@model IPagedListModel<ActivityReservation.ViewModels.ReservationListViewModel>
 @{
     Layout = null;
 }
@@ -23,7 +24,7 @@
             @foreach (var item in Model.Data)
             {
                 string status = "待审核", className = "";
-                switch (item.ReservationStatus)
+                switch ((int)item.ReservationStatus)
                 {
                     case 0:
                         status = "待审核";
@@ -69,7 +70,7 @@
                         @Html.Raw(status)
                     </td>
                     <td>
-                        @if (item.ReservationStatus == 1)
+                        @if (item.ReservationStatus == ReservationStatus.Reviewed)
                         {
                             <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
                         }

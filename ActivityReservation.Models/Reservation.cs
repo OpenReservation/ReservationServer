@@ -45,14 +45,6 @@ namespace ActivityReservation.Models
         private string reservationForTime;
 
         /// <summary>
-        /// 预约状态
-        /// 0：待审核
-        /// 1：审核通过
-        /// 2：审核不通过
-        /// </summary>
-        private int reservationStatus = 0;
-
-        /// <summary>
         /// 预约人的IP
         /// </summary>
         private string reservationFromIp;
@@ -173,12 +165,7 @@ namespace ActivityReservation.Models
         /// 2：审核不通过
         /// </summary>
         [Column]
-        public int ReservationStatus
-        {
-            get { return reservationStatus; }
-
-            set { reservationStatus = value; }
-        }
+        public ReservationStatus ReservationStatus { get; set; }
 
         /// <summary>
         /// 更新人
@@ -251,5 +238,23 @@ namespace ActivityReservation.Models
         /// </summary>
         [ForeignKey("ReservationPlaceId")]
         public virtual ReservationPlace Place { get; set; }
+    }
+
+    public enum ReservationStatus
+    {
+        /// <summary>
+        /// 待审核
+        /// </summary>
+        UnReviewed = 0,
+
+        /// <summary>
+        /// 审核通过
+        /// </summary>
+        Reviewed = 1,
+
+        /// <summary>
+        /// 被拒绝
+        /// </summary>
+        Rejected = 2,
     }
 }

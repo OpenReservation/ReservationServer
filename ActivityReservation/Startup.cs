@@ -9,6 +9,7 @@ using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.Services;
+using ActivityReservation.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -22,15 +23,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Serilog;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
-using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.EntityFramework;
+using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 
@@ -157,20 +157,22 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
+            FluentExcelSettings();
+
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 
-            LogHelper.LogFactory.AddSerilog(loggingConfig =>
-                loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}"));
+            //LogHelper.LogFactory.AddSerilog(loggingConfig =>
+            //    loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}"));
 
-            loggerFactory
-                .AddSerilog()
-                .AddSentry(options =>
-                {
-                    options.Dsn = Configuration.GetAppSetting("SentryClientKey");
-                    options.Environment = env.EnvironmentName;
-                    options.MinimumEventLevel = LogLevel.Error;
-                });
+            //loggerFactory
+            //    .AddSerilog()
+            //    .AddSentry(options =>
+            //    {
+            //        options.Dsn = Configuration.GetAppSetting("SentryClientKey");
+            //        options.Environment = env.EnvironmentName;
+            //        options.MinimumEventLevel = LogLevel.Error;
+            //    });
 
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
@@ -205,6 +207,35 @@ namespace ActivityReservation
 
             // initialize
             app.ApplicationServices.Initialize();
+        }
+
+        private void FluentExcelSettings()
+        {
+            //
+            var settings = ExcelHelper.SettingFor<ReservationListViewModel>();
+            settings.HasAuthor("WeihanLi")
+                .HasTitle("活动室预约信息")
+                .HasDescription("活动室预约信息");
+            settings.Property(r => r.ReservationId).Ignored();
+            settings.Property(r => r.ReservationForDate)
+                .HasColumnTitle("预约使用日期");
+            settings.Property(r => r.ReservationForTime)
+                .HasColumnTitle("预约使用的时间段");
+            settings.Property(r => r.ReservationUnit)
+                .HasColumnTitle("预约单位");
+            settings.Property(r => r.ReservationTime)
+                .HasColumnTitle("预约时间")
+                .HasColumnFormatter("yyyy-MM-dd HH:mm:ss");
+            settings.Property(r => r.ReservationPersonName)
+                .HasColumnTitle("预约人姓名");
+            settings.Property(r => r.ReservationPersonPhone)
+                .HasColumnTitle("预约人手机号");
+            settings.Property(r => r.ReservationActivityContent)
+                .HasColumnTitle("预约活动内容");
+            settings.Property(r => r.ReservationPlaceName)
+                .HasColumnTitle("活动室名称");
+            settings.Property(r => r.ReservationStatus)
+                .HasColumnTitle("审核状态");
         }
     }
 }

@@ -135,7 +135,7 @@ namespace ActivityReservation.Controllers
         /// <param name="captchaType">captchaType</param>
         /// <returns></returns>
         [HttpPost]
-        public async System.Threading.Tasks.Task<ActionResult> MakeReservation(
+        public async Task<ActionResult> MakeReservation(
             [FromBody]ReservationViewModel model,
             [FromHeader]string captcha,
             [FromHeader]string captchaType)

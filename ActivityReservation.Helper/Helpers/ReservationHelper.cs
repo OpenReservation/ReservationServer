@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ActivityReservation.Business;
+using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,7 @@ namespace ActivityReservation.Helpers
             var reservationList = _bllReservation.Select(r =>
                 EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0
                 && r.ReservationPlaceId == placeId
-                && r.ReservationStatus != 2);
+                && r.ReservationStatus != ReservationStatus.Rejected);
 
             var reservationPeriod = _bllReservationPeriod
                 .Select(_ => _.PlaceId == placeId)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ActivityReservation.Models;
 using Newtonsoft.Json;
 using WeihanLi.Common.Json;
 
@@ -29,7 +30,7 @@ namespace ActivityReservation.ViewModels
 
         public DateTime ReservationTime { get; set; }
 
-        public int ReservationStatus { get; set; }
+        public ReservationStatus ReservationStatus { get; set; }
     }
 
     public class ReservationViewModel

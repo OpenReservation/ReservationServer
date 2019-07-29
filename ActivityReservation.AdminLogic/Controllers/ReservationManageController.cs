@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
+using WeihanLi.Extensions;
+using WeihanLi.Npoi;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -65,7 +68,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
                         ReservationFromIp = HttpContext.GetUserIP(),
                         //管理员预约自动审核通过
-                        ReservationStatus = 1,
+                        ReservationStatus = ReservationStatus.Reviewed,
                         ReservationTime = DateTime.UtcNow,
 
                         UpdateBy = model.ReservationPersonName,
@@ -151,6 +154,49 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         /// <summary>
+        /// 导出某段时间的预约信息
+        /// </summary>
+        /// <param name="beginDate">开始日期</param>
+        /// <param name="endDate">结束日期</param>
+        /// <returns></returns>
+        public async Task<FileContentResult> ExportReservations(DateTime? beginDate, DateTime? endDate)
+        {
+            Expression<Func<Reservation, bool>> whereExpression = r => true;
+            if (beginDate.HasValue)
+            {
+                whereExpression = whereExpression.And(r => r.ReservationForDate >= beginDate);
+            }
+            if (endDate.HasValue)
+            {
+                whereExpression = whereExpression.And(r => r.ReservationForDate <= beginDate);
+            }
+
+            var reservations = await _reservationHelper.GetResultAsync(x => new ReservationListViewModel
+            {
+                ReservationForDate = x.ReservationForDate,
+                ReservationForTime = x.ReservationForTime,
+                ReservationUnit = x.ReservationUnit,
+                ReservationTime = x.ReservationTime,
+                ReservationPlaceName = x.Place.PlaceName,
+                ReservationActivityContent = x.ReservationActivityContent,
+                ReservationPersonName = x.ReservationPersonName,
+                ReservationPersonPhone = x.ReservationPersonPhone,
+                ReservationStatus = x.ReservationStatus,
+            }, builder => builder
+                .WithPredict(whereExpression)
+                .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
+                .WithInclude(q => q.Include(x => x.Place)
+            ));
+            var excelBytes = reservations.ToExcelBytes();
+
+            var fileName = (beginDate.HasValue && endDate.HasValue)
+                ? $"{beginDate:yyyyMMdd}-{endDate:yyyyMMdd}活动室预约信息.xlsx"
+                : "活动室预约信息.xlsx";
+
+            return File(excelBytes, "application/vnd.ms-excel", fileName);
+        }
+
+        /// <summary>
         /// 更新预约状态
         /// </summary>
         /// <param name="reservationId">预约id</param>
@@ -166,8 +212,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     return Json(false);
                 }
-                reservation.ReservationStatus = status > 0 ? 1 : 2;
-
+                reservation.ReservationStatus = status > 0 ? ReservationStatus.Reviewed : ReservationStatus.Rejected;
                 var count = _reservationHelper.Update(reservation, r => r.ReservationStatus);
                 if (count == 1)
                 {
