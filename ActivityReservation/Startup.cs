@@ -23,12 +23,14 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Serilog;
 using StackExchange.Redis;
 using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
+using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.EntityFramework;
 using WeihanLi.Npoi;
 using WeihanLi.Redis;
@@ -162,17 +164,17 @@ namespace ActivityReservation
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 
-            //LogHelper.LogFactory.AddSerilog(loggingConfig =>
-            //    loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}"));
+            LogHelper.LogFactory.AddSerilog(loggingConfig =>
+                loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}"));
 
-            //loggerFactory
-            //    .AddSerilog()
-            //    .AddSentry(options =>
-            //    {
-            //        options.Dsn = Configuration.GetAppSetting("SentryClientKey");
-            //        options.Environment = env.EnvironmentName;
-            //        options.MinimumEventLevel = LogLevel.Error;
-            //    });
+            loggerFactory
+                .AddSerilog()
+                .AddSentry(options =>
+                {
+                    options.Dsn = Configuration.GetAppSetting("SentryClientKey");
+                    options.Environment = env.EnvironmentName;
+                    options.MinimumEventLevel = LogLevel.Error;
+                });
 
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
