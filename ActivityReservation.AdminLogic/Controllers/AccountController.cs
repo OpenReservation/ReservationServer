@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
@@ -258,7 +259,19 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var count = _bLLUser.Delete(ur => ur.UserId == u.UserId);
+                if (u.UserName.IsNullOrWhiteSpace())
+                {
+                    u = _bLLUser.Fetch(ur => ur.UserId == u.UserId);
+                }
+                if (u == null)
+                {
+                    return Json(false);
+                }
+                if ("admin".EqualsIgnoreCase(u.UserName) || "Alice".EqualsIgnoreCase(u.UserName))
+                {
+                    return Json(false);
+                }
+                var count = _bLLUser.Delete(u);
                 if (count == 1)
                 {
                     OperLogHelper.AddOperLog($"删除用户 {u.UserId:N} {u.UserName}", OperLogModule.Account, UserName);
@@ -312,7 +325,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [AllowAnonymous]
         public ActionResult ValidUsername(string userName)
         {
-            return Json(_bLLUser.Exist(s => s.UserName == userName));
+            return Json(!_bLLUser.Exist(s => s.UserName == userName));
         }
 
         /// <summary>
@@ -323,7 +336,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult ValidUserMail(string userMail)
         {
-            return Json(_bLLUser.Exist(s => s.UserMail == userMail));
+            return Json(!_bLLUser.Exist(s => s.UserMail == userMail));
         }
 
         /// <summary>
