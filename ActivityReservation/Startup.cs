@@ -168,7 +168,7 @@ namespace ActivityReservation
                     };
                 });
 
-            services.Configure<ForwardedHeadersOptions>(options=>
+            services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.KnownNetworks.Clear();
                 options.KnownProxies.Clear();
@@ -189,7 +189,11 @@ namespace ActivityReservation
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 
             LogHelper.LogFactory.AddSerilog(loggingConfig =>
-                loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}"));
+                {
+                    loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
+
+                    loggingConfig.Enrich.When(logEvent => logEvent.Properties["SourceContext"].ToString() == "RequestLog", config => config.With(new RequestInfoEnricher()));
+                });
 
             loggerFactory
                 .AddSerilog()

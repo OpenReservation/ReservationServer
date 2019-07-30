@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.Services
 {
@@ -75,12 +76,16 @@ namespace ActivityReservation.Services
             _serviceProvider = serviceProvider;
         }
 
-        protected override Task ExecuteAsync()
+        protected override async Task ExecuteAsync()
         {
-            using (var scope = _serviceProvider.CreateScope())
+            var firewall = RedisManager.GetFirewallClient($"{nameof(RemoveOverdueReservationService)}_firewall", TimeSpan.FromMinutes(1));
+            if (await firewall.HitAsync())
             {
-                var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
-                return reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-3)));
+                using (var scope = _serviceProvider.CreateScope())
+                {
+                    var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
+                    await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-3)));
+                }
             }
         }
     }
