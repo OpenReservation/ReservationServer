@@ -192,7 +192,7 @@ namespace ActivityReservation
                 {
                     loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
 
-                    loggingConfig.Enrich.When(logEvent => logEvent.Properties["SourceContext"].ToString() == "RequestLog", config => config.With(new RequestInfoEnricher()));
+                    loggingConfig.Enrich.When(logEvent => logEvent.Properties["SourceContext"].ToString() == "RequestLog", config => config.WithRequestInfo());
                 });
 
             loggerFactory
