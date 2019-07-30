@@ -32,6 +32,7 @@ using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.EntityFramework;
+using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
@@ -237,7 +238,8 @@ namespace ActivityReservation
             settings.Property(r => r.ReservationPlaceName)
                 .HasColumnTitle("活动室名称");
             settings.Property(r => r.ReservationStatus)
-                .HasColumnTitle("审核状态");
+                .HasColumnTitle("审核状态")
+                .HasColumnFormatter((entity, propertyVal) => propertyVal.GetDescription());
         }
     }
 }

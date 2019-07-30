@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -245,16 +246,19 @@ namespace ActivityReservation.Models
         /// <summary>
         /// 待审核
         /// </summary>
+        [Description("待审核")]
         UnReviewed = 0,
 
         /// <summary>
         /// 审核通过
         /// </summary>
+        [Description("审核通过")]
         Reviewed = 1,
 
         /// <summary>
         /// 被拒绝
         /// </summary>
+        [Description("未通过审核")]
         Rejected = 2,
     }
 }
