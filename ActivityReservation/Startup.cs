@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using ActivityReservation.API;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
@@ -36,6 +37,7 @@ using WeihanLi.Extensions;
 using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
+using WeihanLi.Web.Middlewares;
 
 namespace ActivityReservation
 {
@@ -152,6 +154,19 @@ namespace ActivityReservation
             services.AddSingleton<NoticeViewEventHandler>();
 
             services.AddHostedService<RemoveOverduedReservtaionService>();
+
+            services.Configure<CustomExceptionHandlerOptions>(options =>
+                {
+                    options.OnException = (context, logger, exception) =>
+                    {
+                        if (exception is TaskCanceledException || exception is OperationCanceledException)
+                        {
+                            return Task.CompletedTask;
+                        }
+                        logger.LogError(exception, exception.Message);
+                        return Task.CompletedTask;
+                    };
+                });
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
