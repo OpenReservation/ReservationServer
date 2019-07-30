@@ -19,6 +19,7 @@ RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csp
 
 # build runtime image
 FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine
+RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/ActivityReservation/out .
