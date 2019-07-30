@@ -153,7 +153,7 @@ namespace ActivityReservation
             services.AddSingleton<OperationLogEventHandler>();
             services.AddSingleton<NoticeViewEventHandler>();
 
-            services.AddHostedService<RemoveOverduedReservtaionService>();
+            services.AddHostedService<RemoveOverdueReservationService>();
 
             services.Configure<CustomExceptionHandlerOptions>(options =>
                 {

@@ -3,21 +3,21 @@ using System.Threading;
 using System.Threading.Tasks;
 using ActivityReservation.Database;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Common;
 using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.Services
 {
-    public abstract class ScheduedService : IHostedService, IDisposable
+    public abstract class ScheduledService : IHostedService, IDisposable
     {
         private readonly Timer _timer;
         private readonly TimeSpan _period;
         protected readonly ILogger Logger;
 
-        protected ScheduedService(TimeSpan period, ILogger logger)
+        protected ScheduledService(TimeSpan period, ILogger logger)
         {
             Logger = logger;
             _period = period;
@@ -65,17 +65,23 @@ namespace ActivityReservation.Services
         }
     }
 
-    public class RemoveOverduedReservtaionService : ScheduedService
+    public class RemoveOverdueReservationService : ScheduledService
     {
-        public RemoveOverduedReservtaionService(ILogger<RemoveOverduedReservtaionService> logger) : base(TimeSpan.FromDays(1), logger)
-        { }
+        private readonly IServiceProvider _serviceProvider;
+
+        public RemoveOverdueReservationService(ILogger<RemoveOverdueReservationService> logger,
+            IServiceProvider serviceProvider) : base(TimeSpan.FromDays(1), logger)
+        {
+            _serviceProvider = serviceProvider;
+        }
 
         protected override Task ExecuteAsync()
         {
-            return DependencyResolver.Current.TryInvokeServiceAsync<IEFRepository<ReservationDbContext, Reservation>>(reservationRepo =>
-           {
-               return reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-3)));
-           });
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
+                return reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-3)));
+            }
         }
     }
 }
