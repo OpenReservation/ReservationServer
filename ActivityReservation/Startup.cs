@@ -168,6 +168,14 @@ namespace ActivityReservation
                     };
                 });
 
+            services.Configure<ForwardedHeadersOptions>(options=>
+            {
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+                options.ForwardLimit = null;
+                options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All;
+            });
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
@@ -192,8 +200,10 @@ namespace ActivityReservation
                     options.MinimumEventLevel = LogLevel.Error;
                 });
 
+            app.UseForwardedHeaders();
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
+
             app.UseStaticFiles();
             app.UseSwagger()
                 .UseSwaggerUI(c =>
