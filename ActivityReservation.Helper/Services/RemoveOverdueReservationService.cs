@@ -12,13 +12,13 @@ using WeihanLi.Redis;
 
 namespace ActivityReservation.Services
 {
-    public abstract class ScheduledService : IHostedService, IDisposable
+    public abstract class TimerScheduledService : IHostedService, IDisposable
     {
         private readonly Timer _timer;
         private readonly TimeSpan _period;
         protected readonly ILogger Logger;
 
-        protected ScheduledService(TimeSpan period, ILogger logger)
+        protected TimerScheduledService(TimeSpan period, ILogger logger)
         {
             Logger = logger;
             _period = period;
@@ -66,7 +66,7 @@ namespace ActivityReservation.Services
         }
     }
 
-    public class RemoveOverdueReservationService : ScheduledService
+    public class RemoveOverdueReservationService : TimerScheduledService
     {
         private readonly IServiceProvider _serviceProvider;
 

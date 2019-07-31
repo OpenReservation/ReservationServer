@@ -154,6 +154,7 @@ namespace ActivityReservation
             services.AddSingleton<NoticeViewEventHandler>();
 
             services.AddHostedService<RemoveOverdueReservationService>();
+            services.AddHostedService<CronLoggingTest>();
 
             services.Configure<CustomExceptionHandlerOptions>(options =>
                 {
