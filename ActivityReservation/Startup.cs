@@ -190,10 +190,11 @@ namespace ActivityReservation
 
             LogHelper.LogFactory.AddSerilog(loggingConfig =>
                 {
-                    loggingConfig.WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
-
-                    // loggingConfig.Enrich.When(logEvent => logEvent.Properties["SourceContext"].ToString() == "RequestLog", config => config.WithRequestInfo());
-                    loggingConfig.Enrich.WithRequestInfo();
+                    loggingConfig
+                        .WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}")
+                        .Enrich.FromLogContext()
+                        .Enrich.WithRequestInfo()
+                        ;
                 });
 
             loggerFactory

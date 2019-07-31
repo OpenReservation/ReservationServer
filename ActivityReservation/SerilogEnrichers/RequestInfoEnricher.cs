@@ -14,11 +14,14 @@ namespace ActivityReservation
     {
         public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
         {
-            var httpContext = DependencyResolver.Current.GetRequiredService<IHttpContextAccessor>().HttpContext;
-            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
-            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
+            var httpContext = DependencyResolver.Current.GetService<IHttpContextAccessor>()?.HttpContext;
+            if (null != httpContext)
+            {
+                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
+                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
 
-            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer", httpContext.Request.Headers["Referer"]));
+                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer", httpContext.Request.Headers["Referer"]));
+            }
         }
     }
 
