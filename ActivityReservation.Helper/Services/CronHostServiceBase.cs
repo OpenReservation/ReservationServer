@@ -38,13 +38,18 @@ namespace ActivityReservation.Services
                         if (ConcurrentAllowed)
                         {
                             _ = ProcessAsync(stoppingToken);
+                            next = CronHelper.GetNextOccurrence(CronExpression);
+                            if (next.HasValue)
+                            {
+                                Logger.LogInformation($"Next at {next.Value.DateTime.ToLongDateString()} {next.Value.DateTime.ToLongTimeString()}");
+                            }
                         }
                         else
                         {
                             var machineName = RedisManager.HashClient.GetOrSet(JobClientsCache, GetType().FullName, () => Environment.MachineName); // try get job master
                             if (machineName == Environment.MachineName) // IsMaster
                             {
-                                using (var locker = RedisManager.GetRedLockClient($"{GetType()}_cronService"))
+                                using (var locker = RedisManager.GetRedLockClient($"{GetType().FullName}_cronService"))
                                 {
                                     if (await locker.TryLockAsync())
                                     {
