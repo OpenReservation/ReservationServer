@@ -12,7 +12,7 @@ namespace ActivityReservation.Services
     {
         public abstract string CronExpression { get; }
 
-        public bool ConcurrentAllowed { get; set; }
+        protected bool ConcurrentAllowed { get; set; }
 
         protected readonly ILogger Logger;
 
@@ -41,7 +41,7 @@ namespace ActivityReservation.Services
                             next = CronHelper.GetNextOccurrence(CronExpression);
                             if (next.HasValue)
                             {
-                                Logger.LogInformation($"Next at {next.Value.DateTime.ToLongDateString()} {next.Value.DateTime.ToLongTimeString()}");
+                                Logger.LogInformation("Next at {next}", next);
                             }
                         }
                         else
@@ -58,7 +58,8 @@ namespace ActivityReservation.Services
                                         next = CronHelper.GetNextOccurrence(CronExpression);
                                         if (next.HasValue)
                                         {
-                                            Logger.LogInformation($"Next at {next.Value.DateTime.ToLongDateString()} {next.Value.DateTime.ToLongTimeString()}");
+                                            Logger.LogInformation("Next at {next}", next);
+                                            await Task.Delay((next - now).Value.Subtract(TimeSpan.FromMilliseconds(500)), stoppingToken);
                                         }
                                     }
                                     else

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +15,7 @@ namespace ActivityReservation.Services
 
         protected override Task ProcessAsync(CancellationToken cancellationToken)
         {
-            Logger.LogInformation("process ...");
+            Logger.LogInformation("processed at {time}...", DateTimeOffset.UtcNow);
             return Task.CompletedTask;
         }
     }

@@ -4,15 +4,14 @@ using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Logging;
 
 namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : Attribute, IAuthorizationFilter
     {
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatRequestValidAttribute));
-
         private static bool CheckSignature(WechatMsgRequestModel model)
         {
             //获取请求来的参数
@@ -43,7 +42,9 @@ namespace ActivityReservation.WechatAPI.Filters
             //验证
             if (!CheckSignature(model))
             {
-                Logger.Error("微信请求签名验证不通过");
+                filterContext.HttpContext.RequestServices.GetRequiredService<ILogger<WechatRequestValidAttribute>>()
+                    .LogWarning("微信请求签名验证不通过, signature: {Signature}", model.Signature);
+
                 filterContext.Result = new ContentResult
                 {
                     Content = "微信请求验证失败",
