@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.Services
@@ -11,7 +12,7 @@ namespace ActivityReservation.Services
 
         public override string CronExpression => "0 0/1 * * * * ";
 
-        protected override Task ProcessAsync()
+        protected override Task ProcessAsync(CancellationToken cancellationToken)
         {
             Logger.LogInformation("process ...");
             return Task.CompletedTask;

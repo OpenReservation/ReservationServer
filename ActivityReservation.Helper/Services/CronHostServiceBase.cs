@@ -16,52 +16,69 @@ namespace ActivityReservation.Services
 
         protected readonly ILogger Logger;
 
+        private readonly string JobClientsCache = "JobClientsHash";
+
         protected CronHostServiceBase(ILogger logger)
         {
             Logger = logger;
         }
 
-        protected abstract Task ProcessAsync();
+        protected abstract Task ProcessAsync(CancellationToken cancellationToken);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            DateTimeOffset? next = CronHelper.GetNextOccurrence(CronExpression);
-            while (!stoppingToken.IsCancellationRequested && next.HasValue)
             {
-                var now = DateTimeOffset.UtcNow;
-
-                if (now >= next)
+                DateTimeOffset? next = CronHelper.GetNextOccurrence(CronExpression);
+                while (!stoppingToken.IsCancellationRequested && next.HasValue)
                 {
-                    if (ConcurrentAllowed)
-                    {
-                        _ = ProcessAsync();
-                    }
-                    else
-                    {
-                        using (var locker = RedisManager.GetRedLockClient($"{GetType()}_cronService"))
-                        {
-                            if (await locker.TryLockAsync())
-                            {
-                                await ProcessAsync();
+                    var now = DateTimeOffset.UtcNow;
 
-                                next = CronHelper.GetNextOccurrence(CronExpression);
-                                Logger.LogInformation($"Next at {next.Value.DateTime.ToLongDateString()} {next.Value.DateTime.ToLongTimeString()}");
-                            }
-                            else
+                    if (now >= next)
+                    {
+                        if (ConcurrentAllowed)
+                        {
+                            _ = ProcessAsync(stoppingToken);
+                        }
+                        else
+                        {
+                            var machineName = RedisManager.HashClient.GetOrSet(JobClientsCache, GetType().FullName, () => Environment.MachineName); // try get job master
+                            if (machineName == Environment.MachineName) // IsMaster
                             {
-                                Logger.LogInformation($"failed to acquire lock");
+                                using (var locker = RedisManager.GetRedLockClient($"{GetType()}_cronService"))
+                                {
+                                    if (await locker.TryLockAsync())
+                                    {
+                                        await ProcessAsync(stoppingToken);
+
+                                        next = CronHelper.GetNextOccurrence(CronExpression);
+                                        if (next.HasValue)
+                                        {
+                                            Logger.LogInformation($"Next at {next.Value.DateTime.ToLongDateString()} {next.Value.DateTime.ToLongTimeString()}");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Logger.LogInformation($"failed to acquire lock");
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    // needed for graceful shutdown for some reason.
-                    // 100ms chosen so it doesn't affect calculating the next
-                    // cron occurence (lowest possible: every second)
-                    await Task.Delay(500, stoppingToken);
+                    else
+                    {
+                        // needed for graceful shutdown for some reason.
+                        // 100ms chosen so it doesn't affect calculating the next
+                        // cron occurence (lowest possible: every second)
+                        await Task.Delay(100, stoppingToken);
+                    }
                 }
             }
+        }
+
+        public override Task StopAsync(CancellationToken cancellationToken)
+        {
+            RedisManager.HashClient.Remove(JobClientsCache, GetType().FullName); // unregister from jobClients
+            return base.StopAsync(cancellationToken);
         }
     }
 }
