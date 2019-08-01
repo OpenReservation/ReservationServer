@@ -9,7 +9,7 @@ namespace ActivityReservation.Services
         {
         }
 
-        public override string CronExpression => "* * * * * *";
+        public override string CronExpression => "0 0/1 * * * * ";
 
         protected override Task ProcessAsync()
         {
