@@ -160,6 +160,16 @@ namespace ActivityReservation
                         {
                             return Task.CompletedTask;
                         }
+
+                        if (exception is AggregateException aggregateException)
+                        {
+                            var ex = aggregateException.Unwrap();
+                            if (ex is TaskCanceledException || ex is OperationCanceledException)
+                            {
+                                return Task.CompletedTask;
+                            }
+                        }
+
                         logger.LogError(exception, exception.Message);
                         return Task.CompletedTask;
                     };
@@ -264,10 +274,10 @@ namespace ActivityReservation
                 .HasColumnIndex(2);
             settings.Property(r => r.ReservationUnit)
                 .HasColumnTitle("预约单位")
-                .HasColumnIndex(3);            
+                .HasColumnIndex(3);
             settings.Property(r => r.ReservationActivityContent)
                 .HasColumnTitle("预约活动内容")
-                .HasColumnIndex(4);            
+                .HasColumnIndex(4);
             settings.Property(r => r.ReservationPersonName)
                 .HasColumnTitle("预约人姓名")
                 .HasColumnIndex(5);
