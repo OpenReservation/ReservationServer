@@ -242,32 +242,46 @@ namespace ActivityReservation
 
         private void FluentExcelSettings()
         {
-            //
             var settings = ExcelHelper.SettingFor<ReservationListViewModel>();
-            settings.HasAuthor("WeihanLi")
+
+            settings
+                .HasAuthor("WeihanLi")
                 .HasTitle("活动室预约信息")
-                .HasDescription("活动室预约信息");
+                .HasDescription("活动室预约信息")
+                .HasSheetConfiguration(0, "活动室预约信息")
+                ;
+
             settings.Property(r => r.ReservationId).Ignored();
+
+            settings.Property(r => r.ReservationPlaceName)
+                .HasColumnTitle("活动室名称")
+                .HasColumnIndex(0);
             settings.Property(r => r.ReservationForDate)
-                .HasColumnTitle("预约使用日期");
+                .HasColumnTitle("预约使用日期")
+                .HasColumnIndex(1);
             settings.Property(r => r.ReservationForTime)
-                .HasColumnTitle("预约使用的时间段");
+                .HasColumnTitle("预约使用的时间段")
+                .HasColumnIndex(2);
             settings.Property(r => r.ReservationUnit)
-                .HasColumnTitle("预约单位");
+                .HasColumnTitle("预约单位")
+                .HasColumnIndex(3);            
+            settings.Property(r => r.ReservationActivityContent)
+                .HasColumnTitle("预约活动内容")
+                .HasColumnIndex(4);            
+            settings.Property(r => r.ReservationPersonName)
+                .HasColumnTitle("预约人姓名")
+                .HasColumnIndex(5);
+            settings.Property(r => r.ReservationPersonPhone)
+                .HasColumnTitle("预约人手机号")
+                .HasColumnIndex(6);
             settings.Property(r => r.ReservationTime)
                 .HasColumnTitle("预约时间")
-                .HasColumnFormatter("yyyy-MM-dd HH:mm:ss");
-            settings.Property(r => r.ReservationPersonName)
-                .HasColumnTitle("预约人姓名");
-            settings.Property(r => r.ReservationPersonPhone)
-                .HasColumnTitle("预约人手机号");
-            settings.Property(r => r.ReservationActivityContent)
-                .HasColumnTitle("预约活动内容");
-            settings.Property(r => r.ReservationPlaceName)
-                .HasColumnTitle("活动室名称");
+                .HasColumnFormatter("yyyy-MM-dd HH:mm:ss")
+                .HasColumnIndex(7);
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
-                .HasColumnFormatter((entity, propertyVal) => propertyVal.GetDescription());
+                .HasColumnFormatter((entity, propertyVal) => propertyVal.GetDescription())
+                .HasColumnIndex(8);
         }
     }
 }
