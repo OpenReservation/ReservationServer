@@ -28,7 +28,10 @@
                     </td>
                     <td>
                         <button type="button" class="btn btn-default" onclick="UpdatePassword('@item.UserId', '@item.UserName', this)">重置密码</button>
-                        <button type="button" class="btn btn-danger" onclick="DeleteAccount('@item.UserId', '@item.UserName', this)">删除账户</button>
+                        @if (!"admin".Equals(item.UserName, StringComparison.OrdinalIgnoreCase) && !"Alice".Equals(item.UserName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            <button type="button" class="btn btn-danger" onclick="DeleteAccount('@item.UserId', '@item.UserName', this)">删除账户</button>
+                        }
                     </td>
                 </tr>
             }

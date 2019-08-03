@@ -190,9 +190,8 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
-            FluentExcelSettings();
+            ExcelSettings();
 
-            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 
             LogHelper.LogFactory.AddSerilog(loggingConfig =>
@@ -250,7 +249,7 @@ namespace ActivityReservation
             app.ApplicationServices.Initialize();
         }
 
-        private void FluentExcelSettings()
+        private void ExcelSettings()
         {
             var settings = ExcelHelper.SettingFor<ReservationListViewModel>();
 
