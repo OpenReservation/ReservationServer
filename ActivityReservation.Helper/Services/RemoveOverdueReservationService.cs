@@ -78,7 +78,7 @@ namespace ActivityReservation.Services
             _configuration = configuration;
         }
 
-        public override string CronExpression => _configuration.GetAppSetting("RemoveOverdueReservationCron");
+        public override string CronExpression => _configuration.GetAppSetting("RemoveOverdueReservationCron") ?? "0 0 18 * * ?";
 
         protected override bool ConcurrentAllowed => false;
 
