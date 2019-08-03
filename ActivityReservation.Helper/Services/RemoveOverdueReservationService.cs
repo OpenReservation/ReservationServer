@@ -3,12 +3,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using ActivityReservation.Database;
 using ActivityReservation.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
-using WeihanLi.Redis;
 
 namespace ActivityReservation.Services
 {
@@ -66,26 +66,28 @@ namespace ActivityReservation.Services
         }
     }
 
-    public class RemoveOverdueReservationService : TimerScheduledService
+    public class RemoveOverdueReservationService : CronScheduleServiceBase
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IConfiguration _configuration;
 
         public RemoveOverdueReservationService(ILogger<RemoveOverdueReservationService> logger,
-            IServiceProvider serviceProvider) : base(TimeSpan.FromDays(1), logger)
+            IServiceProvider serviceProvider, IConfiguration configuration) : base(logger)
         {
             _serviceProvider = serviceProvider;
+            _configuration = configuration;
         }
 
-        protected override async Task ExecuteAsync()
+        public override string CronExpression => _configuration.GetAppSetting("RemoveOverdueReservationCron");
+
+        protected override bool ConcurrentAllowed => false;
+
+        protected override async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            var firewall = RedisManager.GetFirewallClient($"{nameof(RemoveOverdueReservationService)}_firewall", TimeSpan.FromMinutes(1));
-            if (await firewall.HitAsync())
+            using (var scope = _serviceProvider.CreateScope())
             {
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
-                    await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-3)));
-                }
+                var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
+                await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-3)));
             }
         }
     }

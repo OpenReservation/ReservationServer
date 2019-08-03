@@ -5,13 +5,15 @@ using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.Services
 {
-    public class CronLoggingTest : CronHostServiceBase
+    public class CronLoggingTest : CronScheduleServiceBase
     {
         public CronLoggingTest(ILogger<CronLoggingTest> logger) : base(logger)
         {
         }
 
         public override string CronExpression => "0 0/1 * * * * ";
+
+        protected override bool ConcurrentAllowed => false;
 
         protected override Task ProcessAsync(CancellationToken cancellationToken)
         {

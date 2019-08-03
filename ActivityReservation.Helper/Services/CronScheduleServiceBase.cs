@@ -8,17 +8,21 @@ using WeihanLi.Redis;
 
 namespace ActivityReservation.Services
 {
-    public abstract class CronHostServiceBase : BackgroundService
+    public abstract class CronScheduleServiceBase : BackgroundService
     {
+        /// <summary>
+        /// job cron trigger expression
+        /// refer to: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+        /// </summary>
         public abstract string CronExpression { get; }
 
-        protected bool ConcurrentAllowed { get; set; }
+        protected abstract bool ConcurrentAllowed { get; }
 
         protected readonly ILogger Logger;
 
         private readonly string JobClientsCache = "JobClientsHash";
 
-        protected CronHostServiceBase(ILogger logger)
+        protected CronScheduleServiceBase(ILogger logger)
         {
             Logger = logger;
         }
