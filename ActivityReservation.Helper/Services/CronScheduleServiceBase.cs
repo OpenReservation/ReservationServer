@@ -32,7 +32,7 @@ namespace ActivityReservation.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             {
-                DateTimeOffset? next = CronHelper.GetNextOccurrence(CronExpression);
+                var next = CronHelper.GetNextOccurrence(CronExpression);
                 while (!stoppingToken.IsCancellationRequested && next.HasValue)
                 {
                     var now = DateTimeOffset.UtcNow;
@@ -55,15 +55,17 @@ namespace ActivityReservation.Services
                             {
                                 using (var locker = RedisManager.GetRedLockClient($"{GetType().FullName}_cronService"))
                                 {
+                                    // redis 互斥锁
                                     if (await locker.TryLockAsync())
                                     {
+                                        // 执行 job
                                         await ProcessAsync(stoppingToken);
 
                                         next = CronHelper.GetNextOccurrence(CronExpression);
                                         if (next.HasValue)
                                         {
                                             Logger.LogInformation("Next at {next}", next);
-                                            await Task.Delay((next - now).Value.Subtract(TimeSpan.FromMilliseconds(500)), stoppingToken);
+                                            await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
                                         }
                                     }
                                     else
@@ -77,9 +79,9 @@ namespace ActivityReservation.Services
                     else
                     {
                         // needed for graceful shutdown for some reason.
-                        // 100ms chosen so it doesn't affect calculating the next
+                        // 1000ms so it doesn't affect calculating the next
                         // cron occurence (lowest possible: every second)
-                        await Task.Delay(100, stoppingToken);
+                        await Task.Delay(1000, stoppingToken);
                     }
                 }
             }
