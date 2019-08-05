@@ -65,7 +65,11 @@ namespace ActivityReservation.Services
                                         if (next.HasValue)
                                         {
                                             Logger.LogInformation("Next at {next}", next);
-                                            await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
+                                            var delay = next.Value - DateTimeOffset.UtcNow;
+                                            if (delay > TimeSpan.Zero)
+                                            {
+                                                await Task.Delay(delay, stoppingToken);
+                                            }
                                         }
                                     }
                                     else
