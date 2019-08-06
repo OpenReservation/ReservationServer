@@ -290,7 +290,7 @@
                                 }
                                 var tempPeriods = [], tempPeriodIds = [];
                                 for (var i in periods) {
-                                    tempPeriodIds.push($(periods[i]).val());
+                                    tempPeriodIds.push($(periods[i]).attr("data-periodindex"));
                                     tempPeriods.push($(periods[i]).parent().text());
                                 }
                                 $scope.reservationModel.ReservationForTimeIds = tempPeriodIds.join(",");
