@@ -153,27 +153,28 @@ namespace ActivityReservation
             // services.AddHostedService<CronLoggingTest>();
 
             services.Configure<CustomExceptionHandlerOptions>(options =>
+            {
+                options.OnRequestAborted = (context, logger) => Task.CompletedTask;
+
+                options.OnException = (context, logger, exception) =>
                 {
-                    options.OnException = (context, logger, exception) =>
+                    if (exception is TaskCanceledException || exception is OperationCanceledException)
                     {
-                        if (exception is TaskCanceledException || exception is OperationCanceledException)
+                        return Task.CompletedTask;
+                    }
+                    if (exception is AggregateException aggregateException)
+                    {
+                        var ex = aggregateException.Unwrap();
+                        if (ex is TaskCanceledException || ex is OperationCanceledException)
                         {
                             return Task.CompletedTask;
                         }
+                    }
 
-                        if (exception is AggregateException aggregateException)
-                        {
-                            var ex = aggregateException.Unwrap();
-                            if (ex is TaskCanceledException || ex is OperationCanceledException)
-                            {
-                                return Task.CompletedTask;
-                            }
-                        }
-
-                        logger.LogError(exception, exception.Message);
-                        return Task.CompletedTask;
-                    };
-                });
+                    logger.LogError(exception, exception.Message);
+                    return Task.CompletedTask;
+                };
+            });
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
@@ -190,9 +191,8 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
-            ExcelSettings();
-
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
+            ExcelSettings();
 
             LogHelper.LogFactory.AddSerilog(loggingConfig =>
                 {
@@ -210,6 +210,7 @@ namespace ActivityReservation
                     options.Dsn = Configuration.GetAppSetting("SentryClientKey");
                     options.Environment = env.EnvironmentName;
                     options.MinimumEventLevel = LogLevel.Error;
+                    options.Debug = env.IsDevelopment();
                 });
 
             app.UseForwardedHeaders();
