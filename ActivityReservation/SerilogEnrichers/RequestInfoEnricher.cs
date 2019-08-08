@@ -27,8 +27,7 @@ namespace ActivityReservation
 
     public static class EnricherExtensions
     {
-        public static LoggerConfiguration WithRequestInfo(
-        this LoggerEnrichmentConfiguration enrich)
+        public static LoggerConfiguration WithRequestInfo(this LoggerEnrichmentConfiguration enrich)
         {
             if (enrich == null)
                 throw new ArgumentNullException(nameof(enrich));
