@@ -31,6 +31,7 @@ using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
+using WeihanLi.Common.Logging;
 using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
@@ -194,7 +195,27 @@ namespace ActivityReservation
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
             ExcelSettings();
 
-            LogHelper.LogFactory.AddSerilog(loggingConfig =>
+            LogHelper.LogFactory
+                .WithFilter((providerType, categoryName, logLevel, exception) =>
+                {
+                    if (exception != null)
+                    {
+                        var ex = exception.Unwrap();
+                        if (ex is TaskCanceledException || ex is OperationCanceledException)
+                        {
+                            return false;
+                        }
+                    }
+
+                    if ((categoryName.StartsWith("Microsoft") || categoryName.StartsWith("System")) &&
+                        logLevel <= LogHelperLevel.Info)
+                    {
+                        return false;
+                    }
+
+                    return true;
+                })
+                .AddSerilog(loggingConfig =>
                 {
                     loggingConfig
                         .WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}")
