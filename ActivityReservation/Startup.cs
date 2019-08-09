@@ -196,6 +196,14 @@ namespace ActivityReservation
             ExcelSettings();
 
             LogHelper.LogFactory
+                .AddSerilog(loggingConfig =>
+                {
+                    loggingConfig
+                        .WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}")
+                        .Enrich.FromLogContext()
+                        .Enrich.WithRequestInfo()
+                        ;
+                })
                 .WithFilter((providerType, categoryName, logLevel, exception) =>
                 {
                     if (exception != null)
@@ -214,14 +222,6 @@ namespace ActivityReservation
                     }
 
                     return true;
-                })
-                .AddSerilog(loggingConfig =>
-                {
-                    loggingConfig
-                        .WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}")
-                        .Enrich.FromLogContext()
-                        .Enrich.WithRequestInfo()
-                        ;
                 });
 
             loggerFactory

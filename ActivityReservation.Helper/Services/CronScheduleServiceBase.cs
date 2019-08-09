@@ -60,7 +60,6 @@ namespace ActivityReservation.Services
                                     {
                                         // 执行 job
                                         await ProcessAsync(stoppingToken);
-
                                         next = CronHelper.GetNextOccurrence(CronExpression);
                                         if (next.HasValue)
                                         {
@@ -85,7 +84,7 @@ namespace ActivityReservation.Services
                         // needed for graceful shutdown for some reason.
                         // 1000ms so it doesn't affect calculating the next
                         // cron occurence (lowest possible: every second)
-                        await Task.Delay(1000, stoppingToken);
+                        await Task.Delay((next.Value - DateTimeOffset.UtcNow).Subtract(TimeSpan.FromSeconds(3)), stoppingToken);
                     }
                 }
             }

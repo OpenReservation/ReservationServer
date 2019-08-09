@@ -28,6 +28,8 @@ namespace ActivityReservation.Services
 
         protected override async Task ProcessAsync(CancellationToken cancellationToken)
         {
+            Logger.LogInformation($"job executing");
+
             using (var scope = _serviceProvider.CreateScope())
             {
                 var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
