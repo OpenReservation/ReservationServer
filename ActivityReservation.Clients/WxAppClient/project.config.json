@@ -5,7 +5,7 @@
 	},
 	"miniprogramRoot": "miniprogram/",
 	"compileType": "miniprogram",
-	"libVersion": "2.4.0",
+	"libVersion": "2.8.0",
 	"projectname": "ReservationWxApp",
 	"scripts": {
 		"beforeCompile": "npm run tsc",
@@ -13,7 +13,7 @@
 		"beforeUpload": "npm run tsc"
 	},
 	"setting": {},
-	"appid": "wx087ecf716d43b219",
+	"appid": "wx0089396a8df636b2",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
 	"condition": {}

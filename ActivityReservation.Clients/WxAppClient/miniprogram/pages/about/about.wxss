@@ -1,0 +1,16 @@
+/* miniprogram/pages/about/about.wxss */
+text{
+  text-align: left;
+  font-size: 1rem;
+}
+
+.title{
+  margin: 0.2rem 0 0.6rem;
+  line-height: 1.8rem;
+  font-size: 1.4rem;
+  display: block;
+}
+
+.flex-view-item{
+  margin-top: 0.8rem;
+}

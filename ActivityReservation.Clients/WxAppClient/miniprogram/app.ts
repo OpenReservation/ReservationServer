@@ -16,7 +16,7 @@ App<IMyApp>({
     // 登录
     wx.login({
       success(_res) {
-        // console.log(_res.code)
+        // console.log(_res.code)        
         // 发送 _res.code 到后台换取 openId, sessionKey, unionId
       }
     })

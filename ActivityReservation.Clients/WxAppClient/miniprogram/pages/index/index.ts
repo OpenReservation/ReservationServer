@@ -6,7 +6,7 @@ const app = getApp<IMyApp>()
 
 Page({
   data: {
-    motto: '点击 “编译” 以构建',
+    motto: '',
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
@@ -14,7 +14,7 @@ Page({
   //事件处理函数
   bindViewTap() {
     wx.navigateTo({
-      url: '../logs/logs'
+      url: '../notice/notice'
     })
   },
   onLoad() {
