@@ -1,23 +1,18 @@
 {
-  "compilerOptions": {
-    "strictNullChecks": true,
+  "compilerOptions": {    
     "noImplicitAny": true,
     "module": "CommonJS",
     "target": "ES5",
     "allowJs": false,
     "experimentalDecorators": true,
-    "noImplicitThis": true,
-    "noImplicitReturns": true,
-    "alwaysStrict": true,
+    "noImplicitThis": true,    
     "inlineSourceMap": true,
     "inlineSources": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "strict": true,
+    "strictNullChecks": true,
+    "strict": false,
+    "strictPropertyInitialization": false,
     "removeComments": true,
     "pretty": true,
-    "strictPropertyInitialization": true,
     "typeRoots": [
       "./typings"
     ]
