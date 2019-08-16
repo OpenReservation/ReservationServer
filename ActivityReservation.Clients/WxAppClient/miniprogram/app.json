@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/notice/notice",
     "pages/about/about",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/notice/notice-detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -14,10 +15,10 @@
   "networkTimeout": {
     "request": 3000
   },
-"tabBar": {
-  "selectedColor": "#2db7f5",
-  "color": "#909090",
-  "list": [
+  "tabBar": {
+    "selectedColor": "#2db7f5",
+    "color": "#909090",
+    "list": [
       {
         "text": "首页",
         "pagePath": "pages/index/index"

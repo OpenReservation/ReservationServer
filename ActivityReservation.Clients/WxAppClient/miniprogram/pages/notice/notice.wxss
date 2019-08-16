@@ -1,1 +1,9 @@
 /* miniprogram/pages/notice/notice.wxss */
+.notice_container{
+  padding: 1rem;
+}
+.noticeItem{
+  display: block;
+  padding: 1rem;
+  line-height: 1.4rem;
+}
