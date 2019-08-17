@@ -1,1 +1,10 @@
 /* miniprogram/pages/notice/notice-detail.wxss */
+@import "/wxParse/wxParse.wxss";
+.noticeTitle{
+  text-align: center;
+  line-height: 1.6rem;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}

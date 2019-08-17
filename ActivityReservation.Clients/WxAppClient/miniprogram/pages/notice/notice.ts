@@ -14,9 +14,20 @@ Page({
     this.loadNotice(1, 10);
   },
 
-  loadNext(){
-    this.data.pageNum++;
-    this.loadNotice(this.data.pageNum, this.data.pageSize);
+  navToDetails(event: any) {
+    let path = event.currentTarget.dataset.path;
+    console.log(path);
+    wx.navigateTo({
+      url: `./notice-detail?path=${path}`
+    });
+  },
+
+  prevPage() {
+    this.loadNotice(--this.data.pageNum, this.data.pageSize);
+  },
+
+  nextPage() {
+    this.loadNotice(++this.data.pageNum, this.data.pageSize);
   },
 
   loadNotice(pageNum:number = 1, pageSize:number = 10) {

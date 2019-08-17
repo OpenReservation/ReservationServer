@@ -3,14 +3,14 @@
 <view class="notice_container">
   <scroll-view>
     <block class="noticeItem" wx:for="{{notices}}" wx:for-item="notice" wx:key="notice.NoticeCustomPath">
-      <view>
+      <view bindtap="navToDetails" data-path="{{notice.NoticeCustomPath}}">
         <text>{{notice.NoticeTitle}} -- {{dateUtil.formatDate(notice.NoticePublishTime)}}</text>
       </view>
     </block>
   </scroll-view>
   <text wx:if="{{pageNum > 1}}">第{{pageNum}}页，每页{{pageSize }}条记录，总计{{totalPage}}页，{{totalCount}}条记录</text>
   <block>
-    <button wx:if="{{pageNum > 1}}">上一页</button>
-    <button wx:if="{{totalPage > pageNum}}">下一页</button>
+    <button bindtap="prevPage" wx:if="{{pageNum > 1}}">上一页</button>
+    <button bindtap="nextPage" wx:if="{{totalPage > pageNum}}">下一页</button>
   </block>
 </view>

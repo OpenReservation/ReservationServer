@@ -3,7 +3,7 @@
     "noImplicitAny": true,
     "module": "CommonJS",
     "target": "ES5",
-    "allowJs": false,
+    "allowJs": true,
     "experimentalDecorators": true,
     "noImplicitThis": true,    
     "inlineSourceMap": true,
@@ -14,7 +14,8 @@
     "removeComments": true,
     "pretty": true,
     "typeRoots": [
-      "./typings"
+      "./typings",
+      "./node_modules/@types"
     ]
   },
   "include": [
@@ -23,6 +24,7 @@
   "exclude": [
     "node_modules",
     "miniprogram_dist",
+    "./miniprogram/towxml",
     "**/*.spec.ts"
   ]
 }
