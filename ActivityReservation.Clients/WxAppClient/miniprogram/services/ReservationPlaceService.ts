@@ -8,8 +8,19 @@ export class ReservationPlaceService extends BaseService<ReservationPlace>{
     super('ReservationPlace');
   }
 
-  public getAvailablePeriods(placeId:string, date: string) {
-    //return this.http.get<Array<ReservationPeriod>>(`${this.apiBaseUrl}/api/reservationPlace/${placeId}/periods?dt=${date}`);
+  public getAvailablePeriods(callback:(result:Array<ReservationPeriod>)=>void, placeId:string, date: string) {
+    wx.showLoading({
+      title: "loading..."
+    });
+    let url = `${this.apiBaseUrl}/api/reservationPlace/${placeId}/periods?dt=${date}`;
+    wx.request({
+      url: url,
+      success: (response) => {
+        wx.hideLoading();
+        let result = <Array<ReservationPeriod>>response.data;
+        callback(result);
+      }
+    });
   }
 
 }

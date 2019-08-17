@@ -1,13 +1,46 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="userinfo">
+  <!-- <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
     <block wx:else>
       <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
       <text class="userinfo-nickname">{{userInfo.nickName}}</text>
     </block>
-  </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
-  </view>
+  </view> -->
+  <scroll-view>
+    <view class="table">
+      <view class="tr bg-w">
+        <view class="th">活动室名称</view>
+        <view class="th">预约使用日期</view>
+        <view class="th ">预约使用时间</view>
+        <view class="th">预约单位</view>
+        <view class="th">活动内容</view>
+        <view class="th ">预约人</view>
+      </view>
+
+      <block wx:for="{{reservations}}" wx:key="{{ReservationId}}">
+        <view class="tr bg-g" wx:if="{{index % 2 == 0}}">
+          <view class="td">{{item.ReservationPlaceName}}</view>
+          <view class="td">{{item.ReservationForDate}}</view>
+          <view class="td">{{item.ReservationForTime}}</view>
+          <view class="td">{{item.ReservationUnit}}</view>
+          <view class="td">{{item.ReservationActivityContent}}</view>
+          <view class="td">{{item.ReservationPersonName}}</view>
+        </view>
+        <view class="tr" wx:else>
+          <view class="td">{{item.ReservationPlaceName}}</view>
+          <view class="td">{{item.ReservationForDate}}</view>
+          <view class="td">{{item.ReservationForTime}}</view>
+          <view class="td">{{item.ReservationUnit}}</view>
+          <view class="td">{{item.ReservationActivityContent}}</view>
+          <view class="td">{{item.ReservationPersonName}}</view>
+        </view>
+      </block>
+    </view>
+    <view>
+      <text class="page-info" wx:if="{{totalPage > 1}}">第{{pageNum}}页，每页{{pageSize }}条记录，总计{{totalPage}}页，{{totalCount}}条记录</text>
+      <button bindtap="prevPage" wx:if="{{pageNum > 1}}">上一页</button>
+      <button bindtap="nextPage" wx:if="{{totalPage > pageNum}}">下一页</button>
+    </view>
+  </scroll-view>
 </view>

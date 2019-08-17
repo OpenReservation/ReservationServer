@@ -1,13 +1,15 @@
 import { PagedListData } from './../models/PagedListData';
 
 export class BaseService<TModel>{
-  protected readonly apiBaseUrl:string;
+  protected readonly apiBaseUrl:string = "https://reservation.weihanli.xyz";
 
   constructor(protected apiPath:string){
-    this.apiBaseUrl = apiPath;
   }
 
-  public Get(params?:any) {
+  public Get(callback: (result:PagedListData<TModel>) => void, params?:any) {
+    wx.showLoading({
+      title: "loading..."
+    });
     let url = `${this.apiBaseUrl}/api/${this.apiPath}`;
     if(params != undefined && Object.keys(params).length > 0){
       url += "?";      
@@ -15,19 +17,35 @@ export class BaseService<TModel>{
         url += `${name}=${params[name]}&`;
       }
     }
+    console.log(`url: ${url}`);
     wx.request({
      url: url,
      success: (response)=>{
-       console.log(response.data);
+       let result = <PagedListData<TModel>>response.data;
+       callback(result);
+       wx.hideLoading();
      }
     });
   }
 
-  public GetAll(): void {
-    //return this.http.get<Array<TModel>>(`${this.apiBaseUrl}/api/${this.apiPath}`);
+  public GetAll(callback: (result: Array<TModel>)=>void): void {
+    wx.showLoading({
+      title: "loading..."
+    });
+    wx.request({
+      url: `${this.apiBaseUrl}/api/${this.apiPath}`,
+      success: (response) => {
+        wx.hideLoading();
+        let result = <Array<TModel>>response.data;
+        callback(result);
+      }
+    });
   }
 
-  public GetDetails(id: number|string, params?: any): void {
+  public GetDetails(callback:(result:TModel)=>void, id: number|string, params?: any): void {
+    wx.showLoading({
+      title: "loading..."
+    });
     let url = `${this.apiBaseUrl}/api/${this.apiPath}/${id}`;
     if(params && Object.keys(params).length > 0){
       url += "?";
@@ -35,7 +53,14 @@ export class BaseService<TModel>{
         url += `${name}=${params[name]}&`;
       }
     }
-    //return this.http.get<TModel>(url);
+    wx.request({
+      url: `${this.apiBaseUrl}/api/${this.apiPath}`,
+      success: (response) => {
+        wx.hideLoading();
+        let result = <TModel><any>response.data;
+        callback(result);
+      }
+    });
   }
 
 

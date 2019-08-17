@@ -4,7 +4,8 @@
     "pages/notice/notice",
     "pages/about/about",
     "pages/logs/logs",
-    "pages/notice/notice-detail"
+    "pages/notice/notice-detail",
+    "pages/reservation/new-reservation"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -22,6 +23,10 @@
       {
         "text": "首页",
         "pagePath": "pages/index/index"
+      },
+      {
+        "text": "预约",
+        "pagePath": "pages/reservation/new-reservation"
       },
       {
         "text": "公告",
