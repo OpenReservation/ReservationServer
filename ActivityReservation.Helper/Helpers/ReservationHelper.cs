@@ -124,6 +124,7 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string message)
         {
+            // TODO:黑名单信息可以放在缓存中
             var blockList = _bllBlockEntity.Select(b => b.IsActive);
             message = "";
             //预约人手机号
@@ -133,7 +134,6 @@ namespace ActivityReservation.Helpers
                 return true;
             }
             //预约人IP地址
-            // TODO: need debug
             var ip = DependencyResolver.Current.GetService<IHttpContextAccessor>().HttpContext.GetUserIP();
             if (blockList.Any(b => b.BlockValue.Equals(ip)))
             {
@@ -173,6 +173,7 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
+            // TODO: 这一段逻辑有点问题，预约操作应该在锁的范围内，这样写仍然会有并发的问题
             using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
             {
                 if (redisLock.TryLock())
@@ -187,6 +188,7 @@ namespace ActivityReservation.Helpers
                         msg = "预约时间段冲突，请重新选择预约时间段";
                         return false;
                     }
+
                     return true;
                 }
                 else
