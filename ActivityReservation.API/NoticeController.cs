@@ -37,7 +37,7 @@ namespace ActivityReservation.API
             Expression<Func<Notice, bool>> predict = n => true;
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                predict = predict.And(n => n.NoticeTitle.Contains(keyword));
+                predict = predict.And(n => n.NoticeTitle.Contains(keyword.Trim()));
             }
             var result = await _repository.GetPagedListResultAsync(x => new
             {

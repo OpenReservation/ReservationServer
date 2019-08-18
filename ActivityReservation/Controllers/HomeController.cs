@@ -18,6 +18,7 @@ using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
+using WeihanLi.Extensions;
 using WeihanLi.Redis;
 
 namespace ActivityReservation.Controllers
@@ -220,7 +221,7 @@ namespace ActivityReservation.Controllers
             Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = n => n.NoticeTitle.Contains(search.SearchItem1) && n.CheckStatus;
+                whereLamdba = whereLamdba.And(n => n.NoticeTitle.Contains(search.SearchItem1.Trim()));
             }
             try
             {

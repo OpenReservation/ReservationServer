@@ -14,6 +14,8 @@ namespace ActivityReservation.Database
             modelBuilder.Entity<ReservationPlace>().HasQueryFilter(x => !x.IsDel);
             modelBuilder.Entity<DisabledPeriod>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
+
+            modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path 设置索引
         }
 
         public virtual DbSet<User> Users { get; set; }
