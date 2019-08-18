@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.EntityFramework;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -95,6 +96,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     var count = _blockEntityHelper.Insert(entity);
                     if (count == 1)
                     {
+                        ReloadBlackListCache();
                         //记录日志
                         OperLogHelper.AddOperLog($"添加 {blockValue} 到黑名单", OperLogModule.BlockEntity,
                             UserName);
@@ -127,6 +129,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = _blockEntityHelper.Update(e => e.BlockId == entityId, e => e.IsActive, status > 0);
                 if (count > 0)
                 {
+                    ReloadBlackListCache();
                     OperLogHelper.AddOperLog(
                         $"更改黑名单 {entityName} 状态为 {(status > 0 ? "启用" : "禁用")}",
                         OperLogModule.BlockEntity, UserName);
@@ -153,6 +156,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var c = _blockEntityHelper.Delete(new BlockEntity() { BlockId = entityId });
                 if (c == 1)
                 {
+                    ReloadBlackListCache();
                     //记录日志
                     OperLogHelper.AddOperLog($"删除黑名单 {entityName}", OperLogModule.BlockEntity, UserName);
                     return Json(true);
@@ -165,10 +169,17 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        private readonly IBLLBlockEntity _blockEntityHelper;
-
-        public BlockEntityController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper, IBLLBlockEntity bLLBlockEntity) : base(logger, operLogHelper)
+        public bool ReloadBlackListCache()
         {
+            return _cacheClient.Set(Constants.BlackListCacheKey, _blockEntityHelper.Get(q => q.WithPredict(x => x.IsActive)), TimeSpan.FromHours(1));
+        }
+
+        private readonly IBLLBlockEntity _blockEntityHelper;
+        private readonly ICacheClient _cacheClient;
+
+        public BlockEntityController(ILogger<OperationLogController> logger, ICacheClient cacheClient, OperLogHelper operLogHelper, IBLLBlockEntity bLLBlockEntity) : base(logger, operLogHelper)
+        {
+            _cacheClient = cacheClient;
             _blockEntityHelper = bLLBlockEntity;
         }
     }

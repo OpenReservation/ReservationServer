@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
-using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.API
 {
@@ -119,37 +118,12 @@ namespace ActivityReservation.API
             try
             {
                 if (!HttpContext.RequestServices.GetService<ReservationHelper>()
-                    .IsReservationAvailable(model, out var msg))
+                    .MakeReservation(model, out var msg))
                 {
                     result.ErrorMsg = msg;
                     return Ok(result);
                 }
 
-                var reservation = new Reservation()
-                {
-                    ReservationForDate = model.ReservationForDate,
-                    ReservationForTime = model.ReservationForTime,
-                    ReservationPlaceId = model.ReservationPlaceId,
-
-                    ReservationUnit = model.ReservationUnit,
-                    ReservationActivityContent = model.ReservationActivityContent,
-                    ReservationPersonName = model.ReservationPersonName,
-                    ReservationPersonPhone = model.ReservationPersonPhone,
-
-                    ReservationFromIp = HttpContext.GetUserIP(),
-
-                    ReservationTime = DateTime.UtcNow,
-
-                    UpdateBy = model.ReservationPersonName,
-                    UpdateTime = DateTime.UtcNow,
-                    ReservationId = Guid.NewGuid()
-                };
-                foreach (var item in model.ReservationForTimeIds.Split(',')
-                    .Select(_ => Convert.ToInt32(_)))
-                {
-                    reservation.ReservationPeriod += (1 << item);
-                }
-                await _repository.InsertAsync(reservation);
                 result.Result = true;
                 result.Status = JsonResultStatus.Success;
                 return Ok(result);

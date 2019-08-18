@@ -18,8 +18,6 @@ using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
-using WeihanLi.Extensions;
-using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Controllers
 {
@@ -157,45 +155,15 @@ namespace ActivityReservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out var msg))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>()
+                        .MakeReservation(model, out var msg))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);
                     }
 
-                    var reservation = new Reservation()
-                    {
-                        ReservationForDate = model.ReservationForDate,
-                        ReservationForTime = model.ReservationForTime,
-                        ReservationPlaceId = model.ReservationPlaceId,
-
-                        ReservationUnit = model.ReservationUnit,
-                        ReservationActivityContent = model.ReservationActivityContent,
-                        ReservationPersonName = model.ReservationPersonName,
-                        ReservationPersonPhone = model.ReservationPersonPhone,
-
-                        ReservationFromIp = HttpContext.GetUserIP(), //记录预约人IP地址
-
-                        UpdateBy = model.ReservationPersonName,
-                        UpdateTime = DateTime.UtcNow,
-                        ReservationId = Guid.NewGuid()
-                    };
-                    //验证最大可预约时间段，同一个手机号，同一个IP地址
-                    foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
-                    {
-                        reservation.ReservationPeriod += (1 << item);
-                    }
-                    var bValue = await _reservationBLL.InsertAsync(reservation);
-                    if (bValue > 0)
-                    {
-                        result.Result = true;
-                        result.Status = JsonResultStatus.Success;
-                    }
-                    else
-                    {
-                        result.ErrorMsg = "预约失败";
-                        result.Status = JsonResultStatus.ProcessFail;
-                    }
+                    result.Result = true;
+                    result.Status = JsonResultStatus.Success;
                     return Json(result);
                 }
             }

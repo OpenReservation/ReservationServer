@@ -124,8 +124,10 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string message)
         {
-            // TODO:黑名单信息可以放在缓存中
-            var blockList = _bllBlockEntity.Select(b => b.IsActive);
+            var blockList = RedisManager.CacheClient.GetOrSet(Constants.BlackListCacheKey,
+                () => DependencyResolver.Current.ResolveService<IBLLBlockEntity>().Select(_ => _.IsActive),
+                TimeSpan.FromHours(1));
+
             message = "";
             //预约人手机号
             if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonPhone)))
@@ -156,7 +158,7 @@ namespace ActivityReservation.Helpers
         /// <param name="msg">预约错误提示信息</param>
         /// <param name="isAdmin">是否是管理员预约</param>
         /// <returns></returns>
-        public bool IsReservationAvailable(ReservationViewModel reservation, out string msg,
+        public bool MakeReservation(ReservationViewModel reservation, out string msg,
             bool isAdmin = false)
         {
             if (reservation == null ||
@@ -173,7 +175,6 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
-            // TODO: 这一段逻辑有点问题，预约操作应该在锁的范围内，这样写仍然会有并发的问题
             using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
             {
                 if (redisLock.TryLock())
@@ -188,6 +189,34 @@ namespace ActivityReservation.Helpers
                         msg = "预约时间段冲突，请重新选择预约时间段";
                         return false;
                     }
+
+                    var reservationEntity = new Reservation()
+                    {
+                        ReservationForDate = reservation.ReservationForDate,
+                        ReservationForTime = reservation.ReservationForTime,
+                        ReservationPlaceId = reservation.ReservationPlaceId,
+
+                        ReservationUnit = reservation.ReservationUnit,
+                        ReservationActivityContent = reservation.ReservationActivityContent,
+                        ReservationPersonName = reservation.ReservationPersonName,
+                        ReservationPersonPhone = reservation.ReservationPersonPhone,
+                        ReservationFromIp = DependencyResolver.Current.ResolveService<IHttpContextAccessor>()
+                        .HttpContext.GetUserIP(),
+
+                        UpdateBy = reservation.ReservationPersonName,
+                        UpdateTime = DateTime.UtcNow,
+                        ReservationId = Guid.NewGuid()
+                    };
+                    //验证最大可预约时间段，同一个手机号，同一个IP地址
+                    foreach (var item in reservation.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
+                    {
+                        reservationEntity.ReservationPeriod += (1 << item);
+                    }
+                    if (isAdmin)
+                    {
+                        reservationEntity.ReservationStatus = ReservationStatus.Reviewed;
+                    }
+                    _bllReservation.Insert(reservationEntity);
 
                     return true;
                 }

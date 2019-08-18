@@ -16,7 +16,6 @@ using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
 using WeihanLi.Npoi;
-using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -49,40 +48,16 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationAvailable(model, out var msg, true))
+                    if (!HttpContext.RequestServices.GetService<ReservationHelper>()
+                        .MakeReservation(model, out var msg, true))
                     {
                         result.ErrorMsg = msg;
                         return Json(result);
                     }
 
-                    var reservation = new Reservation()
-                    {
-                        ReservationForDate = model.ReservationForDate,
-                        ReservationForTime = model.ReservationForTime,
-                        ReservationPlaceId = model.ReservationPlaceId,
-
-                        ReservationUnit = model.ReservationUnit,
-                        ReservationActivityContent = model.ReservationActivityContent,
-                        ReservationPersonName = model.ReservationPersonName,
-                        ReservationPersonPhone = model.ReservationPersonPhone,
-
-                        ReservationFromIp = HttpContext.GetUserIP(),
-                        //管理员预约自动审核通过
-                        ReservationStatus = ReservationStatus.Reviewed,
-                        ReservationTime = DateTime.UtcNow,
-
-                        UpdateBy = model.ReservationPersonName,
-                        UpdateTime = DateTime.UtcNow,
-                        ReservationId = Guid.NewGuid()
-                    };
-                    foreach (var item in model.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
-                    {
-                        reservation.ReservationPeriod += (1 << item);
-                    }
-                    _reservationHelper.Insert(reservation);
                     OperLogHelper.AddOperLog(
-                        $"管理员 {UserName} 后台预约 {reservation.ReservationId}：{reservation.ReservationActivityContent}",
-                        OperLogModule.Reservation, UserName);
+                                            $"管理员 {UserName} 后台预约 {model.ReservationForDate:yyyy-MM-dd} {model.ReservationPlaceName}：{model.ReservationActivityContent}",
+                                            OperLogModule.Reservation, UserName);
                     result.Result = true;
                     result.Status = JsonResultStatus.Success;
                     return Json(result);
