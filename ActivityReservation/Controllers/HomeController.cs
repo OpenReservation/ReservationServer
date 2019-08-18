@@ -18,6 +18,7 @@ using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.Controllers
 {
@@ -241,7 +242,7 @@ namespace ActivityReservation.Controllers
         /// <param name="path">访问路径</param>
         /// <param name="eventBus"></param>
         /// <returns></returns>
-        public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus)
+        public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -249,8 +250,7 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var noticeBll = HttpContext.RequestServices.GetService<IBLLNotice>();
-                var notice = await noticeBll.FetchAsync(n => n.NoticeCustomPath == path.Trim());
+                var notice = await cacheClient.GetOrSetAsync($"Notice_{path.Trim()}", () => HttpContext.RequestServices.GetService<IBLLNotice>().FetchAsync(n => n.NoticeCustomPath == path.Trim()), TimeSpan.FromDays(1));
                 if (notice != null)
                 {
                     eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });

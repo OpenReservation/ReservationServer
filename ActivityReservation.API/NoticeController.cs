@@ -1,16 +1,17 @@
-﻿using ActivityReservation.Events;
-using System;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ActivityReservation.Database;
+using ActivityReservation.Events;
 using ActivityReservation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Event;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.API
 {
@@ -60,11 +61,13 @@ namespace ActivityReservation.API
         /// <param name="path">path</param>
         /// <param name="cancellationToken">cancellationToken</param>
         /// <param name="eventBus">eventBus</param>
+        /// <param name="cacheClient">cacheClient</param>
         /// <returns></returns>
         [HttpGet("{path}")]
-        public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus)
+        public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
         {
-            var notice = await _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken);
+            var notice = await cacheClient.GetOrSetAsync($"Notice_{path.Trim()}", () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken), TimeSpan.FromDays(1));
+
             if (notice == null)
             {
                 return NotFound();
