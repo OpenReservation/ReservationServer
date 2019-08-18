@@ -66,7 +66,10 @@ namespace ActivityReservation.API
         [HttpGet("{path}")]
         public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
         {
-            var notice = await cacheClient.GetOrSetAsync($"Notice_{path.Trim()}", () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken), TimeSpan.FromDays(1));
+            var notice = await cacheClient.GetOrSetAsync(
+                $"Notice_{path.Trim()}",
+                () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
+                TimeSpan.FromMinutes(10));
 
             if (notice == null)
             {

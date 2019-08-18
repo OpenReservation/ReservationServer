@@ -251,7 +251,11 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var notice = await cacheClient.GetOrSetAsync($"Notice_{path.Trim()}", () => HttpContext.RequestServices.GetService<IBLLNotice>().FetchAsync(n => n.NoticeCustomPath == path.Trim()), TimeSpan.FromDays(1));
+                var notice = await cacheClient.GetOrSetAsync(
+                    $"Notice_{path.Trim()}",
+                    () => HttpContext.RequestServices.GetService<IBLLNotice>()
+                        .FetchAsync(n => n.NoticeCustomPath == path.Trim()),
+                    TimeSpan.FromMinutes(10));
                 if (notice != null)
                 {
                     eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
