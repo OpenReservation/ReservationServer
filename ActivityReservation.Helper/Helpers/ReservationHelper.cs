@@ -152,7 +152,7 @@ namespace ActivityReservation.Helpers
         }
 
         /// <summary>
-        /// 判断预约是否合法
+        /// 新建预约
         /// </summary>
         /// <param name="reservation">预约信息</param>
         /// <param name="msg">预约错误提示信息</param>
