@@ -125,7 +125,7 @@ namespace ActivityReservation.Helpers
         private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string message)
         {
             var blockList = RedisManager.CacheClient.GetOrSet(Constants.BlackListCacheKey,
-                () => DependencyResolver.Current.ResolveService<IBLLBlockEntity>().Select(_ => _.IsActive),
+                () => _bllBlockEntity.Select(_ => _.IsActive),
                 TimeSpan.FromHours(1));
 
             message = "";
