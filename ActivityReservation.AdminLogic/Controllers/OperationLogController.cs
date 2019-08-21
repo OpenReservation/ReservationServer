@@ -6,6 +6,7 @@ using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Extensions;
 
@@ -14,6 +15,7 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 操作日志
     /// </summary>
+    [AccessControl]
     public class OperationLogController : AdminBaseController
     {
         /// <summary>

@@ -10,6 +10,7 @@
                 <th>日志模块</th>
                 <th>日志内容</th>
                 <th>操作人</th>
+                <th>操作IP</th>
                 <th>操作时间</th>
             </tr>
         </thead>
@@ -25,6 +26,9 @@
                     </td>
                     <td>
                         @item.OperBy
+                    </td>
+                    <td>
+                        @item.IpAddress
                     </td>
                     <td>
                         @item.OperTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
