@@ -1,11 +1,8 @@
-﻿using System;
-using System.ComponentModel;
-using ActivityReservation.Business;
-using ActivityReservation.Models;
+﻿using System.ComponentModel;
+using ActivityReservation.Events;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Extensions;
+using WeihanLi.Common.Event;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
@@ -17,10 +14,12 @@ namespace ActivityReservation.Helpers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
+        private readonly IEventBus _eventBus;
 
-        public OperLogHelper(IHttpContextAccessor httpContextAccessor, ILogger<OperLogHelper> logger)
+        public OperLogHelper(IHttpContextAccessor httpContextAccessor, IEventBus eventBus, ILogger<OperLogHelper> logger)
         {
             _httpContextAccessor = httpContextAccessor;
+            _eventBus = eventBus;
             _logger = logger;
         }
 
@@ -34,24 +33,13 @@ namespace ActivityReservation.Helpers
         public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
         {
             var httpContext = _httpContextAccessor.HttpContext;
-            try
+            return _eventBus.Publish(new OperationLogEvent
             {
-                var log = new OperationLog()
-                {
-                    LogId = Guid.NewGuid(),
-                    LogContent = logContent,
-                    LogModule = logModule.GetDescription(),
-                    IpAddress = httpContext.GetUserIP(),
-                    OperBy = operBy ?? httpContext.User.Identity.Name,
-                    OperTime = DateTime.UtcNow
-                };
-                return httpContext.RequestServices.GetService<IBLLOperationLog>().Insert(log) > 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("添加操作日志失败", ex);
-            }
-            return false;
+                LogContent = logContent,
+                Module = logModule,
+                IpAddress = httpContext.GetUserIP(),
+                OperBy = operBy ?? httpContext.User.Identity.Name,
+            });
         }
     }
 

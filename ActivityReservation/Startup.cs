@@ -193,6 +193,8 @@ namespace ActivityReservation
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
+            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
+
             ExcelSettings();
 
             LogHelper.LogFactory

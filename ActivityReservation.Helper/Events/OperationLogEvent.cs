@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using ActivityReservation.Business;
+using ActivityReservation.Database;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using Microsoft.Extensions.Logging;
+using WeihanLi.Common;
 using WeihanLi.Common.Event;
+using WeihanLi.EntityFramework;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.Events
 {
@@ -31,31 +34,36 @@ namespace ActivityReservation.Events
     public class OperationLogEventHandler : IEventHandler<OperationLogEvent>
     {
         private readonly ILogger _logger;
-        private readonly IBLLOperationLog _operationLogRepo;
 
-        public OperationLogEventHandler(ILogger<OperLogHelper> logger, IBLLOperationLog operationLogRepo)
+        public OperationLogEventHandler(ILogger<OperLogHelper> logger)
         {
             _logger = logger;
-            _operationLogRepo = operationLogRepo;
         }
 
         public async Task Handle(OperationLogEvent @event)
         {
-            try
+            var firewallClient = RedisManager.GetFirewallClient($"{nameof(OperationLogEventHandler)}_{@event.EventId}", TimeSpan.FromMinutes(5));
+            if (await firewallClient.HitAsync())
             {
-                await _operationLogRepo.InsertAsync(new OperationLog()
+                await DependencyResolver.Current.TryInvokeServiceAsync<IEFRepository<ReservationDbContext, OperationLog>>(async (operationLogRepo) =>
                 {
-                    IpAddress = @event.IpAddress,
-                    LogContent = @event.LogContent,
-                    LogId = Guid.NewGuid(),
-                    LogModule = @event.Module.ToString(),
-                    OperBy = @event.OperBy,
-                    OperTime = @event.EventAt.UtcDateTime,
+                    try
+                    {
+                        await operationLogRepo.InsertAsync(new OperationLog()
+                        {
+                            IpAddress = @event.IpAddress,
+                            LogContent = @event.LogContent,
+                            LogId = Guid.NewGuid(),
+                            LogModule = @event.Module.ToString(),
+                            OperBy = @event.OperBy,
+                            OperTime = @event.EventAt.UtcDateTime,
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error("添加操作日志失败", ex);
+                    }
                 });
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("添加操作日志失败", ex);
             }
         }
     }
