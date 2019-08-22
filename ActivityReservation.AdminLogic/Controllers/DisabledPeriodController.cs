@@ -34,16 +34,16 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(int activeStatus, int pageIndex, int pageSize)
         {
-            Expression<Func<DisabledPeriod, bool>> whereLambda = (p => !p.IsDeleted);
+            Expression<Func<DisabledPeriod, bool>> whereLambda = (p => true);
             if (activeStatus > 0)
             {
                 if (activeStatus == 1)
                 {
-                    whereLambda = (p => !p.IsDeleted && p.IsActive);
+                    whereLambda = (p => p.IsActive);
                 }
                 else
                 {
-                    whereLambda = (p => !p.IsDeleted && !p.IsActive);
+                    whereLambda = (p => !p.IsActive);
                 }
             }
 
@@ -72,8 +72,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    var list = _bllDisabledPeriod.Select(p =>
-                        !p.IsDeleted && EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
+                    var list = _bllDisabledPeriod.Select(p => EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
                     if (list != null && list.Any())
                     {
                         result.Status = JsonResultStatus.RequestError;

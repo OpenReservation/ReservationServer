@@ -85,8 +85,7 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
-            var disabledPeriods = _bllDisabledPeriod.Select(p =>
-                !p.IsDeleted && p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
+            var disabledPeriods = _bllDisabledPeriod.Select(p => p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
                 EF.Functions.DateDiffDay(dt, p.EndDate) >= 0);
             if (disabledPeriods == null || !disabledPeriods.Any())
             {

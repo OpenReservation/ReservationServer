@@ -170,7 +170,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public JsonResult Delete(Guid noticeId)
         {
-            var result = _bLLNotice.Update(new Notice() { NoticeId = noticeId, IsDeleted = true }, n => n.IsDeleted);
+            var result = _bLLNotice.Update(new Notice() { NoticeId = noticeId, IsDeleted = true, UpdateBy = UserName, UpdateTime = DateTime.UtcNow }, n => n.IsDeleted);
             if (result > 0)
             {
                 OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, UserName);

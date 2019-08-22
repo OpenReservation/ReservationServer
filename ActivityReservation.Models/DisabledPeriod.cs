@@ -99,16 +99,5 @@ namespace ActivityReservation.Models
 
             set { isActive = value; }
         }
-
-        /// <summary>
-        /// 是否删除
-        /// </summary>
-        [Column]
-        public bool IsDeleted
-        {
-            get { return isDeleted; }
-
-            set { isDeleted = value; }
-        }
     }
 }

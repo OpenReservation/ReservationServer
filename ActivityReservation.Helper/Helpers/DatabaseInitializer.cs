@@ -26,7 +26,14 @@ namespace ActivityReservation.Helpers
                     {
                         UserId = Guid.NewGuid(),
                         UserName = "admin",
-                        UserPassword = HashHelper.GetHashedString(HashType.SHA256, "Admin888"), // SecurityHelper.SHA256("Admin888")
+                        UserPassword = SecurityHelper.SHA256("Admin888"),
+                        IsSuper = true
+                    });
+                    dbContext.Users.Add(new User
+                    {
+                        UserId = Guid.NewGuid(),
+                        UserName = "Alice",
+                        UserPassword = SecurityHelper.SHA256("Test1234"),
                         IsSuper = true
                     });
 

@@ -13,7 +13,6 @@ namespace ActivityReservation.Database
         {
             modelBuilder.Entity<ReservationPlace>().HasQueryFilter(x => !x.IsDel);
             modelBuilder.Entity<ReservationPeriod>().HasQueryFilter(x => !x.IsDeleted);
-            modelBuilder.Entity<DisabledPeriod>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
@@ -29,9 +28,6 @@ namespace ActivityReservation.Database
         public virtual DbSet<ReservationPeriod> ReservationPeriods { get; set; }
         public virtual DbSet<SystemSettings> SystemSettings { get; set; }
         public virtual DbSet<Notice> Notices { get; set; }
-
         public virtual DbSet<DisabledPeriod> DisabledPeriods { get; set; }
-
-        public virtual DbSet<WechatMenuConfig> WechatMenuConfigs { get; set; }
     }
 }
