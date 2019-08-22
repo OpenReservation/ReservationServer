@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.EntityFramework;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Events
 {
@@ -52,7 +53,7 @@ namespace ActivityReservation.Events
                             IpAddress = @event.IpAddress,
                             LogContent = @event.LogContent,
                             LogId = Guid.NewGuid(),
-                            LogModule = @event.Module.ToString(),
+                            LogModule = @event.Module.GetDescription(),
                             OperBy = @event.OperBy,
                             OperTime = @event.EventAt.UtcDateTime,
                         });
