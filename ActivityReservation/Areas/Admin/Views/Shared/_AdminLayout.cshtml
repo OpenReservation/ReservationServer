@@ -17,13 +17,13 @@
         <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     </environment>
     <style type="text/css">
-    @@media only screen and (max-width:780px){
-        #githubLink{
-            display: none;
+        @@media only screen and (max-width:780px) {
+            #githubLink {
+                display: none;
+            }
         }
-    }
     </style>
-    @RenderSection("styles", required: false)    
+    @RenderSection("styles", required: false)
 </head>
 <body>
     <a id="githubLink" style="position:fixed;top:0;right:0;z-index:19941008" href="https://github.com/WeihanLi/ActivityReservation"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=256%2C256" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
@@ -31,6 +31,8 @@
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
@@ -41,6 +43,7 @@
                     <li>@Html.ActionLink("预约", "Reservate", "ReservationManage")</li>
                     <li>@Html.ActionLink("预约管理", "Index", "ReservationManage")</li>
                     <li>@Html.ActionLink("网站首页", "Index", "Home", new { area = "" }, new { target = "_blank" })</li>
+                    <li><a href="https://reservation-client.weihanli.xyz" title="新版网站首页">新版网站首页</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     @if (!User.Identity.IsAuthenticated)

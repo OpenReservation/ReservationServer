@@ -58,54 +58,26 @@ namespace ActivityReservation.Controllers
                 whereLambda = m => m.ReservationPersonPhone == search.SearchItem1.Trim();
             }
             //load data
-            var list = default(WeihanLi.Common.Models.IPagedListModel<ReservationListViewModel>);
-
-            if (search.PageIndex == 1 && search.SearchItem0.IsNullOrWhiteSpace() &&
-                search.SearchItem1.IsNullOrWhiteSpace())
-            {
-                list = cacheClient.GetOrSet("ReservationsFirstPage", () => _reservationBLL.GetPagedListResult(
-                    x => new ReservationListViewModel
-                    {
-                        ReservationForDate = x.ReservationForDate,
-                        ReservationForTime = x.ReservationForTime,
-                        ReservationId = x.ReservationId,
-                        ReservationUnit = x.ReservationUnit,
-                        ReservationTime = x.ReservationTime,
-                        ReservationPlaceName = x.Place.PlaceName,
-                        ReservationActivityContent = x.ReservationActivityContent,
-                        ReservationPersonName = x.ReservationPersonName,
-                        ReservationPersonPhone = x.ReservationPersonPhone,
-                        ReservationStatus = x.ReservationStatus,
-                    },
-                    queryBuilder => queryBuilder
-                        .WithPredict(whereLambda)
-                        .WithOrderBy(query =>
-                            query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
-                        .WithInclude(query => query.Include(r => r.Place))
-                    , search.PageIndex, search.PageSize), TimeSpan.FromMinutes(5));
-            }
-            else
-            {
-                list = _reservationBLL.GetPagedListResult(
-                    x => new ReservationListViewModel
-                    {
-                        ReservationForDate = x.ReservationForDate,
-                        ReservationForTime = x.ReservationForTime,
-                        ReservationId = x.ReservationId,
-                        ReservationUnit = x.ReservationUnit,
-                        ReservationTime = x.ReservationTime,
-                        ReservationPlaceName = x.Place.PlaceName,
-                        ReservationActivityContent = x.ReservationActivityContent,
-                        ReservationPersonName = x.ReservationPersonName,
-                        ReservationPersonPhone = x.ReservationPersonPhone,
-                        ReservationStatus = x.ReservationStatus,
-                    },
-                    queryBuilder => queryBuilder
-                        .WithPredict(whereLambda)
-                        .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
-                        .WithInclude(query => query.Include(r => r.Place))
-                    , search.PageIndex, search.PageSize);
-            }
+            var list = _reservationBLL.GetPagedListResult(
+                x => new ReservationListViewModel
+                {
+                    ReservationForDate = x.ReservationForDate,
+                    ReservationForTime = x.ReservationForTime,
+                    ReservationId = x.ReservationId,
+                    ReservationUnit = x.ReservationUnit,
+                    ReservationTime = x.ReservationTime,
+                    ReservationPlaceName = x.Place.PlaceName,
+                    ReservationActivityContent = x.ReservationActivityContent,
+                    ReservationPersonName = x.ReservationPersonName,
+                    ReservationPersonPhone = x.ReservationPersonPhone,
+                    ReservationStatus = x.ReservationStatus,
+                },
+                queryBuilder => queryBuilder
+                    .WithPredict(whereLambda)
+                    .WithOrderBy(query =>
+                        query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
+                    .WithInclude(query => query.Include(r => r.Place))
+                , search.PageIndex, search.PageSize);
 
             var dataList = list.ToPagedList();
             return View(dataList);
