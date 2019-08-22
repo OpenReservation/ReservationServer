@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.EntityFramework;
-using WeihanLi.Redis;
 
 namespace ActivityReservation.Events
 {
@@ -31,7 +30,7 @@ namespace ActivityReservation.Events
         public string OperBy { get; set; }
     }
 
-    public class OperationLogEventHandler : IEventHandler<OperationLogEvent>
+    public class OperationLogEventHandler : OnceEventHandlerBase, IEventHandler<OperationLogEvent>
     {
         private readonly ILogger _logger;
 
@@ -42,8 +41,7 @@ namespace ActivityReservation.Events
 
         public async Task Handle(OperationLogEvent @event)
         {
-            var firewallClient = RedisManager.GetFirewallClient($"{nameof(OperationLogEventHandler)}_{@event.EventId}", TimeSpan.FromMinutes(5));
-            if (await firewallClient.HitAsync())
+            if (await IsHandleNeeded(@event))
             {
                 await DependencyResolver.Current.TryInvokeServiceAsync<IEFRepository<ReservationDbContext, OperationLog>>(async (operationLogRepo) =>
                 {

@@ -18,12 +18,25 @@ namespace ActivityReservation.Events
         // ...
     }
 
-    public class NoticeViewEventHandler : IEventHandler<NoticeViewEvent>
+    public class OnceEventHandlerBase
+    {
+        protected async Task<bool> IsHandleNeeded(EventBase @event)
+        {
+            var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
+                TimeSpan.FromMinutes(5));
+            if (await limiter.AcquireAsync())
+            {
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public class NoticeViewEventHandler : OnceEventHandlerBase, IEventHandler<NoticeViewEvent>
     {
         public async Task Handle(NoticeViewEvent @event)
         {
-            var firewallClient = RedisManager.GetFirewallClient($"{nameof(NoticeViewEventHandler)}_{@event.EventId}", TimeSpan.FromMinutes(5));
-            if (await firewallClient.HitAsync())
+            if (await IsHandleNeeded(@event))
             {
                 await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
                 {

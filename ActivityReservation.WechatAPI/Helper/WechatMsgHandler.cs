@@ -29,8 +29,8 @@ namespace ActivityReservation.WechatAPI.Helper
                 var msgId = xmldoc.SelectSingleNode("/xml/MsgId")?.InnerText;
                 if (msgId.IsNotNullOrEmpty())
                 {
-                    var firewall = RedisManager.GetFirewallClient($"wechatMsgFirewall-{msgId}", TimeSpan.FromSeconds(2));
-                    if (!await firewall.HitAsync())
+                    var limiter = RedisManager.GetRateLimiterClient($"wechatMsgRateLimiter-{msgId}", TimeSpan.FromSeconds(20));
+                    if (!await limiter.AcquireAsync())
                     {
                         Logger.Info($"duplicate msg blocked, msg id: {msgId}");
                         return string.Empty;
