@@ -235,7 +235,11 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 if (redLock.TryLock())
                 {
-                    if (_reservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId))
+                    if (_reservationPeriodHelper.Any(builder => builder
+                        .IgnoreQueryFilters()
+                        .WithPredict(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId)
+                        )
+                    )
                     {
                         return Json("排序重复，请修改");
                     }
