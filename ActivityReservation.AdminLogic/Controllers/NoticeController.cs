@@ -35,10 +35,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List([FromQuery]SearchHelperModel search)
         {
-            Expression<Func<Notice, bool>> whereExpression = (n => n.IsDeleted == false);
+            Expression<Func<Notice, bool>> whereExpression = (n => true);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereExpression = n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1);
+                whereExpression = n => n.NoticeTitle.Contains(search.SearchItem1);
             }
             try
             {
@@ -170,7 +170,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public JsonResult Delete(Guid noticeId)
         {
-            var result = _bLLNotice.Delete(new Notice() { NoticeId = noticeId });
+            var result = _bLLNotice.Update(new Notice() { NoticeId = noticeId, IsDeleted = true }, n => n.IsDeleted);
             if (result > 0)
             {
                 OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, UserName);

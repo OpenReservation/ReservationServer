@@ -42,7 +42,7 @@ namespace ActivityReservation.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        public ActionResult ReservationList(SearchHelperModel search, [FromServices]ICacheClient cacheClient)
+        public ActionResult ReservationList(SearchHelperModel search)
         {
             Expression<Func<Reservation, bool>> whereLambda = (m => true);
             //补充查询条件

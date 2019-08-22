@@ -138,10 +138,12 @@ namespace ActivityReservation.AdminLogic.Controllers
             else
             {
                 period.IsActive = status > 0;
-                var count = _bllDisabledPeriod.Update(p => p.PeriodId == periodId, p => p.IsActive, period.IsActive);
+                period.UpdatedTime = DateTime.UtcNow;
+                period.UpdatedBy = UserName;
+                var count = _bllDisabledPeriod.Update(period, p => p.IsActive);
                 if (count > 0)
                 {
-                    OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}",
+                    OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}:{period.StartDate:yyyy/MM/dd}--{period.EndDate:yyyy/MM/dd}",
                         OperLogModule.DisabledPeriod, UserName);
 
                     result.Status = JsonResultStatus.Success;

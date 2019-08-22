@@ -12,9 +12,9 @@ namespace ActivityReservation.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ReservationPlace>().HasQueryFilter(x => !x.IsDel);
+            modelBuilder.Entity<ReservationPeriod>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<DisabledPeriod>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
-
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
             modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path 设置索引

@@ -18,12 +18,14 @@ namespace ActivityReservation.Models
         /// 标题
         /// </summary>
         [Column]
+        [StringLength(32)]
         public string PeriodTitle { get; set; }
 
         /// <summary>
         /// 描述
         /// </summary>
         [Column]
+        [StringLength(256)]
         public string PeriodDescription { get; set; }
 
         /// <summary>
@@ -61,6 +63,12 @@ namespace ActivityReservation.Models
         /// </summary>
         [Column]
         public DateTime UpdateTime { get; set; }
+
+        /// <summary>
+        /// 是否已删除
+        /// </summary>
+        [Column]
+        public bool IsDeleted { get; set; }
 
         [ForeignKey("PlaceId")]
         public ReservationPlace ReservationPlace { get; set; }

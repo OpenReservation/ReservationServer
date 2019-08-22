@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Extensions;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -80,7 +81,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                         UpdateBy = UserName,
                         UpdateTime = DateTime.UtcNow
                     }, x => x.PlaceName, x => x.UpdateBy, x => x.UpdateTime);
-                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为{newName}",
+                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为 {newName}",
                     OperLogModule.ReservationPlace, UserName);
                 return Json("");
             }
@@ -230,23 +231,33 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("活动室不存在");
             }
 
-            if (_reservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId))
+            using (var redLock = RedisManager.GetRedLockClient($"reservation_{model.PlaceId:N}_periods"))
             {
-                return Json("排序重复，请修改");
-            }
+                if (redLock.TryLock())
+                {
+                    if (_reservationPeriodHelper.Exist(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId))
+                    {
+                        return Json("排序重复，请修改");
+                    }
 
-            model.PeriodId = Guid.NewGuid();
-            model.CreateBy = UserName;
-            model.CreateTime = DateTime.UtcNow;
-            model.UpdateBy = UserName;
-            model.UpdateTime = DateTime.UtcNow;
+                    model.PeriodId = Guid.NewGuid();
+                    model.CreateBy = UserName;
+                    model.CreateTime = DateTime.UtcNow;
+                    model.UpdateBy = UserName;
+                    model.UpdateTime = DateTime.UtcNow;
 
-            var result = _reservationPeriodHelper.Insert(model);
-            if (result > 0)
-            {
-                OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, UserName);
+                    var result = _reservationPeriodHelper.Insert(model);
+                    if (result > 0)
+                    {
+                        OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, UserName);
+                    }
+                    return Json(result > 0 ? "" : "创建预约时间段失败");
+                }
+                else
+                {
+                    return Json("系统繁忙，请稍后重试");
+                }
             }
-            return Json(result > 0 ? "" : "创建预约时间段失败");
         }
 
         [HttpPost]
@@ -299,8 +310,8 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 return Json("预约时间段不存在");
             }
-
-            var result = _reservationPeriodHelper.Delete(p => p.PeriodId == periodId);
+            // ...
+            var result = _reservationPeriodHelper.Update(new ReservationPeriod() { PeriodId = periodId, IsDeleted = true }, p => p.IsDeleted);
             if (result > 0)
             {
                 OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, UserName);

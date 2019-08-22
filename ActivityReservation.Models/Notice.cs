@@ -54,6 +54,7 @@ namespace ActivityReservation.Models
         /// 公告自定义访问路径
         /// </summary>
         [Column]
+        [StringLength(64)]
         public string NoticeCustomPath { get; set; }
 
         /// <summary>
