@@ -158,10 +158,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                 ReservationPersonPhone = x.ReservationPersonPhone,
                 ReservationStatus = x.ReservationStatus,
             }, builder => builder
+                .IgnoreQueryFilters()
                 .WithPredict(whereExpression)
                 .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
                 .WithInclude(q => q.Include(x => x.Place)
-            ));
+                ));
             var excelBytes = reservations.ToExcelBytes();
 
             var fileName = (beginDate.HasValue && endDate.HasValue)
@@ -219,12 +220,12 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     return Json(false);
                 }
-                var count = _reservationHelper.Delete(reservation);
+
+                reservation.ReservationStatus = ReservationStatus.Deleted;
+                var count = _reservationHelper.Update(reservation, r => r.ReservationStatus);
                 if (count == 1)
                 {
-                    OperLogHelper.AddOperLog(
-                        $"删除预约记录 {id}:{reservation.ReservationActivityContent}",
-                        OperLogModule.Reservation, UserName);
+                    OperLogHelper.AddOperLog($"删除预约记录 {id}:{reservation.ReservationPersonName}:{reservation.ReservationActivityContent}", OperLogModule.Reservation, UserName);
                     return Json(true);
                 }
             }

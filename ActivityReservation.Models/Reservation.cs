@@ -260,5 +260,11 @@ namespace ActivityReservation.Models
         /// </summary>
         [Description("未通过审核")]
         Rejected = 2,
+
+        /// <summary>
+        /// 已删除
+        /// </summary>
+        [Description("已删除")]
+        Deleted = 3,
     }
 }

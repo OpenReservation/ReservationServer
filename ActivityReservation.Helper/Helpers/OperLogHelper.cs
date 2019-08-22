@@ -28,6 +28,24 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="logContent">日志内容</param>
         /// <param name="logModule">日志模块</param>
+        /// <returns>是否添加成功</returns>
+        public bool AddOperLog(string logContent, OperLogModule logModule)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            return _eventBus.Publish(new OperationLogEvent
+            {
+                LogContent = logContent,
+                Module = logModule,
+                IpAddress = httpContext.GetUserIP(),
+                OperBy = httpContext.User.Identity.Name,
+            });
+        }
+
+        /// <summary>
+        /// 添加操作日志
+        /// </summary>
+        /// <param name="logContent">日志内容</param>
+        /// <param name="logModule">日志模块</param>
         /// <param name="operBy">操作人</param>
         /// <returns>是否添加成功</returns>
         public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
