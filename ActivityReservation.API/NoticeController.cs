@@ -69,7 +69,7 @@ namespace ActivityReservation.API
             var notice = await cacheClient.GetOrSetAsync(
                 $"Notice_{path.Trim()}",
                 () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
-                TimeSpan.FromMinutes(10));
+                TimeSpan.FromMinutes(1));
 
             if (notice == null)
             {

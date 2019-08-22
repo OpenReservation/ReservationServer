@@ -244,6 +244,7 @@ namespace ActivityReservation.Controllers
         /// </summary>
         /// <param name="path">访问路径</param>
         /// <param name="eventBus"></param>
+        /// <param name="cacheClient"></param>
         /// <returns></returns>
         public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
         {
@@ -257,7 +258,7 @@ namespace ActivityReservation.Controllers
                     $"Notice_{path.Trim()}",
                     () => HttpContext.RequestServices.GetService<IBLLNotice>()
                         .FetchAsync(n => n.NoticeCustomPath == path.Trim()),
-                    TimeSpan.FromMinutes(10));
+                    TimeSpan.FromMinutes(1));
                 if (notice != null)
                 {
                     eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
