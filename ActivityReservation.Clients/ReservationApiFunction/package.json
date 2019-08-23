@@ -1,5 +1,5 @@
 {
-  "name": "reservationapifunction",
+  "name": "reservation-api-function",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/got": "^9.6.7",
     "@types/node": "^12.7.2",
+    "@types/tough-cookie": "^2.3.5",
     "typescript": "^3.5.3"
   }
 }

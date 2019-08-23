@@ -1,6 +1,7 @@
 import { HttpRequester } from './httpRequester';
 
 const apiBaseUrl = "https://reservation.weihanli.xyz";
+const functionName = "reservationWxAppGateway";
 
 exports.main_handler = async function (event: any, context: any, callback: any): Promise<object> {
 
@@ -18,8 +19,8 @@ exports.main_handler = async function (event: any, context: any, callback: any):
         }
     }
 
-    if((<string>event.path).startsWith('/reservationWxAppGateway')){
-        event.path = (<string>event.path).replace('/reservationWxAppGateway', '');
+    if((<string>event.path).startsWith(`/${functionName}`)){
+        event.path = (<string>event.path).replace(`/${functionName}`, '');
     }
 
     let url = `${apiBaseUrl}${event.path}${queryString}`;
