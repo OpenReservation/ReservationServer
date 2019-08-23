@@ -10,6 +10,7 @@ import { NoticeDetailComponent } from './notice/notice-detail/notice-detail.comp
 import { AboutComponent } from './about/about.component';
 import { SanitizeHtmlPipe } from './shared/pipes/safe-html';
 import { SentryErrorHandler } from './shared/sentryErrorHandler';
+import { FundebugErrorHandler } from './shared/fundebugErrorHandler';
 import { NewReservationComponent } from './reservation/new-reservation/new-reservation.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -33,7 +34,10 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     BrowserAnimationsModule,
   ],
-  providers: [{ provide: ErrorHandler, useClass: SentryErrorHandler }],
+  providers: [
+    { provide: ErrorHandler, useClass: SentryErrorHandler },
+    { provide: ErrorHandler, useClass: FundebugErrorHandler }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
