@@ -8,7 +8,11 @@
 
 修改 `index.ts` 文件中的要转发的地址和云函数名称
 
-在该目录下执行 `tsc`，之后打包 dist 目录下的内容到 zip，然后上传到腾讯云的控制台即可
+在该目录下执行 `tsc`，生成编译后的 js
+
+到 dist 目录下执行 `npm install`，安装依赖，目前用到的只有一个 `got`，如果用到了别的请在 `package.json` 文件里添加，或者执行 `npm install <package-name> --save`
+
+之后打包 dist 目录下的内容到 zip，然后上传到腾讯云的控制台即可
 
 ![upload code](./images/upload.png)
 
