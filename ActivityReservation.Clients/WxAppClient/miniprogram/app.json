@@ -14,7 +14,7 @@
     "navigationBarTextStyle": "black"
   },
   "networkTimeout": {
-    "request": 3000
+    "request": 10000
   },
   "tabBar": {
     "selectedColor": "#2db7f5",

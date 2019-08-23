@@ -28,7 +28,8 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		}
+		},
+		"uglifyFileName": true
 	},
 	"appid": "wx0089396a8df636b2",
 	"simulatorType": "wechat",

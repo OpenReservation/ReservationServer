@@ -4,6 +4,8 @@
 <scroll-view>
   <text class="noticeTitle">{{ notice.NoticeTitle }}</text>
   <text class="subTitle">\n发布时间：{{ dateUtil.formatTime(notice.NoticePublishTime) }} 浏览次数:{{ notice.NoticeVisitCount }}  </text>
-  <import src="./../../wxParse/wxParse.wxml"/>
-  <template is="wxParse" data="{{wxParseData:NoticeContent.nodes}}"/>
+  <view class="container">
+    <import src="./../../wxParse/wxParse.wxml"/>
+    <template is="wxParse" data="{{wxParseData:NoticeContent.nodes}}"/>
+  </view>  
 </scroll-view>
