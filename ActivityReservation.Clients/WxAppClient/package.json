@@ -8,5 +8,8 @@
   "devDependencies": {
     "@types/node": "^12.7.2",
     "typescript": "^3.3.3333"
+  },
+  "dependencies": {
+    "vant-weapp": "^0.5.19"
   }
 }
