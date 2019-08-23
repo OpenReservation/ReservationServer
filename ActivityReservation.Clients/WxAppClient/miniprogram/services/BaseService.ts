@@ -1,7 +1,7 @@
 import { PagedListData } from './../models/PagedListData';
 
 export class BaseService<TModel>{
-  protected readonly apiBaseUrl:string = "https://reservation.weihanli.xyz";
+  protected readonly apiBaseUrl: string = "https://service-balxf7hr-1251288923.ap-shanghai.apigateway.myqcloud.com/release/reservationWxAppGateway";
 
   constructor(protected apiPath:string){
   }
@@ -21,6 +21,7 @@ export class BaseService<TModel>{
     wx.request({
      url: url,
      success: (response)=>{
+       console.log(response);
        let result = <PagedListData<TModel>>response.data;
        callback(result);
        wx.hideLoading();
@@ -35,6 +36,7 @@ export class BaseService<TModel>{
     wx.request({
       url: `${this.apiBaseUrl}/api/${this.apiPath}`,
       success: (response) => {
+        console.log(response);
         wx.hideLoading();
         let result = <Array<TModel>>response.data;
         callback(result);
@@ -54,8 +56,9 @@ export class BaseService<TModel>{
       }
     }
     wx.request({
-      url: `${this.apiBaseUrl}/api/${this.apiPath}`,
+      url: url,
       success: (response) => {
+        console.log(response);
         wx.hideLoading();
         let result = <TModel><any>response.data;
         callback(result);
