@@ -248,11 +248,7 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
         {
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return RedirectToAction("Notice");
-            }
-            try
+            if (!string.IsNullOrWhiteSpace(path))
             {
                 var notice = await cacheClient.GetOrSetAsync(
                     $"Notice_{path.Trim()}",
@@ -262,19 +258,10 @@ namespace ActivityReservation.Controllers
                 if (notice != null)
                 {
                     eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
-
                     return View(notice);
                 }
-                else
-                {
-                    return RedirectToAction("Notice");
-                }
             }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-                throw;
-            }
+            return RedirectToAction("Notice");
         }
 
         public async Task<IActionResult> Chat(string msg)
