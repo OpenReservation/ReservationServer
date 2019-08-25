@@ -15,12 +15,14 @@
 	"setting": {
 		"urlCheck": true,
 		"es6": true,
+		"enhance": false,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true,
 		"coverView": true,
 		"nodeModules": true,
 		"autoAudits": false,
+		"uglifyFileName": true,
 		"checkInvalidKey": true,
 		"checkSiteMap": true,
 		"uploadWithSourceMap": true,
@@ -28,8 +30,7 @@
 			"ignore": [],
 			"disablePlugins": [],
 			"outputPath": ""
-		},
-		"uglifyFileName": true
+		}
 	},
 	"appid": "wx0089396a8df636b2",
 	"simulatorType": "wechat",

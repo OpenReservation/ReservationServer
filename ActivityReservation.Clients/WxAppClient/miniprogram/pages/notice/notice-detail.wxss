@@ -8,3 +8,9 @@
   align-items: center;
   justify-content: center; 
 }
+.subTitle{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
