@@ -2,13 +2,13 @@
 <view>
   <scroll-view class="container">
     <view class="table">
-      <view class="tr bg-w">
-        <view class="th">活动室名称</view>
-        <view class="th">预约使用日期</view>
-        <view class="th ">预约使用时间</view>
-        <view class="th">预约单位</view>
-        <view class="th">活动内容</view>
-        <view class="th ">预约人</view>
+      <view class="tr">
+        <view class="td">活动室名称</view>
+        <view class="td">预约使用日期</view>
+        <view class="td ">预约使用时间</view>
+        <view class="td">预约单位</view>
+        <view class="td">活动内容</view>
+        <view class="td">预约人</view>
       </view>
 
       <block wx:for="{{reservations}}" wx:key="{{ReservationId}}">

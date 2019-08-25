@@ -1,7 +1,7 @@
-import { ReservationService } from '../../services/reservationService';
-import { ReservationPlaceService } from '../../services/reservationPlaceService';
-import { Reservation } from '../../models/reservation';
-import { ReservationPlace } from '../../models/reservationPlace';
+import { ReservationService } from '../../services/ReservationService';
+import { ReservationPlaceService } from '../../services/ReservationPlaceService';
+import { Reservation } from '../../models/Reservation';
+import { ReservationPlace } from '../../models/ReservationPlace';
 
 const reservationSvc = new ReservationService();
 const reservationPlaceSvc = new ReservationPlaceService();
