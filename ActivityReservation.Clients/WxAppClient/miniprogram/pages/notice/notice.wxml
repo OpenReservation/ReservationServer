@@ -1,12 +1,23 @@
 <!--miniprogram/pages/notice/notice.wxml-->
 <wxs module="dateUtil" src="../../utils/date.wxs"></wxs>
 <view class="notice_container">
-  <scroll-view>
-    <block class="noticeItem" wx:for="{{notices}}" wx:for-item="notice" wx:key="notice.NoticeCustomPath">
-      <view bindtap="navToDetails" data-path="{{notice.NoticeCustomPath}}">
+  <scroll-view class="table">
+    <view wx:for="{{notices}}" wx:for-item="notice" wx:key="notice.NoticeCustomPath" class="table">
+      <view class="noticeItem" bindtap="navToDetails" data-path="{{notice.NoticeCustomPath}}">
         <text>{{notice.NoticeTitle}} -- {{dateUtil.formatDate(notice.NoticePublishTime)}}</text>
       </view>
-    </block>
+      <!-- <view class="bg-g" wx:if="{{index % 2 == 0}}">
+          <view class="noticeItem" bindtap="navToDetails" data-path="{{notice.NoticeCustomPath}}">
+            <text>{{notice.NoticeTitle}} -- {{dateUtil.formatDate(notice.NoticePublishTime)}}</text>
+          </view>
+        </view>
+        <view wx:else>
+          <view class="noticeItem" bindtap="navToDetails" data-path="{{notice.NoticeCustomPath}}">
+            <text>{{notice.NoticeTitle}} -- {{dateUtil.formatDate(notice.NoticePublishTime)}}</text>
+          </view>
+        </view> -->
+    </view>
+
   </scroll-view>
   <text wx:if="{{totalPage > 1}}">第{{pageNum}}页，每页{{pageSize }}条记录，总计{{totalPage}}页，{{totalCount}}条记录</text>
   <block>

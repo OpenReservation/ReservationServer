@@ -18,12 +18,8 @@
   color: gray;
 }
 
-.container{
-  padding: 20rpx 0;
-}
-
 .table {
-  border: 0px solid darkgray;
+  border: 0 solid darkgray;
 }
 .tr {
   display: flex;
@@ -36,12 +32,6 @@
     width:40%;
     justify-content: center;
     text-align: center;
-}
-.bg-w{
-  background: snow;
-}
-.bg-g{
-  background: #E6F3F9;
 }
 .th {
   width: 40%;

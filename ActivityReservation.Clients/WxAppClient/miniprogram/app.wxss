@@ -7,4 +7,11 @@
   justify-content: space-between;
   padding: 20rpx 8rpx;
   box-sizing: border-box;
-} 
+}
+
+.bg-w{
+  background: snow;
+}
+.bg-g{
+  background: #E6F3F9;
+}

@@ -1,2 +1,8 @@
 <!--miniprogram/pages/reservation/new-reservation.wxml-->
-<text>miniprogram/pages/reservation/new-reservation.wxml</text>
+<van-steps steps="{{ steps }}" active="{{ stepIndex }}" 
+direction="vertical"
+></van-steps>
+
+<van-button wx-if="{{stepIndex>0}}" bind:click="prevStep">上一步</van-button>
+<van-button wx-if="{{stepIndex < 4}}" bind:click="nextStep">下一步</van-button>
+<van-button wx-if="{{stepIndex == 4}}" bind:click="submit">提 交</van-button>

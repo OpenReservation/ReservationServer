@@ -4,6 +4,6 @@
 }
 .noticeItem{
   display: block;
-  padding: 1rem;
+  margin: 0.6rpx 0.8rpx;
   line-height: 1.4rem;
 }

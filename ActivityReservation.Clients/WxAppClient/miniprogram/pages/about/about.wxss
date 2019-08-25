@@ -12,5 +12,5 @@ text{
 }
 
 .flex-view-item{
-  margin-top: 0.8rem;
+  margin: 4rpx 8rpx;
 }

@@ -24,15 +24,13 @@
     <text>部署方式： \n</text>
     <text>IIS => Docker+nginx =>Docker+kubernetes+nginx</text>
     <text>CI/CD: \n</text>
-    <text>appveyor => travis => Azure Pipeline \n</text>
+    <text>appveyor => travis => Azure Pipeline</text>
   </view>
 
   <view class="flex-view-item">
     <text class="title">联系方式</text>
-    <text>
-      联系电话：021-32145689(假的，别打。。）
-      联系邮箱：weihanli@outlook.com
+    <text>联系电话：021-32145689(假的，别打。。）
+    联系邮箱：weihanli@outlook.com
     </text>
   </view>
-
 </scroll-view>

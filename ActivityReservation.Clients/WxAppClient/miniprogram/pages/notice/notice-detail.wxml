@@ -1,7 +1,7 @@
 <!--miniprogram/pages/notice/notice-detail.wxml-->
 <wxs module="dateUtil" src="../../utils/date.wxs"></wxs>
 
-<scroll-view>
+<scroll-view wx-if="{{ notice.NoticeTitle }}">
   <text class="noticeTitle">{{ notice.NoticeTitle }}</text>
   <text class="subTitle">
   发布时间：{{ dateUtil.formatTime(notice.NoticePublishTime) }} 浏览次数:{{ notice.NoticeVisitCount }}

@@ -24,6 +24,7 @@
   "exclude": [
     "node_modules",
     "miniprogram_dist",
+    "./miniprogram/miniprogram_npm",
     "./miniprogram/towxml",
     "**/*.spec.ts"
   ]
