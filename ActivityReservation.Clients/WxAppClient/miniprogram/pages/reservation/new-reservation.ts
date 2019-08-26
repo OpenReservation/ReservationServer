@@ -31,13 +31,16 @@ Page({
       }
     ],
     stepIndex: 0,
-    places: [] as Array<ReservationPlace>
+    places: [] as Array<ReservationPlace>,
+    placeNames: [] as Array<string>,
+    currentDate: new Date().getTime(),
   },
   onLoad(params: any) {
     console.log(params);
     reservationPlaceSvc.GetAll((result)=>{
       (<any>this).setData({
-        places: result
+        places: result,
+        placeNames: result.map(p=>p.PlaceName)
       });
     })
   },
@@ -51,6 +54,17 @@ Page({
       stepIndex: ++this.data.stepIndex
     });
   },
+
+  onPlaceChange(event:any) {
+    const { picker, value, index } = event.detail;
+    // `当前值：${value}, 当前索引：${index}`
+    wx.showToast({
+      title: `${value}`,
+      duration: 2000,
+    });
+
+  },
+
   submit(event: any){
 
   }

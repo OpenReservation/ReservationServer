@@ -5,12 +5,12 @@ text{
 }
 
 .title{
-  margin: 0.2rem 0 0.6rem;
+  margin: 0.4rem 0 0.4rem;
   line-height: 1.8rem;
   font-size: 1.4rem;
   display: block;
 }
 
 .flex-view-item{
-  margin: 4rpx 8rpx;
+  margin: 6rpx 8rpx 3rpx;
 }

@@ -1,6 +1,6 @@
 /* miniprogram/pages/notice/notice.wxss */
 .notice_container{
-  padding: 1rem;
+  padding: 4rpx 6rpx;
 }
 .noticeItem{
   display: block;

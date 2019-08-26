@@ -1,7 +1,41 @@
 <!--miniprogram/pages/reservation/new-reservation.wxml-->
-<van-steps steps="{{ steps }}" active="{{ stepIndex }}" 
-direction="vertical"
-></van-steps>
+<!-- <van-steps steps="{{ steps }}" active="{{ stepIndex }}" direction="vertical"></van-steps> -->
+<scroll-view>
+
+  <van-panel wx-if="{{stepIndex == 0}}" title="选择要预约的活动室" desc="">
+    <view>
+      <van-picker columns="{{ placeNames }}" bind:change="onPlaceChange">
+      </van-picker>
+    </view>
+  </van-panel>
+  
+  <van-panel wx-if="{{stepIndex == 1}}" title="选择要预约的日期" desc="">
+    <view>
+    <van-datetime-picker
+  type="date"
+  value="{{ currentDate }}"
+  bind:input="onDateInput"
+  min-date="{{ currentDate }}"
+/>
+    </view>
+  </van-panel>
+  
+  <van-panel wx-if="{{stepIndex == 2}}" title="选择要预约的时间段" desc="">
+    <view>
+    </view>
+  </van-panel>
+
+  <van-panel wx-if="{{stepIndex == 3}}" title="补充预约信息" desc="">
+    <view>
+    </view>
+  </van-panel>
+
+  <van-panel wx-if="{{stepIndex == 4}}" title="预约信息确认" desc="">
+    <view>
+    </view>
+  </van-panel>
+</scroll-view>
+
 
 <van-button wx-if="{{stepIndex>0}}" bind:click="prevStep">上一步</van-button>
 <van-button wx-if="{{stepIndex < 4}}" bind:click="nextStep">下一步</van-button>
