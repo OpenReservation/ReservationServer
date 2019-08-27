@@ -9,7 +9,12 @@ export function formatTime(date: Date): string {
   return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':');
 }
 
-export function formatDate(date:Date):string {
+export function addDays(date: Date, days: number) {
+  var adjustDate = new Date(date.getTime() + 24 * 60 * 60 * 1000 * days);
+  return adjustDate;
+}
+
+export function formatDate(date: Date): string {
   var year = date.getFullYear()
   var month = date.getMonth() + 1
   var day = date.getDate()

@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "activityreservation",
   "version": "1.0.1",
   "scripts": {
     "compile": "./node_modules/typescript/bin/tsc",

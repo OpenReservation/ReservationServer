@@ -2,7 +2,7 @@
 <wxs module="dateUtil" src="../../utils/date.wxs"></wxs>
 <view class="notice_container">
   <scroll-view class="table">
-    <view wx:for="{{notices}}" wx:for-item="notice" wx:key="notice.NoticeCustomPath" class="table">
+    <view wx:for="{{notices}}" wx:for-item="notice" wx:key="NoticeCustomPath" class="table">
       <view class="noticeItem" bindtap="navToDetails" data-path="{{notice.NoticeCustomPath}}">
         <text>{{notice.NoticeTitle}} -- {{dateUtil.formatDate(notice.NoticePublishTime)}}</text>
       </view>

@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view>
-  <scroll-view class="container">
+  <scroll-view class="container" enable-flex="true">
     <view class="table">
       <view class="tr">
         <view class="td">活动室名称</view>
