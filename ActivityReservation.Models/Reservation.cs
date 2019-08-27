@@ -8,147 +8,53 @@ namespace ActivityReservation.Models
     [Table("tabReservation")]
     public class Reservation
     {
-        #region Private Field
-
-        /// <summary>
-        /// 预约id
-        /// </summary>
-        private Guid reservationId;
-
-        /// <summary>
-        /// 预约人姓名
-        /// </summary>
-        private string reservationPersonName;
-
-        /// <summary>
-        /// 预约人联系方式
-        /// </summary>
-        private string reservationPersonPhone;
-
-        /// <summary>
-        /// 预约活动室id
-        /// </summary>
-        private Guid reservationPlaceId;
-
-        /// <summary>
-        /// 预约时间
-        /// </summary>
-        private DateTime reservationTime = DateTime.UtcNow;
-
-        /// <summary>
-        /// 预约使用的日期
-        /// </summary>
-        private DateTime reservationForDate;
-
-        /// <summary>
-        /// 预约使用时间
-        /// </summary>
-        private string reservationForTime;
-
-        /// <summary>
-        /// 预约人的IP
-        /// </summary>
-        private string reservationFromIp;
-
-        /// <summary>
-        /// 预约内容，活动内容
-        /// </summary>
-        private string reservationActivityContent;
-
-        /// <summary>
-        /// 预约单位
-        /// </summary>
-        private string reservationUnit;
-
-        /// <summary>
-        /// 更新/审核 备注信息
-        /// </summary>
-        private string updateMemo;
-
-        /// <summary>
-        /// 更新人
-        /// </summary>
-        private string updateBy;
-
-        /// <summary>
-        /// 更新时间
-        /// </summary>
-        private DateTime updateTime;
-
-        #endregion Private Field
-
         /// <summary>
         /// 预约id
         /// </summary>
         [Column]
         [Key]
-        public Guid ReservationId
-        {
-            get { return reservationId; }
-
-            set { reservationId = value; }
-        }
+        public Guid ReservationId { get; set; }
 
         /// <summary>
         /// 预约人姓名
         /// </summary>
         [Column]
+        [StringLength(16)]
         [Required]
-        public string ReservationPersonName
-        {
-            get { return reservationPersonName; }
-
-            set { reservationPersonName = value; }
-        }
+        public string ReservationPersonName { get; set; }
 
         /// <summary>
         /// 预约人联系方式
         /// </summary>
         [Column]
+        [StringLength(16)]
         [Required]
-        public string ReservationPersonPhone
-        {
-            get { return reservationPersonPhone; }
-
-            set { reservationPersonPhone = value; }
-        }
+        public string ReservationPersonPhone { get; set; }
 
         /// <summary>
         /// 预约时间
         /// </summary>
         [Column]
-        public DateTime ReservationTime
-        {
-            get { return reservationTime; }
-
-            set { reservationTime = value; }
-        }
+        public DateTime ReservationTime { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// 预约使用时间
         /// </summary>
         [Column]
-        public String ReservationForTime
-        {
-            get { return reservationForTime; }
+        public string ReservationForTime { get; set; }
 
-            set { reservationForTime = value; }
-        }
-
+        /// <summary>
+        /// 预约单位
+        /// </summary>
         [Column]
         [Required]
-        public string ReservationUnit
-        {
-            get { return reservationUnit; }
-            set { reservationUnit = value; }
-        }
+        public string ReservationUnit { get; set; }
 
+        /// <summary>
+        /// 预约内容，活动内容
+        /// </summary>
         [Column]
-        public string ReservationActivityContent
-        {
-            get { return reservationActivityContent; }
-            set { reservationActivityContent = value; }
-        }
+        public string ReservationActivityContent { get; set; }
 
         /// <summary>
         ///  预约时间段
@@ -172,67 +78,37 @@ namespace ActivityReservation.Models
         /// 更新人
         /// </summary>
         [Column]
-        public string UpdateBy
-        {
-            get { return updateBy; }
-
-            set { updateBy = value; }
-        }
+        public string UpdateBy { get; set; }
 
         /// <summary>
         /// 更新时间
         /// </summary>
         [Column]
-        public DateTime UpdateTime
-        {
-            get { return updateTime; }
-
-            set { updateTime = value; }
-        }
+        public DateTime UpdateTime { get; set; }
 
         /// <summary>
         /// 预约使用的日期
         /// </summary>
         [Column]
-        public DateTime ReservationForDate
-        {
-            get { return reservationForDate; }
-
-            set { reservationForDate = value; }
-        }
+        public DateTime ReservationForDate { get; set; }
 
         /// <summary>
         /// 预约人的IP
         /// </summary>
         [Column]
-        public string ReservationFromIp
-        {
-            get { return reservationFromIp; }
-
-            set { reservationFromIp = value; }
-        }
+        public string ReservationFromIp { get; set; }
 
         /// <summary>
         /// 预约活动室id
         /// </summary>
         [Column]
-        public Guid ReservationPlaceId
-        {
-            get { return reservationPlaceId; }
-
-            set { reservationPlaceId = value; }
-        }
+        public Guid ReservationPlaceId { get; set; }
 
         /// <summary>
         /// 更新/审核 备注信息
         /// </summary>
         [Column]
-        public string UpdateMemo
-        {
-            get { return updateMemo; }
-
-            set { updateMemo = value; }
-        }
+        public string UpdateMemo { get; set; }
 
         /// <summary>
         /// 预约活动室信息

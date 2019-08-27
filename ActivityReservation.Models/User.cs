@@ -9,10 +9,6 @@ namespace ActivityReservation.Models
     {
         #region Private Field
 
-        private bool isSuper = false;
-
-        private bool isEnabled = true;
-
         private DateTime addTime = DateTime.UtcNow;
 
         #endregion Private Field
@@ -40,12 +36,7 @@ namespace ActivityReservation.Models
         /// 是否是超级管理员
         /// </summary>
         [Column]
-        public bool IsSuper
-        {
-            get { return isSuper; }
-
-            set { isSuper = value; }
-        }
+        public bool IsSuper { get; set; }
 
         /// <summary>
         /// 添加时间
@@ -68,11 +59,6 @@ namespace ActivityReservation.Models
         /// 是否启用
         /// </summary>
         [Column]
-        public bool IsEnabled
-        {
-            get { return isEnabled; }
-
-            set { isEnabled = value; }
-        }
+        public bool IsEnabled { get; set; } = true;
     }
 }

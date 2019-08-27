@@ -91,12 +91,12 @@ namespace ActivityReservation.Models
         /// 公告审核状态
         /// </summary>
         [Column]
-        public bool CheckStatus { get; set; } = false;
+        public bool CheckStatus { get; set; }
 
         /// <summary>
         /// 是否删除
         /// </summary>
         [Column]
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
     }
 }

@@ -55,7 +55,6 @@ namespace ActivityReservation.Helpers
 
             return reservationPeriod.Select((_, index) => new ReservationPeriodViewModel
             {
-                PeriodIdx = index,
                 PeriodId = _.PeriodId,
                 PeriodIndex = _.PeriodIndex,
                 PeriodTitle = _.PeriodTitle,

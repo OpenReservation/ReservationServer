@@ -10,94 +10,46 @@ namespace ActivityReservation.Models
     [Table("tabDisabledPeriod")]
     public class DisabledPeriod
     {
-        #region private field
-
-        private Guid periodId;
-        private DateTime startDate;
-        private DateTime endDate;
-        private bool repeatYearly;
-        private bool isActive;
-        private string updatedBy;
-        private DateTime updatedTime;
-        private bool isDeleted;
-
-        #endregion private field
-
         /// <summary>
         /// 主键
         /// </summary>
         [Key]
-        public Guid PeriodId
-        {
-            get { return periodId; }
-
-            set { periodId = value; }
-        }
+        public Guid PeriodId { get; set; }
 
         /// <summary>
         /// 开始日期
         /// </summary>
         [Column]
-        public DateTime StartDate
-        {
-            get { return startDate; }
-
-            set { startDate = value; }
-        }
+        public DateTime StartDate { get; set; }
 
         /// <summary>
         /// 结束日期
         /// </summary>
         [Column]
-        public DateTime EndDate
-        {
-            get { return endDate; }
-
-            set { endDate = value; }
-        }
+        public DateTime EndDate { get; set; }
 
         /// <summary>
         /// 每年都禁用
         /// </summary>
         [Column]
-        public bool RepeatYearly
-        {
-            get { return repeatYearly; }
-
-            set { repeatYearly = value; }
-        }
+        public bool RepeatYearly { get; set; }
 
         /// <summary>
         /// 更新人
         /// </summary>
         [Column]
-        public string UpdatedBy
-        {
-            get { return updatedBy; }
-
-            set { updatedBy = value; }
-        }
+        public string UpdatedBy { get; set; }
 
         /// <summary>
         /// 更新时间
         /// </summary>
         [Column]
-        public DateTime UpdatedTime
-        {
-            get { return updatedTime; }
-
-            set { updatedTime = value; }
-        }
+        public DateTime UpdatedTime { get; set; }
 
         /// <summary>
         /// 是否启用
         /// </summary>
         [Column]
-        public bool IsActive
-        {
-            get { return isActive; }
-
-            set { isActive = value; }
-        }
+        public bool IsActive { get; set; }
     }
 }
