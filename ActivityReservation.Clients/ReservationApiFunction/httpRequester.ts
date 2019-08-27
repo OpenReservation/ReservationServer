@@ -1,11 +1,12 @@
-import { IncomingHttpHeaders } from "http";
+import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
 import * as got from 'got';
 
 export class HttpRequester{    
-    static async GetResponse(url:string, method:string, headers:IncomingHttpHeaders|undefined, body?:string): Promise<HttpResponse> {
+    static async GetResponse(url:string, method:string, headers:IncomingHttpHeaders, body?:string): Promise<HttpResponse> {
         let result = await got.default(url,{
             body: body,
-            method: method
+            method: method,
+            headers: headers as OutgoingHttpHeaders
         });
         var response = new HttpResponse();
         response.statusCode = result.statusCode;
