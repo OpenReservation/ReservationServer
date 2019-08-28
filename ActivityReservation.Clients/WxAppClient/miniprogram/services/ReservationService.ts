@@ -34,7 +34,7 @@ export class ReservationService extends BaseService<Reservation>{
           });
         }else{
           wx.showToast({
-            title: "预约失败",
+            title: `预约失败,${result.ErrorMsg}`,
             icon: "none",
             duration: 2000,
           });

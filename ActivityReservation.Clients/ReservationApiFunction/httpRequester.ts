@@ -2,11 +2,14 @@ import { IncomingHttpHeaders, OutgoingHttpHeaders } from "http";
 import * as got from 'got';
 
 export class HttpRequester{    
-    static async GetResponse(url:string, method:string, headers:IncomingHttpHeaders, body?:string): Promise<HttpResponse> {
+    public static async GetResponse(url:string, method:string, headers:OutgoingHttpHeaders, body?:string): Promise<HttpResponse> {        
+        headers["host"]= undefined;
+        console.log(`request info, url: ${url}, method: ${method}, headers: ${JSON.stringify(headers)}`);
+
         let result = await got.default(url,{
             body: body,
             method: method,
-            headers: headers as OutgoingHttpHeaders
+            headers: headers
         });
         var response = new HttpResponse();
         response.statusCode = result.statusCode;
