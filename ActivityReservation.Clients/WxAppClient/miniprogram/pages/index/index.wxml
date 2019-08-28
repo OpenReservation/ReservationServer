@@ -13,20 +13,20 @@
 
       <block wx:for="{{reservations}}" wx:key="{{ReservationId}}">
         <view class="tr bg-g" wx:if="{{index % 2 == 0}}">
-          <view class="td">{{item.ReservationPlaceName}}</view>
-          <view class="td">{{item.ReservationForDate}}</view>
-          <view class="td">{{item.ReservationForTime}}</view>
-          <view class="td">{{item.ReservationUnit}}</view>
-          <view class="td">{{item.ReservationActivityContent}}</view>
-          <view class="td">{{item.ReservationPersonName}}</view>
+          <text class="td">{{item.ReservationPlaceName}}</text>
+          <text class="td">{{item.ReservationForDate}}</text>
+          <text class="td">{{item.ReservationForTime}}</text>
+          <text class="td">{{item.ReservationUnit}}</text>
+          <text class="td">{{item.ReservationActivityContent}}</text>
+          <text class="td">{{item.ReservationPersonName}}</text>
         </view>
         <view class="tr" wx:else>
-          <view class="td">{{item.ReservationPlaceName}}</view>
-          <view class="td">{{item.ReservationForDate}}</view>
-          <view class="td">{{item.ReservationForTime}}</view>
-          <view class="td">{{item.ReservationUnit}}</view>
-          <view class="td">{{item.ReservationActivityContent}}</view>
-          <view class="td">{{item.ReservationPersonName}}</view>
+          <text class="td">{{item.ReservationPlaceName}}</text>
+          <text class="td">{{item.ReservationForDate}}</text>
+          <text class="td">{{item.ReservationForTime}}</text>
+          <text class="td">{{item.ReservationUnit}}</text>
+          <text class="td">{{item.ReservationActivityContent}}</text>
+          <text class="td">{{item.ReservationPersonName}}</text>
         </view>
       </block>
     </view>

@@ -145,7 +145,7 @@ Page({
       console.log(result);
       if(result.Status == 200){
         wx.reLaunch({
-          url: 'pages/index/index'
+          url: '/pages/index/index'
         });
       }
     }, this.data.reservation, 'None', '');

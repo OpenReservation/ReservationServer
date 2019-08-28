@@ -19,7 +19,8 @@ Page({
     reservations: [] as Array<Reservation>
   },
   onLoad() {
-    this.loadReservation(1, 10);
+    console.log(`onLoad`);
+    // this.loadReservation(1, 10);
     // if (app.globalData.userInfo) {
     //   this.setData!({
     //     userInfo: app.globalData.userInfo,
@@ -48,6 +49,11 @@ Page({
     // }
   },
 
+  onShow(){
+    console.log(`onShow`);
+    this.loadReservation(1, 10);
+  },
+
   prevPage() {
     this.loadReservation(--this.data.pageNum, this.data.pageSize);
   },
@@ -57,10 +63,9 @@ Page({
   },
 
   loadReservation(pageNum:number, pageSize:number = 10){
-    let _this = this;
     reservationSvc.Get((result)=>{
       console.log(result);
-      (<any>_this).setData({
+      (<any>this).setData({
         pageNum: result.PageNumber,
         pageSize: result.PageSize,
         totalPage: result.PageCount,

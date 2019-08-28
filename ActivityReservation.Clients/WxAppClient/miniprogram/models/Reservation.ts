@@ -13,7 +13,7 @@ export class Reservation{
         return this.reservationForTime;
     }
     public set ReservationForTime(v : string) {
-        this.reservationForTime = v;
+      this.reservationForTime = v.replace(',', '\n');
     }
     
     private reservationForTimeIds : string;
