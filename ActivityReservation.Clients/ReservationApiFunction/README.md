@@ -6,7 +6,7 @@
 
 ## 使用方式
 
-修改 `index.ts` 文件中的要转发的地址和云函数名称
+修改 `index.ts` 文件中的要转发的地址
 
 在该目录下执行 `tsc`，生成编译后的 js
 
@@ -21,19 +21,19 @@
 dist.zip
 
 - -- node_modules
-- -- httpRequester
+- -- httpRequester.js
 - -- index.js
 - -- packages.json
 
 ## 实现原理
 
-请求转发
+请求转发，实现一个简单的 API 网关
 
 ## 实现过程中遇到的问题
 
 > `unable to verify the first certificate`
 
-这个是 https 请求的问题，参考 stackoverflow <https://stackoverflow.com/questions/31673587/error-unable-to-verify-the-first-certificate-in-nodejs/32440021>
+这个是 https 请求证书验证的问题，参考 stackoverflow <https://stackoverflow.com/questions/31673587/error-unable-to-verify-the-first-certificate-in-nodejs/32440021>
 
 通过设置了一个环境变量 `NODE_TLS_REJECT_UNAUTHORIZED=0` 来解决了
 
@@ -41,8 +41,24 @@ dist.zip
 
 访问之后，通过看日志，输出请求的地址发现，request 的 path 是带函数名称的，所以将函数名去掉就可以了
 
-``` javascript
-if (event.path.startsWith('/reservationWxAppGateway')) {
-    event.path = event.path.replace('/reservationWxAppGateway', '');
+``` typescript
+if ((<string>event.path).startsWith('/reservationWxAppGateway')) {
+    event.path = (<string>event.path).replace('/reservationWxAppGateway', '');
 }
+```
+
+后来发现在 `event` 的参数里有个 `event.requestContext.path` 来表示云函数的 path，把这个 path 去掉就是真正请求的路径
+
+``` typescript
+if((<string>event.path).startsWith(`${event.requestContext.path}`)){
+    event.path = (<string>event.path).replace(`${event.requestContext.path}`, '');
+}
+```
+
+> 请求头的转发
+
+请求头转发的时候， `host` 请求头不能传，我在传递 headers 的时候将 `host` 请求头设置为 `undefined`
+
+``` typescript
+headers["host"]= undefined;
 ```
