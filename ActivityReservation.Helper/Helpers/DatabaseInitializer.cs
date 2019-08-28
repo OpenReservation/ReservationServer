@@ -147,8 +147,7 @@ namespace ActivityReservation.Helpers
                 }
                 else
                 {
-                    settings = dbContext.SystemSettings.AsNoTracking()
-                    .ToArray();
+                    settings = dbContext.SystemSettings.AsNoTracking().ToArray();
                 }
             }
 

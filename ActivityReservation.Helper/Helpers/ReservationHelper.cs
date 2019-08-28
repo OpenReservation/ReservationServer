@@ -72,23 +72,25 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         public bool IsReservationForDateAvailable(DateTime dt, bool isAdmin, out string msg)
         {
-            var daysDiff = dt.Subtract(DateTime.UtcNow.AddHours(8).Date).Days;// 时间转换
+            // 不可以预约之前的日期
+            var daysDiff = dt.Subtract(DateTime.UtcNow.AddHours(8).Date).Days;
             if (daysDiff < 0)
             {
                 msg = "预约日期不可预约";
                 return false;
             }
+
+            // 最大预约天数（后面可以改成根据活动室去配置
             if (!isAdmin && daysDiff > MaxReservationDiffDays)
             {
                 msg = $"预约日期需要在{MaxReservationDiffDays}天内";
                 return false;
             }
 
-            var disabledPeriods = _bllDisabledPeriod.Select(p => p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
-                EF.Functions.DateDiffDay(dt, p.EndDate) >= 0);
-            if (disabledPeriods == null || !disabledPeriods.Any())
+            if (!_bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
+                                                                           EF.Functions.DateDiffDay(dt, p.EndDate) >= 0)))
             {
-                msg = "";
+                msg = string.Empty;
                 return true;
             }
             msg = "预约日期被禁用，如要预约请联系网站管理员";
@@ -104,6 +106,8 @@ namespace ActivityReservation.Helpers
         /// <returns></returns>
         private bool IsReservationForPeriodAvailable(DateTime dt, Guid placeId, string reservationForPeriodIds)
         {
+            // 根据活动室配置最大可预约的时间段数量
+
             var periods = GetAvailablePeriodsByDateAndPlace(dt, placeId);
             // 预约时间段逻辑修改
             var periodIndexes = reservationForPeriodIds.SplitArray<int>();
@@ -124,9 +128,9 @@ namespace ActivityReservation.Helpers
         {
             var blockList = RedisManager.CacheClient.GetOrSet(Constants.BlackListCacheKey,
                 () => _bllBlockEntity.Select(_ => _.IsActive),
-                TimeSpan.FromHours(1));
+                TimeSpan.FromDays(1));
 
-            message = "";
+            message = string.Empty;
             //预约人手机号
             if (blockList.Any(b => b.BlockValue.Equals(reservation.ReservationPersonPhone)))
             {
@@ -172,16 +176,16 @@ namespace ActivityReservation.Helpers
             {
                 return false;
             }
+            var reservationForDate = reservation.ReservationForDate;
+            if (!IsReservationForDateAvailable(reservationForDate, isAdmin, out msg))
+            {
+                return false;
+            }
 
             using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
             {
                 if (redisLock.TryLock())
                 {
-                    var reservationForDate = reservation.ReservationForDate;
-                    if (!IsReservationForDateAvailable(reservationForDate, isAdmin, out msg))
-                    {
-                        return false;
-                    }
                     if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId, reservation.ReservationForTimeIds))
                     {
                         msg = "预约时间段冲突，请重新选择预约时间段";
@@ -198,8 +202,7 @@ namespace ActivityReservation.Helpers
                         ReservationActivityContent = reservation.ReservationActivityContent,
                         ReservationPersonName = reservation.ReservationPersonName,
                         ReservationPersonPhone = reservation.ReservationPersonPhone,
-                        ReservationFromIp = DependencyResolver.Current.ResolveService<IHttpContextAccessor>()
-                        .HttpContext.GetUserIP(),
+                        ReservationFromIp = DependencyResolver.Current.ResolveService<IHttpContextAccessor>().HttpContext.GetUserIP(),
 
                         UpdateBy = reservation.ReservationPersonName,
                         UpdateTime = DateTime.UtcNow,

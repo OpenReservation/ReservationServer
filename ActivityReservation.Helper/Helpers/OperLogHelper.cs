@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using ActivityReservation.Events;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Event;
+using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
@@ -30,16 +32,7 @@ namespace ActivityReservation.Helpers
         /// <param name="logModule">日志模块</param>
         /// <returns>是否添加成功</returns>
         public bool AddOperLog(string logContent, OperLogModule logModule)
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            return _eventBus.Publish(new OperationLogEvent
-            {
-                LogContent = logContent,
-                Module = logModule,
-                IpAddress = httpContext.GetUserIP(),
-                OperBy = httpContext.User.Identity.Name,
-            });
-        }
+            => AddOperLog(logContent, logModule, null);
 
         /// <summary>
         /// 添加操作日志
@@ -51,13 +44,22 @@ namespace ActivityReservation.Helpers
         public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
         {
             var httpContext = _httpContextAccessor.HttpContext;
-            return _eventBus.Publish(new OperationLogEvent
+            var logEvent = new OperationLogEvent
             {
                 LogContent = logContent,
                 Module = logModule,
                 IpAddress = httpContext.GetUserIP(),
                 OperBy = operBy ?? httpContext.User.Identity.Name,
-            });
+            };
+            try
+            {
+                return _eventBus.Publish(logEvent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"publish OperationLogEvent failed, logDetails: {logEvent.ToJson()}");
+                return false;
+            }
         }
     }
 

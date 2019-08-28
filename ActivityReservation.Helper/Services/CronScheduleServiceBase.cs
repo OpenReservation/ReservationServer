@@ -92,7 +92,7 @@ namespace ActivityReservation.Services
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
-            RedisManager.HashClient.Remove(JobClientsCache, GetType().FullName); // unregister from jobClients
+            RedisManager.HashClient.Remove(JobClientsCache, GetType().FullName); // unregister jobClients
             return base.StopAsync(cancellationToken);
         }
     }

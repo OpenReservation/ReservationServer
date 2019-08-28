@@ -14,8 +14,7 @@ namespace ActivityReservation.Helpers
         private readonly GoogleRecaptchaHelper _googleRecaptchaHelper;
         private readonly TencentCaptchaHelper _tencentCaptchaHelper;
 
-        public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper,
-            TencentCaptchaHelper tencentCaptchaHelper)
+        public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper, TencentCaptchaHelper tencentCaptchaHelper)
         {
             _googleRecaptchaHelper = googleRecaptchaHelper;
             _tencentCaptchaHelper = tencentCaptchaHelper;

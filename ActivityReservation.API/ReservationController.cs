@@ -99,16 +99,17 @@ namespace ActivityReservation.API
         /// <param name="model">预约信息</param>
         /// <param name="captcha">captcha info</param>
         /// <param name="captchaType">captchaType</param>
+        /// <param name="captchaVerifyHelper">captchaVerifyHelper</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType = "Tencent")
+        public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType, [FromServices]CaptchaVerifyHelper captchaVerifyHelper)
         {
             var result = new JsonResultModel<bool> { Status = JsonResultStatus.RequestError };
             if (string.IsNullOrWhiteSpace(captchaType))
             {
                 captchaType = "Tencent";
             }
-            var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
+            var isCodeValid = await captchaVerifyHelper
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
             {

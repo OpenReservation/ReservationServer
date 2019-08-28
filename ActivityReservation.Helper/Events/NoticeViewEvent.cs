@@ -23,7 +23,7 @@ namespace ActivityReservation.Events
         protected async Task<bool> IsHandleNeeded(EventBase @event)
         {
             var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
-                TimeSpan.FromMinutes(5));
+                TimeSpan.FromMinutes(2));
             if (await limiter.AcquireAsync())
             {
                 return true;

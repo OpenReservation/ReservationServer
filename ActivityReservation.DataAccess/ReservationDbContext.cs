@@ -11,6 +11,7 @@ namespace ActivityReservation.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // globalFilters
             modelBuilder.Entity<ReservationPlace>().HasQueryFilter(x => !x.IsDel);
             modelBuilder.Entity<ReservationPeriod>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);

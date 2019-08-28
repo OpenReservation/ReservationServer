@@ -38,7 +38,7 @@ namespace ActivityReservation.Common
         /// <param name="request">请求</param>
         /// <param name="cancellationToken"></param>
         /// <returns>回复信息</returns>
-        public async Task<string> GetBotReplyAsync(string request, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<string> GetBotReplyAsync(string request, CancellationToken cancellationToken = default)
         {
             if (request.IsNullOrWhiteSpace())
             {

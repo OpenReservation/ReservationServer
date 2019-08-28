@@ -171,7 +171,7 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public bool ReloadBlackListCache()
         {
-            return _cacheClient.Set(Constants.BlackListCacheKey, _blockEntityHelper.Get(q => q.WithPredict(x => x.IsActive)), TimeSpan.FromHours(1));
+            return _cacheClient.Set(Constants.BlackListCacheKey, _blockEntityHelper.Get(q => q.WithPredict(x => x.IsActive)), TimeSpan.FromDays(1));
         }
 
         private readonly IBLLBlockEntity _blockEntityHelper;
