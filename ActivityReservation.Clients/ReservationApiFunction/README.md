@@ -62,3 +62,9 @@ if((<string>event.path).startsWith(`${event.requestContext.path}`)){
 ``` typescript
 headers["host"]= undefined;
 ```
+
+## 云函数文档
+
+- [创建云函数](https://cloud.tencent.com/document/product/583/9207)
+- [NodeJs 开发云函数](https://cloud.tencent.com/document/product/583/11060)
+- [API 网关触发器](https://cloud.tencent.com/document/product/583/12513)
