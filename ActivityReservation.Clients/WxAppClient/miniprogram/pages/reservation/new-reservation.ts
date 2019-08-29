@@ -19,6 +19,11 @@ Page({
     reservation: new Reservation(),
     reservationPeriods: [] as Array<ReservationPeriod>,
     checkedPeriods: [] as Array<string>,
+    
+    unitErr: "",
+    acContentErr: "",
+    pNameErr: "",
+    pPhoneErr: ""
   },
   onLoad(params: any) {
     console.log(params);
@@ -63,20 +68,24 @@ Page({
         break;
 
       case 4:
-        (<any>this).setData({
-          reservation: this.data.reservation
-        });
+        if(this.validateInputParams()){
+          (<any>this).setData({
+            reservation: this.data.reservation
+          });
+        }else{
+          this.data.stepIndex--;
+          return false;
+        }
+        
         break;
     }
 
-    return false;
+    return true;
   },
 
   prevStep(event: any) {
     this.data.stepIndex--;
-    if (this.onStepChange()) {
-
-    }
+    this.onStepChange();
     //
     (<any>this).setData({
       stepIndex: this.data.stepIndex
@@ -84,9 +93,7 @@ Page({
   },
   nextStep(event: any) {
     this.data.stepIndex++;
-    if (this.onStepChange()) {
-
-    }
+    this.onStepChange();
     (<any>this).setData({
       stepIndex: this.data.stepIndex
     });
@@ -140,7 +147,88 @@ Page({
     this.data.reservation.ReservationPersonPhone = event.detail;
   },
 
+
+  validateInputParams(): boolean{
+    if(!this.data.reservation.ReservationUnit){
+      (<any>this).setData({
+        unitErr: "预约单位不能为空"
+      });
+      return false;
+    }
+    if(this.data.reservation.ReservationUnit.length < 2 || this.data.reservation.ReservationUnit.length > 16){
+      (<any>this).setData({
+        unitErr: "预约单位长度需要在 2 与 16 之间"
+      });
+      return false;
+    }
+    if(this.data.unitErr){
+      (<any>this).setData({
+        unitErr: ""
+      });
+    }
+
+    if(!this.data.reservation.ReservationActivityContent){
+      (<any>this).setData({
+        acContentErr: "活动内容不能为空"
+      });
+      return false;
+    }
+    if(this.data.reservation.ReservationActivityContent.length < 2 || this.data.reservation.ReservationActivityContent.length > 16){
+      (<any>this).setData({
+        acContentErr: "活动内容长度需要在 2 与 16 之间"
+      });
+      return false;
+    }
+    if(this.data.acContentErr){
+      (<any>this).setData({
+        acContentErr: ""
+      });
+    }
+
+    if(!this.data.reservation.ReservationPersonName){
+      (<any>this).setData({
+        pNameErr: "预约人名称不能为空"
+      });
+      return false;
+    }
+    if(this.data.reservation.ReservationPersonName.length < 2 || this.data.reservation.ReservationPersonName.length > 16){
+      (<any>this).setData({
+        pNameErr: "预约人名称长度需要在 2 与 16 之间"
+      });
+      return false;
+    }
+    if(this.data.pNameErr){
+      (<any>this).setData({
+        pNameErr: ""
+      });
+    }
+
+    if(!this.data.reservation.ReservationPersonPhone){
+      (<any>this).setData({
+        pPhoneErr: "预约人手机号不能为空"
+      });
+      return false;
+    }
+    if(!/^1[3-9]\d{9}$/.test(this.data.reservation.ReservationPersonPhone)){
+      (<any>this).setData({
+        pPhoneErr: "预约人手机号不合法"
+      });
+      return false;
+    }
+    if(this.data.pPhoneErr){
+      (<any>this).setData({
+        pPhoneErr: ""
+      });
+    }
+    return true;
+  },
+
   submit(event: any) {
+    // validate param name
+    if(!this.validateInputParams()){
+      return;
+    }
+    //
     reservationSvc.NewReservation(result => {
       console.log(result);
       if(result.Status == 200){

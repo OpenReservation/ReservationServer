@@ -11,7 +11,7 @@ Page({
     totalPage: 0,
     totalCount: 0    
   },
-  onLoad() {
+  onShow() {
     this.loadNotice(1, 10);
   },
   noticeService: new NoticeService(),

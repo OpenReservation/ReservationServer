@@ -32,10 +32,10 @@
   <van-panel wx-if="{{stepIndex == 3}}" title="预约信息" desc="填写预约人信息">
     <view>
       <van-cell-group>
-        <van-field value="{{ reservation.ReservationUnit }}" placeholder="预约单位" maxlength="16" label="预约单位" required bind:change="onUnitChange" />
-        <van-field value="{{ reservation.ReservationActivityContent }}" maxlength="32" placeholder="活动内容" label="活动内容" required bind:change="onActivityContentChange" />
-        <van-field value="{{ reservation.ReservationPersonName }}" maxlength="16" placeholder="预约人姓名" label="姓名" required bind:change="onPersonNameChange" />
-        <van-field value="{{ reservation.ReservationPersonPhone }}" maxlength="11" placeholder="预约人手机号" label="手机号" required bind:change="onPersonPhoneChange" />
+        <van-field error-message="{{unitErr}}" value="{{ reservation.ReservationUnit }}" placeholder="预约单位" maxlength="16" label="预约单位" required bind:change="onUnitChange" />
+        <van-field error-message="{{acContentErr}}" value="{{ reservation.ReservationActivityContent }}" maxlength="32" placeholder="活动内容" label="活动内容" required bind:change="onActivityContentChange" />
+        <van-field error-message="{{pNameErr}}" value="{{ reservation.ReservationPersonName }}" maxlength="16" placeholder="预约人姓名" label="姓名" required bind:change="onPersonNameChange" />
+        <van-field error-message="{{pPhoneErr}}" value="{{ reservation.ReservationPersonPhone }}" maxlength="11" placeholder="预约人手机号" label="手机号" required bind:change="onPersonPhoneChange" />
       </van-cell-group>
     </view>
   </van-panel>
