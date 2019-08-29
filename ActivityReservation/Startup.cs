@@ -248,9 +248,10 @@ namespace ActivityReservation
                     c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
                     c.DocumentTitle = "活动室预约系统 API";
                 });
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseRequestLog();
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UsePerformanceLog();
 
             app.UseAuthentication();
             app.UseMvc(routes =>
