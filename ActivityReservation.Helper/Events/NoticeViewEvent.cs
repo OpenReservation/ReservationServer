@@ -20,7 +20,7 @@ namespace ActivityReservation.Events
 
     public class OnceEventHandlerBase
     {
-        protected async Task<bool> IsHandleNeeded(EventBase @event)
+        protected async Task<bool> IsHandleNeeded(IEventBase @event)
         {
             var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
                 TimeSpan.FromMinutes(2));
@@ -29,6 +29,13 @@ namespace ActivityReservation.Events
                 return true;
             }
             return false;
+        }
+
+        protected async Task<bool> Release(IEventBase @event)
+        {
+            var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
+                TimeSpan.FromMinutes(2));
+            return await limiter.ReleaseAsync();
         }
     }
 

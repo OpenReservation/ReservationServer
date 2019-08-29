@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using ActivityReservation.Database;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
@@ -34,18 +34,21 @@ namespace ActivityReservation.Events
     public class OperationLogEventHandler : OnceEventHandlerBase, IEventHandler<OperationLogEvent>
     {
         private readonly ILogger _logger;
+        private readonly IServiceProvider _serviceProvider;
 
-        public OperationLogEventHandler(ILogger<OperLogHelper> logger)
+        public OperationLogEventHandler(ILogger<OperationLogEventHandler> logger, IServiceProvider serviceProvider)
         {
             _logger = logger;
+            _serviceProvider = serviceProvider;
         }
 
         public async Task Handle(OperationLogEvent @event)
         {
             if (await IsHandleNeeded(@event))
             {
-                await DependencyResolver.Current.TryInvokeServiceAsync<IEFRepository<ReservationDbContext, OperationLog>>(async (operationLogRepo) =>
+                using (var scope = _serviceProvider.CreateScope())
                 {
+                    var operationLogRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, OperationLog>>();
                     try
                     {
                         await operationLogRepo.InsertAsync(new OperationLog()
@@ -60,9 +63,10 @@ namespace ActivityReservation.Events
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("添加操作日志失败", ex);
+                        _logger.LogError(ex, "添加操作日志失败");
+                        await Release(@event).ConfigureAwait(false);
                     }
-                });
+                }
             }
         }
     }
