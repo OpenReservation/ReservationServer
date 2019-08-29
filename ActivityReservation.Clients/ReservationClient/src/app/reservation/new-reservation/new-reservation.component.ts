@@ -7,7 +7,7 @@ import {FormBuilder, FormGroup, Validators, FormArray, FormControl} from '@angul
 import {MatSnackBar} from '@angular/material';
 import { ReservationPeriod } from 'src/app/models/ReservationPeriod';
 import { LoadingService } from '../../services/LoadingService';
-import { Router } from '@angular/router'; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-new-reservation',
@@ -20,7 +20,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
 
   public minDate: Date;
   public maxDate: Date;
-  
+
   placeFormGroup: FormGroup;
   dateFormGroup: FormGroup;
   periodFormGroup: FormGroup;
@@ -43,7 +43,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
   tencentRecaptcha:TencentCaptcha = null;
 
 
-  constructor(private reservationSvc: ReservationService, 
+  constructor(private reservationSvc: ReservationService,
     private reservationPlaceSvc: ReservationPlaceService,
     private _formBuilder: FormBuilder,
     private loadingSvc: LoadingService,
@@ -54,7 +54,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     this.maxDate = new Date(this.minDate.getTime()+ 24*60*60*1000*7);
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.placeFormGroup = this._formBuilder.group({
       placeCtrl: ['', Validators.required]
     });
@@ -123,7 +123,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
               this.captchaInfo.ticket = res.ticket;
               this.captchaValid = true;
               this.tencentRecaptcha.destroy();
-              
+
               let button = <HTMLElement>document.getElementById("btnSubmit");
               button.click();
           }
@@ -154,7 +154,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
     }else{
       period.Checked = true;
       this.checkedPeriodNum = this.checkedPeriodNum+1;
-      console.log(`check ${period.PeriodTitle}, checked:${period.Checked}, checkedPeriodNum:${this.checkedPeriodNum}`);      
+      console.log(`check ${period.PeriodTitle}, checked:${period.Checked}, checkedPeriodNum:${this.checkedPeriodNum}`);
     }
     console.groupEnd();
   }
@@ -190,16 +190,16 @@ export class NewReservationComponent implements OnInit, OnDestroy {
           this.reservation.ReservationForDate = dt;
           // load periods
           this.reservationPlaceSvc.getAvailablePeriods(this.reservation.ReservationPlaceId, this.reservation.ReservationForDate)
-            .subscribe(x=> 
+            .subscribe(x=>
             {
               this.reservationPeriods = x;
               this.checkedPeriodsFormArray.clear();
               this.reservationPeriods.forEach(x => this.checkedPeriodsFormArray.push(new FormControl(x.Checked)));
             });
         }
-        
+
         break;
-      
+
       case 3:
         console.log(this.periodFormGroup);
         // period
@@ -209,7 +209,7 @@ export class NewReservationComponent implements OnInit, OnDestroy {
         if(checkedPeriods.length == 0){
           alert(`至少要选中一个时间段`);
         }
-        this.reservation.ReservationForTime = checkedPeriods.map(p=>p.PeriodTitle).join(","); 
+        this.reservation.ReservationForTime = checkedPeriods.map(p=>p.PeriodTitle).join(",");
         this.reservation.ReservationForTimeIds = checkedPeriods.map(p=>p.PeriodIndex).join(",");
         break;
 
@@ -244,9 +244,9 @@ export class NewReservationComponent implements OnInit, OnDestroy {
           duration: 2000,
         });
         snackBarRef.afterDismissed()
-        .subscribe(x=>{ 
+        .subscribe(x=>{
           this.submiting = false;
-          this.router.navigateByUrl(""); 
+          this.router.navigateByUrl("");
         });
       }else{
         alert(x.ErrorMsg);
