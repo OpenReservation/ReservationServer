@@ -17,10 +17,16 @@ namespace ActivityReservation.Extensions
                 var requestInfo = $@"Request Info:
 Host: {context.Request.Host}, Path:{context.Request.Path},
 Headers: {context.Request.Headers.Select(h => $"{h.Key}={h.Value.ToString()}").StringJoin(",")},
-ConnectionIP: {context.Connection.RemoteIpAddress.MapToIPv4().ToString()},
+ConnectionIP: {context.Connection.RemoteIpAddress.MapToIPv4()},
 ";
                 logger.LogInformation(requestInfo);
                 await next();
+                var responseInfo = $@"ResponseInfo:
+StatusCode:{context.Response.StatusCode},
+Content-Length: {context.Response.ContentLength},
+Headers: {context.Response.Headers.Select(h => $"{h.Key}={h.Value.ToString()}").StringJoin(",")},
+";
+                logger.LogInformation(responseInfo);
             });
             return applicationBuilder;
         }

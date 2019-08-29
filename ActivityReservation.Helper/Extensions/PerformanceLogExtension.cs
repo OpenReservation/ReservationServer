@@ -19,7 +19,7 @@ namespace ActivityReservation.Extensions
                 var logger = context.RequestServices.GetService<ILoggerFactory>()
                     .CreateLogger("PerformanceLog");
                 logger.LogInformation("TraceId:{TraceId}, RequestMethod:{RequestMethod}, RequestPath:{RequestPath}, ElapsedMilliseconds:{ElapsedMilliseconds}, Response StatusCode: {StatusCode}",
-                    context.TraceIdentifier, context.Request.Path, context.Request.Method, profiler.ElapsedMilliseconds, context.Response.StatusCode);
+                    context.TraceIdentifier, context.Request.Method, context.Request.Path, profiler.ElapsedMilliseconds, context.Response.StatusCode);
             });
             return applicationBuilder;
         }
