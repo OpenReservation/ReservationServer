@@ -180,7 +180,6 @@ namespace ActivityReservation.Controllers
         /// Print
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
         public ActionResult Check(Guid id, string phone)
         {
             if (id == Guid.Empty)

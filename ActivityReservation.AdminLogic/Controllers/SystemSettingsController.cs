@@ -49,7 +49,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             //默认查询所有
-            Expression<Func<SystemSettings, bool>> whereLambda = (s => 1 == 1);
+            Expression<Func<SystemSettings, bool>> whereLambda = (s => true);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
