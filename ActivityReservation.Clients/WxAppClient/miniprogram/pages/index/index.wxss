@@ -24,7 +24,12 @@
 .table {
   border: 0 solid darkgray;
 }
-
+.bg-success{
+  background-color: rgb(223, 240, 216);
+}
+.bg-error{
+  background-color: rgb(242, 222, 222);
+}
 .tr {
   display: flex;
   width: 100%;

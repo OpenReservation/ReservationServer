@@ -13,7 +13,7 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 8,
     totalPage: 1,
     totalCount: 0,
     reservations: [] as Array<Reservation>
@@ -51,7 +51,7 @@ Page({
 
   onShow(){
     console.log(`onShow`);
-    this.loadReservation(1, 10);
+    this.loadReservation(1, this.data.pageSize);
   },
 
   prevPage() {

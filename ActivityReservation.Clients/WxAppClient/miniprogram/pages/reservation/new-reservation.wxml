@@ -3,14 +3,14 @@
 <scroll-view>
   <van-panel wx-if="{{stepIndex == 0}}" title="选择活动室" desc="选择要预约的活动室">
     <view>
-      <van-picker columns="{{ placeNames }}" bind:change="onPlaceChange">
+      <van-picker default-index="{{selectedPlaceIndex}}" columns="{{ placeNames }}" bind:change="onPlaceChange">
       </van-picker>
     </view>
   </van-panel>
 
   <van-panel wx-if="{{stepIndex == 1}}" title="选择日期" desc="选择要预约的日期">
     <view>
-      <van-datetime-picker title="选择预约日期" type="date" value="{{ currentDate }}" bind:confirm="onDateInput" show-toolbar="false" min-date="{{ currentDate }}" max-date="{{maxDate}}" />
+      <van-datetime-picker show-toolbar="false" title="选择预约日期" type="date" value="{{ currentDate }}" bind:confirm="onDateInput" show-toolbar="false" min-date="{{ currentDate }}" max-date="{{maxDate}}" />
     </view>
   </van-panel>
 

@@ -20,6 +20,8 @@ Page({
     reservationPeriods: [] as Array<ReservationPeriod>,
     checkedPeriods: [] as Array<string>,
     
+    selectedPlaceIndex: 0,
+
     unitErr: "",
     acContentErr: "",
     pNameErr: "",
@@ -54,13 +56,23 @@ Page({
         reservationPlaceSvc.getAvailablePeriods(result => {
           console.log(result);
           (<any>this).setData({
-            reservationPeriods: result
+            reservationPeriods: result,
+            checkedPeriods: []
           });
         }, this.data.reservation.ReservationPlaceId, this.data.reservation.ReservationForDate);
 
         break;
 
       case 3:
+        if(this.data.checkedPeriods.length == 0){
+          wx.showToast({
+            title: "请选择要预约的时间段或返回上一步选择其他预约日期",
+            duration: 2000,
+            icon: "none"
+          });
+          this.data.stepIndex--;
+          return false;
+        }
         console.log(this.data.reservationPeriods);
         this.data.reservation.ReservationForTimeIds = this.data.reservationPeriods.filter(_=>_.Checked).map(x=>x.PeriodIndex).join(",");
         this.data.reservation.ReservationForTime = this.data.reservationPeriods.filter(_=>_.Checked).map(x=> x.PeriodTitle).join(",");
@@ -101,14 +113,21 @@ Page({
 
   onPlaceChange(event: any) {
     const { picker, value, index } = event.detail;
+    (<any>this).setData({
+      selectedPlaceIndex: index
+    });
     this.data.reservation.ReservationPlaceId = this.data.places[index].PlaceId;
     this.data.reservation.ReservationPlaceName = this.data.places[index].PlaceName;
   },
 
   onDateInput(event: any) {
+    (<any>this).setData({
+      currentDate: event.detail
+    });
     let dateStr = util.formatDate(new Date(event.detail));
     console.log(`date: ${dateStr}`);
     this.data.reservation.ReservationForDate = dateStr;
+
   },
 
   onPeriodsChange(event: any) {

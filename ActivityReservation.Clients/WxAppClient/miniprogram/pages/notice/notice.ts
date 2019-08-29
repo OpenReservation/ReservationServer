@@ -7,12 +7,12 @@ Page({
   data: {
     notices: [] as Array<Notice>,
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 8,
     totalPage: 0,
     totalCount: 0    
   },
   onShow() {
-    this.loadNotice(1, 10);
+    this.loadNotice(1, this.data.pageSize);
   },
   noticeService: new NoticeService(),
   navToDetails(event: any) {

@@ -2,7 +2,7 @@
 <view>
   <scroll-view class="container" enable-flex="true">
     <view class="table">
-      <view class="tr">
+      <view class="tr bg-g">
         <view class="td">活动室名称</view>
         <view class="td">预约使用日期</view>
         <view class="td ">预约使用时间</view>
@@ -12,7 +12,15 @@
       </view>
 
       <block wx:for="{{reservations}}" wx:key="{{ReservationId}}">
-        <view class="tr bg-g" wx:if="{{index % 2 == 0}}">
+        <view class="tr bg-success" wx:if="{{item.ReservationStatus == 1}}">
+          <text class="td">{{item.ReservationPlaceName}}</text>
+          <text class="td">{{item.ReservationForDate}}</text>
+          <text class="td">{{item.ReservationForTime}}</text>
+          <text class="td">{{item.ReservationUnit}}</text>
+          <text class="td">{{item.ReservationActivityContent}}</text>
+          <text class="td">{{item.ReservationPersonName}}</text>
+        </view>
+        <view class="tr bg-error" wx:elif="{{item.ReservationStatus == 2}}">
           <text class="td">{{item.ReservationPlaceName}}</text>
           <text class="td">{{item.ReservationForDate}}</text>
           <text class="td">{{item.ReservationForTime}}</text>
