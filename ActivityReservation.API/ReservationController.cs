@@ -105,10 +105,6 @@ namespace ActivityReservation.API
         public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType, [FromServices]CaptchaVerifyHelper captchaVerifyHelper)
         {
             var result = new JsonResultModel<bool> { Status = JsonResultStatus.RequestError };
-            if (string.IsNullOrWhiteSpace(captchaType))
-            {
-                captchaType = "Tencent";
-            }
             var isCodeValid = await captchaVerifyHelper
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)

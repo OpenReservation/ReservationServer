@@ -142,10 +142,6 @@ namespace ActivityReservation.Controllers
             [FromHeader]string captcha,
             [FromHeader]string captchaType)
         {
-            if (string.IsNullOrWhiteSpace(captchaType))
-            {
-                captchaType = "Tencent";
-            }
             var result = new JsonResultModel<bool>();
             var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
                 .ValidateVerifyCodeAsync(captchaType, captcha);
@@ -173,7 +169,7 @@ namespace ActivityReservation.Controllers
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                Logger.LogError(ex, "预约发生异常");
                 result.Status = JsonResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
             }

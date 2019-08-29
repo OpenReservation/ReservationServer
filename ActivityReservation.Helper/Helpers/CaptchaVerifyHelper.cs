@@ -2,6 +2,7 @@
 using ActivityReservation.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
@@ -13,15 +14,21 @@ namespace ActivityReservation.Helpers
     {
         private readonly GoogleRecaptchaHelper _googleRecaptchaHelper;
         private readonly TencentCaptchaHelper _tencentCaptchaHelper;
+        private readonly ILogger _logger;
 
-        public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper, TencentCaptchaHelper tencentCaptchaHelper)
+        public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper, TencentCaptchaHelper tencentCaptchaHelper, ILogger<CaptchaVerifyHelper> logger)
         {
             _googleRecaptchaHelper = googleRecaptchaHelper;
             _tencentCaptchaHelper = tencentCaptchaHelper;
+            _logger = logger;
         }
 
         public async System.Threading.Tasks.Task<bool> ValidateVerifyCodeAsync(string captchaType, string captchaInfo)
         {
+            if (string.IsNullOrWhiteSpace(captchaType))
+            {
+                captchaType = "Tencent";
+            }
             if (captchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
@@ -32,13 +39,23 @@ namespace ActivityReservation.Helpers
             }
             if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
             {
-                var request = JsonConvert.DeserializeObject<TencentCaptchaRequest>(captchaInfo);
-                if (request.UserIP.IsNullOrWhiteSpace())
+                if (captchaInfo.IsNotNullOrWhiteSpace())
                 {
-                    request.UserIP = DependencyResolver.Current.GetRequiredService<IHttpContextAccessor>()
-                        .HttpContext.GetUserIP();
+                    try
+                    {
+                        var request = JsonConvert.DeserializeObject<TencentCaptchaRequest>(captchaInfo);
+                        if (request.UserIP.IsNullOrWhiteSpace())
+                        {
+                            request.UserIP = DependencyResolver.Current.GetRequiredService<IHttpContextAccessor>()
+                                .HttpContext.GetUserIP();
+                        }
+                        return await _tencentCaptchaHelper.IsValidRequestAsync(request);
+                    }
+                    catch (Exception e)
+                    {
+                        _logger.LogError(e, "腾讯验证码信息异常");
+                    }
                 }
-                return await _tencentCaptchaHelper.IsValidRequestAsync(request);
             }
 
             return false;
