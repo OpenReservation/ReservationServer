@@ -19,7 +19,7 @@ namespace ActivityReservation
                         $"https://{builtConfig["KeyVault:Name"]}.vault.azure.net/",
                         builtConfig["KeyVault:ClientId"],
                         builtConfig["KeyVault:ClientSecret"])
-                            .AddJsonFile("appsettings.json")
+                            .AddJsonFile("appsettings.json", true, true)
                             .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true)
                             ;
                     }

@@ -268,7 +268,7 @@ namespace ActivityReservation.Controllers
         {
             if (string.IsNullOrWhiteSpace(msg))
             {
-                return Ok();
+                return BadRequest();
             }
             return Ok(new
             {
