@@ -20,8 +20,6 @@ namespace ActivityReservation.Services
 
         protected readonly ILogger Logger;
 
-        private readonly string JobClientsCache = "JobClientsHash";
-
         protected CronScheduleServiceBase(ILogger logger)
         {
             Logger = logger;
@@ -50,32 +48,25 @@ namespace ActivityReservation.Services
                         }
                         else
                         {
-                            var machineName = RedisManager.HashClient.GetOrSet(JobClientsCache, GetType().FullName, () => Environment.MachineName); // try get job master
-                            if (machineName == Environment.MachineName) // IsMaster
+                            var firewall = RedisManager.GetFirewallClient($"Job_{GetType().FullName}_{next}", TimeSpan.FromMinutes(5));
+                            if (await firewall.HitAsync())
                             {
-                                using (var locker = RedisManager.GetRedLockClient($"{GetType().FullName}_cronService"))
+                                // 执行 job
+                                await ProcessAsync(stoppingToken);
+                                next = CronHelper.GetNextOccurrence(CronExpression);
+                                if (next.HasValue)
                                 {
-                                    // redis 互斥锁
-                                    if (await locker.TryLockAsync())
+                                    Logger.LogInformation("Next at {next}", next);
+                                    var delay = next.Value - DateTimeOffset.UtcNow;
+                                    if (delay > TimeSpan.Zero)
                                     {
-                                        // 执行 job
-                                        await ProcessAsync(stoppingToken);
-                                        next = CronHelper.GetNextOccurrence(CronExpression);
-                                        if (next.HasValue)
-                                        {
-                                            Logger.LogInformation("Next at {next}", next);
-                                            var delay = next.Value - DateTimeOffset.UtcNow;
-                                            if (delay > TimeSpan.Zero)
-                                            {
-                                                await Task.Delay(delay, stoppingToken);
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Logger.LogInformation($"failed to acquire lock");
+                                        await Task.Delay(delay, stoppingToken);
                                     }
                                 }
+                            }
+                            else
+                            {
+                                Logger.LogInformation("正在执行 job，不能重复执行");
                             }
                         }
                     }
@@ -88,12 +79,6 @@ namespace ActivityReservation.Services
                     }
                 }
             }
-        }
-
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            RedisManager.HashClient.Remove(JobClientsCache, GetType().FullName); // unregister jobClients
-            return base.StopAsync(cancellationToken);
         }
     }
 
