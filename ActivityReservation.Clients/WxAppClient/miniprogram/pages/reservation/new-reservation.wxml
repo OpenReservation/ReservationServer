@@ -10,7 +10,7 @@
 
   <van-panel wx-if="{{stepIndex == 1}}" title="选择日期" desc="选择要预约的日期">
     <view>
-      <van-datetime-picker show-toolbar="false" title="选择预约日期" type="date" value="{{ currentDate }}" bind:confirm="onDateInput" show-toolbar="false" min-date="{{ currentDate }}" max-date="{{maxDate}}" />
+      <van-datetime-picker type="date" value="{{ currentDate }}" bind:input="onDateInput" show-toolbar="{{false}}" min-date="{{ minDate }}" max-date="{{maxDate}}" />
     </view>
   </van-panel>
 

@@ -15,6 +15,7 @@ Page({
     places: [] as Array<ReservationPlace>,
     placeNames: [] as Array<string>,
     currentDate: new Date().getTime(),
+    minDate: new Date().getTime(),
     maxDate: util.addDays(new Date(), 7).getTime(),
     reservation: new Reservation(),
     reservationPeriods: [] as Array<ReservationPeriod>,
@@ -141,6 +142,8 @@ Page({
     for(let p of this.data.reservationPeriods){
       if(idxs.indexOf(p.PeriodIndex) > -1){
         p.Checked = true;
+      }else{
+        p.Checked = false;
       }
     }
 
@@ -165,7 +168,6 @@ Page({
     console.log(event);
     this.data.reservation.ReservationPersonPhone = event.detail;
   },
-
 
   validateInputParams(): boolean{
     if(!this.data.reservation.ReservationUnit){
