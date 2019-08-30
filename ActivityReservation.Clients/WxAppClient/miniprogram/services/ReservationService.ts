@@ -25,20 +25,7 @@ export class ReservationService extends BaseService<Reservation>{
       dataType: "json",
       success: (response) => {
         wx.hideLoading();
-        let result = <any>response.data;        
-        if(result.Status == 200){
-          wx.showToast({
-            title: "预约成功",
-            icon: "success",
-            duration: 2000
-          });
-        }else{
-          wx.showToast({
-            title: `预约失败,${result.ErrorMsg}`,
-            icon: "none",
-            duration: 2000,
-          });
-        }
+        let result = <any>response.data;
         callback(result);
       }
     });

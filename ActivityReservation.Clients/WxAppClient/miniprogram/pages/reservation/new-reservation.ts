@@ -251,8 +251,21 @@ Page({
     reservationSvc.NewReservation(result => {
       console.log(result);
       if(result.Status == 200){
-        wx.reLaunch({
-          url: '/pages/index/index'
+        wx.showToast({
+          title: "预约成功",
+          icon: "success",
+          duration: 2000,
+          complete: res => {
+            wx.reLaunch({
+              url: '/pages/index/index'
+            });
+          }
+        });        
+      } else {
+        wx.showToast({
+          title: `预约失败,${result.ErrorMsg}`,
+          icon: "none",
+          duration: 2000
         });
       }
     }, this.data.reservation, 'None', '');
