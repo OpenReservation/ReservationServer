@@ -35,4 +35,34 @@ appveyor => travis => Azure Pipeline
 
 ## Roadmap
 
-Check it [here](./Roadmap.md)
+### 1.0
+
+- [x] 活动室预约
+- [x] 预约管理
+- [x] 活动室管理
+- [x] 公告管理
+- [x] 用户管理
+- [x] 预约黑名单管理
+- [x] 系统设置管理
+- [x] 某段时间段禁用预约，如节假日/寒（暑）假等
+
+### 2.0
+
+- [x] 活动室预约 SPA （angular8 + material)
+- [x] 微信小程序预约
+
+### 3.0
+
+- [ ] 用户系统（需要登录才能预约，登录仅支持 微信/QQ/Github 登录，使用 ids4 搭建统一的登录平台，统一用户系统）
+- [ ] 我的预约记录
+- [ ] 取消预约（加以限制，一天内最多预约三次）
+- [ ] 更通用的预约流程，待优化
+
+### 4.0
+
+- [ ] 增加组织的概念，多租户
+- [ ] ReservationService as a Service，打造 Saas 预约服务平台
+
+## Contact
+
+Contact me if you need: <weihanli@outlook.com>
