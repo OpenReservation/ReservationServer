@@ -5,7 +5,7 @@
 ## Docker
 
 ``` bash
-docker run weihanli/reservation-client:latest
+docker run -d -p 8081:80 weihanli/reservation-client:latest
 ```
 
 ## Kubernetes
