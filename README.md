@@ -50,10 +50,11 @@ appveyor => travis => Azure Pipeline
 
 - [x] 活动室预约 SPA （angular8 + material)
 - [x] 微信小程序预约
+- [ ] 从单机到集群，详细修改参考：<https://www.cnblogs.com/weihanli/p/record-aspnetcore-api-elapsed-milliseconds-via-custom-middleware.html>
 
 ### 3.0
 
-- [ ] 用户系统（需要登录才能预约，登录仅支持 微信/QQ/Github 登录，使用 ids4 搭建统一的登录平台，统一用户系统）
+- [ ] 用户系统（需要登录才能预约，登录支持 微信/QQ/Github 登录，使用 ids4 搭建统一的登录平台，统一用户系统）
 - [ ] 我的预约记录
 - [ ] 取消预约（加以限制，一天内最多预约三次）
 - [ ] 更通用的预约流程，待优化
