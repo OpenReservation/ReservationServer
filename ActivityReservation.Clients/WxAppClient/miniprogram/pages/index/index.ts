@@ -15,7 +15,7 @@ Page({
     pageNum: 1,
     pageSize: 8,
     totalPage: 1,
-    totalCount: 0,
+    totalCount: -1,
     reservations: [] as Array<Reservation>
   },
   onLoad() {

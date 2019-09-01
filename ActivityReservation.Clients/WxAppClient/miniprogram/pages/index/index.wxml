@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view>
-  <scroll-view class="container" enable-flex="true">
+  <scroll-view wx:if="{{totalCount >= 0}}" class="container" enable-flex="true">
     <view class="table">
       <view class="tr bg-g">
         <view class="td">活动室名称</view>
