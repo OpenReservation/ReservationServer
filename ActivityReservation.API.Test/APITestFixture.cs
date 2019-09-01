@@ -5,7 +5,6 @@ using System.Net.NetworkInformation;
 using ActivityReservation.Database;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -13,12 +12,12 @@ using Xunit;
 namespace ActivityReservation.API.Test
 {
     /// <summary>
-    /// Shared DbContext https://xunit.github.io/docs/shared-context.html
+    /// Shared Context https://xunit.github.io/docs/shared-context.html
     /// </summary>
     public class APITestFixture : IDisposable
     {
         private readonly IWebHost _server;
-        public IServiceProvider Services { get; }
+        private IServiceProvider Services { get; }
 
         public HttpClient Client { get; }
 
@@ -32,7 +31,6 @@ namespace ActivityReservation.API.Test
             _server = builder.Build();
             _server.Start();
 
-            var url = _server.ServerFeatures.Get<IServerAddressesFeature>().Addresses.First();
             Services = _server.Services;
 
             Client = new HttpClient(new WeihanLi.Common.Http.NoProxyHttpClientHandler())
