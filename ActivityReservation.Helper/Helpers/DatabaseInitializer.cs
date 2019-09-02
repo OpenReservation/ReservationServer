@@ -102,6 +102,18 @@ namespace ActivityReservation.Helpers
                         UpdateTime = DateTime.UtcNow
                     },
                 });
+                    var notice = new Notice()
+                    {
+                        NoticeId = Guid.NewGuid(),
+                        CheckStatus = true,
+                        NoticeTitle = "测试公告",
+                        NoticeCustomPath = "test-notice",
+                        NoticePublishTime = DateTime.UtcNow,
+                        NoticeDesc = "测试一下",
+                        NoticePublisher = "System"
+                    };
+                    dbContext.Notices.Add(notice);
+
                     //sys settings init
                     settings = new List<SystemSettings>
                 {

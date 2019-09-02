@@ -19,7 +19,8 @@ namespace ActivityReservation.API.Test.Controllers
             using (var response = await Client.GetAsync("/api/notice"))
             {
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-                var result = JsonConvert.DeserializeObject<PagedListModel<Notice>>(await response.Content.ReadAsStringAsync());
+                var responseString = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<PagedListModel<Notice>>(responseString);
                 Assert.NotNull(result);
             }
         }
