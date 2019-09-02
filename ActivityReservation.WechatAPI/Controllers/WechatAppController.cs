@@ -21,16 +21,9 @@ namespace ActivityReservation.WechatAPI.Controllers
         [ActionName("Index")]
         public async Task Get(string echoStr)
         {
-            try
+            if (!string.IsNullOrEmpty(echoStr))
             {
-                if (!string.IsNullOrEmpty(echoStr))
-                {
-                    await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"Wechat GET 发生异常,异常信息：{ex.Message}", ex);
+                await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
             }
         }
 
