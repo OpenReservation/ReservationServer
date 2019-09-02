@@ -7,17 +7,22 @@
 
 目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，
 
-演示地址：<https://reservation.weihanli.xyz>
-新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>
+- 演示地址：<https://reservation.weihanli.xyz>
+- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular8 +material SPA)
+- 小程序演示 demo:
 
-后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
+  - 正式版 ![wxAppCode](./images/wxAppCode.jpg)
+  - 体验版 ![qrCode](./images/wxAppQrCode.jpg)
 
-后台登录账号：
+- 后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
 
-管理员用户名: admin 密码: Admin888
-普通用户： Alice 密码：Test1234
+  后台登录账号：
 
-管理员有更多的权限，可以设置更多系统相关的配置，也可以增加系统普通管理员
+  管理员用户名: admin 密码: Admin888
+
+  普通用户： Alice 密码：Test1234
+
+  管理员有更多的权限，可以设置更多系统相关的配置，也可以增加系统普通管理员
 
 ## 关于技术
 
