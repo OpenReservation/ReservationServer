@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,7 +21,6 @@ namespace ActivityReservation.WechatAPI.Controllers
             var body = await Request.Body.ReadToEndAsync();
             Logger.LogInformation($"received msg: {body}");
 
-            Request.Body.Seek(0L, SeekOrigin.Begin);
             return Content("success", "text/plain", Encoding.UTF8);
         }
     }
