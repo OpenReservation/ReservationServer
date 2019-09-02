@@ -23,8 +23,9 @@ steps:
 - script: dotnet build -c Release
   displayName: 'dotnet build'
 
-- script: dotnet test 
-  displayName: 'dotnet test'
+# disable test for now
+# - script: dotnet test 
+#   displayName: 'dotnet test'
 
 - script: docker build -f Dockerfile -t $(imageName) -t $(latestImageName) .
   displayName: 'Docker build Script'
