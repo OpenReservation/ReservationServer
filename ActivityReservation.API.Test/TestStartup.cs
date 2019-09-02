@@ -1,4 +1,6 @@
-﻿using ActivityReservation.Business;
+﻿using System;
+using ActivityReservation.Business;
+using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
 using ActivityReservation.Extensions;
@@ -16,7 +18,9 @@ using Newtonsoft.Json.Serialization;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Http;
 using WeihanLi.EntityFramework;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.API.Test
 {
@@ -24,7 +28,7 @@ namespace ActivityReservation.API.Test
     {
         public TestStartup(IConfiguration configuration)
         {
-            Configuration = configuration.ReplacePlaceholders();
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -50,23 +54,23 @@ namespace ActivityReservation.API.Test
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"), 100);
 
-            //services.AddRedisConfig(options =>
-            //{
-            //    options.RedisServers = new[]
-            //    {
-            //        new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
-            //    };
-            //    options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
-            //    options.DefaultDatabase = 2;
-            //});
+            services.AddRedisConfig(options =>
+            {
+                options.RedisServers = new[]
+                {
+                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
+                };
+                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
+                options.DefaultDatabase = 4;
+            });
 
-            //services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
-            //    .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
-            //services.AddTencentCaptchaHelper(options =>
-            //{
-            //    options.AppId = Configuration["Tencent:Captcha:AppId"];
-            //    options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
-            //});
+            services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
+                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+            services.AddTencentCaptchaHelper(options =>
+            {
+                options.AppId = Configuration["Tencent:Captcha:AppId"];
+                options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
+            });
 
             services.AddEFRepository();
             services.AddBLL();

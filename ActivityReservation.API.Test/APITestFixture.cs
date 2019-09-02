@@ -24,11 +24,10 @@ namespace ActivityReservation.API.Test
         public APITestFixture()
         {
             var baseUrl = $"http://localhost:{GetRandomPort()}";
-            var builder = WebHost.CreateDefaultBuilder()
+            _server = WebHost.CreateDefaultBuilder()
                 .UseUrls(baseUrl)
-                .UseStartup<TestStartup>();
-
-            _server = builder.Build();
+                .UseStartup<TestStartup>()
+                .Build();
             _server.Start();
 
             Services = _server.Services;
