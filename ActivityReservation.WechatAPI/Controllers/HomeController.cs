@@ -15,7 +15,7 @@ namespace ActivityReservation.WechatAPI.Controllers
     /// 微信入口
     /// </summary>
     [WechatRequestValid]
-    public class HomeController : WechatBaseController
+    public class HomeController : WeChatBaseController
     {
         public HomeController(ILogger<HomeController> logger) : base(logger)
         {

@@ -14,9 +14,9 @@ namespace ActivityReservation.WechatAPI.Helper
     /// <summary>
     /// 微信消息处理帮助类
     /// </summary>
-    internal class WechatMsgHandler
+    internal class MpWechatMsgHandler
     {
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatMsgHandler));
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(MpWechatMsgHandler));
 
         public static async Task<string> ReturnMessageAsync(string postStr)
         {

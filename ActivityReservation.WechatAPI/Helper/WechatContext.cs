@@ -24,7 +24,7 @@ namespace ActivityReservation.WechatAPI.Helper
         public async System.Threading.Tasks.Task<string> GetResponseAsync()
         {
             var requestMessage = _securityHelper.DecryptMsg(_requestMessage);
-            var responseMessage = await WechatMsgHandler.ReturnMessageAsync(requestMessage);
+            var responseMessage = await MpWechatMsgHandler.ReturnMessageAsync(requestMessage);
             Logger.Debug($"request:{requestMessage}, response:{responseMessage}");
             if (responseMessage.IsNotNullOrEmpty())
             {
