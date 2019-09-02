@@ -55,7 +55,7 @@ appveyor => travis => Azure Pipeline
 
 - [x] 活动室预约 SPA （angular8 + material)
 - [x] 微信小程序预约
-- [ ] 从单机到集群，详细修改参考：<https://www.cnblogs.com/weihanli/p/record-aspnetcore-api-elapsed-milliseconds-via-custom-middleware.html>
+- [ ] 从单机到集群，详细修改参考：<https://www.cnblogs.com/weihanli/p/aspnetcore-migrate-standalone-to-cluster.html>
 
 ### 3.0
 
