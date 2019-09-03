@@ -11,8 +11,7 @@
 - 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular8 +material SPA)
 - 小程序演示 demo:
 
-  - 正式版 ![wxAppCode](./images/wxAppCode.jpg)
-  - 体验版 ![qrCode](./images/wxAppQrCode.jpg)
+  ![wxAppCode](./images/wxAppCode.jpg)
 
 - 后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
 
