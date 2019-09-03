@@ -8,7 +8,13 @@
 
 ### 小程序二维码
 
-待补充
+小程序码:
+
+![小程序码](https://raw.githubusercontent.com/WeihanLi/ActivityReservation/dev/images/wxAppCode.jpg)
+
+体验版二维码:
+
+![体验版二维码](https://raw.githubusercontent.com/WeihanLi/ActivityReservation/dev/images/wxAppQrCode.jpg)
 
 ### 小程序界面截图
 
