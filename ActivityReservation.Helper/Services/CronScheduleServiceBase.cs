@@ -75,7 +75,7 @@ namespace ActivityReservation.Services
                         // needed for graceful shutdown for some reason.
                         // 1000ms so it doesn't affect calculating the next
                         // cron occurence (lowest possible: every second)
-                        await Task.Delay((next.Value - DateTimeOffset.UtcNow).Subtract(TimeSpan.FromSeconds(3)), stoppingToken);
+                        await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
                     }
                 }
             }
