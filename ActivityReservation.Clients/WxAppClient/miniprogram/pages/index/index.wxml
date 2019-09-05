@@ -8,7 +8,6 @@
         <view class="td ">预约使用时间</view>
         <view class="td">预约单位</view>
         <view class="td">活动内容</view>
-        <view class="td">预约人</view>
       </view>
 
       <block wx:for="{{reservations}}" wx:key="{{ReservationId}}">
@@ -18,7 +17,6 @@
           <text class="td">{{item.ReservationForTime}}</text>
           <text class="td">{{item.ReservationUnit}}</text>
           <text class="td">{{item.ReservationActivityContent}}</text>
-          <text class="td">{{item.ReservationPersonName}}</text>
         </view>
         <view class="tr bg-error" wx:elif="{{item.ReservationStatus == 2}}">
           <text class="td">{{item.ReservationPlaceName}}</text>
@@ -26,7 +24,6 @@
           <text class="td">{{item.ReservationForTime}}</text>
           <text class="td">{{item.ReservationUnit}}</text>
           <text class="td">{{item.ReservationActivityContent}}</text>
-          <text class="td">{{item.ReservationPersonName}}</text>
         </view>
         <view class="tr" wx:else>
           <text class="td">{{item.ReservationPlaceName}}</text>
@@ -34,7 +31,6 @@
           <text class="td">{{item.ReservationForTime}}</text>
           <text class="td">{{item.ReservationUnit}}</text>
           <text class="td">{{item.ReservationActivityContent}}</text>
-          <text class="td">{{item.ReservationPersonName}}</text>
         </view>
       </block>
     </view>

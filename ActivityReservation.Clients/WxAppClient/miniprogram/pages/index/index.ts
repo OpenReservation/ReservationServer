@@ -63,7 +63,12 @@ Page({
   },
 
   loadReservation(pageNum:number, pageSize:number = 10){
-    reservationSvc.Get((result)=>{
+    reservationSvc.Get((result)=>{      
+      result.Data.forEach(item => {
+        if(item.ReservationForTime.indexOf(',') > -1){
+          item.ReservationForTime = item.ReservationForTime.replace(',', '\n');
+        }        
+      });
       console.log(result);
       (<any>this).setData({
         pageNum: result.PageNumber,

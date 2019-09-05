@@ -32,5 +32,6 @@
     <text>联系电话：021-32145689(假的，别打。。）
     联系邮箱：weihanli@outlook.com
     </text>
+    <button open-type="contact">联系客服</button>
   </view>
 </scroll-view>
