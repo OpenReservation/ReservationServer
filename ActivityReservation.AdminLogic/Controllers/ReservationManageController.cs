@@ -31,7 +31,11 @@ namespace ActivityReservation.AdminLogic.Controllers
 
         public ActionResult Reservate()
         {
-            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>().Select(r => r.IsActive && !r.IsDel).OrderBy(p => p.PlaceName).ToList();
+            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
+                .Select(r => r.IsActive)
+                .OrderBy(p => p.PlaceId)
+                .ThenBy(p => p.PlaceName)
+                .ToList();
             return View(places);
         }
 
@@ -79,31 +83,20 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(SearchHelperModel search)
         {
-            Expression<Func<Reservation, bool>> whereLambda = (m =>
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
-                EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0 && m.ReservationStatus == 0);
+            Expression<Func<Reservation, bool>> whereLambda = (m => true);
+            //根据预约人联系方式查询
+            if (!string.IsNullOrEmpty(search.SearchItem1))
+            {
+                whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
+            }
             //类别，加载全部还是只加载待审核列表
             if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
             {
-                //根据预约人联系方式查询
-                if (!string.IsNullOrEmpty(search.SearchItem1))
-                {
-                    whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
-                }
-                else
-                {
-                    whereLambda = (m =>
-                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) <= 7 &&
-                        EF.Functions.DateDiffDay(DateTime.Today, m.ReservationForDate) >= 0);
-                }
+                //
             }
             else
             {
-                if (!string.IsNullOrEmpty(search.SearchItem1))
-                {
-                    whereLambda = (m =>
-                        m.ReservationPersonPhone.Contains(search.SearchItem1) && m.ReservationStatus == 0);
-                }
+                whereLambda = whereLambda.And(m => m.ReservationStatus == 0);
             }
             //load data
             var list = _reservationHelper.GetPagedListResult(
