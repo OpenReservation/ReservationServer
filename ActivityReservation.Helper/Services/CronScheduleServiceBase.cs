@@ -48,7 +48,7 @@ namespace ActivityReservation.Services
                         }
                         else
                         {
-                            var firewall = RedisManager.GetFirewallClient($"Job_{GetType().FullName}_{next}", TimeSpan.FromMinutes(5));
+                            var firewall = RedisManager.GetFirewallClient($"Job_{GetType().FullName}_{next:yyyyMMddHHmmss}", TimeSpan.FromMinutes(3));
                             if (await firewall.HitAsync())
                             {
                                 // 执行 job
@@ -67,6 +67,7 @@ namespace ActivityReservation.Services
                             else
                             {
                                 Logger.LogInformation("正在执行 job，不能重复执行");
+                                await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
                             }
                         }
                     }
