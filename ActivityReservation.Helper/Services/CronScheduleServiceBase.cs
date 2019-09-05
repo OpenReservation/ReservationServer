@@ -67,7 +67,11 @@ namespace ActivityReservation.Services
                             else
                             {
                                 Logger.LogInformation("正在执行 job，不能重复执行");
-                                await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
+                                next = CronHelper.GetNextOccurrence(CronExpression);
+                                if (next.HasValue)
+                                {
+                                    await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
+                                }
                             }
                         }
                     }
