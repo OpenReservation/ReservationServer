@@ -45,6 +45,7 @@ namespace ActivityReservation.WechatAPI.Controllers
                     var reply = await chatbotHelper.GetBotReplyAsync(model.Content, HttpContext.RequestAborted);
                     if (reply.IsNotNullOrEmpty())
                     {
+                        Logger.LogInformation($"bot reply:{reply}");
                         //
                         var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
                         await wechatHelper.SendWechatMsg(new

@@ -64,6 +64,7 @@ namespace ActivityReservation.WechatAPI.Helper
             using (var response = await _httpClient.PostAsJsonAsync(url, msg))
             {
                 var responseText = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation($"send wechat msg response: {responseText}");
                 var result = responseText.JsonToType<WechatResponseEntity>();
                 return result.ErrorCode == 0;
             }

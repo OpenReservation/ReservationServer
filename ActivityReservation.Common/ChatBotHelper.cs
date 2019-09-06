@@ -46,17 +46,20 @@ namespace ActivityReservation.Common
             }
             try
             {
-                var response = await _httpClient.
-                    GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode()), cancellationToken);
-                var responseText = await response.Content.ReadAsStringAsync();
-                if (!string.IsNullOrEmpty(responseText))
+                using (var response = await _httpClient.
+                    GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode()), cancellationToken))
                 {
-                    var res = responseText.JsonToType<QingyunkeResponseModel>();
-                    if (res != null && res.Result == 0)
+                    var responseText = await response.Content.ReadAsStringAsync();
+                    if (!string.IsNullOrEmpty(responseText))
                     {
-                        return res.Content;
+                        var res = responseText.JsonToType<QingyunkeResponseModel>();
+                        if (res != null && res.Result == 0)
+                        {
+                            return res.Content;
+                        }
                     }
                 }
+
                 return string.Empty;
             }
             catch (Exception ex)
