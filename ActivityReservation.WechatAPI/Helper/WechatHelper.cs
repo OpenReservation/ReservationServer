@@ -9,12 +9,12 @@ using WeihanLi.Redis;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
-    public class WechatHelper
+    public class WeChatHelper
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
-        public WechatHelper(HttpClient httpClient, ILogger<WechatHelper> logger)
+        public WeChatHelper(HttpClient httpClient, ILogger<WeChatHelper> logger)
         {
             _httpClient = httpClient;
             _logger = logger;
@@ -44,14 +44,29 @@ namespace ActivityReservation.WechatAPI.Helper
         /// 获取公共号 AccessToken
         /// </summary>
         /// <returns>AccessToken</returns>
-        public async Task<string> GetAccessTokenAsync()
+        public async Task<string> GetAccessTokenAsync(string appId, string appSecret)
         {
-            var token = await RedisManager.CacheClient.GetOrSetAsync("wechat_access_token",
-                () => RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(WeChatConsts.AppId, WeChatConsts.AppSecret))
+            var token = await RedisManager.CacheClient.GetOrSetAsync($"wechat_access_token:{appId}",
+                () => RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(appId, appSecret))
                 .ContinueWith(r => r.Result.JsonToType<AccessTokenEntity>()),
                 result => result.AccessToken.IsNotNullOrWhiteSpace()),
                 TimeSpan.FromSeconds(7140));
             return token?.AccessToken;
+        }
+
+        // https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN
+        private const string SendMsgUrlFormat = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={0}";
+
+        public async Task<bool> SendWechatMsg(object msg, string appId, string appSecret)
+        {
+            var accessToken = await GetAccessTokenAsync(appId, appSecret);
+            var url = SendMsgUrlFormat.FormatWith(accessToken);
+            using (var response = await _httpClient.PostAsJsonAsync(url, msg))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                var result = responseText.JsonToType<WechatResponseEntity>();
+                return result.ErrorCode == 0;
+            }
         }
 
         /// <summary>
@@ -84,7 +99,7 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <returns></returns>
         public async Task<bool> UpdateWechatMenuAsync(object menu)
         {
-            var accessToken = await GetAccessTokenAsync();
+            var accessToken = await GetAccessTokenAsync(MpWeChatConsts.AppId, MpWeChatConsts.AppSecret);
             if (accessToken.IsNullOrWhiteSpace())
             {
                 _logger.Error($"获取 AccessToken 失败");
@@ -103,7 +118,7 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <returns></returns>
         public async Task<bool> DeleteWechatMenuAsync()
         {
-            var accessToken = await GetAccessTokenAsync();
+            var accessToken = await GetAccessTokenAsync(MpWeChatConsts.AppId, MpWeChatConsts.AppSecret);
             if (accessToken.IsNullOrWhiteSpace())
             {
                 _logger.Error($"获取 AccessToken 失败");

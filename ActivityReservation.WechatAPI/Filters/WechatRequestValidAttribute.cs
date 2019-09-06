@@ -12,14 +12,14 @@ namespace ActivityReservation.WechatAPI.Filters
 {
     public class WechatRequestValidAttribute : Attribute, IAuthorizationFilter
     {
-        private static bool CheckSignature(WechatMsgRequestModel model)
+        private static bool CheckSignature(WechatMsgRequestModel model, string token)
         {
             //获取请求来的参数
             var signature = model.Signature;
             var timestamp = model.Timestamp;
             var nonce = model.Nonce;
             //创建数组，将 Token, timestamp, nonce 三个参数加入数组
-            string[] array = { WeChatConsts.Token, timestamp, nonce };
+            string[] array = { token, timestamp, nonce };
             //进行排序
             Array.Sort(array);
             //拼接为一个字符串
@@ -40,7 +40,14 @@ namespace ActivityReservation.WechatAPI.Filters
                 Msg_Signature = filterContext.HttpContext.Request.Query["msg_signature"].FirstOrDefault()
             };
             //验证
-            if (!CheckSignature(model))
+            var token = filterContext.HttpContext.Request.Path.Value.ToLower().Contains("/wechatapp/")
+                ? WxAppConsts.Token
+                : MpWeChatConsts.Token;
+            if (string.IsNullOrEmpty(token))
+            {
+                token = "Reservation";
+            }
+            if (!CheckSignature(model, token))
             {
                 filterContext.HttpContext.RequestServices.GetRequiredService<ILogger<WechatRequestValidAttribute>>()
                     .LogWarning("微信请求签名验证不通过, signature: {Signature}", model.Signature);

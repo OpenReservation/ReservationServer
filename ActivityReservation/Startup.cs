@@ -130,9 +130,9 @@ namespace ActivityReservation
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.TryAddSingleton<ChatBotHelper>();
 
-            services.AddHttpClient<WechatAPI.Helper.WechatHelper>()
+            services.AddHttpClient<WechatAPI.Helper.WeChatHelper>()
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
-            services.TryAddSingleton<WechatAPI.Helper.WechatHelper>();
+            services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 

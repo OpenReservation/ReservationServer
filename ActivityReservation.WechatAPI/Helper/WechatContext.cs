@@ -5,17 +5,17 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Helper
 {
-    internal class WechatContext
+    internal class WeChatContext
     {
         private readonly WechatSecurityHelper _securityHelper;
         private readonly string _requestMessage;
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger<WechatContext>();
+        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger<WeChatContext>();
 
-        public WechatContext()
+        public WeChatContext()
         {
         }
 
-        public WechatContext(WechatMsgRequestModel request)
+        public WeChatContext(WechatMsgRequestModel request)
         {
             _securityHelper = new WechatSecurityHelper(request.Msg_Signature, request.Timestamp, request.Nonce);
             _requestMessage = request.RequestContent;

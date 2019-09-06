@@ -1,93 +1,49 @@
 ﻿namespace ActivityReservation.WechatAPI.Model
 {
-    public interface IWechatMsg
+    public class WeChatMsgBase
     {
         /// <summary>
         /// 消息id
         /// </summary>
-        long MsgId { get; set; }
+        public long MsgId { get; set; }
 
         /// <summary>
-        /// 发送消息用户id
+        /// 发送消息微信号
         /// </summary>
-        string FromUserName { get; set; }
+        public string FromUserName { get; set; }
+
+        /// <summary>
+        /// 接受消息的微信号
+        /// </summary>
+        public string ToUserName { get; set; }
 
         /// <summary>
         /// 消息类型
         /// </summary>
-        string MsgType { get; }
+        public string MsgType { get; }
 
         /// <summary>
-        /// 返回微信消息
+        /// 消息创建时间，整型
         /// </summary>
-        //IWechatReply ReplyMsgReply { get; set; }
+        public long CreateTime { get; set; }
     }
 
     /// <summary>
     /// 文本消息模型
     /// </summary>
-    public class WechatRequestTextMsgModel : IWechatMsg
+    public class WeChatTextMsgModel : WeChatMsgBase
     {
-        /// <summary>
-        /// 开发者微信号
-        /// </summary>
-        public string ToUserName { get; set; }
-
-        /// <summary>
-        /// 发送者账号（一个OpenID）
-        /// </summary>
-        public string FromUserName { get; set; }
-
-        /// <summary>
-        /// 消息创建时间，整型
-        /// </summary>
-        public long CreateTime { get; set; }
-
-        /// <summary>
-        /// 消息类型
-        public string MsgType
-        {
-            get { return "text"; }
-        }
-
         /// <summary>
         /// 文本消息内容
         /// </summary>
         public string Content { get; set; }
-
-        /// <summary>
-        /// 消息id
-        /// </summary>
-        public long MsgId { get; set; }
     }
 
     /// <summary>
     /// 图片消息模型
     /// </summary>
-    public class WechatRequestImageMsgModel
+    public class WeChatImageMsgModel : WeChatMsgBase
     {
-        /// <summary>
-        /// 开发者微信号
-        /// </summary>
-        public string ToUserName { get; set; }
-
-        /// <summary>
-        /// 发送者账号（一个OpenID）
-        /// </summary>
-        public string FromUserName { get; set; }
-
-        /// <summary>
-        /// 消息创建时间，整型
-        /// </summary>
-        public long CreateTime { get; set; }
-
-        /// <summary>
-        /// 消息类型
-        public string MsgType
-        {
-            get { return "image"; }
-        }
-
         /// <summary>
         /// 图片链接
         /// </summary>
@@ -97,40 +53,13 @@
         /// 图片消息媒体id，可以调用多媒体文件下载接口拉取数据
         /// </summary>
         public string MediaId { get; set; }
-
-        /// <summary>
-        /// 消息id
-        /// </summary>
-        public long MsgId { get; set; }
     }
 
     /// <summary>
     /// 语音消息模型
     /// </summary>
-    public class WechatRequestVoiceMsgModel
+    public class WechatVoiceMsgModel : WeChatMsgBase
     {
-        /// <summary>
-        /// 开发者微信号
-        /// </summary>
-        public string ToUserName { get; set; }
-
-        /// <summary>
-        /// 发送者账号（一个OpenID）
-        /// </summary>
-        public string FromUserName { get; set; }
-
-        /// <summary>
-        /// 消息创建时间，整型
-        /// </summary>
-        public long CreateTime { get; set; }
-
-        /// <summary>
-        /// 消息类型
-        public string MsgType
-        {
-            get { return "voice"; }
-        }
-
         /// <summary>
         /// 语音格式
         /// </summary>
@@ -145,40 +74,13 @@
         /// 语音识别结果
         /// </summary>
         public string Recognition { get; set; }
-
-        /// <summary>
-        /// 消息id
-        /// </summary>
-        public long MsgId { get; set; }
     }
 
     /// <summary>
     /// 视频消息模型
     /// </summary>
-    public class WechatRequestVideoMsgModel
+    public class WeChatVideoMsgModel : WeChatMsgBase
     {
-        /// <summary>
-        /// 开发者微信号
-        /// </summary>
-        public string ToUserName { get; set; }
-
-        /// <summary>
-        /// 发送者账号（一个OpenID）
-        /// </summary>
-        public string FromUserName { get; set; }
-
-        /// <summary>
-        /// 消息创建时间，整型
-        /// </summary>
-        public long CreateTime { get; set; }
-
-        /// <summary>
-        /// 消息类型
-        public string MsgType
-        {
-            get { return "video"; }
-        }
-
         /// <summary>
         /// 视频消息缩略图媒体id，可以调用多媒体文件下载接口拉取数据
         /// </summary>
@@ -188,39 +90,17 @@
         /// 视频消息媒体id，可以调用多媒体文件下载接口拉取数据
         /// </summary>
         public string MediaId { get; set; }
-
-        /// <summary>
-        /// 消息id
-        /// </summary>
-        public long MsgId { get; set; }
     }
 
     /// <summary>
     /// 位置信息模型
     /// </summary>
-    public class WechatRequestLocationMsgModel
+    public class WeChatLocationMsgModel : WeChatMsgBase
     {
-        /// <summary>
-        /// 开发者微信号
-        /// </summary>
-        public string ToUserName { get; set; }
-
-        /// <summary>
-        /// 发送者账号（一个OpenID）
-        /// </summary>
-        public string FromUserName { get; set; }
-
-        /// <summary>
-        /// 消息创建时间，整型
-        /// </summary>
-        public long CreateTime { get; set; }
-
-        /// <summary>
-        /// 消息类型
-        public string MsgType
-        {
-            get { return "location"; }
-        }
+        //public string MsgType
+        //{
+        //    get { return "location"; }
+        //}
 
         /// <summary>
         /// 地理位置维度
@@ -241,39 +121,19 @@
         /// 地理位置信息
         /// </summary>
         public string Label { get; set; }
-
-        /// <summary>
-        /// 消息id
-        /// </summary>
-        public long MsgId { get; set; }
     }
 
     /// <summary>
     /// 链接消息模型
     /// </summary>
-    public class WechatRequestLinkMsgModel
+    public class WeChatLinkMsgModel : WeChatMsgBase
     {
-        /// <summary>
-        /// 开发者微信号
-        /// </summary>
-        public string ToUserName { get; set; }
-
-        /// <summary>
-        /// 发送者账号（一个OpenID）
-        /// </summary>
-        public string FromUserName { get; set; }
-
-        /// <summary>
-        /// 消息创建时间，整型
-        /// </summary>
-        public long CreateTime { get; set; }
-
-        /// <summary>
-        /// 消息类型
-        public string MsgType
-        {
-            get { return "link"; }
-        }
+        ///// <summary>
+        ///// 消息类型
+        //public string MsgType
+        //{
+        //    get { return "link"; }
+        //}
 
         /// <summary>
         /// 消息链接
@@ -289,10 +149,5 @@
         /// 消息标题
         /// </summary>
         public string Title { get; set; }
-
-        /// <summary>
-        /// 消息id
-        /// </summary>
-        public long MsgId { get; set; }
     }
 }

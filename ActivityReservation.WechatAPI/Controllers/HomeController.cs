@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using ActivityReservation.WechatAPI.Filters;
 using ActivityReservation.WechatAPI.Helper;
 using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
@@ -14,7 +13,6 @@ namespace ActivityReservation.WechatAPI.Controllers
     /// <summary>
     /// 微信入口
     /// </summary>
-    [WechatRequestValid]
     public class HomeController : WeChatBaseController
     {
         public HomeController(ILogger<HomeController> logger) : base(logger)
@@ -67,7 +65,7 @@ namespace ActivityReservation.WechatAPI.Controllers
                 return Content("RequestContent 为空");
             }
 
-            var context = new WechatContext(model);
+            var context = new WeChatContext(model);
             return await WechatAsync(context);
         }
     }
