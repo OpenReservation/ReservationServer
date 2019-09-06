@@ -38,16 +38,15 @@ namespace ActivityReservation.WechatAPI.Controllers
         {
             var body = await Request.Body.ReadToEndAsync();
             Logger.LogInformation($"received msg: {body}");
-
-            try
+            var model = body.JsonToType<WeChatTextMsgModel>();
+            if (!string.IsNullOrWhiteSpace(model?.FromUserName))
             {
-                var model = body.JsonToType<WeChatTextMsgModel>();
-                if (model != null)
+                try
                 {
-                    Logger.LogInformation($"msgModel: {model.ToJson()}");
-
                     if (await RedisManager.GetFirewallClient($"wxAppMsg:{model.MsgId}", TimeSpan.FromMinutes(2)).HitAsync())
                     {
+                        Logger.LogInformation($"msgModel: {model.ToJson()}");
+
                         switch (model.MsgType)
                         {
                             case "text":
@@ -79,10 +78,10 @@ namespace ActivityReservation.WechatAPI.Controllers
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError(e, "微信小程序客服消息反序列化失败");
+                catch (Exception e)
+                {
+                    Logger.LogError(e, "微信小程序客服消息处理发生");
+                }
             }
 
             return Content("success", "text/plain", Encoding.UTF8);
