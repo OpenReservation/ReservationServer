@@ -1,4 +1,5 @@
 ﻿using System;
+using ActivityReservation.API.Test.MockServices;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
@@ -54,15 +55,7 @@ namespace ActivityReservation.API.Test
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"), 100);
 
-            services.AddRedisConfig(options =>
-            {
-                options.RedisServers = new[]
-                {
-                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
-                };
-                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
-                options.DefaultDatabase = 4;
-            });
+            services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
 
             services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
