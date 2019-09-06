@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using Xunit;
 
 namespace ActivityReservation.API.Test.Controllers
@@ -6,11 +7,14 @@ namespace ActivityReservation.API.Test.Controllers
     [Collection("APITestCollection")]
     public class ControllerTestBase
     {
-        public HttpClient Client { get; }
+        protected HttpClient Client { get; }
+
+        protected IServiceProvider Services { get; }
 
         public ControllerTestBase(APITestFixture fixture)
         {
             Client = fixture.Client;
+            Services = fixture.Services;
         }
     }
 }

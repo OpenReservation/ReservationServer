@@ -17,7 +17,7 @@ namespace ActivityReservation.API.Test
     public class APITestFixture : IDisposable
     {
         private readonly IWebHost _server;
-        private IServiceProvider Services { get; }
+        public IServiceProvider Services { get; }
 
         public HttpClient Client { get; }
 
@@ -40,6 +40,8 @@ namespace ActivityReservation.API.Test
             // Client.DefaultRequestHeaders.TryAddWithoutValidation("Api-Version", "1.2");
 
             Initialize();
+
+            Console.WriteLine("test begin");
         }
 
         /// <summary>
@@ -61,16 +63,16 @@ namespace ActivityReservation.API.Test
 
             Client.Dispose();
             _server.Dispose();
+
+            Console.WriteLine("test end");
         }
 
         private static int GetRandomPort()
         {
-            var activePorts = IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners().Select(_ => _.Port).ToList();
-
             var random = new Random();
             var randomPort = random.Next(10000, 65535);
 
-            while (activePorts.Contains(randomPort))
+            while (IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners().Any(p => p.Port == randomPort))
             {
                 randomPort = random.Next(10000, 65535);
             }
