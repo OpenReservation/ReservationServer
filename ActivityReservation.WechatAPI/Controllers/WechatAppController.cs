@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using ActivityReservation.Common;
 using ActivityReservation.WechatAPI.Helper;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Extensions;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
@@ -38,34 +40,39 @@ namespace ActivityReservation.WechatAPI.Controllers
             Logger.LogInformation($"received msg: {body}");
 
             var model = body.JsonToType<WeChatTextMsgModel>();
-            switch (model.MsgType)
+            Logger.LogInformation($"msgModel: {model.ToJson()}");
+
+            if (await RedisManager.GetFirewallClient($"wxAppMsg:{model.MsgId}", TimeSpan.FromMinutes(2)).HitAsync())
             {
-                case "text":
-                    var chatbotHelper = HttpContext.RequestServices.GetRequiredService<ChatBotHelper>();
-                    var reply = await chatbotHelper.GetBotReplyAsync(model.Content, HttpContext.RequestAborted);
-                    if (reply.IsNotNullOrEmpty())
-                    {
-                        Logger.LogInformation($"bot reply:{reply}");
-                        //
-                        var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
-                        await wechatHelper.SendWechatMsg(new
+                switch (model.MsgType)
+                {
+                    case "text":
+                        var chatbotHelper = HttpContext.RequestServices.GetRequiredService<ChatBotHelper>();
+                        var reply = await chatbotHelper.GetBotReplyAsync(model.Content, HttpContext.RequestAborted);
+                        if (reply.IsNotNullOrEmpty())
                         {
-                            touser = model.FromUserName,
-                            msgtype = "text",
-                            text = new
+                            Logger.LogInformation($"bot reply:{reply}");
+                            //
+                            var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
+                            await wechatHelper.SendWechatMsg(new
                             {
-                                content = reply
-                            }
-                        }, WxAppConsts.AppId, WxAppConsts.AppSecret);
-                    }
-                    break;
+                                touser = model.FromUserName,
+                                msgtype = "text",
+                                text = new
+                                {
+                                    content = reply
+                                }
+                            }, WxAppConsts.AppId, WxAppConsts.AppSecret).ConfigureAwait(false);
+                        }
+                        break;
 
-                case "image":
-                    break;
+                    case "image":
+                        break;
 
-                case "event":
-                    //
-                    break;
+                    case "event":
+                        //
+                        break;
+                }
             }
 
             return Content("success", "text/plain", Encoding.UTF8);

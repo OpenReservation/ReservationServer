@@ -41,8 +41,10 @@ namespace ActivityReservation.WechatAPI.Helper
         private const string DeleteMpWechatMenuUrlFormat = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token={0}";
 
         /// <summary>
-        /// 获取公共号 AccessToken
+        /// 获取 AccessToken
         /// </summary>
+        /// <param name="appId">appId</param>
+        /// <param name="appSecret">appSecret</param>
         /// <returns>AccessToken</returns>
         public async Task<string> GetAccessTokenAsync(string appId, string appSecret)
         {
