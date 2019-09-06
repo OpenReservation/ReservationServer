@@ -60,6 +60,11 @@ namespace ActivityReservation.WechatAPI.Helper
         public async Task<bool> SendWechatMsg(object msg, string appId, string appSecret)
         {
             var accessToken = await GetAccessTokenAsync(appId, appSecret);
+            if (accessToken.IsNullOrEmpty())
+            {
+                _logger.LogWarning($" failed to get access token for [{appId}]");
+                return false;
+            }
             var url = SendMsgUrlFormat.FormatWith(accessToken);
             using (var response = await _httpClient.PostAsJsonAsync(url, msg))
             {
