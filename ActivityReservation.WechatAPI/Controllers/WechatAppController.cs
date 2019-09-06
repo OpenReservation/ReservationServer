@@ -39,40 +39,50 @@ namespace ActivityReservation.WechatAPI.Controllers
             var body = await Request.Body.ReadToEndAsync();
             Logger.LogInformation($"received msg: {body}");
 
-            var model = body.JsonToType<WeChatTextMsgModel>();
-            Logger.LogInformation($"msgModel: {model.ToJson()}");
-
-            if (await RedisManager.GetFirewallClient($"wxAppMsg:{model.MsgId}", TimeSpan.FromMinutes(2)).HitAsync())
+            try
             {
-                switch (model.MsgType)
+                var model = body.JsonToType<WeChatTextMsgModel>();
+                if (model != null)
                 {
-                    case "text":
-                        var chatbotHelper = HttpContext.RequestServices.GetRequiredService<ChatBotHelper>();
-                        var reply = await chatbotHelper.GetBotReplyAsync(model.Content, HttpContext.RequestAborted);
-                        if (reply.IsNotNullOrEmpty())
+                    Logger.LogInformation($"msgModel: {model.ToJson()}");
+
+                    if (await RedisManager.GetFirewallClient($"wxAppMsg:{model.MsgId}", TimeSpan.FromMinutes(2)).HitAsync())
+                    {
+                        switch (model.MsgType)
                         {
-                            Logger.LogInformation($"bot reply:{reply}");
-                            //
-                            var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
-                            await wechatHelper.SendWechatMsg(new
-                            {
-                                touser = model.FromUserName,
-                                msgtype = "text",
-                                text = new
+                            case "text":
+                                var chatbotHelper = HttpContext.RequestServices.GetRequiredService<ChatBotHelper>();
+                                var reply = await chatbotHelper.GetBotReplyAsync(model.Content, HttpContext.RequestAborted);
+                                if (reply.IsNotNullOrEmpty())
                                 {
-                                    content = reply
+                                    Logger.LogInformation($"bot reply:{reply}");
+                                    //
+                                    var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
+                                    await wechatHelper.SendWechatMsg(new
+                                    {
+                                        touser = model.FromUserName,
+                                        msgtype = "text",
+                                        text = new
+                                        {
+                                            content = reply
+                                        }
+                                    }, WxAppConsts.AppId, WxAppConsts.AppSecret).ConfigureAwait(false);
                                 }
-                            }, WxAppConsts.AppId, WxAppConsts.AppSecret).ConfigureAwait(false);
+                                break;
+
+                            case "image":
+                                break;
+
+                            case "event":
+                                //
+                                break;
                         }
-                        break;
-
-                    case "image":
-                        break;
-
-                    case "event":
-                        //
-                        break;
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "微信小程序客服消息反序列化失败");
             }
 
             return Content("success", "text/plain", Encoding.UTF8);
