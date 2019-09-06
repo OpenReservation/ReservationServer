@@ -4,7 +4,6 @@ using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
-using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Services;
 using Microsoft.AspNetCore.Builder;
@@ -91,9 +90,6 @@ namespace ActivityReservation.API.Test
         {
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
-
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-            app.UsePerformanceLog();
 
             app.UseMvc(routes =>
             {
