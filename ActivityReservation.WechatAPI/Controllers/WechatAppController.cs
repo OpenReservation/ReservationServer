@@ -46,17 +46,17 @@ namespace ActivityReservation.WechatAPI.Controllers
                     if (await RedisManager.GetFirewallClient($"wxAppMsg:{model.MsgId}", TimeSpan.FromMinutes(2)).HitAsync())
                     {
                         Logger.LogInformation($"msgModel: {model.ToJson()}");
+                        var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
 
                         switch (model.MsgType)
                         {
                             case "text":
                                 var chatbotHelper = HttpContext.RequestServices.GetRequiredService<ChatBotHelper>();
-                                var reply = await chatbotHelper.GetBotReplyAsync(model.Content, HttpContext.RequestAborted);
+                                var reply = await chatbotHelper.GetBotReplyAsync(model.Content);
                                 if (reply.IsNotNullOrEmpty())
                                 {
                                     Logger.LogInformation($"bot reply:{reply}");
                                     //
-                                    var wechatHelper = HttpContext.RequestServices.GetRequiredService<WeChatHelper>();
                                     await wechatHelper.SendWechatMsg(new
                                     {
                                         touser = model.FromUserName,
@@ -70,6 +70,17 @@ namespace ActivityReservation.WechatAPI.Controllers
                                 break;
 
                             case "image":
+                                var imgMsg = body.JsonToType<WeChatImageMsgModel>();
+                                // 返回原图
+                                await wechatHelper.SendWechatMsg(new
+                                {
+                                    touser = model.FromUserName,
+                                    msgtype = "text",
+                                    text = new
+                                    {
+                                        content = "抱歉，人家还没学会自动识别图片呢"
+                                    }
+                                }, WxAppConsts.AppId, WxAppConsts.AppSecret);
                                 break;
 
                             case "event":
