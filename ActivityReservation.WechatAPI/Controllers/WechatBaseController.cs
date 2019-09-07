@@ -6,7 +6,7 @@ using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    [Area("Wechat")]
+    [Area("WeChat")]
     [WechatRequestValid]
     public class WeChatBaseController : Controller
     {

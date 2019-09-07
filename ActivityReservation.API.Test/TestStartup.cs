@@ -46,13 +46,10 @@ namespace ActivityReservation.API.Test
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-            // DataProtection persist in redis
-            services.AddDataProtection()
-                .SetApplicationName(ApplicationHelper.ApplicationName)
-                ;
+            services.AddDataProtection().SetApplicationName(ApplicationHelper.ApplicationName);
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"), 100);
+            services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));
 
             services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
 

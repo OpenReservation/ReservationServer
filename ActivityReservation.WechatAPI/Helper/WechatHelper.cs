@@ -48,17 +48,43 @@ namespace ActivityReservation.WechatAPI.Helper
         /// <returns>AccessToken</returns>
         public async Task<string> GetAccessTokenAsync(string appId, string appSecret)
         {
-            var token = await RedisManager.CacheClient.GetOrSetAsync($"wechat_access_token:{appId}",
-                () => RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(appId, appSecret))
+            var tokenCacheKey = $"wechat_access_token:{appId}";
+            var token = RedisManager.CacheClient.Get(tokenCacheKey);
+            if (string.IsNullOrEmpty(token))
+            {
+                using (var redLock = RedisManager.GetRedLockClient(tokenCacheKey, 10))
+                {
+                    if (await redLock.TryLockAsync())
+                    {
+                        var tokenEntity = await RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(appId, appSecret))
                 .ContinueWith(r => r.Result.JsonToType<AccessTokenEntity>()),
-                result => result.AccessToken.IsNotNullOrWhiteSpace()),
-                TimeSpan.FromSeconds(7140));
-            return token?.AccessToken;
+                result => string.IsNullOrEmpty(result?.AccessToken));
+                        if (!string.IsNullOrEmpty(tokenEntity?.AccessToken))
+                        {
+                            token = tokenEntity.AccessToken;
+                            RedisManager.CacheClient.Set(tokenCacheKey, tokenEntity.AccessToken, TimeSpan.FromSeconds(tokenEntity.ExpiresIn));
+                        }
+                    }
+                }
+            }
+
+            return token;
         }
 
         // https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN
+        /// <summary>
+        /// 发送消息
+        /// 0: AccessToken
+        /// </summary>
         private const string SendMsgUrlFormat = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token={0}";
 
+        /// <summary>
+        /// 发送微信消息
+        /// </summary>
+        /// <param name="msg">msg body</param>
+        /// <param name="appId">appId</param>
+        /// <param name="appSecret">appSecret</param>
+        /// <returns></returns>
         public async Task<bool> SendWechatMsg(object msg, string appId, string appSecret)
         {
             var accessToken = await GetAccessTokenAsync(appId, appSecret);
