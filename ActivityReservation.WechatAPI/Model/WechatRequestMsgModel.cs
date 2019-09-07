@@ -20,7 +20,7 @@
         /// <summary>
         /// 消息类型
         /// </summary>
-        public string MsgType { get; }
+        public string MsgType { get; set; }
 
         /// <summary>
         /// 消息创建时间，整型
