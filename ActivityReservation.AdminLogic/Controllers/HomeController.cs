@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using ActivityReservation.Common;
 using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,13 @@ namespace ActivityReservation.AdminLogic.Controllers
 {
     public class HomeController : AdminBaseController
     {
+        private readonly IStorageProvider _storageProvider;
+
+        public HomeController(ILogger<HomeController> logger, OperLogHelper operLogHelper, IStorageProvider storageProvider) : base(logger, operLogHelper)
+        {
+            _storageProvider = storageProvider;
+        }
+
         private string SiteUrl => Request.Scheme + "://" + Request.Host.Value;
 
         public ActionResult Index()
@@ -228,10 +236,6 @@ namespace ActivityReservation.AdminLogic.Controllers
                 dirFileList.Add(hash);
             }
             return Json(result);
-        }
-
-        public HomeController(ILogger<HomeController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
-        {
         }
 
         private class NameSorter : IComparer
