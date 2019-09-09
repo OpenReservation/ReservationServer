@@ -185,6 +185,11 @@ namespace ActivityReservation
                 options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All;
             });
 
+
+            services.Configure<GiteeStorageOptions>(Configuration.GetSection("Storage:Gitee"));
+            services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
+            services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
+            
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ActivityReservation.Common;
 using ActivityReservation.Helpers;
 using ActivityReservation.WorkContexts;
@@ -30,18 +31,14 @@ namespace ActivityReservation.AdminLogic.Controllers
             return View();
         }
 
-        public void UploadFile()
+        public async Task UploadFile()
         {
             //file root dir path 文件保存目录路径
-            var savePath = "/Upload/";
-            //file root dir url 文件保存目录URL
-            var saveUrl = SiteUrl + savePath;
+            var savePath = "/upload/";
             //定义允许上传的文件扩展名
             var extTable = new Hashtable();
             extTable.Add("image", "gif,jpg,jpeg,png,bmp");
-            extTable.Add("flash", "swf,flv");
-            extTable.Add("media", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb");
-            extTable.Add("file", "doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2");
+            extTable.Add("file", "doc,docx,xls,xlsx,ppt,pptx,pdf,txt,zip");
             //最大文件大小
             var maxSize = 1000000;
             var imgFile = Request.Form.Files["imgFile"];
@@ -50,12 +47,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 showError("请选择文件。");
                 return;
             }
-            var dirPath = ApplicationHelper.MapPath(savePath);
-            if (!Directory.Exists(dirPath))
-            {
-                showError("上传目录不存在。");
-                return;
-            }
+
             var dirName = Request.Query["dir"][0];
             if (string.IsNullOrEmpty(dirName))
             {
@@ -77,42 +69,36 @@ namespace ActivityReservation.AdminLogic.Controllers
             {
                 showError($"上传文件扩展名是不允许的扩展名。\n只允许{extTable[dirName]}格式。");
             }
-            //创建文件夹
-            dirPath += dirName + "/";
-            saveUrl += dirName + "/";
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
+            savePath += dirName + "/";
             var ymd = DateTime.UtcNow.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
-            dirPath += ymd + "/";
-            saveUrl += ymd + "/";
-            if (!Directory.Exists(dirPath))
-            {
-                Directory.CreateDirectory(dirPath);
-            }
+            savePath += ymd + "/";
+
             var newFileName = DateTime.UtcNow.ToString("yyyyMMddHHmmss_ffff", DateTimeFormatInfo.InvariantInfo) + fileExt;
-            var filePath = dirPath + newFileName;
+            var filePath = savePath + newFileName;
             //save file
-            using (var stream = System.IO.File.Create(filePath))
+            using (var stream = new MemoryStream())
             {
-                imgFile.CopyTo(stream);
+                await imgFile.CopyToAsync(stream);
+
+                var fileUrl = await _storageProvider.SaveBytes(stream.ToArray(), filePath);
+                if (!string.IsNullOrEmpty(fileUrl))
+                {
+                    Response.Body.Write(new { error = 0, url = fileUrl }.ToJson().GetBytes());
+                }
+                else
+                {
+                    showError("上传图片失败");
+                }
             }
-            //file access url 文件url
-            var fileUrl = saveUrl + newFileName;
-            var hash = new Hashtable();
-            hash["error"] = 0;
-            hash["url"] = fileUrl;
-            Response.Body.Write(hash.ToJson().GetBytes());
         }
 
         [NonAction]
         private void showError(string message)
         {
-            var hash = new Hashtable
+            var hash = new
             {
-                ["error"] = 1,
-                ["message"] = message
+                error = 1,
+                message
             };
             HttpContext.Response.Body.Write(hash.ToJson().GetBytes());
         }
