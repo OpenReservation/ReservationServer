@@ -1,4 +1,5 @@
 import { PagedListData } from './../models/PagedListData';
+import { RetryHelper } from '../utils/RetryHelper';
 
 export class BaseService<TModel>{
   protected readonly apiBaseUrl: string = "https://service-balxf7hr-1251288923.ap-shanghai.apigateway.myqcloud.com/release/reservationWxAppGateway";
@@ -25,6 +26,9 @@ export class BaseService<TModel>{
        let result = <PagedListData<TModel>>response.data;
        callback(result);
        wx.hideLoading();
+     },
+     fail: (err)=>{
+
      }
     });
   }
@@ -40,6 +44,9 @@ export class BaseService<TModel>{
         wx.hideLoading();
         let result = <Array<TModel>>response.data;
         callback(result);
+      },
+      fail: (err)=>{
+       
       }
     });
   }
@@ -62,6 +69,9 @@ export class BaseService<TModel>{
         wx.hideLoading();
         let result = <TModel><any>response.data;
         callback(result);
+      },
+      fail: (err)=>{
+       
       }
     });
   }

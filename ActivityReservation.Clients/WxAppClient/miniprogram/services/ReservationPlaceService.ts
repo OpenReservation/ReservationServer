@@ -1,6 +1,7 @@
 import { BaseService } from './BaseService';
 import { ReservationPlace } from '../models/ReservationPlace';
 import { ReservationPeriod } from '../models/ReservationPeriod';
+import { RetryHelper } from '../utils/RetryHelper';
 
 export class ReservationPlaceService extends BaseService<ReservationPlace>{
 

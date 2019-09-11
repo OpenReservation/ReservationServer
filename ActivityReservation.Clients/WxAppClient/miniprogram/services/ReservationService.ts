@@ -1,6 +1,8 @@
 
 import { BaseService } from './BaseService';
 import { Reservation } from '../models/Reservation';
+import { RetryHelper } from '../utils/RetryHelper';
+
 
 export class ReservationService extends BaseService<Reservation>{
 
@@ -10,7 +12,7 @@ export class ReservationService extends BaseService<Reservation>{
 
   public NewReservation(callback:(result:any)=>void,reservation: Reservation, captchaType: string, captcha: string){
     wx.showLoading({
-      title: "loading..."      
+      title: "loading..."  
     });
     let url = `${this.apiBaseUrl}/api/reservation`;
     wx.request({
@@ -27,6 +29,9 @@ export class ReservationService extends BaseService<Reservation>{
         wx.hideLoading();
         let result = <any>response.data;
         callback(result);
+      },
+      fail: (err)=>{
+        
       }
     });
   }
