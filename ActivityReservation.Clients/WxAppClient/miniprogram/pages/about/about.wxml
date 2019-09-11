@@ -4,12 +4,12 @@
     <text class="title">关于活动室预约系统 \n </text> 
     <text>活动室预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
     修改为线上预约+线下盖章审批的方式来预约学校的活动室。 \n</text>
-    <text>目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，</text>
-    <text>项目地址：<a href="https://github.com/WeihanLi/ActivityReservation">https://github.com/WeihanLi/ActivityReservation</a></text>
-    <text>演示地址：<a href="https://reservation.weihanli.xyz">https://reservation.weihanli.xyz</a></text>
-    <text>新版演示地址：<a href="https://reservation-client.weihanli.xyz">https://reservation-client.weihanli.xyz</a></text>
-    <text>后台登录地址： <a href="https://reservation.weihanli.xyz/Admin/Account/Login">https://reservation.weihanli.xyz/Admin/Account/Login</a></text>
-    <text>后台登录账号： \n</text>
+    <text>目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署 \n</text>
+    <text>项目地址：\n https://github.com/WeihanLi/ActivityReservation  \n</text>
+    <text>演示地址：\n https://reservation.weihanli.xyz  \n</text>
+    <text>新版演示地址：\n https://reservation-client.weihanli.xyz  \n</text>
+    <text>后台登录地址：\n https://reservation.weihanli.xyz/Admin/Account/Login  \n</text>
+    <text>后台登录账号：\n</text>
     <text>管理员用户名: admin 密码: Admin888 <br/>
     普通用户： Alice 密码：Test1234</text>
     <br/>
