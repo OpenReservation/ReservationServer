@@ -12,10 +12,17 @@ namespace ActivityReservation
                 .ConfigureAppConfiguration((context, builder) =>
                 {
                     var builtConfig = builder.Build();
-                    builder.AddAzureKeyVault(
+                    if (!string.IsNullOrEmpty(builtConfig["KeyVault:Name"]))
+                    {
+                        builder.Sources.Clear();
+                        builder.AddAzureKeyVault(
                         $"https://{builtConfig["KeyVault:Name"]}.vault.azure.net/",
                         builtConfig["KeyVault:ClientId"],
-                        builtConfig["KeyVault:ClientSecret"]);
+                        builtConfig["KeyVault:ClientSecret"])
+                            .AddJsonFile("appsettings.json", true, true)
+                            .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true)
+                            ;
+                    }
                 })
                 .UseStartup<Startup>()
                 .Build();

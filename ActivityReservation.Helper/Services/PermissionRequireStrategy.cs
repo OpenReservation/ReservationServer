@@ -34,11 +34,11 @@ namespace ActivityReservation.Filters
         });
     }
 
-    public class AdminOnlyControlAccessStragety : IControlAccessStrategy
+    public class AdminOnlyControlAccessStrategy : IControlAccessStrategy
     {
         private readonly IHttpContextAccessor _accessor;
 
-        public AdminOnlyControlAccessStragety(IHttpContextAccessor httpContextAccessor) => _accessor = httpContextAccessor;
+        public AdminOnlyControlAccessStrategy(IHttpContextAccessor httpContextAccessor) => _accessor = httpContextAccessor;
 
         public bool IsControlCanAccess(string accessKey)
         {

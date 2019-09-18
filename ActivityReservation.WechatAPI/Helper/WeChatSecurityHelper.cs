@@ -7,7 +7,7 @@ namespace ActivityReservation.WechatAPI.Helper
     public class WechatSecurityHelper
     {
         private static readonly WXBizMsgCrypt Wxcpt =
-            new WXBizMsgCrypt(WeChatConsts.Token, WeChatConsts.AESKey, WeChatConsts.AppId);
+            new WXBizMsgCrypt(MpWeChatConsts.Token, MpWeChatConsts.AESKey, MpWeChatConsts.AppId);
 
         private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatSecurityHelper));
 

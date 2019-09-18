@@ -1,0 +1,9 @@
+<div>
+  <mat-nav-list>
+    <mat-list-item *ngFor="let notice of noticeList">
+      <a matLine [title]="notice.NoticeTitle" [routerLink]="['/notice', notice.NoticeCustomPath]">{{ notice.NoticeTitle }} -- {{ notice.NoticePublishTime | date:'yyyy-MM-dd' }}</a>
+    </mat-list-item>
+  </mat-nav-list>
+  <mat-paginator showFirstLastButtons [length]="total" (page)="onPageEvent($event)" [pageIndex]="pageNumber-1" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 20]">
+  </mat-paginator>
+</div>

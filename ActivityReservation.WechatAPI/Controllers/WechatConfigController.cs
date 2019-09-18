@@ -9,21 +9,6 @@ namespace ActivityReservation.WechatAPI.Controllers
     {
         public ActionResult Index() => View();
 
-        /// <summary>
-        /// 微信公共号菜单
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult MenuConfig()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public JsonResult SaveMenuConfig()
-        {
-            return Json("");
-        }
-
         public WechatConfigController(ILogger<WechatConfigController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
         {
         }

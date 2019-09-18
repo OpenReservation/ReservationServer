@@ -1,0 +1,121 @@
+<div id="reservationContainer">
+    <mat-vertical-stepper linear #stepper (selectionChange)="onStepChange($event)">
+        <mat-step [stepControl]="placeFormGroup">
+            <form [formGroup]="placeFormGroup">
+                <ng-template matStepLabel>选择要预约的活动室</ng-template>
+                <mat-form-field>
+                  <mat-select formControlName="placeCtrl" (selectionChange)="stepper.next()">
+                    <mat-option *ngFor="let place of reservationPlaces" [value]="place.PlaceId">
+                      {{place.PlaceName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <div>
+                  <button mat-button matStepperNext>下一步</button>
+                </div>
+            </form>
+        </mat-step>          
+        <mat-step [stepControl]="dateFormGroup">
+          <form [formGroup]="dateFormGroup">
+            <ng-template matStepLabel>选择要预约的日期</ng-template>
+            <mat-form-field>
+                <input formControlName="dateCtrl" (dateChange)="stepper.next()" [min]="minDate" [max]="maxDate" (click)="picker.open()" matInput [matDatepicker]="picker" placeholder="选择要预约的日期" readonly disabled required />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker disabled="false" touchUi #picker></mat-datepicker>
+              </mat-form-field>
+            <div>
+              <button mat-button matStepperPrevious>上一步</button>
+              <button mat-button matStepperNext>下一步</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step [stepControl]="periodFormGroup">
+            <form [formGroup]="periodFormGroup">
+                <ng-template matStepLabel>选择要预约的时间段</ng-template>
+                <!-- https://stackoverflow.com/questions/46749251/angular-material-how-to-handle-multiple-checkboxes-with-formgroup -->
+                <section>
+                    <ng-container formArrayName="periods">
+                        <div *ngFor="let period of reservationPeriods; let i = index" >
+                           <mat-checkbox [formControlName]="i" [value]="period.PeriodId" [disabled]="(!period.Checked && checkedPeriodNum == maxReservationPeriod) || !period.IsCanReservate" (change)="onPeriodClick(i, period)" [checked]="period.Checked">
+                             {{period.PeriodTitle}}
+                           </mat-checkbox>
+                        </div>
+                     </ng-container>
+                </section>
+                <div>
+                  <button mat-button matStepperPrevious>上一步</button>
+                  <button mat-button matStepperNext>下一步</button>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="personFormGroup">
+            <form [formGroup]="personFormGroup">
+              <ng-template matStepLabel>填写预约人信息</ng-template>
+              <div>
+              
+                  <mat-form-field>
+                    <input matInput formControlName="unitCtrl" [(ngModel)]="reservation.ReservationUnit" required placeholder="预约单位">
+                  </mat-form-field> <br/>
+                  <mat-form-field>
+                    <input matInput formControlName="contentCtrl" [(ngModel)]="reservation.ReservationActivityContent" required placeholder="活动内容">
+                  </mat-form-field> <br/>
+                  <mat-form-field>
+                    <input matInput formControlName="personNameCtrl" [(ngModel)]="reservation.ReservationPersonName" required placeholder="预约人姓名">
+                  </mat-form-field> <br/>
+                  <mat-form-field>
+                    <input matInput formControlName="phoneCtrl"  [(ngModel)]="reservation.ReservationPersonPhone" required placeholder="预约人手机号码">
+                  </mat-form-field>
+              </div>
+              <div>
+                <button mat-button matStepperPrevious>上一步</button>
+                <button mat-button matStepperNext>下一步</button>
+              </div>
+            </form>
+          </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>信息确认</ng-template>
+          <div>
+            <!-- reservation info -->
+            <table class="table table-striped">
+                <tr>
+                    <td>预约日期</td>
+                    <td>{{reservation.ReservationForDate}}</td>
+                </tr>
+                <tr>
+                    <td>预约地点</td>
+                    <td>{{reservation.ReservationPlaceName}}</td>
+                </tr>
+                <tr>
+                    <td>预约时间段</td>
+                    <td>{{reservation.ReservationForTime}}</td>
+                </tr>
+                <tr>
+                    <td>预约单位</td>
+                    <td>{{reservation.ReservationUnit}}</td>
+                </tr>
+                <tr>
+                    <td>预约活动内容</td>
+                    <td>{{reservation.ReservationActivityContent}}</td>
+                </tr>
+                <tr>
+                    <td>预约人姓名</td>
+                    <td>{{reservation.ReservationPersonName}}</td>
+                </tr>
+                <tr>
+                    <td>预约人联系方式</td>
+                    <td>{{reservation.ReservationPersonPhone}}</td>
+                </tr>
+            </table>
+          </div>
+          <div>
+            <span>请检查以上预约信息是否正确</span>
+            <button id="TencentCaptcha1" style="display: none;width:10rem;height:1rem"></button>
+            <mat-spinner [ngStyle]="{'display': submiting?'':'none' }"></mat-spinner>
+          </div>
+          <div>
+            <button mat-button matStepperPrevious>上一步</button>
+            <button id="btnSubmit" mat-button [disabled]="submiting" (click)="onSubmitReservation()">提 交</button>
+          </div>
+        </mat-step>
+    </mat-vertical-stepper>
+</div>

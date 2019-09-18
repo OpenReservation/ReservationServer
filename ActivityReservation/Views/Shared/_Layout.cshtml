@@ -15,9 +15,11 @@
         <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     </environment>
     <link href="~/Content/Site.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://tajs.qq.com/stats?sId=66446871" charset="UTF-8"></script>
     @RenderSection("styles", required: false)
 </head>
 <body>
+    <a id="githubLink" class="hidden-print" style="position:fixed;top:0;right:0;z-index:19941008" href="https://github.com/WeihanLi/ActivityReservation"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=256%2C256" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
     <div class="navbar navbar-inverse navbar-fixed-top hidden-print">
         <div class="container">
             <div class="navbar-header">
@@ -41,9 +43,20 @@
         <div class="main-content">@RenderBody()</div>
         <hr class="hidden-print" />
         <footer class="hidden-print">
-            <p>&copy; @DateTime.Now.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
+            <p>&copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
         </footer>
     </div>
+    <!-- Google Analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-86200565-1', 'auto');
+    ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->    
     <environment names="Development">
         <script src="~/Scripts/jquery-1.10.2.min.js"></script>
         <script src="~/Scripts/bootstrap.min.js"></script>

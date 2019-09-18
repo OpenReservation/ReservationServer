@@ -1,0 +1,25 @@
+<mat-sidenav-container style="min-height:30rem;">  
+  <mat-sidenav #sidenav style="margin-top:4rem;z-index: 19941110;height:100%;" mode="over" class="app-sidenav mat-toolbar" color="primary">
+    <mat-toolbar>
+      <mat-toolbar-row *ngFor="let item of menus">
+        <span><a [title]="item.Title" [routerLink]="item.Link">{{item.Title}}</a></span>
+      </mat-toolbar-row>
+    </mat-toolbar>
+  </mat-sidenav>
+
+  <header>
+    <mat-toolbar color="primary" style="position: fixed; left:0;top:0;width: 100%;z-index: 19941008">      
+      <button mat-button class="app-menu-button" (click)="sidenav.toggle()">
+        <i class="material-icons">menu</i>
+      </button>
+      <span class="title" routerLink="/">{{title}}</span>
+    </mat-toolbar>
+  </header>  
+  <section class="app-content" style="margin: 58px auto 0;max-width:1280px;">
+    <mat-progress-bar color="accent" [ngStyle]="{ 'display': loadingSvc.isLoading?'block':'none'}" mode="query"></mat-progress-bar>
+    <router-outlet></router-outlet>
+  </section>
+  <footer>
+    <p style="text-align: center">© 2019 - 活动室预约系统 &nbsp;&nbsp; </p>
+  </footer>
+</mat-sidenav-container>

@@ -54,6 +54,7 @@ namespace ActivityReservation.Models
         /// 公告自定义访问路径
         /// </summary>
         [Column]
+        [StringLength(64)]
         public string NoticeCustomPath { get; set; }
 
         /// <summary>
@@ -90,12 +91,12 @@ namespace ActivityReservation.Models
         /// 公告审核状态
         /// </summary>
         [Column]
-        public bool CheckStatus { get; set; } = false;
+        public bool CheckStatus { get; set; }
 
         /// <summary>
         /// 是否删除
         /// </summary>
         [Column]
-        public bool IsDeleted { get; set; } = false;
+        public bool IsDeleted { get; set; }
     }
 }

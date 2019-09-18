@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activityreservation
+  namespace: default
+  labels:
+    app: activityreservation
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
+  selector:
+    matchLabels:
+      app: activityreservation
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: activityreservation
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      containers:        
+        - name: activityreservation
+          image: weihanli/activityreservation:latest
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "100m"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /Health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 60
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - name: settings
+            mountPath: /app/appsettings.json
+            subPath: appsettings
+
+      volumes:
+        - name: settings
+          configMap:
+            name: reservation-configs
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: activityreservation
+spec:
+  selector:
+    app: activityreservation
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31220
+  type: NodePort

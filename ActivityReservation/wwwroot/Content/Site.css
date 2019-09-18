@@ -73,3 +73,9 @@ footer {
 .recaptcha {
     margin: 0.4em auto;
 }
+
+@media only screen and (max-width:780px){
+    #githubLink{
+        display: none;
+    }
+}

@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using ActivityReservation.Business;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
+using WeihanLi.EntityFramework;
+using WeihanLi.Redis;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -20,12 +23,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
-            return View();
+            return View(HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true));
         }
 
         public JsonResult BlockTypes()
         {
-            return Json(HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true));
+            return Json(HttpContext.RequestServices.GetService<IBLLBlockType>().Get());
         }
 
         /// <summary>
@@ -59,8 +62,11 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             try
             {
-                var blockList = _blockEntityHelper.Paged(search.PageIndex, search.PageSize, whereLambda, b => b.BlockTime, false);
-                var dataList = blockList.ToPagedList(search.PageIndex, search.PageSize, blockList.TotalCount);
+                var blockList = _blockEntityHelper.GetPagedList(queryBuilder => queryBuilder
+                    .WithPredict(whereLambda)
+                    .WithInclude(q => q.Include(b => b.BlockType))
+                    .WithOrderBy(q => q.OrderByDescending(b => b.BlockTime)), search.PageIndex, search.PageSize);
+                var dataList = blockList.ToPagedList();
                 return View(dataList);
             }
             catch (Exception ex)
@@ -73,7 +79,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <summary>
         /// 添加到黑名单
         /// </summary>
-        /// <param name="model">黑名单model</param>
         /// <returns></returns>
         public ActionResult AddEntity(Guid typeId, string blockValue)
         {
@@ -84,16 +89,17 @@ namespace ActivityReservation.AdminLogic.Controllers
                     BlockId = Guid.NewGuid(),
                     BlockTypeId = typeId,
                     BlockValue = blockValue,
-                    BlockTime = DateTime.Now
+                    BlockTime = DateTime.UtcNow
                 };
                 try
                 {
                     var count = _blockEntityHelper.Insert(entity);
                     if (count == 1)
                     {
+                        ReloadBlackListCache();
                         //记录日志
-                        OperLogHelper.AddOperLog(string.Format("添加 {0} 到黑名单", blockValue), OperLogModule.BlockEntity,
-                            Username);
+                        OperLogHelper.AddOperLog($"添加 {blockValue} 到黑名单", OperLogModule.BlockEntity,
+                            UserName);
                         return Json(true);
                     }
                 }
@@ -113,6 +119,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// 更新黑名单实体状态
         /// </summary>
         /// <param name="entityId">黑名单数据id</param>
+        /// <param name="entityName"></param>
         /// <param name="status">状态</param>
         /// <returns></returns>
         public ActionResult UpdateEntityStatus(Guid entityId, string entityName, int status)
@@ -122,9 +129,10 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var count = _blockEntityHelper.Update(e => e.BlockId == entityId, e => e.IsActive, status > 0);
                 if (count > 0)
                 {
+                    ReloadBlackListCache();
                     OperLogHelper.AddOperLog(
-                        string.Format("更改黑名单 {0} 状态为 {1}", entityName, status > 0 ? "启用" : "禁用"),
-                        OperLogModule.BlockEntity, Username);
+                        $"更改黑名单 {entityName} 状态为 {(status > 0 ? "启用" : "禁用")}",
+                        OperLogModule.BlockEntity, UserName);
                     return Json(true);
                 }
             }
@@ -145,11 +153,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                var c = _blockEntityHelper.Delete(b => b.BlockId == entityId);
+                var c = _blockEntityHelper.Delete(new BlockEntity() { BlockId = entityId });
                 if (c == 1)
                 {
+                    ReloadBlackListCache();
                     //记录日志
-                    OperLogHelper.AddOperLog($"删除黑名单 {entityName}", OperLogModule.BlockEntity, Username);
+                    OperLogHelper.AddOperLog($"删除黑名单 {entityName}", OperLogModule.BlockEntity, UserName);
                     return Json(true);
                 }
             }
@@ -160,10 +169,17 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        private readonly IBLLBlockEntity _blockEntityHelper;
-
-        public BlockEntityController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper, IBLLBlockEntity bLLBlockEntity) : base(logger, operLogHelper)
+        public bool ReloadBlackListCache()
         {
+            return _cacheClient.Set(Constants.BlackListCacheKey, _blockEntityHelper.Get(q => q.WithPredict(x => x.IsActive)), TimeSpan.FromDays(1));
+        }
+
+        private readonly IBLLBlockEntity _blockEntityHelper;
+        private readonly ICacheClient _cacheClient;
+
+        public BlockEntityController(ILogger<OperationLogController> logger, ICacheClient cacheClient, OperLogHelper operLogHelper, IBLLBlockEntity bLLBlockEntity) : base(logger, operLogHelper)
+        {
+            _cacheClient = cacheClient;
             _blockEntityHelper = bLLBlockEntity;
         }
     }

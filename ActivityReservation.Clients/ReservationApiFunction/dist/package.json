@@ -1,0 +1,12 @@
+{
+  "name": "reservation-api-func",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "WeihanLi",
+  "license": "MIT",
+  "dependencies": {
+    "got": "^9.6.0"
+  }
+}

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation-client
+  labels:
+    app: reservation-client
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: reservation-client
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate # 策略类型，使用RollingUpdate可以保证部署期间服务不间断
+    rollingUpdate:
+      maxUnavailable: 1 # 部署时最大允许停止的Pod数量（与replicas相比）
+      maxSurge: 1 # 部署时最大允许创建的Pod数量（与replicas相比）
+
+  template: # 用来指定Pod的模板，与Pod的定义类似
+    metadata:
+      labels: # 根据模板创建的Pod会被贴上该标签，与上面的matchLabels对应
+        app: reservation-client
+    
+    spec:
+      containers:
+        - name: reservation-client
+          image: weihanli/reservation-client:latest
+          imagePullPolicy: IfNotPresent # 默认是IfNotPresent，如果设置成Always，则每一次部署都会重新拉取容器映像（否则，如果本地存在指定的镜像版本，就不会再去拉取）
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "50m"
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservation-client
+spec:
+  selector:
+    app: reservation-client
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31221
+  type: NodePort

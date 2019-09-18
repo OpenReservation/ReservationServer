@@ -1,6 +1,10 @@
 ﻿@{
     Layout = null;
 }
+@using ActivityReservation.Services
+@using System.Net
+@using System.Net.Sockets
+@inject IApplicationSettingService applicationSettings
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,19 +38,20 @@
             </form>
         </section>
         <footer>
-            <p>&copy; @DateTime.Now.Year - 活动室预约系统 </p>
+            <p>&copy; @DateTime.UtcNow.Year - @applicationSettings.GetSettingValue("SystemTitle") &nbsp;&nbsp; HostIp: <strong>@(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault(_ => _.AddressFamily == AddressFamily.InterNetwork)) </strong></p>
         </footer>
     </div>
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Content/layer/layer.js"></script>
+    <!-- <script src="~/Scripts/recaptchaHelper.js"></script> -->
     <script>
     var loading = layer.load(2);
-        document.onreadystatechange = function loadingChange() {
-        if (document.readyState === "complete") { //当页面加载状态为完全结束时进入
-            layer.close(loading);//当页面加载完成后将loading页隐藏
-            $(".btnSubmit").removeAttr("disabled");
-        }
-    }
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") { //当页面加载状态为完全结束时进入
+                layer.close(loading);//当页面加载完成后将loading页隐藏
+                $(".btnSubmit").removeAttr("disabled");
+            }
+        };
     function GetQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = window.location.search.substr(1).match(reg);
@@ -86,13 +91,24 @@
         }
         var username = $("#inputUsername").val();
         var password = $("#inputPassword").val();
-        var gResponse = '1111';
+        //var gResponse = recaptchaHelper.getRecaptchaResponse();
+        //if (!gResponse) {
+        //    layer.msg("请先进行人机验证");
+        //    return;
+        //}
+
         var remember = $("#rememberMe").checked;
         var returnUrl = '@ViewData["returnUrl"]';
         $("#btnLogin").text("登录中...");
         $("#btnLogin").attr("disabled", "disabled");
         $.post("LogOn",
-            { "UserName": username, "Password": password, "RememberMe": remember,"Recaptcha":gResponse,'RecaptchaType':'None' },
+            {
+                "UserName": username,
+                "Password": password,
+                "RememberMe": remember,
+                "Recaptcha": "123",
+                'RecaptchaType': "None"
+            },
             function(data, status) {
                 if (status === "success") {
                     if (!data) {

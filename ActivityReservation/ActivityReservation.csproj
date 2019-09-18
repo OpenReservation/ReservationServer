@@ -1,21 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <IsPackable>false</IsPackable>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.1.1" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
-    <PackageReference Include="WeihanLi.Common.Logging.Log4Net" Version="1.0.12" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\favicon.ico" />
-    <None Include="wwwroot\google658b73f0fd392f13.html" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="2.2.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
+    <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.23.8-preview-20190802-105729" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj" />
+    <ProjectReference Include="..\ActivityReservation.API\ActivityReservation.API.csproj" />
     <ProjectReference Include="..\ActivityReservation.Common\ActivityReservation.Common.csproj" />
     <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj" />
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj" />
@@ -24,9 +23,6 @@
   <ItemGroup>
     <Content Update="Areas\Wechat\Views\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="log4net.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Views\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>

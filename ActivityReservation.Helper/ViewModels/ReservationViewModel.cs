@@ -1,8 +1,38 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using ActivityReservation.Models;
+using Newtonsoft.Json;
+using WeihanLi.Common.Json;
 
 namespace ActivityReservation.ViewModels
 {
+    public class ReservationListViewModel
+    {
+        [Display(Name = "预约日期")]
+        [JsonConverter(typeof(DateTimeFormatConverter), "yyyy-MM-dd")]
+        public DateTime ReservationForDate { get; set; }
+
+        [Display(Name = "预约时间段")]
+        public string ReservationForTime { get; set; }
+
+        public string ReservationPersonPhone { get; set; }
+
+        public string ReservationPersonName { get; set; }
+
+        public string ReservationUnit { get; set; }
+
+        public string ReservationPlaceName { get; set; }
+
+        [Display(Name = "预约活动内容")]
+        public string ReservationActivityContent { get; set; }
+
+        public Guid ReservationId { get; set; }
+
+        public DateTime ReservationTime { get; set; }
+
+        public ReservationStatus ReservationStatus { get; set; }
+    }
+
     public class ReservationViewModel
     {
         [Required]
@@ -35,7 +65,7 @@ namespace ActivityReservation.ViewModels
 
         [Required]
         [Display(Name = "预约人姓名")]
-        [StringLength(4, MinimumLength = 2, ErrorMessage = "联系人姓名不合法")]
+        [StringLength(16, MinimumLength = 2, ErrorMessage = "联系人姓名不合法")]
         public string ReservationPersonName { get; set; }
 
         [Required]

@@ -83,7 +83,7 @@ namespace Tencent
             var arr = codeSerial.Split(',');
             var code = "";
             var randValue = -1;
-            var rand = new Random(unchecked((int)DateTime.Now.Ticks));
+            var rand = new Random(unchecked((int)DateTime.UtcNow.Ticks));
             for (var i = 0; i < codeLen; i++)
             {
                 randValue = rand.Next(0, arr.Length - 1);

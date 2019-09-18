@@ -21,7 +21,7 @@
 using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.Extensions.DependencyInjection;
-using WeihanLi.Common;
+using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.Business
 {
@@ -29,9 +29,9 @@ namespace ActivityReservation.Business
 	foreach (var item in types)
     {
 #>
-	public partial interface IBLL<#= item #>:IBaseBLL<<#= item #>>{}
+	public partial interface IBLL<#= item #>: IEFRepository<ReservationDbContext, <#= item #>>{}
 
-	public partial class BLL<#= item #> : BaseBLL<<#= item #>>,  IBLL<#= item #>
+	public partial class BLL<#= item #> : EFRepository<ReservationDbContext, <#= item #>>,  IBLL<#= item #>
     {
         public BLL<#= item #>(ReservationDbContext dbContext) : base(dbContext)
         {

@@ -2,26 +2,32 @@
 using ActivityReservation.WechatAPI.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
+    [Area("WeChat")]
     [WechatRequestValid]
-    [Area("Wechat")]
-    public class WechatBaseController : Controller
+    public class WeChatBaseController : Controller
     {
         /// <summary>
         /// logger
         /// </summary>
         protected readonly ILogger Logger;
 
-        public WechatBaseController(ILogger logger)
+        public WeChatBaseController(ILogger logger)
         {
             Logger = logger;
         }
 
-        public ContentResult Wechat(WechatContext wechatContext)
+        internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WeChatContext wechatContext)
         {
-            return Content(wechatContext.GetResponse());
+            var response = await wechatContext.GetResponseAsync();
+            if (response.IsNullOrEmpty())
+            {
+                return Content("");
+            }
+            return new WechatResult(response);
         }
     }
 }

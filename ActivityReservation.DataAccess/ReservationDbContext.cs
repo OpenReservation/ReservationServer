@@ -9,6 +9,17 @@ namespace ActivityReservation.Database
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // globalFilters
+            modelBuilder.Entity<ReservationPlace>().HasQueryFilter(x => !x.IsDel);
+            modelBuilder.Entity<ReservationPeriod>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
+            modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
+
+            modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path 设置索引
+        }
+
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<BlockType> BlockTypes { get; set; }
         public virtual DbSet<BlockEntity> BlockEntities { get; set; }
@@ -18,9 +29,6 @@ namespace ActivityReservation.Database
         public virtual DbSet<ReservationPeriod> ReservationPeriods { get; set; }
         public virtual DbSet<SystemSettings> SystemSettings { get; set; }
         public virtual DbSet<Notice> Notices { get; set; }
-
         public virtual DbSet<DisabledPeriod> DisabledPeriods { get; set; }
-
-        public virtual DbSet<WechatMenuConfig> WechatMenuConfigs { get; set; }
     }
 }

@@ -6,10 +6,11 @@ using ActivityReservation.Models;
 using ActivityReservation.Services;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -22,7 +23,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         private readonly IApplicationSettingService _applicationSettingService;
         private readonly IBLLSystemSettings _systemSettingHelper;
 
-        public SystemSettingsController(ILogger<SystemSettingsController> logger, OperLogHelper operLogHelper, IApplicationSettingService applicationSettingService, IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
+        public SystemSettingsController(ILogger<SystemSettingsController> logger,
+            OperLogHelper operLogHelper,
+            IApplicationSettingService applicationSettingService,
+            IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
         {
             _applicationSettingService = applicationSettingService;
             _systemSettingHelper = bLLSystemSettings;
@@ -45,14 +49,14 @@ namespace ActivityReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             //默认查询所有
-            Expression<Func<SystemSettings, bool>> whereLambda = (s => 1 == 1);
+            Expression<Func<SystemSettings, bool>> whereLambda = (s => true);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
                 whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
             }
             var settingsList = _systemSettingHelper.Paged(search.PageIndex, search.PageSize,
                  whereLambda, s => s.SettingName);
-            var data = settingsList.ToPagedList(search.PageIndex, search.PageSize, settingsList.TotalCount);
+            var data = settingsList.ToPagedList();
             return View(data);
         }
 
@@ -71,7 +75,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog($"新增系统设置 {setting.SettingName}：{setting.SettingValue}",
-                        OperLogModule.Settings, Username);
+                        OperLogModule.Settings, UserName);
                     return Json(true);
                 }
             }
@@ -96,7 +100,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 {
                     _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                     OperLogHelper.AddOperLog(
-                        $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, Username);
+                        $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, UserName);
                     return Json(true);
                 }
             }
@@ -105,6 +109,21 @@ namespace ActivityReservation.AdminLogic.Controllers
                 Logger.Error(ex);
             }
             return Json(false);
+        }
+
+        /// <summary>
+        /// 重新加载系统配置
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult ReloadConfiguration()
+        {
+            var configurationRoot = HttpContext.RequestServices.GetService<IConfiguration>() as IConfigurationRoot;
+            if (null == configurationRoot)
+            {
+                return BadRequest();
+            }
+            configurationRoot.Reload();
+            return Ok();
         }
     }
 }

@@ -1,12 +1,23 @@
-﻿@{
+﻿@using System.ComponentModel
+@using System.Reflection
+@using ActivityReservation.Helpers
+@{
     ViewBag.Title = "操作日志";
+    var logModuleType = typeof(OperLogModule);
+    var logMudulesList = new List<SelectListItem>();
+    logMudulesList.Add(new SelectListItem("所有", "", true));
+    logMudulesList.AddRange(
+        Enum.GetValues(logModuleType).Cast<OperLogModule>()
+        .Select(_ => logModuleType.GetField(_.ToString()).GetCustomAttribute<DescriptionAttribute>()?.Description ?? _.ToString())
+        .Select(_=> new SelectListItem(_, _))
+    );
 }
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">操作日志</h3>
         <div class="form-inline" style="margin: 0.6em 0">
             <div class="form-group">
-                <input type="search" value="" id="logModuleName" placeholder="日志模块名称" class="form-control" />
+                <select id="logModuleName" onchange="loadData()" asp-items="logMudulesList" class="form-control"></select>
                 <input type="search" value="" id="logContent" placeholder="日志内容" class="form-control" />
             </div>
             <button id="btnSearch" type="button" class="btn btn-success">搜索</button>
@@ -35,7 +46,7 @@
                     "SearchItem1": $("#logModuleName").val(),
                     "SearchItem2": $("#logContent").val()
                 },
-                success: function(data, status) {
+                success: function (data, status) {
                     if (status == "success") {
                         $("#div_main").html(data);
                     } else {
@@ -48,10 +59,10 @@
 
         //搜索
         $("#btnSearch").on("click",
-            function() {
+            function () {
                 loadData();
             });
-        $(function() {
+        $(function () {
             loadData();
         });
     </script>

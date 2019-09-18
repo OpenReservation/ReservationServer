@@ -6,12 +6,14 @@ using ActivityReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
 
 namespace ActivityReservation.WechatAPI.Controllers
 {
-    public class HomeController : WechatBaseController
+    /// <summary>
+    /// 微信入口
+    /// </summary>
+    public class HomeController : WeChatBaseController
     {
         public HomeController(ILogger<HomeController> logger) : base(logger)
         {
@@ -19,7 +21,7 @@ namespace ActivityReservation.WechatAPI.Controllers
 
         [HttpGet]
         [ActionName("Index")]
-        public void Get(WechatMsgRequestModel model)
+        public async System.Threading.Tasks.Task GetAsync([FromQuery]WechatMsgRequestModel model)
         {
             if (ModelState.IsValid)
             {
@@ -28,8 +30,7 @@ namespace ActivityReservation.WechatAPI.Controllers
                     var echoStr = HttpContext.Request.Query["echostr"].FirstOrDefault();
                     if (!string.IsNullOrEmpty(echoStr))
                     {
-                        //将随机生成的 echostr 参数 原样输出
-                        Response.Body.Write(echoStr.GetBytes());
+                        await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
                     }
                 }
                 catch (Exception ex)
@@ -45,23 +46,27 @@ namespace ActivityReservation.WechatAPI.Controllers
         /// <param name="model">微信消息</param>
         [HttpPost]
         [ActionName("Index")]
-        public ActionResult Post([FromBody]WechatMsgRequestModel model)
+        public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
         {
-            if (model.RequestContent == null)
+            Logger.LogDebug("request msg:" + model.ToJson());
+            using (var ms = new MemoryStream())
             {
-                using (var reader = new StreamReader(Request.Body))
+                await Request.Body.CopyToAsync(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+
+                using (var reader = new StreamReader(ms, System.Text.Encoding.UTF8))
                 {
-                    Logger.Debug($"Request Length:{Request.Body.Length}");
-                    model.RequestContent = reader.ReadToEnd();
-                    Logger.Debug($"RequestContent from Request.Body:{model.RequestContent}");
+                    model.RequestContent = await reader.ReadToEndAsync();
+                    Logger.LogDebug("RequestContent from Request:" + model.RequestContent);
                 }
             }
             if (string.IsNullOrEmpty(model.RequestContent))
             {
                 return Content("RequestContent 为空");
             }
-            var context = new WechatContext(model);
-            return Wechat(context);
+
+            var context = new WeChatContext(model);
+            return await WechatAsync(context);
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
-using ActivityReservation.Business;
-using ActivityReservation.Models;
+using ActivityReservation.Events;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Common.Helpers;
+using WeihanLi.Common.Event;
 using WeihanLi.Extensions;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.Helpers
 {
@@ -17,10 +16,12 @@ namespace ActivityReservation.Helpers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger _logger;
+        private readonly IEventBus _eventBus;
 
-        public OperLogHelper(IHttpContextAccessor httpContextAccessor, ILogger<OperLogHelper> logger)
+        public OperLogHelper(IHttpContextAccessor httpContextAccessor, IEventBus eventBus, ILogger<OperLogHelper> logger)
         {
             _httpContextAccessor = httpContextAccessor;
+            _eventBus = eventBus;
             _logger = logger;
         }
 
@@ -29,30 +30,9 @@ namespace ActivityReservation.Helpers
         /// </summary>
         /// <param name="logContent">日志内容</param>
         /// <param name="logModule">日志模块</param>
-        /// <param name="operBy">操作人</param>
-        /// <returns></returns>
-        private bool AddOperLog(string logContent, string logModule, string operBy)
-        {
-            var httpContext = _httpContextAccessor.HttpContext;
-            try
-            {
-                var log = new OperationLog()
-                {
-                    LogId = Guid.NewGuid(),
-                    LogContent = logContent,
-                    LogModule = logModule,
-                    IpAddress = httpContext.Connection.RemoteIpAddress.ToString(),
-                    OperBy = operBy,
-                    OperTime = DateTime.Now
-                };
-                return httpContext.RequestServices.GetService<IBLLOperationLog>().Insert(log) > 0;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("添加操作日志失败", ex);
-            }
-            return false;
-        }
+        /// <returns>是否添加成功</returns>
+        public bool AddOperLog(string logContent, OperLogModule logModule)
+            => AddOperLog(logContent, logModule, null);
 
         /// <summary>
         /// 添加操作日志
@@ -62,7 +42,25 @@ namespace ActivityReservation.Helpers
         /// <param name="operBy">操作人</param>
         /// <returns>是否添加成功</returns>
         public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
-            => AddOperLog(logContent, logModule.GetDescription(), operBy);
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            var logEvent = new OperationLogEvent
+            {
+                LogContent = logContent,
+                Module = logModule,
+                IpAddress = httpContext.GetUserIP(),
+                OperBy = operBy ?? httpContext.User.Identity.Name,
+            };
+            try
+            {
+                return _eventBus.Publish(logEvent);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"publish OperationLogEvent failed, logDetails: {logEvent.ToJson()}");
+                return false;
+            }
+        }
     }
 
     /// <summary>
@@ -92,7 +90,7 @@ namespace ActivityReservation.Helpers
         DisabledPeriod = 6, //禁用时间段
 
         [Description("微信")]
-        Wechat = 7, //微信
+        WeChat = 7, //微信
 
         [Description("其它")]
         Other = 127,

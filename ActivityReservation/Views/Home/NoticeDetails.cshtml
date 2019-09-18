@@ -3,10 +3,16 @@
 @{
     ViewBag.Title = Model.NoticeTitle;
 }
-
-<h2>
-    @Model.NoticeTitle
-</h2>
-<div>
+<header style="text-align:center">
+    <h2>
+        @Model.NoticeTitle
+    </h2>
+</header>
+<section style="text-align:center">
+    发布时间：@Model.NoticePublishTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss") &nbsp;&nbsp;
+    浏览次数：@Model.NoticeVisitCount
+</section>
+<section>
     @Html.Raw(Model.NoticeContent)
-</div>
+</section>
+<footer></footer>

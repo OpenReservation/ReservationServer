@@ -14,7 +14,6 @@
             <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
         </div>
         <button id="btnSearch" type="button" class="btn btn-primary">搜索</button> <br />
-        <span class="text-info">注：默认只显示最近7天的预约，已过期的预约可以根据预约人联系方式查询</span>
     </div>
     <div id="div_main">
     </div>
@@ -45,6 +44,7 @@
         }
 
         function view(id) {
+            $("#rePhone").val('');
             $("#reId").val(id);
             layer.prompt({
                 title: '请输入预约使用的手机号',

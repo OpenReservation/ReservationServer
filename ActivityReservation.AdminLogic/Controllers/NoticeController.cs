@@ -8,7 +8,6 @@ using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
-using WeihanLi.Common.Helpers;
 
 namespace ActivityReservation.AdminLogic.Controllers
 {
@@ -34,18 +33,18 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="search">查询信息</param>
         /// <returns></returns>
-        public ActionResult List(SearchHelperModel search)
+        public ActionResult List([FromQuery]SearchHelperModel search)
         {
-            Expression<Func<Notice, bool>> whereLamdba = (n => n.IsDeleted == false);
+            Expression<Func<Notice, bool>> whereExpression = (n => true);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = n => n.IsDeleted == false && n.NoticeTitle.Contains(search.SearchItem1);
+                whereExpression = n => n.NoticeTitle.Contains(search.SearchItem1);
             }
             try
             {
                 var list = _bLLNotice.Paged(search.PageIndex, search.PageSize,
-                    whereLamdba, n => n.NoticePublishTime, false);
-                return View(list.Data.ToPagedList(search.PageIndex, search.PageSize, list.TotalCount));
+                    whereExpression, n => n.NoticePublishTime, false);
+                return View(list.ToPagedList());
             }
             catch (Exception ex)
             {
@@ -70,12 +69,11 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <param name="model">公告信息</param>
         /// <returns></returns>
         [HttpPost]
-        // [ValidateInput(false)]
-        public ActionResult Create(NoticeViewModel model)
+        public ActionResult Create([FromForm]NoticeViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(model);
             }
             try
             {
@@ -87,37 +85,40 @@ namespace ActivityReservation.AdminLogic.Controllers
                     NoticeContent = model.Content,
                     NoticeTitle = model.Title,
                     NoticeCustomPath = model.CustomPath,
-                    NoticePublisher = Username,
-                    NoticePublishTime = DateTime.Now,
-                    UpdateBy = Username,
-                    UpdateTime = DateTime.Now
+                    NoticePublisher = UserName,
+                    NoticePublishTime = DateTime.UtcNow,
+                    UpdateBy = UserName,
+                    UpdateTime = DateTime.UtcNow
                 };
                 //
                 if (!string.IsNullOrEmpty(n.NoticeCustomPath))
                 {
                     if (n.NoticeCustomPath.EndsWith(".html"))
                     {
-                        n.NoticePath = n.NoticeCustomPath;
-                    }
-                    else
-                    {
-                        n.NoticePath = n.NoticeCustomPath + ".html";
+                        n.NoticeCustomPath = n.NoticeCustomPath.Substring(0, n.NoticeCustomPath.Length - 5); // trim end ".html"
                     }
                 }
                 else
                 {
-                    n.NoticePath = DateTime.Now.ToString("yyyyMMddHHmmss") + ".html";
+                    n.NoticeCustomPath = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
                 }
+                var existStatus = _bLLNotice.Exist(nx => nx.NoticeCustomPath.ToLower().Equals(n.NoticeCustomPath.ToLower()));
+                if (existStatus)
+                {
+                    n.NoticeCustomPath = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+                }
+                n.NoticePath = $"{n.NoticeCustomPath}.html";
+
                 var c = _bLLNotice.Insert(n);
                 if (c == 1)
                 {
-                    OperLogHelper.AddOperLog($"{Username}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
-                        OperLogModule.Notice, Username);
+                    OperLogHelper.AddOperLog($"{UserName}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
+                        OperLogModule.Notice, UserName);
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    return View();
+                    return View(model);
                 }
             }
             catch (Exception ex)
@@ -162,21 +163,17 @@ namespace ActivityReservation.AdminLogic.Controllers
         }
 
         [HttpPost]
-        public ActionResult Preview(NoticeViewModel model)
+        public ActionResult Preview([FromForm]NoticeViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                return View(model);
-            }
-            return View();
+            return View(model);
         }
 
         public JsonResult Delete(Guid noticeId)
         {
-            var result = _bLLNotice.Delete(n => n.NoticeId == noticeId);
+            var result = _bLLNotice.Update(new Notice() { NoticeId = noticeId, IsDeleted = true, UpdateBy = UserName, UpdateTime = DateTime.UtcNow }, n => n.IsDeleted);
             if (result > 0)
             {
-                OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, Username);
+                OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, UserName);
                 return Json("");
             }
             return Json("删除失败");

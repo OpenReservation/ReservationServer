@@ -34,22 +34,22 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(int activeStatus, int pageIndex, int pageSize)
         {
-            Expression<Func<DisabledPeriod, bool>> whereLambda = (p => !p.IsDeleted);
+            Expression<Func<DisabledPeriod, bool>> whereLambda = (p => true);
             if (activeStatus > 0)
             {
                 if (activeStatus == 1)
                 {
-                    whereLambda = (p => !p.IsDeleted && p.IsActive);
+                    whereLambda = (p => p.IsActive);
                 }
                 else
                 {
-                    whereLambda = (p => !p.IsDeleted && !p.IsActive);
+                    whereLambda = (p => !p.IsActive);
                 }
             }
 
             var pageList = _bllDisabledPeriod.Paged(pageIndex, pageSize,
                 whereLambda, p => p.UpdatedTime, false);
-            var data = pageList.ToPagedList(pageIndex, pageSize, pageList.TotalCount);
+            var data = pageList.ToPagedList();
             return View(data);
         }
 
@@ -72,8 +72,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    var list = _bllDisabledPeriod.Select(p =>
-                        !p.IsDeleted && EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
+                    var list = _bllDisabledPeriod.Select(p => EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
                     if (list != null && list.Any())
                     {
                         result.Status = JsonResultStatus.RequestError;
@@ -87,8 +86,8 @@ namespace ActivityReservation.AdminLogic.Controllers
                         EndDate = model.EndDate,
                         RepeatYearly = model.RepeatYearly,
                         IsActive = model.IsActive,
-                        UpdatedTime = DateTime.Now,
-                        UpdatedBy = Username
+                        UpdatedTime = DateTime.UtcNow,
+                        UpdatedBy = UserName
                     };
                     var count = _bllDisabledPeriod.Insert(period);
                     if (count > 0)
@@ -138,11 +137,13 @@ namespace ActivityReservation.AdminLogic.Controllers
             else
             {
                 period.IsActive = status > 0;
-                var count = _bllDisabledPeriod.Update(p => p.PeriodId == periodId, p => p.IsActive, period.IsActive);
+                period.UpdatedTime = DateTime.UtcNow;
+                period.UpdatedBy = UserName;
+                var count = _bllDisabledPeriod.Update(period, p => p.IsActive);
                 if (count > 0)
                 {
-                    OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}",
-                        OperLogModule.DisabledPeriod, Username);
+                    OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}:{period.StartDate:yyyy/MM/dd}--{period.EndDate:yyyy/MM/dd}",
+                        OperLogModule.DisabledPeriod, UserName);
 
                     result.Status = JsonResultStatus.Success;
                     result.Result = true;
@@ -158,10 +159,10 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult DeletePeriod(Guid periodId)
         {
-            var count = _bllDisabledPeriod.Delete(p => p.PeriodId == periodId);
+            var count = _bllDisabledPeriod.Delete(new DisabledPeriod() { PeriodId = periodId });
             if (count > 0)
             {
-                OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, Username);
+                OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, UserName);
                 return Json("");
             }
             return Json("删除失败");

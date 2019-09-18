@@ -15,6 +15,7 @@ namespace ActivityReservation.Helpers
         public static void Initialize(this IServiceProvider serviceProvider)
         {
             IReadOnlyCollection<SystemSettings> settings;
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
@@ -25,24 +26,31 @@ namespace ActivityReservation.Helpers
                     {
                         UserId = Guid.NewGuid(),
                         UserName = "admin",
-                        UserPassword = SecurityHelper.SHA256_Encrypt("Admin888"),
+                        UserPassword = SecurityHelper.SHA256("Admin888"),
+                        IsSuper = true
+                    });
+                    dbContext.Users.Add(new User
+                    {
+                        UserId = Guid.NewGuid(),
+                        UserName = "Alice",
+                        UserPassword = SecurityHelper.SHA256("Test1234"),
                         IsSuper = true
                     });
 
                     var blockTypes = new List<BlockType>
-                {
-                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
-                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
-                    new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
-                };
+                    {
+                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
+                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
+                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
+                    };
                     dbContext.BlockTypes.AddRange(blockTypes);
 
                     var placeId = Guid.NewGuid();
                     var placeId1 = Guid.NewGuid();
                     //Places init
                     dbContext.ReservationPlaces.AddRange(new[] {
-                    new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0 },
-                    new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1 }});
+                    new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0,MaxReservationPeriodNum = 2 },
+                    new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1,MaxReservationPeriodNum = 2}});
                     dbContext.ReservationPeriods.AddRange(new[]
                     {
                     new ReservationPeriod
@@ -53,9 +61,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "8:00~10:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now,
+                        CreateTime = DateTime.UtcNow,
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                     new ReservationPeriod
                     {
@@ -65,9 +73,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "10:00~12:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now.AddSeconds(2),
+                        CreateTime = DateTime.UtcNow,
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                     new ReservationPeriod
                     {
@@ -77,9 +85,9 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "13:00~16:00",
                         PlaceId = placeId,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now.AddSeconds(3),
+                        CreateTime = DateTime.UtcNow,
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                     new ReservationPeriod
                     {
@@ -89,11 +97,23 @@ namespace ActivityReservation.Helpers
                         PeriodDescription = "08:00~18:00",
                         PlaceId = placeId1,
                         CreateBy = "System",
-                        CreateTime = DateTime.Now.AddSeconds(3),
+                        CreateTime = DateTime.UtcNow.AddSeconds(3),
                         UpdateBy = "System",
-                        UpdateTime = DateTime.Now
+                        UpdateTime = DateTime.UtcNow
                     },
                 });
+                    var notice = new Notice()
+                    {
+                        NoticeId = Guid.NewGuid(),
+                        CheckStatus = true,
+                        NoticeTitle = "测试公告",
+                        NoticeCustomPath = "test-notice",
+                        NoticePublishTime = DateTime.UtcNow,
+                        NoticeDesc = "测试一下",
+                        NoticePublisher = "System"
+                    };
+                    dbContext.Notices.Add(notice);
+
                     //sys settings init
                     settings = new List<SystemSettings>
                 {
@@ -123,7 +143,7 @@ namespace ActivityReservation.Helpers
                         SettingId = Guid.NewGuid(),
                         SettingName = "SystemContactPhone",
                         DisplayName = "系统联系人联系电话",
-                        SettingValue = "15601655489"
+                        SettingValue = "13245642365"
                     },
                     new SystemSettings
                     {
@@ -139,10 +159,10 @@ namespace ActivityReservation.Helpers
                 }
                 else
                 {
-                    settings = dbContext.SystemSettings.AsNoTracking()
-                    .ToArray();
+                    settings = dbContext.SystemSettings.AsNoTracking().ToArray();
                 }
             }
+
             if (settings.Count > 0) // init settings cache
             {
                 var applicationSettingService = serviceProvider.GetRequiredService<IApplicationSettingService>();
