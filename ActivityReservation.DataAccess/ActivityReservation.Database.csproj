@@ -2,10 +2,10 @@
   <PropertyGroup>
     <RootNamespace>ActivityReservation.DataAccess</RootNamespace>
     <AssemblyName>ActivityReservation.DataAccess</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="DALCollection.generated.cs">

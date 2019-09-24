@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -56,8 +57,8 @@ namespace ActivityReservation
         {
             services.AddHealthChecks();
 
-            services.AddMvc()
-                .AddJsonOptions(options =>
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
@@ -185,17 +186,16 @@ namespace ActivityReservation
                 options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All;
             });
 
-
             services.Configure<GiteeStorageOptions>(Configuration.GetSection("Storage:Gitee"));
             services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
             services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
-            
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
@@ -253,26 +253,27 @@ namespace ActivityReservation
                     c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
                     c.DocumentTitle = "活动室预约系统 API";
                 });
+
+            app.UseRouting();
+
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseRequestLog();
             app.UsePerformanceLog();
 
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("Notice", "/Notice/{path}.html", new
+                endpoints.MapControllers();
+                endpoints.MapControllerRoute("Notice", "/Notice/{path}.html", new
                 {
                     controller = "Home",
                     action = "NoticeDetails"
                 });
-
-                routes.MapRoute(name: "areaRoute",
-                  template: "{area:exists}/{controller=Home}/{action=Index}");
-
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
+                endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
 
             // initialize
