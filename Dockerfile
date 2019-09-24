@@ -23,8 +23,11 @@ RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csp
 
 # build runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine
+
+# https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
 RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
-    apk add terminus-font
+    apk add terminus-font && \
+    apk add --no-cache icu-libs
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/ActivityReservation/out .
