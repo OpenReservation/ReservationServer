@@ -3,6 +3,10 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Globalization Invariant Mode
+    https://github.com/dotnet/corefx/blob/master/Documentation/architecture/globalization-invariant-mode.md
+    -->
+    <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.0.0" />
