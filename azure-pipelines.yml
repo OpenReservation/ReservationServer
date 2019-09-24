@@ -20,8 +20,8 @@ variables:
 
 steps:
 
-- script: dotnet build -c Release
-  displayName: 'dotnet build'
+# - script: dotnet build -c Release
+#   displayName: 'dotnet build'
 
 # - script: dotnet test 
 #   displayName: 'dotnet test'
