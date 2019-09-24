@@ -87,7 +87,7 @@ namespace ActivityReservation
                 });
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")), 100);
+            services.AddDbContextPool<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("Reservation")), 100);
             services.AddRedisConfig(options =>
             {
                 options.RedisServers = new[]

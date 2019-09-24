@@ -8,28 +8,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="DALCollection.generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DALCollection.tt</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj">
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="DALCollection.generated.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>DALCollection.tt</DependentUpon>
-    </Compile>
-    <None Update="DALCollection.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>DALCollection.generated.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
 </Project>
