@@ -11,7 +11,11 @@ COPY ActivityReservation.WechatAPI/*.csproj ActivityReservation.WechatAPI/
 COPY ActivityReservation.AdminLogic/*.csproj ActivityReservation.AdminLogic/
 COPY ActivityReservation.API/*.csproj ActivityReservation.API/
 COPY ActivityReservation/ActivityReservation.csproj ActivityReservation/
-RUN dotnet restore ActivityReservation/ActivityReservation.csproj
+
+# RUN dotnet restore ActivityReservation/ActivityReservation.csproj
+## diff between netcore2.2 and netcore3.0
+WORKDIR /src/ActivityReservation
+RUN dotnet restore
 
 # copy everything and build
 COPY . .
