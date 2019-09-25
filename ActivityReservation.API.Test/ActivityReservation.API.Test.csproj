@@ -13,7 +13,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.API\ActivityReservation.API.csproj" />
-    <ProjectReference Include="..\ActivityReservation.DataAccess\ActivityReservation.Database.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

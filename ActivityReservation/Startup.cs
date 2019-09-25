@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
-using ActivityReservation.API;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
 using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
-using ActivityReservation.Models;
 using ActivityReservation.Services;
 using ActivityReservation.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -124,13 +121,14 @@ namespace ActivityReservation
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
+            //services.AddSwaggerGen(options =>
+            //{
+            //    options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
 
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
-            });
+            //    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
+            //    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
+            //});
+
             services.AddRedisConfig(options =>
             {
                 options.RedisServers = new[]
@@ -144,6 +142,9 @@ namespace ActivityReservation
             {
                 services.AddSingleton<IEventBus, EventBus>();
                 services.AddSingleton<IEventStore, EventStoreInMemory>();
+
+                services.AddDataProtection()
+                    .SetApplicationName(ApplicationHelper.ApplicationName);
             }
             else
             {
@@ -256,13 +257,13 @@ namespace ActivityReservation
             app.UseHealthCheck("/health");
 
             app.UseStaticFiles();
-            app.UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    // c.RoutePrefix = string.Empty; //
-                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
-                    c.DocumentTitle = "活动室预约系统 API";
-                });
+            //app.UseSwagger()
+            //    .UseSwaggerUI(c =>
+            //    {
+            //        // c.RoutePrefix = string.Empty; //
+            //        c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
+            //        c.DocumentTitle = "活动室预约系统 API";
+            //    });
 
             app.UseRouting();
 
@@ -282,6 +283,7 @@ namespace ActivityReservation
                     controller = "Home",
                     action = "NoticeDetails"
                 });
+                endpoints.MapAreaControllerRoute(name: "Admin", "Admin", "{Admin}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });

@@ -88,21 +88,12 @@ namespace ActivityReservation.API.Test
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute("Notice", "/Notice/{path}.html", new
+            app.UseRouting()
+                .UseEndpoints(endpoints =>
                 {
-                    controller = "Home",
-                    action = "NoticeDetails"
+                    endpoints.MapControllers();
+                    endpoints.MapDefaultControllerRoute();
                 });
-
-                routes.MapRoute(name: "areaRoute",
-                  template: "{area:exists}/{controller=Home}/{action=Index}");
-
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
-            });
 
             // initialize
             app.ApplicationServices.Initialize();
