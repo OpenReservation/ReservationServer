@@ -27,7 +27,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using StackExchange.Redis;
-using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
@@ -45,10 +44,13 @@ namespace ActivityReservation
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
+            HostEnvironment = hostEnvironment;
             Configuration = configuration.ReplacePlaceholders();
         }
+
+        public IWebHostEnvironment HostEnvironment { get; }
 
         public IConfiguration Configuration { get; }
 
@@ -67,12 +69,6 @@ namespace ActivityReservation
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-            // DataProtection persist in redis
-            services.AddDataProtection()
-                .SetApplicationName(ApplicationHelper.ApplicationName)
-                .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
-                ;
-
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -88,15 +84,6 @@ namespace ActivityReservation
 
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("Reservation")), 100);
-            services.AddRedisConfig(options =>
-            {
-                options.RedisServers = new[]
-                {
-                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
-                };
-                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
-                options.DefaultDatabase = 2;
-            });
 
             services.AddHttpClient<GoogleRecaptchaHelper>(client =>
             {
@@ -139,14 +126,37 @@ namespace ActivityReservation
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Info { Title = "活动室预约系统 API", Version = "1.0" });
+                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
 
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
                 options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
             });
+            services.AddRedisConfig(options =>
+            {
+                options.RedisServers = new[]
+                {
+                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
+                };
+                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
+                options.DefaultDatabase = 2;
+            });
+            if (HostEnvironment.IsDevelopment())
+            {
+                services.AddSingleton<IEventBus, EventBus>();
+                services.AddSingleton<IEventStore, EventStoreInMemory>();
+            }
+            else
+            {
+                // DataProtection persist in redis
+                services.AddDataProtection()
+                    .SetApplicationName(ApplicationHelper.ApplicationName)
+                    .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
+                    ;
 
-            services.AddSingleton<IEventBus, RedisEventBus>();
-            services.AddSingleton<IEventStore, EventStoreInRedis>();
+                services.AddSingleton<IEventBus, RedisEventBus>();
+                services.AddSingleton<IEventStore, EventStoreInRedis>();
+            }
+
             //register EventHandlers
             services.AddSingleton<OperationLogEventHandler>();
             services.AddSingleton<NoticeViewEventHandler>();

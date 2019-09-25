@@ -9,7 +9,7 @@
     <!--<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />-->
     <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc3" />
     <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.23.8-preview-20190802-105729" />
   </ItemGroup>
   <ItemGroup>
