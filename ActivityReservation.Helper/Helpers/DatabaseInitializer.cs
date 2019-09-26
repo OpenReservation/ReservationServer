@@ -112,6 +112,8 @@ namespace ActivityReservation.Helpers
                             CheckStatus = true,
                             NoticeTitle = "测试公告",
                             NoticeCustomPath = "test-notice",
+                            NoticePath = "test-notice.html",
+                            NoticeContent = "测试一下",
                             NoticePublishTime = DateTime.UtcNow,
                             NoticeDesc = "测试一下",
                             NoticePublisher = "System"
