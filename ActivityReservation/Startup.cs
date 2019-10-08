@@ -121,14 +121,6 @@ namespace ActivityReservation
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 
-            //services.AddSwaggerGen(options =>
-            //{
-            //    options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
-
-            //    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
-            //    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
-            //});
-
             services.AddRedisConfig(options =>
             {
                 options.RedisServers = new[]
@@ -201,6 +193,14 @@ namespace ActivityReservation
             services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
             services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
 
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
+
+                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Models.Notice).Assembly.GetName().Name}.xml"));
+                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
+            });
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
@@ -257,13 +257,6 @@ namespace ActivityReservation
             app.UseHealthCheck("/health");
 
             app.UseStaticFiles();
-            //app.UseSwagger()
-            //    .UseSwaggerUI(c =>
-            //    {
-            //        // c.RoutePrefix = string.Empty; //
-            //        c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
-            //        c.DocumentTitle = "活动室预约系统 API";
-            //    });
 
             app.UseRouting();
 
@@ -287,6 +280,14 @@ namespace ActivityReservation
                 endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    // c.RoutePrefix = string.Empty; //
+                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
+                    c.DocumentTitle = "活动室预约系统 API";
+                });
 
             // initialize
             app.ApplicationServices.Initialize();
