@@ -36,7 +36,14 @@ namespace ActivityReservation.Helpers
                             UserId = Guid.NewGuid(),
                             UserName = "Alice",
                             UserPassword = SecurityHelper.SHA256("Test1234"),
-                            IsSuper = true
+                            IsSuper = false
+                        });
+                        dbContext.Users.Add(new User
+                        {
+                            UserId = Guid.NewGuid(),
+                            UserName = "test",
+                            UserPassword = SecurityHelper.SHA256("Test1234"),
+                            IsSuper = false
                         });
 
                         var blockTypes = new List<BlockType>
