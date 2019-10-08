@@ -9,7 +9,7 @@ namespace ActivityReservation.API
     {
         protected readonly ILogger Logger;
 
-        public ApiControllerBase(ILogger logger)
+        protected ApiControllerBase(ILogger logger)
         {
             Logger = logger;
         }
