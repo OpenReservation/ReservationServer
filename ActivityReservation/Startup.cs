@@ -130,25 +130,14 @@ namespace ActivityReservation
                 options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
                 options.DefaultDatabase = 2;
             });
-            if (HostEnvironment.IsDevelopment())
-            {
-                services.AddSingleton<IEventBus, EventBus>();
-                services.AddSingleton<IEventStore, EventStoreInMemory>();
 
-                services.AddDataProtection()
-                    .SetApplicationName(ApplicationHelper.ApplicationName);
-            }
-            else
-            {
-                // DataProtection persist in redis
-                services.AddDataProtection()
-                    .SetApplicationName(ApplicationHelper.ApplicationName)
-                    .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
-                    ;
-
-                services.AddSingleton<IEventBus, RedisEventBus>();
-                services.AddSingleton<IEventStore, EventStoreInRedis>();
-            }
+            // DataProtection persist in redis
+            services.AddDataProtection()
+                .SetApplicationName(ApplicationHelper.ApplicationName)
+                .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
+                ;
+            services.AddSingleton<IEventBus, RedisEventBus>();
+            services.AddSingleton<IEventStore, EventStoreInRedis>();
 
             //register EventHandlers
             services.AddSingleton<OperationLogEventHandler>();
