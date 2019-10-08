@@ -276,7 +276,6 @@ namespace ActivityReservation
                     controller = "Home",
                     action = "NoticeDetails"
                 });
-                endpoints.MapAreaControllerRoute(name: "Admin", "Admin", "{Admin}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
