@@ -110,7 +110,7 @@ namespace ActivityReservation
 
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
-                    client.Timeout = TimeSpan.FromSeconds(3);
+                    client.Timeout = TimeSpan.FromSeconds(5);
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.TryAddSingleton<ChatBotHelper>();
@@ -254,7 +254,7 @@ namespace ActivityReservation
                     c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
                     c.DocumentTitle = "活动室预约系统 API";
                 });
-                
+
             app.UseRouting();
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
@@ -276,7 +276,6 @@ namespace ActivityReservation
                 endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
-
 
             // initialize
             app.ApplicationServices.Initialize();
