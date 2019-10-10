@@ -19,6 +19,8 @@ variables:
   imageName: '$(dockerId)/activityreservation:$(tagName)'
 
 steps:
+- script: dotnet --info
+  displayName: 'dotnet info'
 
 # - script: dotnet build -c Release
 #   displayName: 'dotnet build'
