@@ -44,7 +44,7 @@
         <hr class="hidden-print" />
         <footer class="hidden-print">
             <p>&copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台登录", "Login", new { controller = "Account", area = "Admin" })</p>
-            <p> Powered by (@Microsoft.Extensions.DependencyModel.DependencyContext.Default.Target.Framework) </p>
+            <p> Powered by (@System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription) </p>
         </footer>
     </div>
     <!-- Google Analytics -->
