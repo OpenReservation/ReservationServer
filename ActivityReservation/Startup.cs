@@ -247,6 +247,14 @@ namespace ActivityReservation
 
             app.UseStaticFiles();
 
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    // c.RoutePrefix = string.Empty; //
+                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
+                    c.DocumentTitle = "活动室预约系统 API";
+                });
+                
             app.UseRouting();
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
@@ -269,13 +277,6 @@ namespace ActivityReservation
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    // c.RoutePrefix = string.Empty; //
-                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
-                    c.DocumentTitle = "活动室预约系统 API";
-                });
 
             // initialize
             app.ApplicationServices.Initialize();
