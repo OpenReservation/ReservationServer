@@ -22,11 +22,11 @@ steps:
 - script: dotnet --info
   displayName: 'dotnet info'
 
-# - script: dotnet build -c Release
-#   displayName: 'dotnet build'
+- script: dotnet build -c Release
+  displayName: 'dotnet build'
 
-# - script: dotnet test 
-#   displayName: 'dotnet test'
+- script: dotnet test 
+  displayName: 'dotnet test'
 
 - script: docker build -f Dockerfile -t $(imageName) -t $(latestImageName) .
   displayName: 'Docker build Script'
