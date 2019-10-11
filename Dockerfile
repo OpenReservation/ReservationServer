@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2-sdk-alpine AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
@@ -11,16 +11,24 @@ COPY ActivityReservation.WechatAPI/*.csproj ActivityReservation.WechatAPI/
 COPY ActivityReservation.AdminLogic/*.csproj ActivityReservation.AdminLogic/
 COPY ActivityReservation.API/*.csproj ActivityReservation.API/
 COPY ActivityReservation/ActivityReservation.csproj ActivityReservation/
-RUN dotnet restore ActivityReservation/ActivityReservation.csproj
+
+# RUN dotnet restore ActivityReservation/ActivityReservation.csproj
+## diff between netcore2.2 and netcore3.0
+WORKDIR /src/ActivityReservation
+RUN dotnet restore
 
 # copy everything and build
 COPY . .
 RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csproj
 
 # build runtime image
-FROM microsoft/dotnet:2.2-aspnetcore-runtime-alpine
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine
+
 RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
-    apk add terminus-font
+    apk add terminus-font && \
+    apk add icu-libs
+# https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/ActivityReservation/out .

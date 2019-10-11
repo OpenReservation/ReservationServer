@@ -36,8 +36,9 @@ namespace ActivityReservation.API.Test
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .AddJsonOptions(options =>
+            services.AddControllers()
+                .AddApplicationPart(typeof(API.ApiControllerBase).Assembly)
+                .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
@@ -50,8 +51,6 @@ namespace ActivityReservation.API.Test
 
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));
-
-            services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
 
             services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
@@ -69,14 +68,17 @@ namespace ActivityReservation.API.Test
 
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
+            // register access control service
+            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 
             services.AddSingleton<IEventBus, EventBus>();
             services.AddSingleton<IEventStore, EventStoreInMemory>();
             //register EventHandlers
-            services.AddSingleton<OperationLogEventHandler>();
-            services.AddSingleton<NoticeViewEventHandler>();
+            services.AddSingleton<MockNoticeViewEventHandler>();
+
+            services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
@@ -85,27 +87,15 @@ namespace ActivityReservation.API.Test
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IEventBus eventBus)
         {
-            eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
-            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
-
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("Notice", "/Notice/{path}.html", new
-                {
-                    controller = "Home",
-                    action = "NoticeDetails"
-                });
-
-                routes.MapRoute(name: "areaRoute",
-                  template: "{area:exists}/{controller=Home}/{action=Index}");
-
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
+                endpoints.MapControllers();
             });
 
             // initialize
-            app.ApplicationServices.Initialize();
+            eventBus.Subscribe<NoticeViewEvent, MockNoticeViewEventHandler>();
+            TestDataInitializer.Initialize(app.ApplicationServices);
         }
     }
 }

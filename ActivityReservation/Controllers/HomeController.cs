@@ -267,8 +267,7 @@ namespace ActivityReservation.Controllers
             }
             return Ok(new
             {
-                text = await HttpContext.RequestServices.GetService<ChatBotHelper>()
-                    .GetBotReplyAsync(msg, HttpContext.RequestAborted)
+                text = await HttpContext.RequestServices.GetService<ChatBotHelper>().GetBotReplyAsync(msg)
             });
         }
 

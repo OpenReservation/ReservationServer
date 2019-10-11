@@ -1,14 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
-using ActivityReservation.API;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
 using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
-using ActivityReservation.Models;
 using ActivityReservation.Services;
 using ActivityReservation.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -21,12 +18,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using StackExchange.Redis;
-using Swashbuckle.AspNetCore.Swagger;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
@@ -44,10 +41,13 @@ namespace ActivityReservation
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
         {
+            HostEnvironment = hostEnvironment;
             Configuration = configuration.ReplacePlaceholders();
         }
+
+        public IWebHostEnvironment HostEnvironment { get; }
 
         public IConfiguration Configuration { get; }
 
@@ -56,8 +56,8 @@ namespace ActivityReservation
         {
             services.AddHealthChecks();
 
-            services.AddMvc()
-                .AddJsonOptions(options =>
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
@@ -65,12 +65,6 @@ namespace ActivityReservation
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
-
-            // DataProtection persist in redis
-            services.AddDataProtection()
-                .SetApplicationName(ApplicationHelper.ApplicationName)
-                .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
-                ;
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -86,16 +80,7 @@ namespace ActivityReservation
                 });
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(option => option.UseMySql(Configuration.GetConnectionString("Reservation")), 100);
-            services.AddRedisConfig(options =>
-            {
-                options.RedisServers = new[]
-                {
-                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")),
-                };
-                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
-                options.DefaultDatabase = 2;
-            });
+            services.AddDbContextPool<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("Reservation")), 100);
 
             services.AddHttpClient<GoogleRecaptchaHelper>(client =>
             {
@@ -125,7 +110,7 @@ namespace ActivityReservation
 
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
-                    client.Timeout = TimeSpan.FromSeconds(3);
+                    client.Timeout = TimeSpan.FromSeconds(5);
                 })
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.TryAddSingleton<ChatBotHelper>();
@@ -136,16 +121,24 @@ namespace ActivityReservation
 
             services.TryAddSingleton<CaptchaVerifyHelper>();
 
-            services.AddSwaggerGen(options =>
+            services.AddRedisConfig(options =>
             {
-                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Info { Title = "活动室预约系统 API", Version = "1.0" });
-
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
-                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{typeof(NoticeController).Assembly.GetName().Name}.xml"), true);
+                options.RedisServers = new[]
+                {
+                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
+                };
+                options.CachePrefix = "ActivityReservation"; //  ApplicationHelper.ApplicationName by default
+                options.DefaultDatabase = 2;
             });
 
+            // DataProtection persist in redis
+            services.AddDataProtection()
+                .SetApplicationName(ApplicationHelper.ApplicationName)
+                .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
+                ;
             services.AddSingleton<IEventBus, RedisEventBus>();
             services.AddSingleton<IEventStore, EventStoreInRedis>();
+
             //register EventHandlers
             services.AddSingleton<OperationLogEventHandler>();
             services.AddSingleton<NoticeViewEventHandler>();
@@ -185,17 +178,24 @@ namespace ActivityReservation
                 options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All;
             });
 
-
             services.Configure<GiteeStorageOptions>(Configuration.GetSection("Storage:Gitee"));
             services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
             services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
-            
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
+
+                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Models.Notice).Assembly.GetName().Name}.xml"));
+                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
+            });
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
@@ -246,6 +246,7 @@ namespace ActivityReservation
             app.UseHealthCheck("/health");
 
             app.UseStaticFiles();
+
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
@@ -253,26 +254,27 @@ namespace ActivityReservation
                     c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
                     c.DocumentTitle = "活动室预约系统 API";
                 });
+
+            app.UseRouting();
+
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.UseRequestLog();
             app.UsePerformanceLog();
 
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("Notice", "/Notice/{path}.html", new
+                endpoints.MapControllers();
+                endpoints.MapControllerRoute("Notice", "/Notice/{path}.html", new
                 {
                     controller = "Home",
                     action = "NoticeDetails"
                 });
-
-                routes.MapRoute(name: "areaRoute",
-                  template: "{area:exists}/{controller=Home}/{action=Index}");
-
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
+                endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
 
             // initialize

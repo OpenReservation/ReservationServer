@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -36,9 +35,8 @@ namespace ActivityReservation.Common
         /// 获取机器人回复【异步】
         /// </summary>
         /// <param name="request">请求</param>
-        /// <param name="cancellationToken"></param>
         /// <returns>回复信息</returns>
-        public async Task<string> GetBotReplyAsync(string request, CancellationToken cancellationToken = default)
+        public async Task<string> GetBotReplyAsync(string request)
         {
             if (request.IsNullOrWhiteSpace())
             {
@@ -47,7 +45,7 @@ namespace ActivityReservation.Common
             try
             {
                 using (var response = await _httpClient.
-                    GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode()), cancellationToken))
+                    GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode())))
                 {
                     var responseText = await response.Content.ReadAsStringAsync();
                     if (!string.IsNullOrEmpty(responseText))
@@ -64,7 +62,7 @@ namespace ActivityReservation.Common
             }
             catch (Exception ex)
             {
-                _logger.Error(ex);
+                _logger.LogError(ex, "调用 Qingyunke API 出错");
             }
             return "error";
         }

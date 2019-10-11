@@ -1,0 +1,10 @@
+﻿DROP TABLE tabNotice
+DROP TABLE tabBlockType
+DROP TABLE tabBlockEntity
+DROP TABLE tabUser
+DROP TABLE tabSystemSettings
+DROP TABLE tabReservation
+DROP TABLE tabReservationPeriod
+DROP TABLE tabDisablePeriod
+DROP TABLE tabNotice
+DROP TABLE tabReservationPlace
