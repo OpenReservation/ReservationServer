@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Linq;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using ActivityReservation.Database;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WeihanLi.Common.Helpers;
 using Xunit;
 
 namespace ActivityReservation.API.Test
@@ -23,7 +22,7 @@ namespace ActivityReservation.API.Test
 
         public APITestFixture()
         {
-            var baseUrl = $"http://localhost:{GetRandomPort()}";
+            var baseUrl = $"http://localhost:{NetHelper.GetRandomPort()}";
             _server = WebHost.CreateDefaultBuilder()
                 .UseUrls(baseUrl)
                 .UseStartup<TestStartup>()
@@ -65,19 +64,6 @@ namespace ActivityReservation.API.Test
             _server.Dispose();
 
             Console.WriteLine("test end");
-        }
-
-        private static int GetRandomPort()
-        {
-            var random = new Random();
-            var randomPort = random.Next(10000, 65535);
-
-            while (IPGlobalProperties.GetIPGlobalProperties().GetActiveTcpListeners().Any(p => p.Port == randomPort))
-            {
-                randomPort = random.Next(10000, 65535);
-            }
-
-            return randomPort;
         }
     }
 
