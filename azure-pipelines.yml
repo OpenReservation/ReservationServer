@@ -40,7 +40,8 @@ steps:
     docker push $(branchImageName)
   displayName: 'Push docker image'
 
-- script: docker push $(latestImageName)
+- script: |
+    docker push $(latestImageName)
   displayName: 'Push latest image'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
 
@@ -50,6 +51,7 @@ steps:
 
 - task: SSH@0
   displayName: 'Run shell inline on remote machine'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
   inputs:
     sshEndpoint: 'weihanli-vm'
     runOptions: inline
