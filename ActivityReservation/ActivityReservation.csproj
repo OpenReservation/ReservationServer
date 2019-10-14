@@ -10,7 +10,7 @@
     <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc4" />
-    <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.23.8-preview-20190802-105729" />
+    <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.24.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj" />
