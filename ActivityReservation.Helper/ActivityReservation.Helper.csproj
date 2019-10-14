@@ -8,8 +8,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
   
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.8.0" />
-    <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.2.0" />
+    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.9.0" />
+    <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.4.0" />
     <PackageReference Include="WeihanLi.Web.Extensions" Version="1.0.0-preview-20190630-113152" />
   </ItemGroup>
   <ItemGroup>
