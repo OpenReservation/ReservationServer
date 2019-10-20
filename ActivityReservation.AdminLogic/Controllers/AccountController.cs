@@ -93,6 +93,16 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json("登录失败，用户名或密码错误");
         }
 
+        public IActionResult AccessDenied()
+        {
+            return new ContentResult()
+            {
+                Content = "AccessDenied",
+                StatusCode = 403,
+                ContentType = "text/plain;charset=utf-8"
+            };
+        }
+
         /// <summary>
         /// 账户首页
         /// </summary>
@@ -358,13 +368,13 @@ namespace ActivityReservation.AdminLogic.Controllers
             return Json(false);
         }
 
-        [AccessControl]
+        [Authorize(AccessControlHelperConstants.PolicyName)]
         public ActionResult UserList()
         {
             return View();
         }
 
-        [AccessControl]
+        [Authorize(AccessControlHelperConstants.PolicyName)]
         public ActionResult UserListTable(SearchHelperModel search)
         {
             //默认查询所有

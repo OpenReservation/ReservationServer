@@ -7,7 +7,7 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
-    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.9.1" />
+    <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.9.2" />
     <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.4.0" />
     <PackageReference Include="WeihanLi.Npoi" Version="1.4.4" />
     <PackageReference Include="WeihanLi.Redis" Version="1.5.6.10" />

@@ -5,6 +5,7 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.Services;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +18,7 @@ namespace ActivityReservation.AdminLogic.Controllers
     /// <summary>
     /// 系统设置
     /// </summary>
-    [AccessControl]
+    [Authorize(AccessControlHelperConstants.PolicyName)]
     public class SystemSettingsController : AdminBaseController
     {
         private readonly IApplicationSettingService _applicationSettingService;

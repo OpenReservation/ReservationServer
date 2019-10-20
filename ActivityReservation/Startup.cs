@@ -70,7 +70,7 @@ namespace ActivityReservation
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.AccessDeniedPath = "/Admin/Account/Login";
+                    options.AccessDeniedPath = "/Admin/Account/AccessDenied";
                     options.LoginPath = "/Admin/Account/Login";
                     options.LogoutPath = "/Admin/Account/LogOut";
 
@@ -105,8 +105,14 @@ namespace ActivityReservation
 
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
+
             // register access control service
-            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
+            //services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
+
+            services.AddAccessControlHelper()
+                .AddResourceAccessStrategy<Filters.AdminPermissionRequireStrategy>()
+                .AddControlAccessStrategy<Filters.AdminOnlyControlAccessStrategy>()
+                ;
 
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
