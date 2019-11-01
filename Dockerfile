@@ -2,17 +2,10 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
-COPY ActivityReservation.Common/*.csproj ActivityReservation.Common/
-COPY ActivityReservation.Models/*.csproj ActivityReservation.Models/
-COPY ActivityReservation.DataAccess/*.csproj ActivityReservation.DataAccess/
-COPY ActivityReservation.Business/*.csproj ActivityReservation.Business/
-COPY ActivityReservation.Helper/*.csproj ActivityReservation.Helper/
-COPY ActivityReservation.WechatAPI/*.csproj ActivityReservation.WechatAPI/
-COPY ActivityReservation.AdminLogic/*.csproj ActivityReservation.AdminLogic/
-COPY ActivityReservation.API/*.csproj ActivityReservation.API/
-COPY ActivityReservation/ActivityReservation.csproj ActivityReservation/
+# https://andrewlock.net/optimising-asp-net-core-apps-in-docker-avoiding-manually-copying-csproj-files-part-2/
+COPY */*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
 
-# RUN dotnet restore ActivityReservation/ActivityReservation.csproj
 ## diff between netcore2.2 and netcore3.0
 WORKDIR /src/ActivityReservation
 RUN dotnet restore
