@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>ActivityReservation.DataAccess</RootNamespace>
-    <AssemblyName>ActivityReservation.DataAccess</AssemblyName>
+    <RootNamespace>ActivityReservation.Database</RootNamespace>
+    <AssemblyName>ActivityReservation.Database</AssemblyName>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>

@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02Logic", "02Logic", "{25F4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03Business", "03Business", "{030D6CEB-2BC4-4A5B-BCFC-638355AC1E7B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04DataAccess", "04DataAccess", "{77A88758-A8DC-4D51-995B-7E2310FDE975}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04Database", "04Database", "{77A88758-A8DC-4D51-995B-7E2310FDE975}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05Model", "05Model", "{E46B9165-C6B7-405A-AD9D-49A140A23246}"
 EndProject
@@ -32,7 +32,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Common"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Models", "ActivityReservation.Models\ActivityReservation.Models.csproj", "{82EDF7EA-8C0D-4AC2-B567-38FAE6FAA3DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Database", "ActivityReservation.DataAccess\ActivityReservation.Database.csproj", "{D41641F8-9BF3-4984-A3A6-A5AE6518B66B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Database", "ActivityReservation.Database\ActivityReservation.Database.csproj", "{D41641F8-9BF3-4984-A3A6-A5AE6518B66B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActivityReservation.Business", "ActivityReservation.Business\ActivityReservation.Business.csproj", "{3F550118-51BB-4782-BB3F-3983FC56F2CC}"
 EndProject
