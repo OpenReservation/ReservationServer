@@ -295,7 +295,7 @@ namespace ActivityReservation
                 .HasAuthor("WeihanLi")
                 .HasTitle("活动室预约信息")
                 .HasDescription("活动室预约信息")
-                .HasSheetConfiguration(0, "活动室预约信息")
+                .HasSheetConfiguration(0, "活动室预约信息", true)
                 ;
 
             settings.Property(r => r.ReservationId).Ignored();
