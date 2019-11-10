@@ -17,7 +17,10 @@ namespace ActivityReservation.Database
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
-            // modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
+            if (Database.IsSqlServer())
+            {
+                modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
+            }
         }
 
         public virtual DbSet<User> Users { get; set; }
