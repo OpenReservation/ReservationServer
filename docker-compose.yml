@@ -11,10 +11,8 @@ services:
         hard: 65536
     restart: always
     environment:
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m" #specific es java memory
-    volumes:
-      - ./es/data:/usr/share/elasticsearch/data
-      - ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m" #specific es java memory
+      - "discovery.type=single-node"
     mem_limit: 512m # memory limit
 
   kibana:
@@ -39,6 +37,8 @@ services:
   db:
     container_name: sqlserver
     image: microsoft/mssql-server-linux:2017-latest
+    ports: 
+      - 1433:1433
     environment: 
       - 'ACCEPT_EULA=Y'
       - 'MSSQL_SA_PASSWORD=Admin888'
@@ -46,7 +46,7 @@ services:
 
   reservation:
     build:
-      context: ./
+      context: .
       dockerfile: Dockerfile
     container_name: reservation
     ports:
@@ -56,6 +56,6 @@ services:
       - redis
       - db
     links: 
-      - elasticsearch: elasticsearch
-      - redis: redis-server
-      - db: db-server
+      - elasticsearch:elasticsearch
+      - redis:redis-server
+      - db:db-server
