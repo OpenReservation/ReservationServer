@@ -28,7 +28,7 @@ namespace ActivityReservation.Services
 
         protected override async Task ProcessAsync(CancellationToken cancellationToken)
         {
-            Logger.LogInformation($"job executing");
+            Logger.LogInformation($"job executing...");
 
             using (var scope = _serviceProvider.CreateScope())
             {
