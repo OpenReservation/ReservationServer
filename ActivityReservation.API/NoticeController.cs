@@ -79,7 +79,7 @@ namespace ActivityReservation.API
             {
                 return NotFound();
             }
-            eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
+            await eventBus.PublishAsync(new NoticeViewEvent { NoticeId = notice.NoticeId });
             return Ok(notice);
         }
     }
