@@ -31,7 +31,7 @@ namespace ActivityReservation.Events
         public string OperBy { get; set; }
     }
 
-    public class OperationLogEventHandler : OnceEventHandlerBase, IEventHandler<OperationLogEvent>
+    public class OperationLogEventHandler : OnceEventHandlerBase<OperationLogEvent>
     {
         private readonly ILogger _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -42,7 +42,7 @@ namespace ActivityReservation.Events
             _serviceProvider = serviceProvider;
         }
 
-        public async Task Handle(OperationLogEvent @event)
+        public override async Task Handle(OperationLogEvent @event)
         {
             if (await IsHandleNeeded(@event))
             {

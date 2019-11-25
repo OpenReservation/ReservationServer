@@ -18,20 +18,16 @@ namespace ActivityReservation.Events
         // ...
     }
 
-    public class OnceEventHandlerBase
+    public abstract class OnceEventHandlerBase<TEvent> : EventHandlerBase<TEvent> where TEvent : class, IEventBase
     {
-        protected async Task<bool> IsHandleNeeded(IEventBase @event)
+        protected async Task<bool> IsHandleNeeded(TEvent @event)
         {
             var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
                 TimeSpan.FromMinutes(2));
-            if (await limiter.AcquireAsync())
-            {
-                return true;
-            }
-            return false;
+            return await limiter.AcquireAsync();
         }
 
-        protected async Task<bool> Release(IEventBase @event)
+        protected async Task<bool> Release(TEvent @event)
         {
             var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
                 TimeSpan.FromMinutes(2));
@@ -39,9 +35,9 @@ namespace ActivityReservation.Events
         }
     }
 
-    public class NoticeViewEventHandler : OnceEventHandlerBase, IEventHandler<NoticeViewEvent>
+    public class NoticeViewEventHandler : OnceEventHandlerBase<NoticeViewEvent>
     {
-        public async Task Handle(NoticeViewEvent @event)
+        public override async Task Handle(NoticeViewEvent @event)
         {
             if (await IsHandleNeeded(@event))
             {
