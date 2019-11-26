@@ -306,7 +306,6 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             try
             {
-                u.UserId = User.GetUserId<Guid>();
                 //加密
                 u.UserPassword = HashHelper.GetHashedString(HashType.SHA256, u.UserPassword);
                 var count = _bLLUser.Update(u, ur => ur.UserPassword);
