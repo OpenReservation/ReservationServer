@@ -16,8 +16,19 @@
 - redis（缓存/分布式锁/EventBus）
 - sqlserver/mysql（数据库，也可以换成自己想用的数据库）
 - elasticsearch（日志，可以不用，但是推荐使用）
+
+> 下面的配置想要体验的话可以用已有配置，如果要自己部署用的话建议自己注册换成自己的账号
+
 - [sentry](https://sentry.io)（异常日志报警）
-- [腾讯验证码](https://007.qq.com/product.html?ADTAG=index.head)（）
+- [腾讯验证码](https://007.qq.com/product.html?ADTAG=index.head)（验证码）
+
+## 开始部署
+
+- 本地演示：
+项目提供了 docker-compose 的部署方式，你可以在项目根目录下找到 docker-compose.yml， `docker-compose up` 即可
+
+- 生产部署：
+项目提供 k8s 部署所需的 yaml 配置，后面会提供一个简单的 helm v3 package 简化部署
 
 ## 部署示例
 
