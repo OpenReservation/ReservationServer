@@ -3,6 +3,9 @@ name: reservation-server
 description: reservation-server Helm chart for Kubernetes
 icon: https://raw.githubusercontent.com/WeihanLi/ActivityReservation/dev/ActivityReservation/wwwroot/favicon.ico
 home: https://reservation.weihanli.xyz
+keywords:
+  - reservation
+  - booking
 # metadata: reservation
 # A chart can be either an 'application' or a 'library' chart.
 #
