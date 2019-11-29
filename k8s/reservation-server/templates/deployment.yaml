@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "reservation-server.fullname" . }}
+  labels:
+    {{- include "reservation-server.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.reservation.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "reservation-server.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "reservation-server.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.reservation.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.reservation.securityContext | nindent 12 }}
+          image: "{{ .Values.reservation.image.repository }}:{{ .Values.reservation.image.tag }}"
+          imagePullPolicy: {{ .Values.reservation.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api/notice
+              port: http
+          resources:
+            {{- toYaml .Values.reservation.resources | nindent 12 }}
+      {{- with .Values.reservation.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.reservation.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.reservation.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
