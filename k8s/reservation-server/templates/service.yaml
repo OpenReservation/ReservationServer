@@ -14,5 +14,3 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
-  selector:
-    {{- include "reservation-server.selectorLabels" . | nindent 4 }}

@@ -2,14 +2,8 @@ dependencies:
 - name: redis
   repository: https://apphub.aliyuncs.com/
   version: 9.5.5
-- name: elasticsearch
+- name: mysql
   repository: https://apphub.aliyuncs.com/
-  version: 9.0.3
-- name: kibana
-  repository: https://apphub.aliyuncs.com/
-  version: 3.2.5
-- name: mssql-linux
-  repository: https://apphub.aliyuncs.com/
-  version: 0.10.1
-digest: sha256:6d7139e3a5014dc793c9b8c737ab619edb5bd6bddf4eb47cce9ca72f5f45d97f
-generated: "2019-11-29T18:44:11.892063+08:00"
+  version: 6.5.1
+digest: sha256:e0d169ce6d5135436e256cd00be6b9a1a3ddea03753bb85c0631fc1cad0908a5
+generated: "2019-11-30T19:19:36.4620036+08:00"

@@ -20,7 +20,7 @@ spec:
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.reservation.image.repository }}:{{ .Values.reservation.image.tag }}"
+          image: {{ .Values.reservation.image.repository }}:{{ .Values.reservation.image.tag }}
           imagePullPolicy: {{ .Values.reservation.image.pullPolicy }}
           ports:
             - name: http
@@ -36,3 +36,12 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.reservation.resources | nindent 12 }}
+          volumeMounts:
+          - name: settings
+            mountPath: /app/appsettings.json
+            subPath: appsettings
+      volumes:
+      - name: settings
+        configMap:
+          name: reservation-configs
+

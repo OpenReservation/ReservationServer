@@ -11,7 +11,7 @@ reservation:
 
   image:
     repository: weihanli/activityreservation
-    tag: 20191129.1
+    tag: dev
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
@@ -41,50 +41,68 @@ reservation:
     #    hosts:
     #      - chart-example.local
 
-  resources:
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    limits:
-      cpu: 100m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 256Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 256Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 256Mi
 
 
 redis:
   usePassword: false
+  svcName: redis-server-master
   nameOverride: redis-server
   fullnameOverride: redis-server
+  cluster:
+    enabled: false
 
-elasticsearch:
-  nameOverride: elasticsearch
-  fullnameOverride: elasticsearch
+mysql:
+  svcName: mysql-server
+  fullnameOverride: mysql-server
+  root:
+    password: Admin888
+  db:
+    name: reservation
+    user: liweihan
+    password: Admin888
   image:
-    tag: 7.4.2
+    repository: mysql
+    tag: 8.0.18
+
+# elasticsearch:
+#   svcName: elasticsearch-elasticsearch
+#   master:
+#     name: ''
+#   image:
+#     tag: 7.4.2
 
 
-kibana:
-  image:
-    tag: 7.4.2
-  service:
-    type: NodePort
-    nodePort: 32601
+# kibana:
+#   image:
+#     tag: 7.4.2
+#   service:
+#     type: NodePort
+#     nodePort: 32601
 
-mssql:
-  nameOverride: db-server
-  fullnameOverride: db-server
-  acceptEula:
-    value: Y
-  image:
-    tag: 2017-latest
-  sapassword: Admin888
-  resources:
-    limits:
-      cpu: 0.8
-      memory: 1Gi
-    requests:
-      cpu: 0.5
-      memory: 800Mi
+# mssql-linux:
+#   nameOverride: db-server
+#   fullnameOverride: db-server
+#   acceptEula:
+#     value: Y
+#   image:
+#     tag: 2017-latest
+#   sapassword: Admin888
+#   resources:
+#     limits:
+#       cpu: 0.8
+#       memory: 1Gi
+#     requests:
+#       cpu: 0.5
+#       memory: 800Mi
+

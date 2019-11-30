@@ -33,15 +33,19 @@ dependencies:
   version: ~9.5.5
   repository: https://apphub.aliyuncs.com/
 
-- name: elasticsearch
-  version: ~9.0.3
+- name: mysql
+  version: ~6.5.1
   repository: https://apphub.aliyuncs.com/
 
-- name: kibana
-  version: ~3.2.5
-  repository: https://apphub.aliyuncs.com/
+# - name: elasticsearch
+#   version: ~9.0.3
+#   repository: https://apphub.aliyuncs.com/
 
-- name: mssql-linux
-  version: ~0.10.1
-  repository: https://apphub.aliyuncs.com/
+# - name: kibana
+#   version: ~3.2.5
+#   repository: https://apphub.aliyuncs.com/
+
+# - name: mssql-linux
+#   version: ~0.10.1
+#   repository: https://apphub.aliyuncs.com/
 
