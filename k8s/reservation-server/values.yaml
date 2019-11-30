@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+
+nameOverride: "reservation-server"
+fullnameOverride: "reservation-server"
+
 reservation:
   replicaCount: 1
 
@@ -11,15 +15,13 @@ reservation:
     pullPolicy: IfNotPresent
 
   imagePullSecrets: []
-  nameOverride: "reservation-server"
-  fullnameOverride: ""
 
-  # serviceAccount:
-  #   # Specifies whether a service account should be created
-  #   create: false
-  #   # The name of the service account to use.
-  #   # If not set and create is true, a name is generated using the fullname template
-  #   name: reservation-server
+  serviceAccount:
+    # Specifies whether a service account should be created
+    create: false
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated using the fullname template
+    name: reservation-server
 
   service:
     type: NodePort
@@ -39,25 +41,27 @@ reservation:
     #    hosts:
     #      - chart-example.local
 
-  resources: {}
+  resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
     # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
 
 
 redis:
   usePassword: false
   nameOverride: redis-server
+  fullnameOverride: redis-server
 
 elasticsearch:
   nameOverride: elasticsearch
+  fullnameOverride: elasticsearch
   image:
     tag: 7.4.2
 
@@ -71,6 +75,7 @@ kibana:
 
 mssql:
   nameOverride: db-server
+  fullnameOverride: db-server
   acceptEula:
     value: Y
   image:
@@ -82,4 +87,4 @@ mssql:
       memory: 1Gi
     requests:
       cpu: 0.5
-      memory: 1Gi
+      memory: 800Mi

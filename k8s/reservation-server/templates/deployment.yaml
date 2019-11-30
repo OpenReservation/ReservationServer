@@ -20,8 +20,6 @@ spec:
     {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          securityContext:
-            {{- toYaml .Values.reservation.securityContext | nindent 12 }}
           image: "{{ .Values.reservation.image.repository }}:{{ .Values.reservation.image.tag }}"
           imagePullPolicy: {{ .Values.reservation.image.pullPolicy }}
           ports:
@@ -38,15 +36,3 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.reservation.resources | nindent 12 }}
-      {{- with .Values.reservation.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-    {{- with .Values.reservation.affinity }}
-      affinity:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.reservation.tolerations }}
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
