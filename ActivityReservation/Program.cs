@@ -24,6 +24,7 @@ namespace ActivityReservation
                             .AddJsonFile($"appsettings.{context.HostingEnvironment.EnvironmentName}.json", true, true)
                             ;
                     }
+                    builder.AddEnvironmentVariables("Reservation_");
                 })
                 .ConfigureWebHostDefaults(webHostBuilder =>
                 {

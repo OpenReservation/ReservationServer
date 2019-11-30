@@ -223,10 +223,16 @@ namespace ActivityReservation
                 .AddSerilog(loggingConfig =>
                 {
                     loggingConfig
-                        .WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}")
                         .Enrich.FromLogContext()
                         .Enrich.WithRequestInfo()
                         ;
+
+                    var esConnString = Configuration.GetConnectionString("ElasticSearch");
+                    if (esConnString.IsNotNullOrWhiteSpace())
+                    {
+                        loggingConfig.WriteTo.Elasticsearch(esConnString,
+                            $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
+                    }
                 })
                 .WithFilter((providerType, categoryName, logLevel, exception) =>
                 {
