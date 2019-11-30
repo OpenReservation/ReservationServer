@@ -17,7 +17,7 @@ namespace ActivityReservation.Database
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
-            if (Database.IsSqlServer())
+            if (Database.IsSqlServer() || Database.IsMySql())
             {
                 modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
             }

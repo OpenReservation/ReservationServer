@@ -80,7 +80,18 @@ namespace ActivityReservation
                 });
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("Reservation")), 100);
+            services.AddDbContextPool<ReservationDbContext>(option =>
+            {
+                var dbType = Configuration.GetAppSetting("DbType");
+                if ("MySql".EqualsIgnoreCase(dbType))
+                {
+                    option.UseMySql(Configuration.GetConnectionString("Reservation"));
+                }
+                else
+                {
+                    option.UseSqlServer(Configuration.GetConnectionString("Reservation"));
+                }
+            }, 100);
 
             services.AddHttpClient<GoogleRecaptchaHelper>(client =>
             {
