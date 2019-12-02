@@ -9,6 +9,7 @@ trigger:
     - '*.md'
     - /ActivityReservation.Clients/
     - /docs/
+    - /k8s/
 
 pool:
   vmImage: 'ubuntu-latest'
