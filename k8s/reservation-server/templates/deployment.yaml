@@ -14,10 +14,6 @@ spec:
       labels:
         {{- include "reservation-server.selectorLabels" . | nindent 8 }}
     spec:
-    {{- with .Values.reservation.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.reservation.image.repository }}:{{ .Values.reservation.image.tag }}
