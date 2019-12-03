@@ -7,8 +7,8 @@ data:
   appsettings: |
     {      
       "ConnectionStrings": {
-        "Redis": "{{ .Values.redis.svcName }}",
-        "Reservation": "Server={{ .Values.mysql.svcName }};uid=root;pwd=Admin888;database=reservation;MultipleActiveResultSets=True;"
+        "Redis": "{{ .Values.redis.fullnameOverride }}",
+        "Reservation": "Server={{ .Values.mysql.fullnameOverride }};Database=reservation;Uid=root;Pwd=Admin888;"
       },
       "MpWechat":{
         "AppId": "xxxxxxxx",
@@ -17,6 +17,7 @@ data:
         "AESKey": "------------"
       },
       "AppSettings": {
+        "DbType": "MySql",
         "WechatSubscribeReply": "",
         "SentryClientKey": "https://04ad3ad1e74b44a2a6fda72b517d1657:131cf95155564816bdbfcc2b7f7be62a@sentry.io/189603"
       },

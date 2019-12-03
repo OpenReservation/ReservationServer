@@ -54,26 +54,26 @@ reservation:
     #   memory: 256Mi
 
 
-redis:
-  usePassword: false
-  svcName: redis-server-master
-  nameOverride: redis-server
-  fullnameOverride: redis-server
-  cluster:
-    enabled: false
+# redis:
+#   usePassword: false
+#   svcName: redis-server-master
+#   nameOverride: redis-server
+#   fullnameOverride: redis-server
+#   # cluster:
+#   #   enabled: false
 
-mysql:
-  svcName: mysql-server
-  fullnameOverride: mysql-server
-  root:
-    password: Admin888
-  db:
-    name: reservation
-    user: liweihan
-    password: Admin888
-  image:
-    repository: mysql
-    tag: 8.0.18
+# mysql:
+#   svcName: mysql-server
+#   fullnameOverride: mysql-server
+#   root:
+#     password: Admin888
+#   db:
+#     name: reservation
+#     user: liweihan
+#     password: Admin888
+#   image:
+#     repository: mysql
+#     tag: 8.0.18
 
 # elasticsearch:
 #   svcName: elasticsearch-elasticsearch
