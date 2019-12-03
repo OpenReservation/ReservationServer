@@ -8,7 +8,7 @@ data:
     {      
       "ConnectionStrings": {
         "Redis": "{{ .Values.redis.fullnameOverride }}",
-        "Reservation": "Server={{ .Values.mysql.fullnameOverride }};Database=reservation;Uid=root;Pwd=Admin888;"
+        "Reservation": "Server={{ .Values.mysql.fullnameOverride }};Database=Reservation;Uid=root;Pwd=Admin888;"
       },
       "MpWechat":{
         "AppId": "xxxxxxxx",

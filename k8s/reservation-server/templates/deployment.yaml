@@ -26,10 +26,14 @@ spec:
             httpGet:
               path: /health
               port: http
+            initialDelaySeconds: 60
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /api/notice
               port: http
+            initialDelaySeconds: 60
+            periodSeconds: 20
           resources:
             {{- toYaml .Values.reservation.resources | nindent 12 }}
           volumeMounts:

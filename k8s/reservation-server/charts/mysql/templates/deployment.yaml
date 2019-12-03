@@ -31,11 +31,25 @@ spec:
             - name: http
               containerPort: {{ .Values.image.containerPort }}
               protocol: TCP
+          livenessProbe:
+            exec:
+              command: ["mysqladmin", "ping"]
+            initialDelaySeconds: 90
+            periodSeconds: 20
+          readinessProbe:
+            exec:
+              # Check we can execute queries over TCP (skip-networking is off).
+              # command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+              command: ["mysqladmin", "ping"]
+            initialDelaySeconds: 90
+            periodSeconds: 30
           env:
           - name: MYSQL_ROOT_PASSWORD
             value: {{ .Values.db.rootPassword }}
+{{ if (not (empty .Values.db.databaseName)) }}
           - name: MYSQL_DATABASE
             value: {{ .Values.db.databaseName }}
+{{ end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

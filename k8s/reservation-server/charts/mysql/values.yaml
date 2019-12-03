@@ -6,7 +6,7 @@ replicaCount: 1
 
 db:
   rootPassword: Admin888
-  databaseName: reservation
+  # databaseName: reservation
 
 image:
   repository: mysql
