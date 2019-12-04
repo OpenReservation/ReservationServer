@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-alpine AS build-env
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
@@ -15,7 +15,7 @@ COPY . .
 RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csproj
 
 # build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-alpine
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
 
 RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
     apk add terminus-font && \
