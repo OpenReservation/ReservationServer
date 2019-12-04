@@ -58,7 +58,7 @@
                         @item.ReservationActivityContent
                     </td>
                     <td>
-                        @item.ReservationPersonName
+                        @(WeihanLi.Common.Helpers.StringHelper.HideSensitiveInfo(item.ReservationPersonName, 1, 0, 2))
                     </td>
                     <td>
                         @(WeihanLi.Common.Helpers.StringHelper.HideTelDetails(item.ReservationPersonPhone))
