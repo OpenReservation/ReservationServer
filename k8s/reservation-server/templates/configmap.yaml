@@ -7,8 +7,8 @@ data:
   appsettings: |
     {      
       "ConnectionStrings": {
-        "Redis": "{{ .Values.redis.fullnameOverride }}",
-        "Reservation": "Server={{ .Values.mysql.fullnameOverride }};Database=Reservation;Uid=root;Pwd=Admin888;"
+        "Redis": "{{ .Values.redis.svcName }}",
+        "Reservation": "Server={{ .Values.mysql.svcName }};Database={{ .Values.mysql.db.name }};Uid={{ .Values.mysql.db.user }};Pwd={{ .Values.mysql.db.password }};"
       },
       "MpWechat":{
         "AppId": "xxxxxxxx",

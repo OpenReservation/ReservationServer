@@ -28,14 +28,14 @@ maintainers:
 - name: WeihanLi
   email: weihanli@outlook.com
 
-# dependencies:
-# - name: redis
-#   version: ~9.5.5
-#   repository: https://apphub.aliyuncs.com/
+dependencies:
+- name: redis
+  version: ~9.5.5
+  repository: https://apphub.aliyuncs.com/
 
-# - name: mysql
-#   version: ~6.5.1
-#   repository: https://apphub.aliyuncs.com/
+- name: mysql
+  version: ~6.5.1
+  repository: https://apphub.aliyuncs.com/
 
 # - name: elasticsearch
 #   version: ~9.0.3
