@@ -15,7 +15,7 @@
 
 - redis（缓存/分布式锁/EventBus）
 - sqlserver/mysql（数据库，也可以换成自己想用的数据库）
-- elasticsearch（日志，可以不用，但是推荐使用）
+- elasticsearch（日志，可选，但是推荐使用）
 
 > 下面的配置想要体验的话可以用已有配置，如果要自己部署用的话建议自己注册换成自己的账号
 
@@ -24,11 +24,30 @@
 
 ## 开始部署
 
-- 本地演示：
-项目提供了 docker-compose 的部署方式，你可以在项目根目录下找到 docker-compose.yml， `docker-compose up` 即可
+- 本地演示（docker-compose）
 
-- 生产部署：
-项目提供 k8s 部署所需的 yaml 配置，后面会提供一个简单的 helm v3 package 简化部署
+  项目提供了 docker-compose 的部署方式，你可以在项目根目录下找到 docker-compose.yml， `docker-compose up` 即可
+
+- 生产部署
+
+  项目提供 k8s 部署所需的 yaml 配置
+
+  1. 手动打包
+
+      下载源代码，切换目录到 `/k8s/charts/reservation-server`
+
+      ``` bash
+      helm dependency update # 更新依赖
+      helm package . # 打包 chart
+      helm install reservation reservation-server-1.0.0.tgz # install chart
+      ```
+
+  2. AppHub
+
+      ``` bash
+      helm repo add apphub https://apphub.aliyuncs.com/ # add repo
+      helm install apphub/reservation-server --version 1.0.0
+      ```
 
 ## 部署示例
 

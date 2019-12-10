@@ -2,7 +2,7 @@
 
 ## Intro
 
-活动室预约项目是基于 asp.net core 2.2 的，支持 docker，支持跨平台部署，单机版对应 standalone 分支，
+活动室预约项目单机版是基于 asp.net core 2.2 的，支持 docker，支持跨平台部署，单机版对应 standalone 分支，
 单机版默认使用 Sqlite 数据库，数据库访问基于 Entity Framework Core，大多数数据库都支持，如果要使用别的数据库，可以自行修改源代码，换成相应数据库的 Provider 就可以了。
 
 ## Docker 部署

@@ -37,6 +37,8 @@ CI/CD:
 
 appveyor => travis => Azure Pipeline
 
+[部署文档](./docs/README.md)
+
 ## Roadmap
 
 ### 1.0
