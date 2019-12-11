@@ -4,6 +4,12 @@
 
 ## 部署文档
 
+### 服务器端部署文档
+
 [单机版部署文档](./deploy/standalone.md)
 
 [集群版部署文档](./deploy/cluster.md)
+
+### 客户端部署文档
+
+[Angular SPA 客户端部署文档](./deploy/client.md)

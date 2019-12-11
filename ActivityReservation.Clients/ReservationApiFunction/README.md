@@ -6,7 +6,7 @@
 
 ## 云函数简介
 
->  腾讯云云函数（Serverless Cloud Function，SCF）是腾讯云为企业和开发者们提供的无服务器执行环境，帮助您在无需购买和管理服务器的情况下运行代码， 是实时文件处理和数据处理等场景下理想的计算平台。 您只需使用 SCF 平台支持的语言编写核心代码并设置代码运行的条件，即可在腾讯云基础设施上弹性、安全地运行代码。
+> 腾讯云云函数（Serverless Cloud Function，SCF）是腾讯云为企业和开发者们提供的无服务器执行环境，帮助您在无需购买和管理服务器的情况下运行代码， 是实时文件处理和数据处理等场景下理想的计算平台。 您只需使用 SCF 平台支持的语言编写核心代码并设置代码运行的条件，即可在腾讯云基础设施上弹性、安全地运行代码。
 >
 > ## 计算资源的变迁
 >
@@ -23,11 +23,7 @@
 
 更多介绍参考[官方文档](https://cloud.tencent.com/document/product/583/9199)
 
-
-
 腾讯云函数目前有免费额度可以用，应用不大，基本可以够用：
-
-
 
 ![免费额度](./images/freeQuarta.png)
 
@@ -41,15 +37,9 @@
 
 ![创建云函数](./images/create-function.png)
 
-
-
 默认提供了一些模板，可以根据自己需要创建，我这里选择空白函数，选择的运行环境是 nodejs 8.9，然后下一步即可
 
-
-
 ![配置云函数](./images/create-function2.png)
-
-
 
 如果你的方法比较简单可以直接编辑好再完成，如果比较复杂的话可以先完成，在本地编辑好再更新。
 
@@ -77,7 +67,6 @@ dist.zip
 - -- packages.json
 
 
-
 2. 配置触发方式：
 
 ![配置触发方式](./images/add-function-trigger.png)
@@ -87,7 +76,6 @@ dist.zip
 ![触发器详情](./images/function-trigger-detail.png)
 
 ![API Service](./images/api-service.png)
-
 
 
 我们访问下面的路径就可以访问到我们的 api 了，示例：
