@@ -252,7 +252,7 @@ namespace ActivityReservation.Controllers
                     TimeSpan.FromMinutes(1));
                 if (notice != null)
                 {
-                    eventBus.Publish(new NoticeViewEvent { NoticeId = notice.NoticeId });
+                    await eventBus.PublishAsync(new NoticeViewEvent { NoticeId = notice.NoticeId });
                     return View(notice);
                 }
             }

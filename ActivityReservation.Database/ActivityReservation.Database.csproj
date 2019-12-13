@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>ActivityReservation.DataAccess</RootNamespace>
-    <AssemblyName>ActivityReservation.DataAccess</AssemblyName>
+    <RootNamespace>ActivityReservation.Database</RootNamespace>
+    <AssemblyName>ActivityReservation.Database</AssemblyName>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.11" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj">

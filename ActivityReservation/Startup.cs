@@ -70,7 +70,7 @@ namespace ActivityReservation
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.AccessDeniedPath = "/Admin/Account/Login";
+                    options.AccessDeniedPath = "/Admin/Account/AccessDenied";
                     options.LoginPath = "/Admin/Account/Login";
                     options.LogoutPath = "/Admin/Account/LogOut";
 
@@ -80,7 +80,18 @@ namespace ActivityReservation
                 });
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("Reservation")), 100);
+            services.AddDbContextPool<ReservationDbContext>(option =>
+            {
+                var dbType = Configuration.GetAppSetting("DbType");
+                if ("MySql".EqualsIgnoreCase(dbType))
+                {
+                    option.UseMySql(Configuration.GetConnectionString("Reservation"));
+                }
+                else
+                {
+                    option.UseSqlServer(Configuration.GetConnectionString("Reservation"));
+                }
+            }, 100);
 
             services.AddHttpClient<GoogleRecaptchaHelper>(client =>
             {
@@ -105,8 +116,14 @@ namespace ActivityReservation
 
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
+
             // register access control service
-            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
+            //services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
+
+            services.AddAccessControlHelper()
+                .AddResourceAccessStrategy<Filters.AdminPermissionRequireStrategy>()
+                .AddControlAccessStrategy<Filters.AdminOnlyControlAccessStrategy>()
+                ;
 
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
@@ -206,10 +223,16 @@ namespace ActivityReservation
                 .AddSerilog(loggingConfig =>
                 {
                     loggingConfig
-                        .WriteTo.Elasticsearch(Configuration.GetConnectionString("ElasticSearch"), $"logstash-{ApplicationHelper.ApplicationName.ToLower()}")
                         .Enrich.FromLogContext()
                         .Enrich.WithRequestInfo()
                         ;
+
+                    var esConnString = Configuration.GetConnectionString("ElasticSearch");
+                    if (esConnString.IsNotNullOrWhiteSpace())
+                    {
+                        loggingConfig.WriteTo.Elasticsearch(esConnString,
+                            $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
+                    }
                 })
                 .WithFilter((providerType, categoryName, logLevel, exception) =>
                 {
@@ -289,7 +312,7 @@ namespace ActivityReservation
                 .HasAuthor("WeihanLi")
                 .HasTitle("活动室预约信息")
                 .HasDescription("活动室预约信息")
-                .HasSheetConfiguration(0, "活动室预约信息")
+                .HasSheetConfiguration(0, "活动室预约信息", true)
                 ;
 
             settings.Property(r => r.ReservationId).Ignored();
@@ -321,7 +344,7 @@ namespace ActivityReservation
                 .HasColumnIndex(7);
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
-                .HasColumnFormatter((entity, propertyVal) => propertyVal.GetDescription())
+                .HasOutputFormatter((entity, propertyVal) => propertyVal.GetDescription())
                 .HasColumnIndex(8);
         }
     }

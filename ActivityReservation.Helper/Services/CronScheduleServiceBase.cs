@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
+using WeihanLi.Extensions;
 using WeihanLi.Redis;
 
 namespace ActivityReservation.Services
@@ -29,59 +30,59 @@ namespace ActivityReservation.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            {
-                var next = CronHelper.GetNextOccurrence(CronExpression);
-                while (!stoppingToken.IsCancellationRequested && next.HasValue)
-                {
-                    var now = DateTimeOffset.UtcNow;
+            var cron = WeihanLi.Common.Helpers.Cron.CronExpression.Parse(CronExpression);
 
-                    if (now >= next)
+            var next = cron.GetNextOccurrence();
+            while (!stoppingToken.IsCancellationRequested && next.HasValue)
+            {
+                var now = DateTimeOffset.UtcNow;
+
+                if (now >= next)
+                {
+                    if (ConcurrentAllowed)
                     {
-                        if (ConcurrentAllowed)
+                        _ = ProcessAsync(stoppingToken);
+                        next = CronHelper.GetNextOccurrence(CronExpression);
+                        if (next.HasValue)
                         {
-                            _ = ProcessAsync(stoppingToken);
-                            next = CronHelper.GetNextOccurrence(CronExpression);
-                            if (next.HasValue)
-                            {
-                                Logger.LogInformation("Next at {next}", next);
-                            }
-                        }
-                        else
-                        {
-                            var firewall = RedisManager.GetFirewallClient($"Job_{GetType().FullName}_{next:yyyyMMddHHmmss}", TimeSpan.FromMinutes(3));
-                            if (await firewall.HitAsync())
-                            {
-                                // 执行 job
-                                await ProcessAsync(stoppingToken);
-                                next = CronHelper.GetNextOccurrence(CronExpression);
-                                if (next.HasValue)
-                                {
-                                    Logger.LogInformation("Next at {next}", next);
-                                    var delay = next.Value - DateTimeOffset.UtcNow;
-                                    if (delay > TimeSpan.Zero)
-                                    {
-                                        await Task.Delay(delay, stoppingToken);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Logger.LogInformation("正在执行 job，不能重复执行");
-                                next = CronHelper.GetNextOccurrence(CronExpression);
-                                if (next.HasValue)
-                                {
-                                    await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
-                                }
-                            }
+                            Logger.LogInformation("Next at {next}", next);
                         }
                     }
                     else
                     {
-                        // needed for graceful shutdown for some reason.
-                        // 1000ms so it doesn't affect calculating the next
-                        // cron occurence (lowest possible: every second)
-                        await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
+                        var firewall = RedisManager.GetFirewallClient($"Job_{GetType().FullName}_{next:yyyyMMddHHmmss}", TimeSpan.FromMinutes(3));
+                        if (await firewall.HitAsync())
+                        {
+                            // 执行 job
+                            await ProcessAsync(stoppingToken);
+                            next = CronHelper.GetNextOccurrence(CronExpression);
+                            if (next.HasValue)
+                            {
+                                Logger.LogInformation("Next at {next}", next);
+                                var delay = next.Value - DateTimeOffset.UtcNow;
+                                if (delay > TimeSpan.Zero)
+                                {
+                                    await Task.Delay(delay, stoppingToken);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Logger.LogInformation("正在执行 job，不能重复执行");
+                            next = CronHelper.GetNextOccurrence(CronExpression);
+                            if (next.HasValue)
+                            {
+                                await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
+                            }
+                        }
                     }
+                }
+                else
+                {
+                    // needed for graceful shutdown for some reason.
+                    // 1000ms so it doesn't affect calculating the next
+                    // cron occurence (lowest possible: every second)
+                    await Task.Delay(next.Value - DateTimeOffset.UtcNow, stoppingToken);
                 }
             }
         }

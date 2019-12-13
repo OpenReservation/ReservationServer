@@ -156,11 +156,11 @@ namespace ActivityReservation.AdminLogic.Controllers
                 .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
                 .WithInclude(q => q.Include(x => x.Place)
                 ));
-            var excelBytes = reservations.ToExcelBytes();
+            var excelBytes = reservations.ToExcelBytes(ExcelFormat.Xls);
 
             var fileName = (beginDate.HasValue && endDate.HasValue)
-                ? $"{beginDate:yyyyMMdd}-{endDate:yyyyMMdd}活动室预约信息.xlsx"
-                : "活动室预约信息.xlsx";
+                ? $"{beginDate:yyyyMMdd}-{endDate:yyyyMMdd}活动室预约信息.xls"
+                : "活动室预约信息.xls";
 
             return File(excelBytes, "application/vnd.ms-excel", fileName);
         }

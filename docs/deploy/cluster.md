@@ -1,8 +1,10 @@
-# 活动室预约单机部署
+# 活动室预约集群部署
 
 ## Intro
 
-活动室预约系统分单机版和集群版，主要致力于集群版的开发，单机版是为了小型系统使用，使用的是 sqlite 数据库，不支持集群模式，集群版增加了 redis 缓存中间件，通过 redis 实现了一些分布式系统必备的组件，分布式锁，基于 redis pub/sub 的 RedisEventBus，计数器等。
+活动室预约系统分单机版和集群版，主要致力于集群版的开发，单机版是为了小型系统使用，使用的是 sqlite 数据库，不支持集群模式，
+
+集群版增加了 redis 缓存中间件，通过 redis 实现了一些分布式系统必备的组件，分布式锁，基于 redis pub/sub 的 RedisEventBus，计数器等。
 
 在线示例：
 
@@ -12,16 +14,46 @@
 ## 部署需要
 
 - redis（缓存/分布式锁/EventBus）
-- mysql（数据库，也可以换成自己想用的数据库）
-- elasticsearch（日志，可以不用，但是推荐使用）
+- sqlserver/mysql（数据库，也可以换成自己想用的数据库）
+- elasticsearch（日志，可选，但是推荐使用）
+
+> 下面的配置想要体验的话可以用已有配置，如果要自己部署用的话建议自己注册换成自己的账号
+
 - [sentry](https://sentry.io)（异常日志报警）
-- [腾讯验证码](https://007.qq.com/product.html?ADTAG=index.head)（）
+- [腾讯验证码](https://007.qq.com/product.html?ADTAG=index.head)（验证码）
+
+## 开始部署
+
+- 本地演示（docker-compose）
+
+  项目提供了 docker-compose 的部署方式，你可以在项目根目录下找到 docker-compose.yml， `docker-compose up` 即可
+
+- 生产部署
+
+  项目提供 k8s 部署所需的 yaml 配置
+
+  1. 手动打包
+
+      下载源代码，切换目录到 `/k8s/charts/reservation-server`
+
+      ``` bash
+      helm dependency update # 更新依赖
+      helm package . # 打包 chart
+      helm install reservation reservation-server-1.0.0.tgz # install chart
+      ```
+
+  2. AppHub
+
+      ``` bash
+      helm repo add apphub https://apphub.aliyuncs.com/ # add repo
+      helm install apphub/reservation-server --version 1.0.0
+      ```
 
 ## 部署示例
 
 我自己部署了一个 demo，可以在 <https://reservation.weihanli.xyz> 体验
 
-> 部署架构
+> demo 部署架构
 
 ![cluster arch](./images/cluster-deploy.png)
 
@@ -37,7 +69,7 @@ k8s 部署详情：
 
 k8s 部署 yaml 定义可以参考下面的链接：
 
-- Redis: <https://github.com/WeihanLi/ActivityReservation/blob/dev/redis.yaml>
-- ElasticSearch: <https://github.com/WeihanLi/ActivityReservation/blob/dev/elasticsearch.yaml>
-- Kibana: <https://github.com/WeihanLi/ActivityReservation/blob/dev/kibana.yaml>
-- ActivityReservation:<https://github.com/WeihanLi/ActivityReservation/blob/dev/reservation-deployment.yaml>（使用了 configMap 挂载了配置文件，可以不用）
+- [Redis](../../k8s/redis.yaml)
+- [ElasticSearch](../../k8s/elasticsearch.yaml)
+- [Kibana](../../k8s//kibana.yaml)
+- [ActivityReservation](../../k8s/reservation-deployment.yaml)（使用了 configMap 挂载了配置文件，可以不用）

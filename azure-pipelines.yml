@@ -9,36 +9,50 @@ trigger:
     - '*.md'
     - /ActivityReservation.Clients/
     - /docs/
+    - /k8s/
 
 pool:
   vmImage: 'ubuntu-latest'
 
 variables:
   tagName: '$(Build.BuildNumber)'
-  latestImageName: '$(dockerId)/activityreservation:latest'
-  imageName: '$(dockerId)/activityreservation:$(tagName)'
+  repoName: 'activityreservation'
+  stableImageName: '$(dockerId)/$(repoName):stable'
+  latestImageName: '$(dockerId)/$(repoName):latest'
+  branchImageName: '$(dockerId)/$(repoName):$(Build.SourceBranchName)'
+  imageName: '$(dockerId)/$(repoName):$(tagName)'
 
 steps:
 - script: dotnet --info
   displayName: 'dotnet info'
 
-- script: dotnet build -c Release
-  displayName: 'dotnet build'
+# - script: dotnet build -c Release
+#   displayName: 'dotnet build'
 
-- script: dotnet test 
-  displayName: 'dotnet test'
+# - script: dotnet test 
+#   displayName: 'dotnet test'
 
-- script: docker build -f Dockerfile -t $(imageName) -t $(latestImageName) .
+- script: docker build -f Dockerfile -t $(imageName) -t $(branchImageName) -t $(latestImageName) -t $(stableImageName) .
   displayName: 'Docker build Script'
 
 - script: |
     docker login -u $(dockerId) -p $(pswd)
     docker push $(imageName)
-    docker push $(latestImageName)
+    docker push $(branchImageName)
   displayName: 'Push docker image'
+
+- script: |
+    docker push $(latestImageName)
+  displayName: 'Push latest image'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+
+- script: docker push $(stableImageName)
+  displayName: 'Push stable image'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: SSH@0
   displayName: 'Run shell inline on remote machine'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
   inputs:
     sshEndpoint: 'weihanli-vm'
     runOptions: inline

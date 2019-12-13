@@ -6,9 +6,9 @@ using WeihanLi.Common.Event;
 
 namespace ActivityReservation.API.Test.MockServices
 {
-    internal class MockNoticeViewEventHandler : IEventHandler<NoticeViewEvent>
+    internal class MockNoticeViewEventHandler : EventHandlerBase<NoticeViewEvent>
     {
-        public async Task Handle(NoticeViewEvent @event)
+        public override async Task Handle(NoticeViewEvent @event)
         {
             await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
             {
