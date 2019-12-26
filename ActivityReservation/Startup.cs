@@ -224,7 +224,14 @@ namespace ActivityReservation
                 {
                     loggingConfig
                         .Enrich.FromLogContext()
-                        .Enrich.WithRequestInfo()
+                        .Enrich.WithHttpContextInfo(app.ApplicationServices, (logEvent, propertyFactory, httpContext) =>
+                        {
+                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
+                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
+                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod", httpContext.Request.Method));
+
+                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer", httpContext.Request.Headers["Referer"].ToString()));
+                        })
                         ;
 
                     var esConnString = Configuration.GetConnectionString("ElasticSearch");
