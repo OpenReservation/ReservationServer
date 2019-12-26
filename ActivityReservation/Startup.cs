@@ -231,6 +231,10 @@ namespace ActivityReservation
                             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod", httpContext.Request.Method));
 
                             logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer", httpContext.Request.Headers["Referer"].ToString()));
+                            if (httpContext.Response.HasStarted)
+                            {
+                                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("ResponseStatus", httpContext.Response.StatusCode));
+                            }
                         })
                         ;
 
