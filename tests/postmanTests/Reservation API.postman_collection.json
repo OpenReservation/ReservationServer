@@ -1,0 +1,572 @@
+{
+	"info": {
+		"_postman_id": "e9f9e001-e32b-475b-af43-1aac9a01ef85",
+		"name": "Reservation API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api",
+			"item": [
+				{
+					"name": "Notice",
+					"item": [
+						{
+							"name": "获取公告列表",
+							"protocolProfileBehavior": {
+								"followRedirects": false
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Notice?keyword={{keyword}}&pageNumber=1&pageSize=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Notice"
+									],
+									"query": [
+										{
+											"key": "keyword",
+											"value": "{{keyword}}",
+											"description": "关键词"
+										},
+										{
+											"key": "pageNumber",
+											"value": "1",
+											"description": "pageNumber"
+										},
+										{
+											"key": "pageSize",
+											"value": "10",
+											"description": "pageSize"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Notice?keyword=<string>&pageNumber=1&pageSize=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notice"
+											],
+											"query": [
+												{
+													"key": "keyword",
+													"value": "<string>"
+												},
+												{
+													"key": "pageNumber",
+													"value": "1"
+												},
+												{
+													"key": "pageSize",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "获取公告详情",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "e8897ec1-3d18-453c-bc39-5a7cf18b7e6b",
+										"exec": [
+											"console.log(`notice path: ${data[\"path\"]}`);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Notice/:path",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Notice",
+										":path"
+									],
+									"variable": [
+										{
+											"key": "path",
+											"value": "{{path}}",
+											"description": "noticePath"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "获取公告详情",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "https://reservation.weihanli.xyz/api/Notice/:path",
+											"protocol": "https",
+											"host": [
+												"reservation",
+												"weihanli",
+												"xyz"
+											],
+											"path": [
+												"api",
+												"Notice",
+												":path"
+											],
+											"variable": [
+												{
+													"key": "path",
+													"value": "test-notifce",
+													"description": "noticePath"
+												}
+											]
+										}
+									},
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": null
+								},
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Notice/:path",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Notice",
+												":path"
+											],
+											"variable": [
+												{
+													"key": "path"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Reservation",
+					"item": [
+						{
+							"name": "活动室预约列表",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/Reservation?phone={{phone}}&pageNumber=1&pageSize=10",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"Reservation"
+									],
+									"query": [
+										{
+											"key": "phone",
+											"value": "{{phone}}",
+											"description": "手机号"
+										},
+										{
+											"key": "pageNumber",
+											"value": "1",
+											"description": "pageNumber"
+										},
+										{
+											"key": "pageSize",
+											"value": "10",
+											"description": "pageSize"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/Reservation?phone=<string>&pageNumber=1&pageSize=10",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"Reservation"
+											],
+											"query": [
+												{
+													"key": "phone",
+													"value": "<string>"
+												},
+												{
+													"key": "pageNumber",
+													"value": "1"
+												},
+												{
+													"key": "pageSize",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Reservation Place",
+					"item": [
+						{
+							"name": "预约活动室列表",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/ReservationPlace",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ReservationPlace"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/ReservationPlace",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"ReservationPlace"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						},
+						{
+							"name": "获取可预约的时间段",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/ReservationPlace/:placeId/periods?dt={{date}}",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"ReservationPlace",
+										":placeId",
+										"periods"
+									],
+									"query": [
+										{
+											"key": "dt",
+											"value": "{{date}}"
+										}
+									],
+									"variable": [
+										{
+											"key": "placeId",
+											"value": "{{placeId}}",
+											"description": "活动室id"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/api/ReservationPlace/:placeId/periods?dt=<dateTime>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"api",
+												"ReservationPlace",
+												":placeId",
+												"periods"
+											],
+											"query": [
+												{
+													"key": "dt",
+													"value": "<dateTime>"
+												}
+											],
+											"variable": [
+												{
+													"key": "placeId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "510fa3c3-c682-465c-917a-22a5e23ec826",
+				"type": "text/javascript",
+				"exec": [
+					"// Environments",
+					"",
+					"",
+					"// Setting an environment variable",
+					"",
+					"// pm.environment.set(\"variable_key\", \"variable_value\");",
+					"",
+					"// Setting a nested object as an environment variable",
+					"",
+					"// var array = [1, 2, 3, 4];",
+					"// pm.environment.set(\"array\", JSON.stringify(array, null, 2));",
+					"// var obj = { a: [1, 2, 3, 4], b: { c: 'val' } };",
+					"// pm.environment.set(\"obj\", JSON.stringify(obj));",
+					"",
+					"// Getting an environment variable",
+					"",
+					"// var value = pm.environment.get(\"variable_key\");",
+					"",
+					"// // If the value is a stringified JSON:",
+					"",
+					"// // These statements should be wrapped in a try-catch block if the data is coming from an unknown source.",
+					"",
+					"// var array = JSON.parse(pm.environment.get(\"array\"));",
+					"// var obj = JSON.parse(pm.environment.get(\"obj\"));",
+					"",
+					"// // Clear an environment variable",
+					"// pm.environment.unset(\"variable_key\");",
+					"",
+					"",
+					"// Collection",
+					"",
+					"// Setting an collection variable",
+					"",
+					"// pm.collectionVariables.set(variableName:String, variableValue:String);",
+					"",
+					"// Get a collection variable",
+					"",
+					"// pm.collectionVariables.get(variableName:String);",
+					"",
+					"// Clear a collection variable",
+					"",
+					"// pm.collectionVariables.unset(variableName:String);",
+					"",
+					"",
+					"// Globals",
+					"",
+					"// Set a global variable",
+					"",
+					"// pm.globals.set(\"variable_key\", \"variable_value\");",
+					"",
+					"// Get a global variable",
+					"",
+					"// pm.globals.get(\"variable_key\");",
+					"",
+					"// Clear a global variable",
+					"",
+					"// pm.globals.unset(\"variable_key\");",
+					"",
+					"",
+					"// Variables",
+					"// This function searches for the variable across globals and the active environment.",
+					"",
+					"// var value = pm.variables.get(\"variable_key\");"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "41901e7d-75d4-4b61-b46d-09b2f03b9062",
+				"type": "text/javascript",
+				"exec": [
+					"// ensure statusCode 200",
+					"pm.test(\"response is ok\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"// example using pm.response.to.be*",
+					"pm.test(\"response must be valid and has a json body\", function () {",
+					"     // assert that the status code is 200",
+					"     pm.response.to.be.ok; // info, success, redirection, clientError,  serverError, are other variants",
+					"     // assert that the response has a valid JSON body",
+					"     pm.response.to.be.withBody;",
+					"     pm.response.to.be.json; // this assertion also checks if a body  exists, so the above check is not needed",
+					"});",
+					"",
+					"let responseTimeout = parseInt(pm.variables.get(\"responseTimeout\"));",
+					"if(responseTimeout > 0){",
+					"    // Response time is less than 1s",
+					"    pm.test(`Response time is less than ${responseTimeout}ms`, function () {",
+					"        pm.expect(pm.response.responseTime).to.be.below(responseTimeout);",
+					"    });   ",
+					"}",
+					"",
+					"// Convert XML body to a JSON object",
+					"// var jsonObject = xml2Json(responseBody);",
+					"",
+					"// Check for a JSON value",
+					"// pm.test(\"Your test name\", function () {",
+					"//     var jsonData = pm.response.json();",
+					"//     pm.expect(jsonData.value).to.eql(100);",
+					"// });",
+					"",
+					"// pm.test(\"Check if array is empty\", function () {",
+					"//  expect([]).to.be.empty;",
+					"// });",
+					"// pm.test(\"Check if string is empty\", function () {",
+					"//  pm.expect('').to.be.empty;",
+					"// });"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d91aca66-ca9e-4102-ac69-55dbc1db1570",
+			"key": "baseUrl",
+			"value": "https://reservation.weihanli.xyz",
+			"type": "string"
+		},
+		{
+			"id": "e4a12853-b71f-4b3b-adc9-f37dbbcf834d",
+			"key": "responseTimeout",
+			"value": "1000",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
