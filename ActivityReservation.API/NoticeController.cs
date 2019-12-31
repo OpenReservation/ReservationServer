@@ -37,16 +37,15 @@ namespace ActivityReservation.API
             Expression<Func<Notice, bool>> predict = n => true;
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-                predict = predict.And(n => n.NoticeTitle.Contains(keyword.Trim()));
+                keyword = keyword.Trim();
+                predict = predict.And(n => n.NoticeTitle.Contains(keyword));
             }
             var result = await _repository.GetPagedListResultAsync(x => new
             {
                 x.NoticeTitle,
-                x.NoticeVisitCount,
                 x.NoticeCustomPath,
-                x.NoticePublisher,
                 x.NoticePublishTime,
-                x.NoticeImagePath
+                x.NoticeExternalLink
             }, queryBuilder => queryBuilder
                    .WithPredict(predict)
                    .WithOrderBy(q => q.OrderByDescending(_ => _.NoticePublishTime))
@@ -73,7 +72,7 @@ namespace ActivityReservation.API
             var notice = await cacheClient.GetOrSetAsync(
                 $"Notice_{path.Trim()}",
                 () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
-                TimeSpan.FromMinutes(1));
+                TimeSpan.FromHours(1));
 
             if (notice == null)
             {
