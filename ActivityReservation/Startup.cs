@@ -219,50 +219,57 @@ namespace ActivityReservation
 
             ExcelSettings();
 
-            LogHelper.LogFactory
-                .AddSerilog(loggingConfig =>
+            LogHelper.ConfigureLogging(builder =>
                 {
-                    loggingConfig
-                        .Enrich.FromLogContext()
-                        .Enrich.WithHttpContextInfo(app.ApplicationServices, (logEvent, propertyFactory, httpContext) =>
+                    builder.AddSerilog(loggingConfig =>
                         {
-                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
-                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
-                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod", httpContext.Request.Method));
+                            loggingConfig
+                                .Enrich.FromLogContext()
+                                .Enrich.WithHttpContextInfo(app.ApplicationServices, (logEvent, propertyFactory, httpContext) =>
+                                    {
+                                        logEvent.AddPropertyIfAbsent(
+                                            propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
+                                        logEvent.AddPropertyIfAbsent(
+                                            propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
+                                        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod",
+                                            httpContext.Request.Method));
 
-                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer", httpContext.Request.Headers["Referer"].ToString()));
-                            if (httpContext.Response.HasStarted)
+                                        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer",
+                                            httpContext.Request.Headers["Referer"].ToString()));
+                                        if (httpContext.Response.HasStarted)
+                                        {
+                                            logEvent.AddPropertyIfAbsent(
+                                                propertyFactory.CreateProperty("ResponseStatus",
+                                                    httpContext.Response.StatusCode));
+                                        }
+                                    })
+                                ;
+
+                            var esConnString = Configuration.GetConnectionString("ElasticSearch");
+                            if (esConnString.IsNotNullOrWhiteSpace())
                             {
-                                logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("ResponseStatus", httpContext.Response.StatusCode));
+                                loggingConfig.WriteTo.Elasticsearch(esConnString, $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
                             }
                         })
-                        ;
-
-                    var esConnString = Configuration.GetConnectionString("ElasticSearch");
-                    if (esConnString.IsNotNullOrWhiteSpace())
-                    {
-                        loggingConfig.WriteTo.Elasticsearch(esConnString,
-                            $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
-                    }
-                })
-                .WithFilter((providerType, categoryName, logLevel, exception) =>
-                {
-                    if (exception != null)
-                    {
-                        var ex = exception.Unwrap();
-                        if (ex is TaskCanceledException || ex is OperationCanceledException)
+                        .WithFilter((providerType, categoryName, logLevel, exception) =>
                         {
-                            return false;
-                        }
-                    }
+                            if (exception != null)
+                            {
+                                var ex = exception.Unwrap();
+                                if (ex is TaskCanceledException || ex is OperationCanceledException)
+                                {
+                                    return false;
+                                }
+                            }
 
-                    if ((categoryName.StartsWith("Microsoft") || categoryName.StartsWith("System")) &&
-                        logLevel <= LogHelperLevel.Info)
-                    {
-                        return false;
-                    }
+                            if ((categoryName.StartsWith("Microsoft") || categoryName.StartsWith("System")) &&
+                                logLevel <= LogHelperLogLevel.Info)
+                            {
+                                return false;
+                            }
 
-                    return true;
+                            return true;
+                        });
                 });
 
             loggerFactory
