@@ -61,12 +61,12 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public JsonResult AddPeriod(DisabledPeriodViewModel model)
         {
-            var result = new JsonResultModel<bool>();
+            var result = new ResultModel<bool>();
             if (ModelState.IsValid)
             {
                 if (!model.IsModelValid())
                 {
-                    result.Status = JsonResultStatus.RequestError;
+                    result.Status = ResultStatus.RequestError;
                     result.ErrorMsg = "结束日期必须大于开始日期";
                     return Json(result);
                 }
@@ -75,7 +75,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     var list = _bllDisabledPeriod.Select(p => EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
                     if (list != null && list.Any())
                     {
-                        result.Status = JsonResultStatus.RequestError;
+                        result.Status = ResultStatus.RequestError;
                         result.ErrorMsg = "该时间段已经被禁用，不可重复添加！";
                         return Json(result);
                     }
@@ -92,13 +92,13 @@ namespace ActivityReservation.AdminLogic.Controllers
                     var count = _bllDisabledPeriod.Insert(period);
                     if (count > 0)
                     {
-                        result.Status = JsonResultStatus.Success;
+                        result.Status = ResultStatus.Success;
                         result.Result = true;
                         result.ErrorMsg = "";
                     }
                     else
                     {
-                        result.Status = JsonResultStatus.ProcessFail;
+                        result.Status = ResultStatus.ProcessFail;
                         result.ErrorMsg = "添加失败";
                     }
                     return Json(result);
@@ -106,7 +106,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             else
             {
-                result.Status = JsonResultStatus.RequestError;
+                result.Status = ResultStatus.RequestError;
                 result.ErrorMsg = "请求参数异常";
                 return Json(result);
             }
@@ -120,19 +120,19 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public JsonResult UpdatePeriodStatus(Guid periodId, int status)
         {
-            var result = new JsonResultModel<bool>();
+            var result = new ResultModel<bool>();
             var period = _bllDisabledPeriod.Fetch(p => p.PeriodId == periodId);
             if (period == null)
             {
                 result.ErrorMsg = "时间段不存在，请求参数异常";
-                result.Status = JsonResultStatus.RequestError;
+                result.Status = ResultStatus.RequestError;
                 return Json(result);
             }
             if ((status > 0 && period.IsActive) || (status <= 0 && !period.IsActive))
             {
                 result.ErrorMsg = "不需要更新状态";
                 result.Result = true;
-                result.Status = JsonResultStatus.Success;
+                result.Status = ResultStatus.Success;
             }
             else
             {
@@ -145,7 +145,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}:{period.StartDate:yyyy/MM/dd}--{period.EndDate:yyyy/MM/dd}",
                         OperLogModule.DisabledPeriod, UserName);
 
-                    result.Status = JsonResultStatus.Success;
+                    result.Status = ResultStatus.Success;
                     result.Result = true;
                 }
             }

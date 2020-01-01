@@ -106,12 +106,12 @@ namespace ActivityReservation.Controllers
             var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailable(reservationForDate, false, out var msg);
             if (isValid)
             {
-                return Json(JsonResultModel.Success(true));
+                return Json(ResultModel.Success(true));
             }
             else
             {
                 var jsonResult =
-                    new JsonResultModel<bool> { Status = JsonResultStatus.Success, Result = false, ErrorMsg = msg };
+                    new ResultModel<bool> { Status = ResultStatus.Success, Result = false, ErrorMsg = msg };
                 return Json(jsonResult);
             }
         }
@@ -142,12 +142,12 @@ namespace ActivityReservation.Controllers
             [FromHeader]string captcha,
             [FromHeader]string captchaType)
         {
-            var result = new JsonResultModel<bool>();
+            var result = new ResultModel<bool>();
             var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
             {
-                result.Status = JsonResultStatus.RequestError;
+                result.Status = ResultStatus.RequestError;
                 result.ErrorMsg = "验证码有误, 请重新验证";
                 return Json(result);
             }
@@ -163,14 +163,14 @@ namespace ActivityReservation.Controllers
                     }
 
                     result.Result = true;
-                    result.Status = JsonResultStatus.Success;
+                    result.Status = ResultStatus.Success;
                     return Json(result);
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, "预约发生异常");
-                result.Status = JsonResultStatus.ProcessFail;
+                result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
             }
             return Json(result);

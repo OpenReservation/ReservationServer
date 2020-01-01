@@ -104,7 +104,7 @@ namespace ActivityReservation.API
         [HttpPost]
         public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType, [FromServices]CaptchaVerifyHelper captchaVerifyHelper)
         {
-            var result = new JsonResultModel<bool> { Status = JsonResultStatus.RequestError };
+            var result = new ResultModel<bool> { Status = ResultStatus.RequestError };
             var isCodeValid = await captchaVerifyHelper
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
@@ -122,13 +122,13 @@ namespace ActivityReservation.API
                 }
 
                 result.Result = true;
-                result.Status = JsonResultStatus.Success;
+                result.Status = ResultStatus.Success;
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, $"活动室预约失败：{ex.Message}");
-                result.Status = JsonResultStatus.ProcessFail;
+                result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
                 return Ok(result);
             }

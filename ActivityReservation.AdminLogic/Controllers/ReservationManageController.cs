@@ -47,7 +47,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         [HttpPost]
         public ActionResult MakeReservation([FromBody]ReservationViewModel model)
         {
-            var result = new JsonResultModel<bool> { Result = false, Status = JsonResultStatus.RequestError };
+            var result = new ResultModel<bool> { Result = false, Status = ResultStatus.RequestError };
             try
             {
                 if (ModelState.IsValid)
@@ -63,14 +63,14 @@ namespace ActivityReservation.AdminLogic.Controllers
                                             $"管理员 {UserName} 后台预约 {model.ReservationForDate:yyyy-MM-dd} {model.ReservationPlaceName}：{model.ReservationActivityContent}",
                                             OperLogModule.Reservation, UserName);
                     result.Result = true;
-                    result.Status = JsonResultStatus.Success;
+                    result.Status = ResultStatus.Success;
                     return Json(result);
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                result.Status = JsonResultStatus.ProcessFail;
+                result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
             }
             return Json(result);

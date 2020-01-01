@@ -27,10 +27,10 @@ namespace ActivityReservation.Filters
             StatusCode = 403
         };
 
-        public IActionResult DisallowedAjaxResult => new JsonResult(new JsonResultModel
+        public IActionResult DisallowedAjaxResult => new JsonResult(new ResultModel
         {
             ErrorMsg = "No Permission",
-            Status = JsonResultStatus.NoPermission
+            Status = ResultStatus.NoPermission
         });
     }
 
