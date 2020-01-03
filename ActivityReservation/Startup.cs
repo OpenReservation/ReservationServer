@@ -362,7 +362,7 @@ namespace ActivityReservation
                 .HasColumnIndex(7);
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
-                .HasOutputFormatter((entity, propertyVal) => propertyVal.GetDescription())
+                .HasColumnOutputFormatter(status=>status.GetDescription())
                 .HasColumnIndex(8);
         }
     }
