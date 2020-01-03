@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
@@ -13,7 +14,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,7 +67,10 @@ namespace ActivityReservation
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -286,6 +292,20 @@ namespace ActivityReservation
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
 
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("zh-CN"),
+            };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("zh-CN"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures,
+            });
             app.UseStaticFiles();
 
             app.UseSwagger()
@@ -362,7 +382,7 @@ namespace ActivityReservation
                 .HasColumnIndex(7);
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
-                .HasColumnOutputFormatter(status=>status.GetDescription())
+                .HasColumnOutputFormatter(status => status.GetDescription())
                 .HasColumnIndex(8);
         }
     }

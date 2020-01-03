@@ -1,5 +1,7 @@
 ﻿@using ActivityReservation.Services
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject IApplicationSettingService applicationSettings
+@inject IViewLocalizer viewLocalizer
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -32,9 +34,9 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("预约", "Reservate", "Home")</li>
-                    <li>@Html.ActionLink("公告", "Notice", "Home")</li>
-                    <li>@Html.ActionLink("关于", "About", "Home")</li>
+                    <li>@Html.ActionLink(viewLocalizer["Reservate"].Value, "Reservate", "Home")</li>
+                    <li>@Html.ActionLink(viewLocalizer["Notice"].Value, "Notice", "Home")</li>
+                    <li>@Html.ActionLink(viewLocalizer["About"].Value, "About", "Home")</li>
                 </ul>
             </div>
         </div>
@@ -43,7 +45,10 @@
         <div class="main-content">@RenderBody()</div>
         <hr class="hidden-print" />
         <footer class="hidden-print">
-            <p>&copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp; @Html.ActionLink("后台管理", "Login", new { controller = "Account", area = "Admin" })</p>
+            <p>
+                &copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp;
+                @Html.ActionLink(viewLocalizer["ManagementPortal"].Value, "Login", new { controller = "Account", area = "Admin" })
+            </p>
             <p>Powered by @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription </p>
         </footer>
     </div>
