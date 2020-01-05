@@ -1,5 +1,4 @@
-﻿using System;
-using ActivityReservation.Models;
+﻿using ActivityReservation.Models;
 using Microsoft.EntityFrameworkCore;
 using WeihanLi.Extensions;
 
@@ -18,8 +17,6 @@ namespace ActivityReservation.Database
             modelBuilder.Entity<ReservationPeriod>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
-
-            Console.WriteLine(Database.ProviderName);
 
             if (!Database.ProviderName.EqualsIgnoreCase("Microsoft.EntityFrameworkCore.InMemory"))
             {
