@@ -5,11 +5,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="3.1.0" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0-rc5" />
     <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.28" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.AdminLogic\ActivityReservation.AdminLogic.csproj" />
@@ -20,11 +23,6 @@
     <ProjectReference Include="..\ActivityReservation.WechatAPI\ActivityReservation.WechatAPI.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="Areas\Wechat\Views\_ViewImports.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\_ViewImports.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
+    <Folder Include="Resources\Views\Shared\Common\" />
   </ItemGroup>
 </Project>

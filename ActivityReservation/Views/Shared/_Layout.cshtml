@@ -3,10 +3,10 @@
 @inject IApplicationSettingService applicationSettings
 @inject IViewLocalizer viewLocalizer
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@($"{ViewBag.Title} -- {applicationSettings.GetSettingValue("SystemTitle")}") </title>
     <meta name="keywords" content="@(applicationSettings.GetSettingValue("SystemKeywords"))" />
@@ -45,11 +45,18 @@
         <div class="main-content">@RenderBody()</div>
         <hr class="hidden-print" />
         <footer class="hidden-print">
-            <p>
-                &copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp;
-                @Html.ActionLink(viewLocalizer["ManagementPortal"].Value, "Login", new { controller = "Account", area = "Admin" })
-            </p>
-            <p>Powered by @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription </p>
+            <div class="row">
+                <div class="col-md-8">
+                    &copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp;
+                    @Html.ActionLink(viewLocalizer["ManagementPortal"].Value, "Login", new { controller = "Account", area = "Admin" })
+                </div>
+                <div class="col-md-4 text-right">
+                    @await Html.PartialAsync("Common/SelectLanguage")
+                </div>
+            </div>
+            <div>
+                <p>Powered by @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription </p>
+            </div>
         </footer>
     </div>
     <!-- Google Analytics -->

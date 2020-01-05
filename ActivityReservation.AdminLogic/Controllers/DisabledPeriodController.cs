@@ -72,7 +72,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 }
                 else
                 {
-                    var list = _bllDisabledPeriod.Select(p => EF.Functions.DateDiffDay(model.StartDate, p.StartDate) <= 0 && EF.Functions.DateDiffDay(model.EndDate, p.EndDate) >= 0);
+                    var list = _bllDisabledPeriod.Select(p => model.StartDate <= p.StartDate && model.EndDate >= p.EndDate);
                     if (list != null && list.Any())
                     {
                         result.Status = ResultStatus.RequestError;

@@ -10,6 +10,7 @@ using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,17 @@ namespace ActivityReservation.Controllers
             _reservationBLL = reservationBLL;
         }
 
+        [HttpPost]
+        public IActionResult SetLanguage(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(
+                CookieRequestCultureProvider.DefaultCookieName,
+                CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
+            );
+            return LocalRedirect(returnUrl);
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -47,10 +59,9 @@ namespace ActivityReservation.Controllers
             Expression<Func<Reservation, bool>> whereLambda = (m => true);
             //补充查询条件
             //根据预约日期查询
-            if (!string.IsNullOrWhiteSpace(search.SearchItem0))
+            if (!string.IsNullOrWhiteSpace(search.SearchItem0) && DateTime.TryParse(search.SearchItem0, out var date))
             {
-                whereLambda = m =>
-                    EF.Functions.DateDiffDay(DateTime.Parse(search.SearchItem0), m.ReservationForDate) == 0;
+                whereLambda = m => m.ReservationForDate == date.Date;
             }
             //根据预约人联系方式查询
             if (!string.IsNullOrWhiteSpace(search.SearchItem1))

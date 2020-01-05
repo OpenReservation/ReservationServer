@@ -67,10 +67,25 @@ namespace ActivityReservation
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+                    opts => { opts.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"); })
+                .AddDataAnnotationsLocalization()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddLocalization(options => options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"));
 
-            services.AddLocalization(options => options.ResourcesPath = "Resources");
+            var supportedCultures = new[]
+            {
+                new CultureInfo("zh"),
+                new CultureInfo("en"),
+            };
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("zh");
+                // Formatting numbers, dates, etc.
+                options.SupportedCultures = supportedCultures;
+                // UI strings that we have localized.
+                options.SupportedUICultures = supportedCultures;
+            });
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -89,7 +104,11 @@ namespace ActivityReservation
             services.AddDbContextPool<ReservationDbContext>(option =>
             {
                 var dbType = Configuration.GetAppSetting("DbType");
-                if ("MySql".EqualsIgnoreCase(dbType))
+                if ("InMemory".EqualsIgnoreCase(dbType))
+                {
+                    option.UseInMemoryDatabase("Reservation");
+                }
+                else if ("MySql".EqualsIgnoreCase(dbType))
                 {
                     option.UseMySql(Configuration.GetConnectionString("Reservation"));
                 }
@@ -292,20 +311,7 @@ namespace ActivityReservation
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
 
-            var supportedCultures = new[]
-            {
-                new CultureInfo("en-US"),
-                new CultureInfo("zh-CN"),
-            };
-
-            app.UseRequestLocalization(new RequestLocalizationOptions
-            {
-                DefaultRequestCulture = new RequestCulture("zh-CN"),
-                // Formatting numbers, dates, etc.
-                SupportedCultures = supportedCultures,
-                // UI strings that we have localized.
-                SupportedUICultures = supportedCultures,
-            });
+            app.UseRequestLocalization();
             app.UseStaticFiles();
 
             app.UseSwagger()

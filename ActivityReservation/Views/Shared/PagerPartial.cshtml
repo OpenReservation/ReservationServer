@@ -1,4 +1,7 @@
-﻿@model IPagerModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using WeihanLi.Extensions
+@model IPagerModel
+@inject IViewLocalizer Localizer
 
 @if (Model.TotalCount > 0)
 {
@@ -200,7 +203,7 @@
                 </ul>
             </nav>
             <div>
-                <span>每页有<strong>@Model.PageSize</strong>条数据，一共有<strong>@Model.PageCount</strong>页，总计<strong>@Model.TotalCount</strong>条数据</span>
+                <span>@(Localizer["PagerInfo"].Value.FormatWith(Model.PageSize, Model.PageCount, Model.TotalCount))</span>
             </div>
         </div>
     }
