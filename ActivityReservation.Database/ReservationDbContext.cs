@@ -1,6 +1,7 @@
 ﻿using System;
 using ActivityReservation.Models;
 using Microsoft.EntityFrameworkCore;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Database
 {
@@ -20,12 +21,10 @@ namespace ActivityReservation.Database
 
             Console.WriteLine(Database.ProviderName);
 
-#if !DEBUG
             if (!Database.ProviderName.EqualsIgnoreCase("Microsoft.EntityFrameworkCore.InMemory"))
             {
                 modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
             }
-#endif
         }
 
         public virtual DbSet<User> Users { get; set; }
