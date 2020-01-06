@@ -50,8 +50,6 @@ spec:
           env:
             - name: Reservation_AppSettings__DbType
               value: InMemory
-            - name: Reservation_ConnectionStrings__ElasticSearch
-              value: ""
 
 ---
 apiVersion: v1
