@@ -21,7 +21,7 @@ RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/a
     apk add terminus-font && \
     apk add icu-libs
 # https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/ActivityReservation/out .
