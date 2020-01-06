@@ -40,8 +40,8 @@ services:
   redis:
     container_name: redis
     image: redis:alpine
-    ports: 
-      - 6379:6379
+    # ports: 
+    #   - 6379:6379
     restart: always
     healthcheck:
         test: ["CMD", "redis-cli", "-h", "127.0.0.1", "PING"]
@@ -52,8 +52,8 @@ services:
   db:
     container_name: mysql
     image: mysql:8.0
-    ports: 
-      - 3306:3306
+    # ports: 
+    #   - 3306:3306
     environment:
       - 'MYSQL_ROOT_PASSWORD=Admin888'
     restart: always
