@@ -43,12 +43,12 @@ namespace ActivityReservation.Events
             {
                 await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
                 {
-                    //var notice = await dbContext.Notices.FindAsync(@event.NoticeId);
-                    //notice.NoticeVisitCount += 1;
-                    //await dbContext.SaveChangesAsync();
+                    var notice = await dbContext.Notices.FindAsync(@event.NoticeId);
+                    notice.NoticeVisitCount += 1;
+                    await dbContext.SaveChangesAsync();
 
-                    var conn = dbContext.Database.GetDbConnection();
-                    await conn.ExecuteAsync($@"UPDATE tabNotice SET NoticeVisitCount = NoticeVisitCount +1 WHERE NoticeId = @NoticeId", new { @event.NoticeId });
+                    // var conn = dbContext.Database.GetDbConnection();
+                    // await conn.ExecuteAsync($@"UPDATE tabNotice SET NoticeVisitCount = NoticeVisitCount +1 WHERE NoticeId = @NoticeId", new { @event.NoticeId });
                 });
             }
         }

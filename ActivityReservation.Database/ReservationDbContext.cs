@@ -1,5 +1,6 @@
 ﻿using ActivityReservation.Models;
 using Microsoft.EntityFrameworkCore;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Database
 {
@@ -17,7 +18,7 @@ namespace ActivityReservation.Database
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
-            if (Database.IsSqlServer() || Database.IsMySql())
+            if (!Database.ProviderName.EqualsIgnoreCase("Microsoft.EntityFrameworkCore.InMemory"))
             {
                 modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
             }

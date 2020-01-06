@@ -44,7 +44,7 @@ namespace ActivityReservation.Helpers
         {
             //待审核和审核通过的预约时间段不能再被预约
             var reservationList = _bllReservation.Select(r =>
-                EF.Functions.DateDiffDay(r.ReservationForDate, dt) == 0
+                r.ReservationForDate == dt
                 && r.ReservationPlaceId == placeId
                 && r.ReservationStatus != ReservationStatus.Rejected);
 
@@ -87,8 +87,10 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
-            if (!_bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive && EF.Functions.DateDiffDay(p.StartDate, dt) >= 0 &&
-                                                                           EF.Functions.DateDiffDay(dt, p.EndDate) >= 0)))
+            if (!_bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive 
+                && p.StartDate >= dt 
+                && dt >=  p.EndDate
+                )))
             {
                 msg = string.Empty;
                 return true;

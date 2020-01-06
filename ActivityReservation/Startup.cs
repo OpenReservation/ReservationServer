@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
@@ -13,7 +14,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,7 +67,25 @@ namespace ActivityReservation
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
+                    opts => { opts.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"); })
+                .AddDataAnnotationsLocalization()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
+            services.AddLocalization(options => options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"));
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("zh"),
+                new CultureInfo("en"),
+            };
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("zh");
+                // Formatting numbers, dates, etc.
+                options.SupportedCultures = supportedCultures;
+                // UI strings that we have localized.
+                options.SupportedUICultures = supportedCultures;
+            });
 
             //Cookie Authentication
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -83,7 +104,11 @@ namespace ActivityReservation
             services.AddDbContextPool<ReservationDbContext>(option =>
             {
                 var dbType = Configuration.GetAppSetting("DbType");
-                if ("MySql".EqualsIgnoreCase(dbType))
+                if ("InMemory".EqualsIgnoreCase(dbType))
+                {
+                    option.UseInMemoryDatabase("Reservation");
+                }
+                else if ("MySql".EqualsIgnoreCase(dbType))
                 {
                     option.UseMySql(Configuration.GetConnectionString("Reservation"));
                 }
@@ -286,6 +311,7 @@ namespace ActivityReservation
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
 
+            app.UseRequestLocalization();
             app.UseStaticFiles();
 
             app.UseSwagger()
@@ -362,7 +388,7 @@ namespace ActivityReservation
                 .HasColumnIndex(7);
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
-                .HasOutputFormatter((entity, propertyVal) => propertyVal.GetDescription())
+                .HasColumnOutputFormatter(status => status.GetDescription())
                 .HasColumnIndex(8);
         }
     }
