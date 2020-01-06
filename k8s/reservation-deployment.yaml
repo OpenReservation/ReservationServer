@@ -38,13 +38,13 @@ spec:
             tcpSocket:
               port: 80
             initialDelaySeconds: 60
-            periodSeconds: 30
+            periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /Health
+              path: /health
               port: 80
             initialDelaySeconds: 60
-            periodSeconds: 60
+            periodSeconds: 10
           ports:
             - containerPort: 80
           volumeMounts:
