@@ -6,8 +6,8 @@ metadata:
   labels:
     app: reservation
 spec:
-  replicas: 2
-  revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
+  replicas: 1
+  revisionHistoryLimit: 1 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
   selector:
     matchLabels:
       app: reservation
@@ -28,12 +28,12 @@ spec:
             value: "1"
       containers:        
         - name: reservation
-          image: weihanli/activityreservation:latest
-          imagePullPolicy: IfNotPresent
+          image: weihanli/activityreservation:dev
+          imagePullPolicy: Always
           resources:
             limits:
               memory: "256Mi"
-              cpu: "100m"
+              cpu: "200m"
           readinessProbe:
             tcpSocket:
               port: 80
@@ -47,15 +47,11 @@ spec:
             periodSeconds: 60
           ports:
             - containerPort: 80
-          volumeMounts:
-          - name: settings
-            mountPath: /app/appsettings.json
-            subPath: appsettings
-
-      volumes:
-        - name: settings
-          configMap:
-            name: reservation-configs
+          env:
+            - name: Reservation_AppSettings__DbType
+              value: InMemory
+            - name: Reservation_ConnectionStrings__ElasticSearch
+              value: ""
 
 ---
 apiVersion: v1
