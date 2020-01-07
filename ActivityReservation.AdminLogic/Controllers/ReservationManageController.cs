@@ -96,7 +96,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             else
             {
-                whereLambda = whereLambda.And(m => m.ReservationStatus == 0);
+                whereLambda = whereLambda.And(m => m.ReservationStatus == ReservationStatus.UnReviewed);
             }
             //load data
             var list = _reservationHelper.GetPagedListResult(

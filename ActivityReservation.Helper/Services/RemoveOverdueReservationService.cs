@@ -33,7 +33,7 @@ namespace ActivityReservation.Services
             using (var scope = _serviceProvider.CreateScope())
             {
                 var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
-                await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == 0 && (reservation.ReservationForDate < DateTime.Today.AddDays(-15)), cancellationToken);
+                await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == ReservationStatus.UnReviewed && (reservation.ReservationForDate < DateTime.Today.AddDays(-15)), cancellationToken);
             }
         }
     }
