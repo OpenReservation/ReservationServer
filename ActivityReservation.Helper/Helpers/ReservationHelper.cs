@@ -211,7 +211,7 @@ namespace ActivityReservation.Helpers
                         ReservationId = Guid.NewGuid()
                     };
                     //验证最大可预约时间段，同一个手机号，同一个IP地址
-                    foreach (var item in reservation.ReservationForTimeIds.Split(',').Select(_ => Convert.ToInt32(_)))
+                    foreach (var item in reservation.ReservationForTimeIds.SplitArray<int>())
                     {
                         reservationEntity.ReservationPeriod += (1 << item);
                     }

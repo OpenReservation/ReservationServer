@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Event;
@@ -146,12 +147,14 @@ namespace ActivityReservation.Controllers
         /// <param name="model">预约信息实体</param>
         /// <param name="captcha">验证码</param>
         /// <param name="captchaType">captchaType</param>
+        /// <param name="localizer"></param>
         /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> MakeReservation(
             [FromBody]ReservationViewModel model,
             [FromHeader]string captcha,
-            [FromHeader]string captchaType)
+            [FromHeader]string captchaType,
+            [FromServices]IStringLocalizer<HomeController> localizer)
         {
             var result = new ResultModel<bool>();
             var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
@@ -159,7 +162,7 @@ namespace ActivityReservation.Controllers
             if (!isCodeValid)
             {
                 result.Status = ResultStatus.RequestError;
-                result.ErrorMsg = "验证码有误, 请重新验证";
+                result.ErrorMsg = localizer["InvalidCaptchaInfo"];
                 return Json(result);
             }
             try
@@ -180,7 +183,7 @@ namespace ActivityReservation.Controllers
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, "预约发生异常");
+                Logger.Error(ex);
                 result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
             }
