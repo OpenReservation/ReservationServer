@@ -83,21 +83,23 @@ namespace ActivityReservation.AdminLogic.Controllers
         /// <returns></returns>
         public ActionResult List(SearchHelperModel search)
         {
-            Expression<Func<Reservation, bool>> whereLambda = (m => true);
-            //根据预约人联系方式查询
-            if (!string.IsNullOrEmpty(search.SearchItem1))
+            Action<WeihanLi.EntityFramework.EFRepositoryQueryBuilder<Reservation>> queryBuilderAction = queryBuilder =>
             {
-                whereLambda = (m => m.ReservationPersonPhone.Contains(search.SearchItem1));
-            }
-            //类别，加载全部还是只加载待审核列表
-            if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
-            {
-                //
-            }
-            else
-            {
-                whereLambda = whereLambda.And(m => m.ReservationStatus == ReservationStatus.UnReviewed);
-            }
+                if (!string.IsNullOrEmpty(search.SearchItem1))
+                {
+                    queryBuilder.WithPredict(m => m.ReservationPersonPhone.Contains(search.SearchItem1));
+                }
+                if (!string.IsNullOrEmpty(search.SearchItem2) && search.SearchItem2.Equals("1"))
+                {
+                    //
+                }
+                else
+                {
+                    queryBuilder.WithPredict(m => m.ReservationStatus == ReservationStatus.UnReviewed);
+                }
+                queryBuilder.WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
+                    .WithInclude(query => query.Include(r => r.Place));
+            };
             //load data
             var list = _reservationHelper.GetPagedListResult(
                 x => new ReservationListViewModel
@@ -112,11 +114,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                     ReservationPersonName = x.ReservationPersonName,
                     ReservationPersonPhone = x.ReservationPersonPhone,
                     ReservationStatus = x.ReservationStatus,
-                }, queryBuilder => queryBuilder
-                    .WithPredict(whereLambda)
-                    .WithOrderBy(query => query.OrderByDescending(r => r.ReservationForDate).ThenByDescending(r => r.ReservationTime))
-                    .WithInclude(query => query.Include(r => r.Place))
-                    , search.PageIndex, search.PageSize);
+                }, queryBuilderAction, search.PageIndex, search.PageSize);
             var dataList = list.ToPagedList();
             return View(dataList);
         }
