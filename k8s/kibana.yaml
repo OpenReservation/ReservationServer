@@ -24,7 +24,7 @@ spec:
     spec:
       containers:        
         - name: kibana
-          image: docker.elastic.co/kibana/kibana:7.5.1
+          image: docker.elastic.co/kibana/kibana:7.4.2
           imagePullPolicy: IfNotPresent
           resources:
             limits:
