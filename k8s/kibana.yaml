@@ -33,7 +33,7 @@ spec:
           resources:
             limits:
               memory: "256Mi"
-              cpu: "60m"
+              cpu: "100m"
           ports:
             - containerPort: 5601
           env:
