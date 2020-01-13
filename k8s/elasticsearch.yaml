@@ -28,8 +28,8 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "1024Mi"
-              cpu: "80m"
+              memory: "1536Mi"
+              cpu: "100m"
           ports:
             - containerPort: 9200
               name: "p9200"
