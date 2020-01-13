@@ -24,12 +24,12 @@ spec:
     spec:
       containers:
         - name: elasticsearch
-          image: elasticsearch:5.6-alpine
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "768Mi"
-              cpu: "100m"
+              memory: "1024Mi"
+              cpu: "80m"
           ports:
             - containerPort: 9200
               name: "p9200"
@@ -37,8 +37,10 @@ spec:
               name: "p9300"
               
           env:
+            - name: discovery.type
+              value: "single-node"
             - name: ES_JAVA_OPTS
-              value: "-Xms768m -Xmx768m"
+              value: "-Xms1000m -Xmx1000m"
 
 ---
 apiVersion: v1
