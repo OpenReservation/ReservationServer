@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "1152Mi"
+              memory: "1Gi"
               cpu: "100m"
           readinessProbe:
             httpGet:
@@ -46,7 +46,7 @@ spec:
             - name: discovery.type
               value: "single-node"
             - name: ES_JAVA_OPTS
-              value: "-Xms1g -Xmx1g"
+              value: "-Xms832m -Xmx832m"
 
 ---
 apiVersion: v1
