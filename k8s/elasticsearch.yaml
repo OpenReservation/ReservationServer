@@ -32,7 +32,7 @@ spec:
               cpu: "100m"
           readinessProbe:
             httpGet:
-              path: /
+              path: /_cluster/health
               port: 9200
             initialDelaySeconds: 60
             periodSeconds: 20
