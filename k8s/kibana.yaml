@@ -30,6 +30,12 @@ spec:
             limits:
               memory: "256Mi"
               cpu: "100m"
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: 5601
+            initialDelaySeconds: 60
+            periodSeconds: 20
           ports:
             - containerPort: 5601
           env:

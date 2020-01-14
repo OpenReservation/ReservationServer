@@ -30,6 +30,12 @@ spec:
             limits:
               memory: "1536Mi"
               cpu: "100m"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 9200
+            initialDelaySeconds: 60
+            periodSeconds: 20
           ports:
             - containerPort: 9200
               name: "p9200"
