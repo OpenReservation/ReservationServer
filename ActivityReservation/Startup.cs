@@ -35,6 +35,7 @@ using WeihanLi.Common.Logging;
 using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
+using WeihanLi.Extensions.Localization.Json;
 using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
@@ -72,6 +73,7 @@ namespace ActivityReservation
                 .AddDataAnnotationsLocalization()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
             services.AddLocalization(options => options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"));
+            // services.AddJsonLocalization(options => options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"));
 
             var supportedCultures = new[]
             {
