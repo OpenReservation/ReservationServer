@@ -6,7 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WeihanLi.EntityFramework" Version="1.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="$(DotNetCorePackageVersion)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj">
