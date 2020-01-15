@@ -5,8 +5,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(DotNetCorePackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(DotNetCorePackageVersion)" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(DotNetCorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureKeyVault" Version="$(DotNetCorePackageVersion)" />    
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(DotNetCorePackageVersion)" />  
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(DotNetCorePackageVersion)" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="1.2.0" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.0.0" />
@@ -21,8 +20,5 @@
     <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj" />
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj" />
     <ProjectReference Include="..\ActivityReservation.WechatAPI\ActivityReservation.WechatAPI.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\Views\Shared\Common\" />
   </ItemGroup>
 </Project>
