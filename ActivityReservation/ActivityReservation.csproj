@@ -11,7 +11,7 @@
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
     <PackageReference Include="WeihanLi.Common.Logging.Serilog" Version="1.0.28" />
-    <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.0" />
+    <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
@@ -21,5 +21,10 @@
     <ProjectReference Include="..\ActivityReservation.Helper\ActivityReservation.Helper.csproj" />
     <ProjectReference Include="..\ActivityReservation.Models\ActivityReservation.Models.csproj" />
     <ProjectReference Include="..\ActivityReservation.WechatAPI\ActivityReservation.WechatAPI.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Update="Resources\**\*.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 </Project>

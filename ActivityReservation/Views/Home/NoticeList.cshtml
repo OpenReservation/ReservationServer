@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-@if (Model.Data.Any())
+@if (Model.Data.Count > 0)
 {
     <ul>
         @foreach (var item in Model.Data)
@@ -16,10 +16,4 @@
         }
     </ul>
     @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
-}
-else
-{
-    <div class="nodata-tip">
-        暂时没有数据.
-    </div>
 }

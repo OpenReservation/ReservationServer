@@ -45,13 +45,10 @@ namespace ActivityReservation
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+        public Startup(IConfiguration configuration)
         {
-            HostEnvironment = hostEnvironment;
             Configuration = configuration.ReplacePlaceholders();
         }
-
-        public IWebHostEnvironment HostEnvironment { get; }
 
         public IConfiguration Configuration { get; }
 
@@ -59,6 +56,12 @@ namespace ActivityReservation
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHealthChecks();
+
+            services.AddJsonLocalization(options =>
+            {
+                options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath");
+                options.ResourcesPathType = ResourcesPathType.CultureBased;
+            });
 
             services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
@@ -72,8 +75,6 @@ namespace ActivityReservation
                     opts => { opts.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"); })
                 .AddDataAnnotationsLocalization()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
-            services.AddLocalization(options => options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"));
-            // services.AddJsonLocalization(options => options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"));
 
             var supportedCultures = new[]
             {

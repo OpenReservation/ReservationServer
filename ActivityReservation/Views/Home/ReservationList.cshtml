@@ -79,11 +79,5 @@
             }
         </tbody>
     </table>
-    @Html.Pager(Model.Pager, pageIndex => $"javascript:loadData({pageIndex})", "PagerPartial", PagingDisplayMode.Always)
-}
-else
-{
-    <div class="nodata-tip">
-        暂时没有数据.
-    </div>
+    @Html.Pager(Model.Pager, pageIndex => $"javascript:loadData({pageIndex})", "PagerPartial", PagingDisplayMode.IfNeeded)
 }

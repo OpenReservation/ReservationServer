@@ -1,5 +1,7 @@
-﻿@{
-    ViewBag.Title = "首页";
+﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@{
+    ViewBag.Title = "";
 }
 @section styles{
     <style>
@@ -13,7 +15,7 @@
         <div class="form-group">
             <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="预约人联系方式" class="form-control" />
         </div>
-        <button id="btnSearch" type="button" class="btn btn-primary">搜索</button> <br />
+        <button id="btnSearch" type="button" class="btn btn-primary">@SharedLocalizer["Search"]</button> <br />
     </div>
     <div id="div_main">
     </div>
@@ -27,7 +29,7 @@
         var pageSize = 10;
 
         function loadData(pageIndex) {
-            $("#div_main").html('<br /><img src="/images/loading.gif" /> 正在玩命加载中，请稍后...');
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> @(SharedLocalizer["LoadingTip"])');
             if (!pageIndex) {
                 pageIndex = 1;
             }
@@ -38,7 +40,7 @@
                         $("#div_main").html(data);
                     } else {
                         $("#div_main").html('');
-                        layer.msg('数据加载异常，请稍后重试！');
+                        layer.msg('@(SharedLocalizer["LoadDataException"])');
                     }
                 });
         }

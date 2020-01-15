@@ -102,7 +102,12 @@ namespace ActivityReservation.API
         /// <param name="captchaVerifyHelper">captchaVerifyHelper</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType, [FromServices]CaptchaVerifyHelper captchaVerifyHelper)
+        public async Task<IActionResult> MakeReservation(
+            [FromBody]ReservationViewModel model,
+            [FromHeader]string captcha,
+            [FromHeader]string captchaType,
+            [FromServices]CaptchaVerifyHelper captchaVerifyHelper
+            )
         {
             var result = new ResultModel<bool> { Status = ResultStatus.RequestError };
             var isCodeValid = await captchaVerifyHelper
@@ -127,7 +132,7 @@ namespace ActivityReservation.API
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, $"活动室预约失败：{ex.Message}");
+                Logger.Error(ex, $"Make reservation exception: {ex.Message}");
                 result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
                 return Ok(result);

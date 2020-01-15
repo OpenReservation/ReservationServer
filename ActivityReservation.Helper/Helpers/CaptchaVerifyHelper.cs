@@ -33,6 +33,10 @@ namespace ActivityReservation.Helpers
             {
                 return true;
             }
+            if (string.IsNullOrEmpty(captchaInfo))
+            {
+                return false;
+            }
             if (captchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
             {
                 return await _googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
