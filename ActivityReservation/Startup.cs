@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using ActivityReservation.Business;
 using ActivityReservation.Common;
@@ -16,7 +17,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -71,19 +71,19 @@ namespace ActivityReservation
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 })
-                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix,
-                    opts => { opts.ResourcesPath = Configuration.GetAppSetting("ResourcesPath"); })
+                .AddViewLocalization()
                 .AddDataAnnotationsLocalization()
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-            var supportedCultures = new[]
+            var supportedCultureNames = Configuration.GetSection("Localization:SupportedCultures")?.Get<string[]>();
+            if (supportedCultureNames == null || supportedCultureNames.Length == 0)
             {
-                new CultureInfo("zh"),
-                new CultureInfo("en"),
-            };
+                supportedCultureNames = new[] { "zh", "en" };
+            }
+            var supportedCultures = supportedCultureNames.Select(name => new CultureInfo(name)).ToArray();
             services.Configure<RequestLocalizationOptions>(options =>
             {
-                options.DefaultRequestCulture = new RequestCulture("zh");
+                options.DefaultRequestCulture = new RequestCulture(supportedCultures[0].Name);
                 // Formatting numbers, dates, etc.
                 options.SupportedCultures = supportedCultures;
                 // UI strings that we have localized.
