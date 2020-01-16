@@ -20,7 +20,6 @@
     <script>
         var pageSize = 10, pageIndex = 1;
 
-        //加载数据
         function loadData(pIndex) {
             if (!pIndex) {
                 pageIndex = 1;
@@ -46,7 +45,6 @@
             });
         }
 
-        //搜索
         $("#btnSearch").on("click",
             function () {
                 loadData();
