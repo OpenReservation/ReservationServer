@@ -100,8 +100,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (!string.IsNullOrEmpty(placeName))
             {
-                if (_reservationPlaceHelper.Exist(p =>
-                    p.PlaceName.ToUpperInvariant().Equals(placeName.ToUpperInvariant()) && p.IsDel == false))
+                if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName))
                 {
                     return Json("活动室已存在");
                 }
