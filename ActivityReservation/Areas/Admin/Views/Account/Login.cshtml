@@ -1,4 +1,7 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@inject IViewLocalizer Localizer
+@{
     Layout = null;
 }
 @using ActivityReservation.Services
@@ -9,32 +12,37 @@
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>登录 - 后台管理系统</title>
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <title>@(Localizer["Login"]) - @(Localizer["ManagementPortal"])</title>
+    <environment names="Development">
+        <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    </environment>
 </head>
 <body>
     <div class="container" style="max-width: 30em;">
         <header>
             <h1 class="h1">
-                登录<small>后台管理系统</small>
+                @Localizer["Login"]<small>@Localizer["ManagementPortal"]</small>
             </h1>
         </header>
         <section>
             <form class="form-signin" style="margin: 2em auto">
                 <div class="form-group">
-                    <label for="inputUsername" class="sr-only">用户名</label>
-                    <input type="text" id="inputUsername" name="UserName" class="form-control" placeholder="用户名" required="required" autofocus>
+                    <label for="inputUsername" class="sr-only">@Localizer["UserName"]</label>
+                    <input type="text" id="inputUsername" name="UserName" class="form-control" placeholder="@Localizer["UserName"]" required="required" autofocus>
                 </div>
                 <div>
-                    <label for="inputPassword" class="sr-only">密码</label>
-                    <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="密码" required="required">
+                    <label for="inputPassword" class="sr-only">@Localizer["Password"]</label>
+                    <input type="password" id="inputPassword" name="Password" class="form-control" placeholder="@Localizer["Password"]" required="required">
                 </div>
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" value="remember-me" name="rememberMe" id="rememberMe"> Remember me
+                        <input type="checkbox" value="remember-me" name="rememberMe" id="rememberMe"> @Localizer["RememberMe"]
                     </label>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block btnSubmit" type="button" id="btnLogin" disabled="disabled">登录</button>
+                <button class="btn btn-lg btn-primary btn-block btnSubmit" type="button" id="btnLogin" disabled="disabled">@Localizer["Login"]</button>
             </form>
         </section>
         <footer>
@@ -73,11 +81,11 @@
                 layer.msg("密码不合法，密码长度至少6个字符，最多20个字符");
                 return false;
             }
-            var recaptcha = '111';
-            if (!recaptcha) {
-                layer.msg('验证码输入有误');
-                return false;
-            }
+            // var recaptcha = '111';
+            // if (!recaptcha) {
+            //     layer.msg('验证码输入有误');
+            //     return false;
+            // }
             return true;
         } else {
             layer.msg("登录信息不完整");
@@ -99,7 +107,6 @@
 
         var remember = $("#rememberMe").checked;
         var returnUrl = '@ViewData["returnUrl"]';
-        $("#btnLogin").text("登录中...");
         $("#btnLogin").attr("disabled", "disabled");
         $.post("LogOn",
             {
@@ -121,13 +128,13 @@
                         layer.msg(data);
                         $("#inputPassword").val('');
                         $("#btnLogin").removeAttr("disabled");
-                        $("#btnLogin").text("登录");
+                        $("#btnLogin").text('@Localizer["Login"]');
                     }
                 } else {
                     layer.msg("登录失败,请稍后重试");
                     $("#inputPassword").val('');
                     $("#btnLogin").removeAttr("disabled");
-                    $("#btnLogin").text("登录");
+                    $("#btnLogin").text('@Localizer["Login"]');
                 }
             });
     }
