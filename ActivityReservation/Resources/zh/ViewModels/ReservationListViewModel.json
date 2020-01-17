@@ -1,0 +1,11 @@
+{
+  "ReservationForDate": "预约使用日期",
+  "ReservationForTime": "预约使用时间",
+  "ReservationPersonPhone": "预约人联系方式",
+  "ReservationPersonName": "预约人姓名",
+  "ReservationUnit": "预约单位",
+  "ReservationPlaceName": "活动室名称",
+  "ReservationActivityContent": "活动内容",
+  "ReservationTime": "预约时间",
+  "ReservationStatus": "审核状态"
+}

@@ -2,5 +2,8 @@
   "About": "About",
   "Search": "Search",
   "LoadingTip": "loading now, please wait ...",
-  "LoadDataException": "loading data exception, please retry later"
+  "LoadDataException": "loading data exception, please retry later",
+  "ReservationStatus_UnReviewed": "UnReviewed",
+  "ReservationStatus_Reviewed": "Reviewed",
+  "ReservationStatus_Rejected": "Rejected"
 }

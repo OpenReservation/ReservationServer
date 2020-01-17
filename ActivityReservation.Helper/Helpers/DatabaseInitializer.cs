@@ -64,6 +64,7 @@ namespace ActivityReservation.Helpers
             {
                 UserId = Guid.NewGuid(),
                 UserName = "admin",
+                UserMail = "admin@weihanli.xyz",
                 UserPassword = SecurityHelper.SHA256("Admin888"),
                 IsSuper = true
             });
@@ -71,6 +72,7 @@ namespace ActivityReservation.Helpers
             {
                 UserId = Guid.NewGuid(),
                 UserName = "Alice",
+                UserMail = "Alice@weihanli.xyz",
                 UserPassword = SecurityHelper.SHA256("Test1234"),
                 IsSuper = false
             });
@@ -78,15 +80,16 @@ namespace ActivityReservation.Helpers
             {
                 UserId = Guid.NewGuid(),
                 UserName = "test",
+                UserMail = "test@weihanli.xyz",
                 UserPassword = SecurityHelper.SHA256("Test1234"),
                 IsSuper = false
             });
 
             var blockTypes = new List<BlockType>
             {
-                new BlockType {TypeId = Guid.NewGuid(), TypeName = "Contact Phone"},
-                new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP"},
-                new BlockType {TypeId = Guid.NewGuid(), TypeName = "Contact Name"}
+                new BlockType { TypeId = Guid.NewGuid(), TypeName = "Contact Phone" },
+                new BlockType { TypeId = Guid.NewGuid(), TypeName = "IP" },
+                new BlockType { TypeId = Guid.NewGuid(), TypeName = "Contact Name" }
             };
             dbContext.BlockTypes.AddRange(blockTypes);
 
@@ -104,7 +107,7 @@ namespace ActivityReservation.Helpers
                 new ReservationPeriod
                 {
                     PeriodId = Guid.NewGuid(),
-                    PeriodIndex = 3,
+                    PeriodIndex = 0,
                     PeriodTitle = "8:00~10:00",
                     PeriodDescription = "8:00~10:00",
                     PlaceId = placeId,
@@ -140,12 +143,24 @@ namespace ActivityReservation.Helpers
                 new ReservationPeriod
                 {
                     PeriodId = Guid.NewGuid(),
-                    PeriodIndex = 1,
-                    PeriodTitle = "08:00~18:00",
-                    PeriodDescription = "08:00~18:00",
+                    PeriodIndex = 0,
+                    PeriodTitle = "上午",
+                    PeriodDescription = "上午",
                     PlaceId = placeId1,
                     CreateBy = "System",
-                    CreateTime = DateTime.UtcNow.AddSeconds(3),
+                    CreateTime = DateTime.UtcNow,
+                    UpdateBy = "System",
+                    UpdateTime = DateTime.UtcNow
+                },
+                new ReservationPeriod
+                {
+                    PeriodId = Guid.NewGuid(),
+                    PeriodIndex = 1,
+                    PeriodTitle = "下午",
+                    PeriodDescription = "下午",
+                    PlaceId = placeId1,
+                    CreateBy = "System",
+                    CreateTime = DateTime.UtcNow,
                     UpdateBy = "System",
                     UpdateTime = DateTime.UtcNow
                 },
