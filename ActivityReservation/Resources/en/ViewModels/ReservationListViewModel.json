@@ -7,5 +7,5 @@
   "ReservationPlaceName": "PlaceName",
   "ReservationActivityContent": "ActivityContent",
   "ReservationTime": "ReservationTime",
-  "ReservationStatus": "ReservationStatus"
+  "ReservationStatus": "Status"
 }

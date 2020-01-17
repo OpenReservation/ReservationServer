@@ -341,10 +341,14 @@
                                 activity = $("#txtActivity").val();
 
                             if (pPhone && pName && unit && activity) {
-                                if (!pName.match(pNameRegExp)) {
+                                if(pName.length < 2 || pName.length > 16){
                                     layer.msg("联系人姓名输入有误");
                                     return;
                                 }
+                                // if (!pName.match(pNameRegExp)) {
+                                //     layer.msg("联系人姓名输入有误");
+                                //     return;
+                                // }
                                 if (!pPhone.match(phoneRegExp)) {
                                     layer.msg('联系电话格式有误，请修改后重试');
                                     return;
