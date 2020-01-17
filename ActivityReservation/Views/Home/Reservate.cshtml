@@ -214,7 +214,7 @@
                         }
                         //特殊字段判断
                         //联系人姓名
-                        if (!$scope.reservationModel.ReservationPersonName.match(pNameRegExp)) {
+                        if($scope.reservationModel.ReservationPersonName.length < 2 || $scope.reservationModel.ReservationPersonName.length > 16){
                             return false;
                         }
                         //联系方式
@@ -345,10 +345,6 @@
                                     layer.msg("联系人姓名输入有误");
                                     return;
                                 }
-                                // if (!pName.match(pNameRegExp)) {
-                                //     layer.msg("联系人姓名输入有误");
-                                //     return;
-                                // }
                                 if (!pPhone.match(phoneRegExp)) {
                                     layer.msg('联系电话格式有误，请修改后重试');
                                     return;
