@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PagedListData } from '../models/PagedListData';
-import { environment } from '../../environments/environment';
+import { ConfigService } from './ConfigService';
 
 export class BaseService<TModel>{
   protected readonly apiBaseUrl;
 
-  constructor(protected http:HttpClient, protected apiPath:string){
-    this.apiBaseUrl = environment.apiBaseUrl;
+  constructor(protected http:HttpClient,config: ConfigService, protected apiPath:string){
+    this.apiBaseUrl = config.GetApiBaseUrl();
   }
 
   public Get(params?:object): Observable<PagedListData<TModel>> {

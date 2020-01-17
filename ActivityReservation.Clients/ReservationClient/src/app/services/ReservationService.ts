@@ -3,14 +3,15 @@ import { BaseService } from './BaseService';
 import { Reservation } from '../models/Reservation';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigService } from './ConfigService';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService extends BaseService<Reservation>{
 
-  constructor(http: HttpClient){
-    super(http, 'Reservation');
+  constructor(http: HttpClient, config: ConfigService){
+    super(http, config, 'Reservation');
   }
 
   public NewReservation(reservation: Reservation, captchaType: string, captcha: string): Observable<any>{

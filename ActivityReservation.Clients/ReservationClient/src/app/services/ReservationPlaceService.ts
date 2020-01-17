@@ -4,14 +4,15 @@ import { HttpClient } from '@angular/common/http';
 import { ReservationPlace } from '../models/ReservationPlace';
 import { Observable } from 'rxjs';
 import { ReservationPeriod } from '../models/ReservationPeriod';
+import { ConfigService } from './ConfigService';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationPlaceService extends BaseService<ReservationPlace>{
 
-  constructor(http: HttpClient){
-    super(http, 'ReservationPlace');
+  constructor(http: HttpClient, config: ConfigService){
+    super(http, config, 'ReservationPlace');
   }
 
   public getAvailablePeriods(placeId:string, date: string) : Observable<Array<ReservationPeriod>>{
