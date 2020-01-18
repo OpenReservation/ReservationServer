@@ -15,6 +15,7 @@ export class AppComponent {
   }
 
   title = '活动室预约系统';  
+  year = new Date().getFullYear();
 
   menus: Array<MenuItem> = [
     { Title: "首页", Link: "/" },
