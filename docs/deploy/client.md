@@ -13,7 +13,7 @@ docker pull weihanli/reservation-client:latest #拉取最新的单机版镜像
 
 docker run -d -p 9000:80 --name=reservation-client weihanli/reservation-client:latest # 运行容器
 
-docker run --rm -p 9000:80 --name=reservation-client -v ./assets/config.js:/usr/share/nginx/html/assets/config.js weihanli/reservation-client:latest # 挂在配置文件指定服务器地址
+docker run -d -p 9000:80 --name=reservation-client -v $(pwd)/assets/config.js:/usr/share/nginx/html/assets/config.js weihanli/reservation-client:latest # 挂载配置文件
 ```
 
 sample `config.js`:
