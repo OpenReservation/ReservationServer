@@ -58,13 +58,10 @@ namespace ActivityReservation.Controllers
         public ActionResult ReservationList(SearchHelperModel search)
         {
             Expression<Func<Reservation, bool>> whereLambda = (m => true);
-            //补充查询条件
-            //根据预约日期查询
             if (!string.IsNullOrWhiteSpace(search.SearchItem0) && DateTime.TryParse(search.SearchItem0, out var date))
             {
                 whereLambda = m => m.ReservationForDate == date.Date;
             }
-            //根据预约人联系方式查询
             if (!string.IsNullOrWhiteSpace(search.SearchItem1))
             {
                 whereLambda = m => m.ReservationPersonPhone == search.SearchItem1.Trim();
@@ -134,10 +131,9 @@ namespace ActivityReservation.Controllers
         /// <param name="dt">预约日期</param>
         /// <param name="placeId">预约地点id</param>
         /// <returns></returns>
-        public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId)
+        public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId, [FromServices]ReservationHelper reservationHelper)
         {
-            var periodsStatus = HttpContext.RequestServices.GetService<ReservationHelper>()
-                .GetAvailablePeriodsByDateAndPlace(dt, placeId);
+            var periodsStatus = reservationHelper.GetAvailablePeriodsByDateAndPlace(dt, placeId);
             return Json(periodsStatus);
         }
 
@@ -154,11 +150,11 @@ namespace ActivityReservation.Controllers
             [FromBody]ReservationViewModel model,
             [FromHeader]string captcha,
             [FromHeader]string captchaType,
+            [FromServices]CaptchaVerifyHelper captchaVerifyHelper,
             [FromServices]IStringLocalizer<HomeController> localizer)
         {
             var result = new ResultModel<bool>();
-            var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
-                .ValidateVerifyCodeAsync(captchaType, captcha);
+            var isCodeValid = await captchaVerifyHelper.ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
             {
                 result.Status = ResultStatus.RequestError;
@@ -227,7 +223,7 @@ namespace ActivityReservation.Controllers
         /// 公告列表
         /// </summary>
         /// <returns></returns>
-        public ActionResult NoticeList(SearchHelperModel search)
+        public ActionResult NoticeList(SearchHelperModel search, [FromServices]IBLLNotice noticeService)
         {
             Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!string.IsNullOrEmpty(search.SearchItem1))
@@ -236,7 +232,7 @@ namespace ActivityReservation.Controllers
             }
             try
             {
-                var noticeList = HttpContext.RequestServices.GetService<IBLLNotice>().Paged(search.PageIndex, search.PageSize, whereLamdba,
+                var noticeList = noticeService.Paged(search.PageIndex, search.PageSize, whereLamdba,
                     n => n.NoticePublishTime, false);
                 var data = noticeList.ToPagedList();
                 return View(data);
