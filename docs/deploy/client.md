@@ -19,7 +19,10 @@ docker run -d -p 9000:80 --name=reservation-client -v $(pwd)/assets/config.js:/u
 sample `config.js`:
 
 ``` js
-window["__env"]["ApiBaseUrl"]="http://reservation.weihanli.top"; // ApiBaseUrl
+var env = {
+    ApiBaseUrl: "https://reservation.weihanli.top"
+};
+window["__env"]= env;
 ```
 
 容器启动成功之后，访问 `http://localhost:9000` 即可
