@@ -1,8 +1,10 @@
 ﻿@using Microsoft.Extensions.Configuration
+@using Microsoft.AspNetCore.Mvc.Localization
 @model List<ActivityReservation.Models.ReservationPlace>
+@inject IViewLocalizer Localizer
 @inject IConfiguration configuration
 @{
-    ViewBag.Title = "预约";
+    ViewBag.Title = Localizer["PageTitle"].Value;
 }
 @section styles{
     <link href="~/Content/jqueryui/jquery-ui.min.css" rel="stylesheet" />
@@ -36,9 +38,8 @@
 <div class="container center-block" ng-app="ReservationApp">
     <div class="container" ng-controller="ReservateCtrl">
         <form id="form1" name="form1">
-            @* 选择预约活动室 *@
             <section id="secActivityRoom" ng-class="{'show':step==0}">
-                <p class="lead">选择预约活动室</p>
+                <p class="lead">@Localizer["ChoosePlaceSectionTitle"]</p>
                 <div id="placesList">
                     @if (Model.Count > 0)
                     {
@@ -55,83 +56,82 @@
                     }
                 </div>
             </section>
-            @* 选择预约日期 *@
+
             <section id="secPickDate" ng-class="{'show':step==1}">
-                <p class="lead">选择预约日期</p>
+                <p class="lead">@Localizer["ChooseDateSectionTitle"]</p>
                 <div id="datepicker"></div>
             </section>
 
-            @* 选择预约时间段 *@
             <section id="secPickTimePeriod" ng-class="{'show':step==2}">
-                <p class="lead">选择预约时间段</p>
+                <p class="lead">@Localizer["ChoosePeriodsSectionTitle"]</p>
                 <div>
                     <div ng-repeat="item in ReservationPeriods"><label><input type="checkbox" ng-disabled="!item.IsCanReservate" name="cbPeriod" data-periodIndex="{{item.PeriodIndex}}" title="{{item.PeriodDescription}}" />{{item.PeriodTitle}}</label></div>
                 </div>
             </section>
-            @* 填写预约人信息 *@
+
             <section id="secFillPersonInfo" ng-class="{'show':step==3}">
-                <p class="lead">填写预约人信息</p>
+                <p class="lead">@Localizer["PersonInfoSectionTitle"]</p>
                 <div class="form" style="text-align: left; padding-left: 5em">
                     <div class="form-group">
-                        <label for="txtUnit">预约单位</label>
-                        <input type="text" class="form-control" value="" ng-minlength="3" ng-maxlength="30" id="txtUnit" placeholder="预约单位" required="required" />
+                        <label for="txtUnit">@Localizer["ReservationUnit"]</label>
+                        <input type="text" class="form-control" value="" ng-minlength="3" ng-maxlength="30" id="txtUnit" placeholder="@Localizer["ReservationUnit"]" required="required" />
                     </div>
                     <div class="form-group">
-                        <label for="txtActivity">预约活动内容</label>
-                        <input type="text" class="form-control" value="" id="txtActivity" placeholder="活动内容" required="required" />
+                        <label for="txtActivity">@Localizer["ReservationActivityContent"]</label>
+                        <input type="text" class="form-control" value="" id="txtActivity" placeholder="@Localizer["ReservationActivityContent"]" required="required" />
                     </div>
                     <div class="form-group">
-                        <label for="txtUsername">预约人姓名</label>
-                        <input type="text" value="" class="form-control" id="txtUsername" required="required" placeholder="姓名" />
+                        <label for="txtUsername">@Localizer["ReservationPersonName"]</label>
+                        <input type="text" value="" class="form-control" id="txtUsername" required="required" placeholder="@Localizer["ReservationPersonName"]" />
                     </div>
                     <div class="form-group">
-                        <label for="txtPhone">预约人联系方式</label>
-                        <input type="text" class="form-control" value="" id="txtPhone" placeholder="联系方式" required="required" />
+                        <label for="txtPhone">@Localizer["ReservationPersonPhone"]</label>
+                        <input type="text" class="form-control" value="" id="txtPhone" placeholder="@Localizer["ReservationPersonPhone"]" required="required" />
                     </div>
                 </div>
             </section>
-            @* 确认预约信息 *@
+
             <section id="secConfirmInfo" ng-class="{'show':step==4}">
-                <p class="lead">确认预约信息</p>
+                <p class="lead">@Localizer["ConfirmInfoSectionTitle"]</p>
                 <table class="table table-striped">
                     <tr>
-                        <td>预约日期</td>
+                        <td>@Localizer["ReservationForDate"]</td>
                         <td>{{ reservationModel.ReservationForDate }}</td>
                     </tr>
                     <tr>
-                        <td>预约地点</td>
+                        <td>@Localizer["ReservationPlace"]</td>
                         <td>{{ reservationModel.ReservationPlaceName }}</td>
                     </tr>
                     <tr>
-                        <td>预约时间段</td>
+                        <td>@Localizer["ReservationPeriods"]</td>
                         <td>{{ reservationModel.ReservationForTime }}</td>
                     </tr>
                     <tr>
-                        <td>预约单位</td>
+                        <td>@Localizer["ReservationUnit"]</td>
                         <td>{{ reservationModel.ReservationUnit }}</td>
                     </tr>
                     <tr>
-                        <td>预约活动内容</td>
+                        <td>@Localizer["ReservationActivityContent"]</td>
                         <td>{{ reservationModel.ReservationActivityContent }}</td>
                     </tr>
                     <tr>
-                        <td>预约人姓名</td>
+                        <td>@Localizer["ReservationPersonName"]</td>
                         <td>{{ reservationModel.ReservationPersonName }}</td>
                     </tr>
                     <tr>
-                        <td>预约人联系方式</td>
+                        <td>@Localizer["ReservationPersonPhone"]</td>
                         <td>{{ reservationModel.ReservationPersonPhone }}</td>
                     </tr>
                 </table>
                 <div>
-                    <span>请检查以上预约信息是否正确</span>
+                    <span>@Localizer["ConfirmReservationInfoTip"]</span>
                     <button id="TencentCaptcha1" style="visibility:hidden;width:12rem;height:1rem"></button>
                 </div>
             </section>
             <footer class="container">
-                <button id="btnPreviousStep" ng-class="{'show-inline':step!=0}" type="button" ng-click="previousStep()" class="btn btn-default">上一步</button>
-                <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'show-inline':step!=4}" id="btnNext">下一步</button>
-                <button ng-click="submitForm()" type="button" ng-disabled="isSubmit" class="btn btn-default" ng-class="{'show-inline':step==4,'disabled':!isModelValid()}">提&emsp;交</button>
+                <button id="btnPreviousStep" ng-class="{'show-inline':step!=0}" type="button" ng-click="previousStep()" class="btn btn-default">@Localizer["PreviousStep"]</button>
+                <button ng-click="nextStep()" type="button" class="btn btn-default" ng-class="{'show-inline':step!=4}" id="btnNext">@Localizer["NextStep"]</button>
+                <button ng-click="submitForm()" type="button" ng-disabled="isSubmit" class="btn btn-default" ng-class="{'show-inline':step==4,'disabled':!isModelValid()}">@Localizer["Submit"]</button>
             </footer>
         </form>
     </div>
@@ -243,7 +243,7 @@
                                 //console.log(response);
                                 layer.close(loading);
                                 if (response.Status == 200) {
-                                    layer.msg('预约成功！');
+                                    layer.msg('@Localizer["ReservationSuccessTip"]');
                                     location.href = "/";
                                 } else {
                                     layer.msg(response.ErrorMsg);
@@ -252,7 +252,7 @@
                             })
                             .error(function(response) {
                                 layer.close(loading);
-                                layer.msg('预约失败，请稍后重试！');
+                                layer.msg('@Localizer["ReservationFailedTip"]！');
                                 $scope.isSubmit = false;
                             });
                     };
@@ -260,12 +260,25 @@
                     $scope.nextStep = function() {
                         console.log(`current step: ${$scope.step}`);
                         switch ($scope.step) {
+                        case 0:
+                            //预约地点 判断
+                            var place = $("input[name='place']:radio:checked").val();
+                            if (place) {
+                                $scope.reservationModel.ReservationPlaceId =
+                                    $("input[name='place']:radio:checked").val();
+                                $scope.reservationModel.ReservationPlaceName =
+                                    $("input[name='place']:radio:checked").parent().text().trim();
+                            } else {
+                                layer.msg('@Localizer["ChoosePlaceTip"]');
+                                return;
+                            }
+                            break;
+
                         case 1:
                             //预约日期判断处理
                             var date = $("#datepicker").val();
                             if (!date) {
-                                alert('请先选择预约日期');
-                                console.log('请选择预约日期');
+                                layer.msg('@Localizer["ChooseDateTip"]');
                                 return;
                             } else {
                                 //TODO:从服务器端判断日期是否合法，不合法则提示用户重新选择
@@ -294,20 +307,7 @@
                                 });
                             }
                             break;
-                        case 0:
-                            //预约地点 判断
-                            var place = $("input[name='place']:radio:checked").val();
-                            if (place) {
-                                $scope.reservationModel.ReservationPlaceId =
-                                    $("input[name='place']:radio:checked").val();
-                                $scope.reservationModel.ReservationPlaceName =
-                                    $("input[name='place']:radio:checked").parent().text().trim();
-                            } else {
-                                layer.msg('请选择要预约的活动室');
-                                console.log('请选择要预约的活动室');
-                                return;
-                            }
-                            break;
+
                         case 2:
                             //预约时间段
                             var periods = [];
@@ -315,13 +315,13 @@
                                 periods.push(ele);
                             });
                             if (!periods || periods.length <= 0) {
-                                layer.msg('请选择预约时间段');
+                                layer.msg('@Localizer["ChooseReservationPeriodsTip"]');
                                 return;
                             }
-                            if (periods.length > 2) {
+                            @* if (periods.length > 2) {
                                 layer.msg('预约时间段不能超过两个');
                                 return;
-                            }
+                            } *@
                             var tempPeriods = [], tempPeriodIds = [];
                             for (var i in periods) {
                                 tempPeriodIds.push($(periods[i]).attr("data-periodIndex"));
@@ -339,11 +339,11 @@
 
                             if (pPhone && pName && unit && activity) {
                                 if(pName.length < 2 || pName.length > 16){
-                                    layer.msg("联系人姓名输入有误");
+                                    layer.msg('@Localizer["InvalidPersonName"]');
                                     return;
                                 }
                                 if (!pPhone.match(phoneRegExp)) {
-                                    layer.msg('联系电话格式有误，请修改后重试');
+                                    layer.msg('@Localizer["InvalidPersonPhone"]');
                                     return;
                                 }
                                 $scope.reservationModel.ReservationUnit = unit;
@@ -351,12 +351,11 @@
                                 $scope.reservationModel.ReservationPersonName = pName;
                                 $scope.reservationModel.ReservationPersonPhone = pPhone;
                             } else {
-                                layer.msg("预约信息填写不完整！");
+                                layer.msg('@Localizer["InCompleteReservationInfo"]');
                                 return;
                             }
                             break;
                         case 4:
-                        //预约信息确认
                         default:
                             break;
                         }

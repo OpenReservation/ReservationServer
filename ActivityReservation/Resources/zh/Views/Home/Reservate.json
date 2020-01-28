@@ -1,1 +1,27 @@
-{}
+{
+    "PageTitle": "预约",
+    "ChoosePlaceSectionTitle": "选择预约活动室",
+    "ChooseDateSectionTitle": "选择预约日期",
+    "ChoosePeriodsSectionTitle": "选择预约时间段",
+    "PersonInfoSectionTitle": "填写预约人信息",
+    "ConfirmInfoSectionTitle": "确认预约信息",
+    "ConfirmReservationInfoTip": "请检查以上预约信息是否正确",
+    "ReservationUnit": "预约单位",
+    "ReservationActivityContent": "预约活动内容",
+    "ReservationPersonName": "预约人姓名",
+    "ReservationPersonPhone": "预约人联系方式",
+    "ReservationPlace": "预约活动室",
+    "ReservationForDate": "预约日期",
+    "ReservationPeriods": "预约时间段",
+    "PreviousStep": "上一步",
+    "NextStep": "下一步",
+    "Submit": "提&emsp;交",
+    "ChoosePlaceTip": "请选择要预约的活动室",
+    "ChooseDateTip": "请选择预约日期",
+    "ChooseReservationPeriodsTip": "请选择预约时间段",
+    "InCompleteReservationInfo": "预约信息填写不完整！",
+    "InvalidPersonName": "不合法的联系人姓名",
+    "InvalidPersonPhone": "不合法的联系方式",
+    "ReservationSuccessTip": "预约成功",
+    "ReservationFailedTip": "预约失败"
+}
