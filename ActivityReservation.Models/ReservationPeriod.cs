@@ -18,6 +18,7 @@ namespace ActivityReservation.Models
         /// 标题
         /// </summary>
         [Column]
+        [Required]
         [StringLength(32)]
         public string PeriodTitle { get; set; }
 

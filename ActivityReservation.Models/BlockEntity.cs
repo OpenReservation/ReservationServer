@@ -24,6 +24,7 @@ namespace ActivityReservation.Models
         /// 黑名单值
         /// </summary>
         [Column]
+        [Required]
         public string BlockValue { get; set; }
 
         /// <summary>

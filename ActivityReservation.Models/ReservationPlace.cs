@@ -19,6 +19,8 @@ namespace ActivityReservation.Models
         /// 活动室名称
         /// </summary>
         [Column]
+        [Required]
+        [StringLength(16)]
         public string PlaceName { get; set; }
 
         /// <summary>
@@ -37,6 +39,7 @@ namespace ActivityReservation.Models
         /// 更新人
         /// </summary>
         [Column]
+        [Required]
         public string UpdateBy { get; set; }
 
         /// <summary>

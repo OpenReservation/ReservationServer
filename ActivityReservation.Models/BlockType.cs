@@ -18,6 +18,8 @@ namespace ActivityReservation.Models
         /// 黑名单类型名称
         /// </summary>
         [Column]
+        [Required]
+        [StringLength(16)]
         public string TypeName { get; set; }
     }
 }

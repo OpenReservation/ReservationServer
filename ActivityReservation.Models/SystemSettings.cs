@@ -12,6 +12,8 @@ namespace ActivityReservation.Models
         public Guid SettingId { get; set; }
 
         [Column]
+        [Required]
+        [StringLength(16)]
         public string SettingName { get; set; }
 
         [Column]

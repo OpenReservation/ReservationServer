@@ -18,6 +18,7 @@ namespace ActivityReservation.Models
         /// 公告标题
         /// </summary>
         [Column]
+        [Required]
         public string NoticeTitle { get; set; }
 
         /// <summary>
@@ -36,6 +37,7 @@ namespace ActivityReservation.Models
         /// 公告静态页面路径
         /// </summary>
         [Column]
+        [Required]
         public string NoticePath { get; set; }
 
         /// <summary>

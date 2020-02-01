@@ -33,12 +33,15 @@ namespace ActivityReservation.Models
         /// 操作人
         /// </summary>
         [Column]
+        [Required]
         public string OperBy { get; set; }
 
         /// <summary>
         /// 日志模块
         /// </summary>
         [Column]
+        [Required]
+        [StringLength(32)]
         public string LogModule { get; set; }
     }
 }
