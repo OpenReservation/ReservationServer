@@ -118,6 +118,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "ReservationClient"
+    }
+  },
+  "defaultProject": "ReservationClient",
+  "cli": {
+    "analytics": "c5782033-cd92-4fe6-9875-3a0f77ff3f31"
+  }
 }
