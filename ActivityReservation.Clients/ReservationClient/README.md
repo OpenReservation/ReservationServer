@@ -1,6 +1,6 @@
 # ReservationClient
 
-活动室预约 SPA 客户端，使用 angular8 + material 开发，支持部署到 docker 以及 k8s
+活动室预约 SPA 客户端，使用 angular 9 + material 开发，支持部署到 docker 以及 k8s
 
 ## Docker
 
