@@ -8,7 +8,7 @@
 目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，
 
 - 演示地址：<https://reservation.weihanli.xyz>
-- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular8 +material SPA)
+- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular9 +material SPA)
 - 小程序演示 demo:
 
   ![wxAppCode](./images/wxAppCode.jpg)
