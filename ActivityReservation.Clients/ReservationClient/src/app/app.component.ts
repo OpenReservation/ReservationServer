@@ -14,7 +14,7 @@ export class AppComponent {
     this.router.events.subscribe((e) => { if(e instanceof NavigationStart) {this.loadingSvc.isLoading = true;} });
   }
 
-  title = '活动室预约系统';  
+  title = 'OpenReservation';  
   year = new Date().getFullYear();
 
   menus: Array<MenuItem> = [
