@@ -204,10 +204,15 @@ export class NewReservationComponent implements OnInit, OnDestroy {
         console.log(this.periodFormGroup);
         // period
         console.log(this.reservationPeriods);
+        let checkedPeriods = new Array();
+        if(this.reservationPeriods)
+        {
+          checkedPeriods = this.reservationPeriods.filter(p=>p.Checked);
+        }
         //
-        let checkedPeriods = this.reservationPeriods.filter(p=>p.Checked);
         if(checkedPeriods.length == 0){
           alert(`至少要选中一个时间段`);
+          return;
         }
         this.reservation.ReservationForTime = checkedPeriods.map(p=>p.PeriodTitle).join(",");
         this.reservation.ReservationForTimeIds = checkedPeriods.map(p=>p.PeriodIndex).join(",");
