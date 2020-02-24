@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
@@ -33,7 +32,6 @@ using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging;
 using WeihanLi.Common.Logging.Serilog;
-using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 using WeihanLi.Npoi;
@@ -136,12 +134,6 @@ namespace ActivityReservation
                 options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
             });
 
-            services.AddEFRepository();
-            services.AddBLL();
-
-            services.AddSingleton<OperLogHelper>();
-            services.AddScoped<ReservationHelper>();
-
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
 
@@ -164,8 +156,6 @@ namespace ActivityReservation
                 .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
 
-            services.TryAddSingleton<CaptchaVerifyHelper>();
-
             services.AddRedisConfig(options =>
             {
                 options.RedisServers = new[]
@@ -183,10 +173,6 @@ namespace ActivityReservation
                 ;
             services.AddSingleton<IEventBus, RedisEventBus>();
             services.AddSingleton<IEventStore, EventStoreInRedis>();
-
-            //register EventHandlers
-            services.AddSingleton<OperationLogEventHandler>();
-            services.AddSingleton<NoticeViewEventHandler>();
 
             services.AddHostedService<RemoveOverdueReservationService>();
             // services.AddHostedService<CronLoggingTest>();
@@ -234,6 +220,9 @@ namespace ActivityReservation
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Models.Notice).Assembly.GetName().Name}.xml"));
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
             });
+
+            // RegisterAssemblyModules
+            services.RegisterAssemblyModules();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);

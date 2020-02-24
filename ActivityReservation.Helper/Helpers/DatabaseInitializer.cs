@@ -22,7 +22,8 @@ namespace ActivityReservation.Helpers
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
                 dbContext.Database.EnsureCreated();
 
-                // TODO: update with dbContext.Database.IsRelational when new ef core released, https://github.com/dotnet/efcore/pull/19521
+                // TODO: update with dbContext.Database.IsRelational when new ef core released
+                // https://github.com/dotnet/efcore/pull/19521
                 if (dbContext.Database.ProviderName.EqualsIgnoreCase("Microsoft.EntityFrameworkCore.InMemory"))
                 {
                     if (!dbContext.Users.AsNoTracking().Any())

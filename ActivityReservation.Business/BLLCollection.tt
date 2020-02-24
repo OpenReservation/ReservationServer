@@ -21,6 +21,7 @@
 using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.Business
@@ -49,7 +50,7 @@ namespace ActivityReservation.Business
             foreach (var item in types)
             {
 #>
-                services.AddScoped<IBLL<#= item #>, BLL<#= item #>>();
+                services.TryAddScoped<IBLL<#= item #>, BLL<#= item #>>();
 <#		 
             }
 #>

@@ -2,6 +2,7 @@
 using ActivityReservation.Database;
 using ActivityReservation.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.Business
@@ -91,16 +92,16 @@ namespace ActivityReservation.Business
     {
         public static IServiceCollection AddBLL(this IServiceCollection services)
         {
-                services.AddScoped<IBLLUser, BLLUser>();
-                services.AddScoped<IBLLBlockType, BLLBlockType>();
-                services.AddScoped<IBLLBlockEntity, BLLBlockEntity>();
-                services.AddScoped<IBLLOperationLog, BLLOperationLog>();
-                services.AddScoped<IBLLReservation, BLLReservation>();
-                services.AddScoped<IBLLReservationPlace, BLLReservationPlace>();
-                services.AddScoped<IBLLReservationPeriod, BLLReservationPeriod>();
-                services.AddScoped<IBLLSystemSettings, BLLSystemSettings>();
-                services.AddScoped<IBLLNotice, BLLNotice>();
-                services.AddScoped<IBLLDisabledPeriod, BLLDisabledPeriod>();
+                services.TryAddScoped<IBLLUser, BLLUser>();
+                services.TryAddScoped<IBLLBlockType, BLLBlockType>();
+                services.TryAddScoped<IBLLBlockEntity, BLLBlockEntity>();
+                services.TryAddScoped<IBLLOperationLog, BLLOperationLog>();
+                services.TryAddScoped<IBLLReservation, BLLReservation>();
+                services.TryAddScoped<IBLLReservationPlace, BLLReservationPlace>();
+                services.TryAddScoped<IBLLReservationPeriod, BLLReservationPeriod>();
+                services.TryAddScoped<IBLLSystemSettings, BLLSystemSettings>();
+                services.TryAddScoped<IBLLNotice, BLLNotice>();
+                services.TryAddScoped<IBLLDisabledPeriod, BLLDisabledPeriod>();
             return services;
         }
     }
