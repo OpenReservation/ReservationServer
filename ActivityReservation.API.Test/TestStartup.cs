@@ -36,7 +36,25 @@ namespace ActivityReservation.API.Test
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
+            services.AddResponseCaching();
+            services.AddControllers(options =>
+                {
+                    options.CacheProfiles.Add("default", new CacheProfile()
+                    {
+                        Duration = 300,
+                        VaryByQueryKeys = new[] { "*" }
+                    });
+                    options.CacheProfiles.Add("private", new CacheProfile()
+                    {
+                        Duration = 300,
+                        Location = ResponseCacheLocation.Client,
+                        VaryByQueryKeys = new[] { "*" }
+                    });
+                    options.CacheProfiles.Add("noCache", new CacheProfile()
+                    {
+                        NoStore = true
+                    });
+                })
                 .AddApplicationPart(typeof(API.ApiControllerBase).Assembly)
                 .AddNewtonsoftJson(options =>
                 {
@@ -60,18 +78,10 @@ namespace ActivityReservation.API.Test
                 options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
             });
 
-            services.AddEFRepository();
-            services.AddBLL();
-
-            services.AddSingleton<OperLogHelper>();
-            services.AddScoped<ReservationHelper>();
-
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
             // register access control service
             services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
-
-            services.TryAddSingleton<CaptchaVerifyHelper>();
 
             services.AddSingleton<IEventBus, EventBus>();
             services.AddSingleton<IEventStore, EventStoreInMemory>();
@@ -79,6 +89,9 @@ namespace ActivityReservation.API.Test
             services.AddSingleton<MockNoticeViewEventHandler>();
 
             services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
+
+            // RegisterAssemblyModules
+            services.RegisterAssemblyModules();
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
@@ -88,6 +101,7 @@ namespace ActivityReservation.API.Test
         public void Configure(IApplicationBuilder app, IEventBus eventBus)
         {
             app.UseRouting();
+            app.UseResponseCaching();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
