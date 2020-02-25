@@ -60,8 +60,25 @@ namespace ActivityReservation
                 options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath");
                 options.ResourcesPathType = ResourcesPathType.CultureBased;
             });
-
-            services.AddControllersWithViews()
+            services.AddResponseCaching();
+            services.AddControllersWithViews(options =>
+                {
+                    options.CacheProfiles.Add("default", new CacheProfile()
+                    {
+                        Duration = 300,
+                        VaryByQueryKeys = new[] { "*" }
+                    });
+                    options.CacheProfiles.Add("private", new CacheProfile()
+                    {
+                        Duration = 300,
+                        Location = ResponseCacheLocation.Client,
+                        VaryByQueryKeys = new[] { "*" }
+                    });
+                    options.CacheProfiles.Add("noCache", new CacheProfile()
+                    {
+                        NoStore = true
+                    });
+                })
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
@@ -315,6 +332,7 @@ namespace ActivityReservation
                 });
 
             app.UseRouting();
+            app.UseResponseCaching();
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 

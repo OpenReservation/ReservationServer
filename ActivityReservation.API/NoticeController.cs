@@ -63,6 +63,7 @@ namespace ActivityReservation.API
         /// <param name="cacheClient">cacheClient</param>
         /// <returns></returns>
         [HttpGet("{path}")]
+        [ResponseCache(CacheProfileName = "noCache")]
         public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
         {
             if (string.IsNullOrWhiteSpace(path))

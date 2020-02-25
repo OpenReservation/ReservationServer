@@ -5,6 +5,7 @@ namespace ActivityReservation.API
 {
     [ApiController]
     [Route("/api/[controller]")]
+    [ResponseCache(CacheProfileName = "default")]
     public abstract class ApiControllerBase : ControllerBase
     {
         protected readonly ILogger Logger;
