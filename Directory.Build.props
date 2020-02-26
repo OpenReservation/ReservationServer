@@ -15,7 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/WeihanLi/ActivityReservation</RepositoryUrl>
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2015-2019 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2015-2020 (c) WeihanLi</Copyright>
     <DotNetCorePackageVersion>3.1.2</DotNetCorePackageVersion>
   </PropertyGroup>
 </Project>
