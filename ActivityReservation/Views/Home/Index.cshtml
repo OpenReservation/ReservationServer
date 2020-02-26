@@ -35,7 +35,7 @@
             if (!pageIndex) {
                 pageIndex = 1;
             }
-            $.post("/Home/ReservationList",
+            $.get("/Home/ReservationList",
                 { "PageIndex": pageIndex, "PageSize": pageSize, "SearchItem1": $("#contactPhone").val() },
                 function (data, status) {
                     if (status == "success") {
