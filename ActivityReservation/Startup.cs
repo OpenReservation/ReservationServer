@@ -60,7 +60,9 @@ namespace ActivityReservation
                 options.ResourcesPath = Configuration.GetAppSetting("ResourcesPath");
                 options.ResourcesPathType = ResourcesPathType.CultureBased;
             });
+
             services.AddResponseCaching();
+
             services.AddControllersWithViews(options =>
                 {
                     options.CacheProfiles.Add("default", new CacheProfile()
@@ -76,6 +78,7 @@ namespace ActivityReservation
                     });
                     options.CacheProfiles.Add("noCache", new CacheProfile()
                     {
+                        Duration = null,
                         NoStore = true
                     });
                 })
@@ -248,6 +251,46 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
+            app.UseForwardedHeaders();
+            app.UseCustomExceptionHandler();
+            app.UseHealthCheck("/health");
+            app.UseRequestLocalization();
+
+            app.UseResponseCaching();
+
+            app.UseStaticFiles();
+
+            app.UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    // c.RoutePrefix = string.Empty; //
+                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
+                    c.DocumentTitle = "活动室预约系统 API";
+                });
+
+            app.UseRouting();
+
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
+            app.UseRequestLog();
+            app.UsePerformanceLog();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapControllerRoute("Notice", "/Notice/{path}.html", new
+                {
+                    controller = "Home",
+                    action = "NoticeDetails"
+                });
+                endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            // initialize
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
 
@@ -316,45 +359,7 @@ namespace ActivityReservation
                     options.Debug = env.IsDevelopment();
                 });
 
-            app.UseForwardedHeaders();
-            app.UseCustomExceptionHandler();
-            app.UseHealthCheck("/health");
-
-            app.UseRequestLocalization();
-            app.UseStaticFiles();
-
-            app.UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    // c.RoutePrefix = string.Empty; //
-                    c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
-                    c.DocumentTitle = "活动室预约系统 API";
-                });
-
-            app.UseRouting();
-            app.UseResponseCaching();
-
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-
-            app.UseRequestLog();
-            app.UsePerformanceLog();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapControllerRoute("Notice", "/Notice/{path}.html", new
-                {
-                    controller = "Home",
-                    action = "NoticeDetails"
-                });
-                endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
-            });
-
-            // initialize
+            // init data
             app.ApplicationServices.Initialize();
         }
 

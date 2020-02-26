@@ -1,10 +1,8 @@
 ﻿using System;
 using ActivityReservation.API.Test.MockServices;
-using ActivityReservation.Business;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
-using ActivityReservation.Helpers;
 using ActivityReservation.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -19,7 +17,6 @@ using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
-using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
 
 namespace ActivityReservation.API.Test
@@ -37,6 +34,7 @@ namespace ActivityReservation.API.Test
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddResponseCaching();
+
             services.AddControllers(options =>
                 {
                     options.CacheProfiles.Add("default", new CacheProfile()
@@ -100,8 +98,9 @@ namespace ActivityReservation.API.Test
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IEventBus eventBus)
         {
-            app.UseRouting();
             app.UseResponseCaching();
+
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
