@@ -9,6 +9,7 @@ using ActivityReservation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Event;
+using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
@@ -34,7 +35,7 @@ namespace ActivityReservation.API
         [HttpGet]
         public async Task<IActionResult> GetAsync(string keyword, int pageNumber = 1, int pageSize = 10)
         {
-            Expression<Func<Notice, bool>> predict = n => true;
+            Expression<Func<Notice, bool>> predict = ExpressionHelper.True<Notice>();
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 keyword = keyword.Trim();
