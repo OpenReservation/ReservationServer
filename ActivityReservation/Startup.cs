@@ -62,6 +62,10 @@ namespace ActivityReservation
             });
 
             services.AddResponseCaching();
+            services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+            });
 
             services.AddControllersWithViews(options =>
                 {
