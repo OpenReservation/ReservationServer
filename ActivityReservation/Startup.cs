@@ -257,7 +257,7 @@ namespace ActivityReservation
             app.UseRequestLocalization();
 
             app.UseResponseCaching();
-
+            app.UseResponseCompression();
             app.UseStaticFiles();
 
             app.UseSwagger()
