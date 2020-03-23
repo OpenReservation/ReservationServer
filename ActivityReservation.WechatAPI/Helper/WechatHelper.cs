@@ -57,7 +57,7 @@ namespace ActivityReservation.WechatAPI.Helper
                     if (await redLock.TryLockAsync())
                     {
                         var tokenEntity = await RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(appId, appSecret))
-                .ContinueWith(r => r.Result.JsonToType<AccessTokenEntity>()),
+                .ContinueWith(r => r.Result.JsonToObject<AccessTokenEntity>()),
                 result => string.IsNullOrEmpty(result?.AccessToken));
                         if (!string.IsNullOrEmpty(tokenEntity?.AccessToken))
                         {
@@ -98,7 +98,7 @@ namespace ActivityReservation.WechatAPI.Helper
             {
                 var responseText = await response.Content.ReadAsStringAsync();
                 _logger.LogInformation($"send wechat msg response: {responseText}");
-                var result = responseText.JsonToType<WechatResponseEntity>();
+                var result = responseText.JsonToObject<WechatResponseEntity>();
                 return result.ErrorCode == 0;
             }
         }
@@ -142,7 +142,7 @@ namespace ActivityReservation.WechatAPI.Helper
             var url = UpdateMpWechatMenuUrlFormat.FormatWith(accessToken);
             var response = await _httpClient.PostAsJsonAsync(url, menu);
             var result = await response.Content.ReadAsStringAsync()
-                .ContinueWith(r => r.Result.JsonToType<WechatResponseEntity>());
+                .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
             return result.Success;
         }
 
@@ -160,7 +160,7 @@ namespace ActivityReservation.WechatAPI.Helper
             }
             var url = DeleteMpWechatMenuUrlFormat.FormatWith(accessToken);
             var result = await _httpClient.GetStringAsync(url)
-                .ContinueWith(r => r.Result.JsonToType<WechatResponseEntity>());
+                .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
             return result.Success;
         }
     }

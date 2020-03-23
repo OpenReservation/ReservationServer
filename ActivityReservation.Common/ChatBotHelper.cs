@@ -50,7 +50,7 @@ namespace ActivityReservation.Common
                     var responseText = await response.Content.ReadAsStringAsync();
                     if (!string.IsNullOrEmpty(responseText))
                     {
-                        var res = responseText.JsonToType<QingyunkeResponseModel>();
+                        var res = responseText.JsonToObject<QingyunkeResponseModel>();
                         if (res != null && res.Result == 0)
                         {
                             return res.Content;

@@ -38,7 +38,7 @@ namespace ActivityReservation.WechatAPI.Controllers
         {
             var body = await Request.Body.ReadToEndAsync();
             Logger.LogInformation($"received msg: {body}");
-            var model = body.JsonToType<WeChatTextMsgModel>();
+            var model = body.JsonToObject<WeChatTextMsgModel>();
             if (!string.IsNullOrWhiteSpace(model?.FromUserName))
             {
                 try
@@ -70,7 +70,7 @@ namespace ActivityReservation.WechatAPI.Controllers
                                 break;
 
                             case "image":
-                                var imgMsg = body.JsonToType<WeChatImageMsgModel>();
+                                var imgMsg = body.JsonToObject<WeChatImageMsgModel>();
                                 // 返回原图
                                 await wechatHelper.SendWechatMsg(new
                                 {

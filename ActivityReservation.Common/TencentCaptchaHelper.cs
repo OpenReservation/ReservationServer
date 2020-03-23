@@ -88,7 +88,7 @@ namespace ActivityReservation.Common
             if (responseText.IsNotNullOrEmpty())
             {
                 _logger.Debug($"Tencent captcha verify response:{responseText}");
-                var result = responseText.JsonToType<TencentCaptchaResponse>();
+                var result = responseText.JsonToObject<TencentCaptchaResponse>();
                 if (result.Code == 1)
                 {
                     return true;

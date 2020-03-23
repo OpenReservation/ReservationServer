@@ -46,7 +46,7 @@ namespace ActivityReservation.Common
             var responseText = await response.Content.ReadAsStringAsync();
             if (responseText.IsNotNullOrEmpty())
             {
-                var result = responseText.JsonToType<GoogleRecaptchaVerifyResponse>();
+                var result = responseText.JsonToObject<GoogleRecaptchaVerifyResponse>();
                 if (result.Success)
                 {
                     return true;
