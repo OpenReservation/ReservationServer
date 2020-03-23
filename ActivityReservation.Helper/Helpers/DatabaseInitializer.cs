@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
+using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.Helpers
 {
@@ -24,7 +25,7 @@ namespace ActivityReservation.Helpers
 
                 // TODO: update with dbContext.Database.IsRelational when new ef core released
                 // https://github.com/dotnet/efcore/pull/19521
-                if (dbContext.Database.ProviderName.EqualsIgnoreCase("Microsoft.EntityFrameworkCore.InMemory"))
+                if (!dbContext.IsRelationalDatabase())
                 {
                     if (!dbContext.Users.AsNoTracking().Any())
                     {
