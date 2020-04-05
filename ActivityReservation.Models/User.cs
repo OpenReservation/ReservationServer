@@ -24,6 +24,7 @@ namespace ActivityReservation.Models
         ///  用户名
         /// </summary>
         [Column]
+        [StringLength(16)]
         public string UserName { get; set; }
 
         /// <summary>
@@ -53,6 +54,7 @@ namespace ActivityReservation.Models
         /// 用户邮箱
         /// </summary>
         [Column]
+        [StringLength(128)]
         public string UserMail { get; set; }
 
         /// <summary>

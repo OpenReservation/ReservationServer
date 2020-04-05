@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using ActivityReservation.AuditEnrichers;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
@@ -32,6 +33,7 @@ using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging;
 using WeihanLi.Common.Logging.Serilog;
+using WeihanLi.EntityFramework.Audit;
 using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 using WeihanLi.Npoi;
@@ -361,10 +363,39 @@ namespace ActivityReservation
                     options.Environment = env.EnvironmentName;
                     options.MinimumEventLevel = LogLevel.Error;
                     options.Debug = env.IsDevelopment();
+
+                    options.BeforeSend = (sentryEvent) =>
+                    {
+                        // ignore TaskCanceledException/OperationCanceledException
+                        if (sentryEvent.Exception is TaskCanceledException ||
+                            sentryEvent.Exception is OperationCanceledException)
+                        {
+                            return null;
+                        }
+
+                        return sentryEvent;
+                    };
                 });
 
             // init data
             app.ApplicationServices.Initialize();
+            EFAuditConfig(app);
+        }
+
+        private void EFAuditConfig(IApplicationBuilder applicationBuilder)
+        {
+            var httpContextAccessor = applicationBuilder.ApplicationServices
+                .GetRequiredService<IHttpContextAccessor>();
+            AuditConfig.Configure(builder =>
+            {
+                builder
+                    .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName),
+                        ApplicationHelper.ApplicationName)
+                    .WithUserIdProvider(
+                        new AuditUserIdProvider(httpContextAccessor))
+                    .WithHttpContextInfo(httpContextAccessor)
+                    ;
+            });
         }
 
         private void ExcelSettings()

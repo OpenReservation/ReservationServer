@@ -20,7 +20,7 @@ namespace ActivityReservation.Models
         /// </summary>
         [Column]
         [Required]
-        [StringLength(16)]
+        [StringLength(32)]
         public string PlaceName { get; set; }
 
         /// <summary>

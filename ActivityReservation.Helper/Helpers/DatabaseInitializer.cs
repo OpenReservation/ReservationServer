@@ -7,8 +7,8 @@ using ActivityReservation.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Extensions;
 using WeihanLi.EntityFramework;
+using WeihanLi.Extensions;
 
 namespace ActivityReservation.Helpers
 {
@@ -23,7 +23,6 @@ namespace ActivityReservation.Helpers
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
                 dbContext.Database.EnsureCreated();
 
-                // TODO: update with dbContext.Database.IsRelational when new ef core released
                 // https://github.com/dotnet/efcore/pull/19521
                 if (!dbContext.IsRelationalDatabase())
                 {

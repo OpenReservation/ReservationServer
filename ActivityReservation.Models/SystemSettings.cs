@@ -13,10 +13,11 @@ namespace ActivityReservation.Models
 
         [Column]
         [Required]
-        [StringLength(16)]
+        [StringLength(64)]
         public string SettingName { get; set; }
 
         [Column]
+        [StringLength(64)]
         public string DisplayName { get; set; }
 
         [Column]

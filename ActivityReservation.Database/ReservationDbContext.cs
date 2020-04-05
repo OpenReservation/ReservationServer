@@ -1,10 +1,11 @@
-﻿using ActivityReservation.Models;
+﻿using System;
+using ActivityReservation.Models;
 using Microsoft.EntityFrameworkCore;
-using WeihanLi.Extensions;
+using WeihanLi.EntityFramework.Audit;
 
 namespace ActivityReservation.Database
 {
-    public class ReservationDbContext : DbContext
+    public class ReservationDbContext : AuditDbContext
     {
         public ReservationDbContext(DbContextOptions options) : base(options)
         {
@@ -18,7 +19,10 @@ namespace ActivityReservation.Database
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
-            if (!Database.ProviderName.EqualsIgnoreCase("Microsoft.EntityFrameworkCore.InMemory"))
+            modelBuilder.Entity<AuditRecord>()
+                .ToTable("AuditRecords");
+
+            if (!Database.ProviderName.EndsWith("InMemory", StringComparison.OrdinalIgnoreCase))
             {
                 modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
             }

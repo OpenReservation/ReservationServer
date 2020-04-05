@@ -19,7 +19,7 @@ namespace ActivityReservation.Models
         /// </summary>
         [Column]
         [Required]
-        [StringLength(32)]
+        [StringLength(64)]
         public string PeriodTitle { get; set; }
 
         /// <summary>
