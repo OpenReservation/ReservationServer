@@ -1,3 +1,11 @@
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine AS base
+
+RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
+    apk add terminus-font && \
+    apk add --no-cache icu-libs
+# https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
+
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build-env
 WORKDIR /src
 
@@ -15,15 +23,11 @@ COPY . .
 RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csproj
 
 # build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine
+FROM base AS final
 
-RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
-    apk add terminus-font && \
-    apk add --no-cache icu-libs
-# https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/ActivityReservation/out .
+
 EXPOSE 80
 ENTRYPOINT ["dotnet", "ActivityReservation.dll"]
