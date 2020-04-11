@@ -135,21 +135,32 @@ namespace ActivityReservation
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 })
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
-                 {
-                     Configuration.GetSection("Authorization").Bind(options);
+                {
+                    var authorizationConfiguration = Configuration.GetSection("Authorization");
+                    authorizationConfiguration.Bind(options);
 
-                     options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+                    options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
 
-                     options.SaveTokens = true;
-                     options.GetClaimsFromUserInfoEndpoint = true;
-                     options.ClaimActions.MapJsonKey("role", "role");
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.ClaimActions.MapJsonKey("role", "role");
 
-                     options.TokenValidationParameters = new TokenValidationParameters()
-                     {
-                         NameClaimType = "name",
-                         RoleClaimType = "role",
-                     };
-                 })
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        NameClaimType = "name",
+                        RoleClaimType = "role",
+                    };
+                    options.Events.OnMessageReceived = context =>
+                        {
+                            context.Properties.IsPersistent = true;
+                            return Task.CompletedTask;
+                        };
+                    options.Events.OnRedirectToIdentityProvider = rc =>
+                        {
+                            rc.ProtocolMessage.RedirectUri = authorizationConfiguration["RedirectUri"];
+                            return Task.CompletedTask;
+                        };
+                })
                 ;
 
             // addDbContext
