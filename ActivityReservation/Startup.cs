@@ -25,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -137,7 +138,12 @@ namespace ActivityReservation
                  {
                      Configuration.GetSection("Authorization").Bind(options);
 
+                     options.ResponseType = OpenIdConnectResponseType.CodeIdToken;
+
+                     options.SaveTokens = true;
+                     options.GetClaimsFromUserInfoEndpoint = true;
                      options.ClaimActions.MapJsonKey("role", "role");
+
                      options.TokenValidationParameters = new TokenValidationParameters()
                      {
                          NameClaimType = "name",
