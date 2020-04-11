@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,13 @@ namespace ActivityReservation.Extensions
 {
     public static class RequestLogExtension
     {
+        private static readonly HashSet<string> ExcludeHeaders = new HashSet<string>();
+
+        static RequestLogExtension()
+        {
+            ExcludeHeaders.Add("Cookie");
+        }
+
         public static IApplicationBuilder UseRequestLog(this IApplicationBuilder applicationBuilder)
         {
             applicationBuilder.Use(async (context, next) =>
@@ -16,7 +24,9 @@ namespace ActivityReservation.Extensions
                 .CreateLogger("RequestLog");
                 var requestInfo = $@"Request Info:
 Host: {context.Request.Host}, Path:{context.Request.Path},
-Headers: {context.Request.Headers.Select(h => $"{h.Key}={h.Value.ToString()}").StringJoin(",")},
+Headers: {context.Request.Headers
+                    .Where(h => !ExcludeHeaders.Contains(h.Key))
+                    .Select(h => $"{h.Key}={h.Value.ToString()}").StringJoin(",")},
 ConnectionIP: {context.Connection.RemoteIpAddress.MapToIPv4()},
 ";
                 logger.LogInformation(requestInfo);
