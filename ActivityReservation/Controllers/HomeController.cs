@@ -143,6 +143,7 @@ namespace ActivityReservation.Controllers
         /// <param name="model">预约信息实体</param>
         /// <param name="captcha">验证码</param>
         /// <param name="captchaType">captchaType</param>
+        /// <param name="captchaVerifyHelper"></param>
         /// <param name="localizer"></param>
         /// <returns></returns>
         [HttpPost]
