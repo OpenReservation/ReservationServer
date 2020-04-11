@@ -10,7 +10,9 @@ using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Services;
 using ActivityReservation.ViewModels;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +25,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
@@ -115,7 +118,11 @@ namespace ActivityReservation
             });
 
             //Cookie Authentication
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    })
                 .AddCookie(options =>
                 {
                     options.AccessDeniedPath = "/Admin/Account/AccessDenied";
@@ -125,7 +132,19 @@ namespace ActivityReservation
                     // Cookie settings
                     options.Cookie.HttpOnly = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-                });
+                })
+                .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                 {
+                     Configuration.GetSection("Authorization").Bind(options);
+
+                     options.ClaimActions.MapJsonKey("role", "role");
+                     options.TokenValidationParameters = new TokenValidationParameters()
+                     {
+                         NameClaimType = "name",
+                         RoleClaimType = "role",
+                     };
+                 })
+                ;
 
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(option =>
@@ -164,11 +183,22 @@ namespace ActivityReservation
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
 
             // register access control service
-            //services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ReservationManager", builder => builder
+                    .RequireAuthenticatedUser()
+                    .RequireRole("ReservationManager", "ReservationAdmin")
+                );
+                options.AddPolicy("ReservationAdmin", builder => builder
+                    .RequireAuthenticatedUser()
+                    .RequireRole("ReservationAdmin")
+                );
+            });
 
             services.AddAccessControlHelper()
-                .AddResourceAccessStrategy<Filters.AdminPermissionRequireStrategy>()
-                .AddControlAccessStrategy<Filters.AdminOnlyControlAccessStrategy>()
+                .AddResourceAccessStrategy<AdminPermissionRequireStrategy>()
+                .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
                 ;
 
             services.AddHttpClient<ChatBotHelper>(client =>

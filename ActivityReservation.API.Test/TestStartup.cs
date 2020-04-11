@@ -79,7 +79,7 @@ namespace ActivityReservation.API.Test
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
             // register access control service
-            services.AddAccessControlHelper<Filters.AdminPermissionRequireStrategy, Filters.AdminOnlyControlAccessStrategy>();
+            services.AddAccessControlHelper<AdminPermissionRequireStrategy, AdminOnlyControlAccessStrategy>();
 
             services.AddSingleton<IEventBus, EventBus>();
             services.AddSingleton<IEventStore, EventStoreInMemory>();

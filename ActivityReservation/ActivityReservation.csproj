@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="$(DotNetCorePackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="$(DotNetCorePackageVersion)" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="$(DotNetCorePackageVersion)" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(DotNetCorePackageVersion)" />  

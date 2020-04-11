@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ActivityReservation.WorkContexts
 {
-    [Authorize]
+    [Authorize(Policy = "ReservationManager")]
     [Area("Admin")]
     public class AdminBaseController : BaseController
     {

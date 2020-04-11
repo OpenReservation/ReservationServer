@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.Common.Models;
 
-namespace ActivityReservation.Filters
+namespace ActivityReservation.Services
 {
     public class AdminPermissionRequireStrategy : IResourceAccessStrategy
     {
+        private const string AdminRoleName = "ReservationAdmin";
         private readonly IHttpContextAccessor _accessor;
 
         public AdminPermissionRequireStrategy(IHttpContextAccessor accessor)
@@ -17,7 +18,7 @@ namespace ActivityReservation.Filters
         public bool IsCanAccess(string accessKey)
         {
             var user = _accessor.HttpContext.User;
-            return user.Identity.IsAuthenticated && user.IsInRole("Admin");
+            return user.Identity.IsAuthenticated && user.IsInRole(AdminRoleName);
         }
 
         public IActionResult DisallowedCommonResult => new ContentResult
@@ -43,7 +44,7 @@ namespace ActivityReservation.Filters
         public bool IsControlCanAccess(string accessKey)
         {
             var user = _accessor.HttpContext.User;
-            return user.Identity.IsAuthenticated && user.IsInRole("Admin");
+            return user.Identity.IsAuthenticated && user.IsInRole("ReservationAdmin");
         }
     }
 }

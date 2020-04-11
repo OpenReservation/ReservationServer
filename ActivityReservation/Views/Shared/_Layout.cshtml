@@ -47,7 +47,7 @@
             <div class="row">
                 <div class="col-md-8">
                     &copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp;
-                    @Html.ActionLink(viewLocalizer["ManagementPortal"].Value, "Login", new { controller = "Account", area = "Admin" })
+                    @Html.ActionLink(viewLocalizer["ManagementPortal"].Value, "Index", new { controller = "Home", area = "Admin" })
                 </div>
                 <div class="col-md-4 text-right">
                     @await Html.PartialAsync("Common/SelectLanguage")
