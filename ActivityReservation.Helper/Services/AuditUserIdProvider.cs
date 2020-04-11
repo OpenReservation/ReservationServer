@@ -27,7 +27,8 @@ namespace ActivityReservation.Services
             {
                 return userIp;
             }
-            return Environment.UserName;
+
+            return $"{Environment.MachineName}__{Environment.UserName}";
         }
     }
 }
