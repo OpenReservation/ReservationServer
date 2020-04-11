@@ -23,8 +23,7 @@ namespace ActivityReservation.Helpers
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
                 dbContext.Database.EnsureCreated();
 
-                // https://github.com/dotnet/efcore/pull/19521
-                if (!dbContext.IsRelationalDatabase())
+                if (!dbContext.Database.IsRelational())
                 {
                     if (!dbContext.Users.AsNoTracking().Any())
                     {
