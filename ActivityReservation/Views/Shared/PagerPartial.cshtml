@@ -10,7 +10,7 @@
     }
     else
     {
-        int offset = (Model.GroupSize) / 2, temp = 0;
+        int offset = (Model.GroupSize) / 2;
         int pageStart = Model.PageNumber - offset, pageEnd = Model.PageNumber + offset, curPage = 0;
         <div style="text-align: center">
             <nav>
@@ -59,6 +59,7 @@
                     }
                     else
                     {
+                        var temp = 0;
                         if (pageStart > 1)
                         {
                             <li>
