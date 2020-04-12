@@ -13,7 +13,7 @@
 
   ![wxAppCode](./images/wxAppCode.jpg)
 
-- 后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
+- 后台登录地址： <https://reservation.weihanli.xyz/Admin/>
 
   后台登录账号：
 
