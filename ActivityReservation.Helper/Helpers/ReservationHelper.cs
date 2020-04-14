@@ -5,7 +5,6 @@ using ActivityReservation.Business;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
@@ -87,9 +86,9 @@ namespace ActivityReservation.Helpers
                 return false;
             }
 
-            if (!_bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive 
-                && p.StartDate >= dt 
-                && dt >=  p.EndDate
+            if (!_bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive
+                && p.StartDate >= dt
+                && dt >= p.EndDate
                 )))
             {
                 msg = string.Empty;
@@ -194,6 +193,7 @@ namespace ActivityReservation.Helpers
                         return false;
                     }
 
+                    var context = DependencyResolver.ResolveService<IHttpContextAccessor>().HttpContext;
                     var reservationEntity = new Reservation()
                     {
                         ReservationForDate = reservation.ReservationForDate,
@@ -204,7 +204,8 @@ namespace ActivityReservation.Helpers
                         ReservationActivityContent = reservation.ReservationActivityContent,
                         ReservationPersonName = reservation.ReservationPersonName,
                         ReservationPersonPhone = reservation.ReservationPersonPhone,
-                        ReservationFromIp = DependencyResolver.Current.ResolveService<IHttpContextAccessor>().HttpContext.GetUserIP(),
+                        ReservationFromIp = context.GetUserIP(),
+                        ReservedBy = context.User.GetUserId<Guid>(),
 
                         UpdateBy = reservation.ReservationPersonName,
                         UpdateTime = DateTime.UtcNow,

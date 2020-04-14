@@ -9,6 +9,7 @@ using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
 using ActivityReservation.WorkContexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
@@ -96,6 +97,7 @@ namespace ActivityReservation.Controllers
         /// 预约页面
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         public ActionResult Reservate()
         {
             var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
@@ -147,6 +149,7 @@ namespace ActivityReservation.Controllers
         /// <param name="localizer"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult> MakeReservation(
             [FromBody]ReservationViewModel model,
             [FromHeader]string captcha,

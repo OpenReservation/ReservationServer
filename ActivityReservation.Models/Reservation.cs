@@ -75,7 +75,12 @@ namespace ActivityReservation.Models
         public ReservationStatus ReservationStatus { get; set; }
 
         /// <summary>
-        /// 更新人
+        /// 审核人
+        /// </summary>
+        public Guid ReservedBy { get; set; }
+
+        /// <summary>
+        /// 审核人
         /// </summary>
         [Column]
         public string UpdateBy { get; set; }
