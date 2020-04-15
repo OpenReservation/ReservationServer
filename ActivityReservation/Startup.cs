@@ -160,8 +160,6 @@ namespace ActivityReservation
                             rc.ProtocolMessage.RedirectUri = authorizationConfiguration["RedirectUri"];
                             return Task.CompletedTask;
                         };
-
-                    options.SignedOutCallbackPath = "/";
                 })
                 ;
 
