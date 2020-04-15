@@ -453,7 +453,7 @@ namespace ActivityReservation
 
         private void ExcelSettings()
         {
-            var settings = ExcelHelper.SettingFor<ReservationListViewModel>();
+            var settings = FluentSettings.For<ReservationListViewModel>();
 
             settings
                 .HasAuthor("WeihanLi")
