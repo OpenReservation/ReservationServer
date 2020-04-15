@@ -126,9 +126,9 @@ namespace ActivityReservation
                     })
                 .AddCookie(options =>
                 {
-                    options.AccessDeniedPath = "/Admin/Account/AccessDenied";
-                    options.LoginPath = "/Admin/Account/Login";
-                    options.LogoutPath = "/Admin/Account/LogOut";
+                    //options.LoginPath = "/Admin/Account/Login";
+                    options.AccessDeniedPath = "/Account/AccessDenied";
+                    options.LogoutPath = "/Account/LogOut";
 
                     // Cookie settings
                     options.Cookie.HttpOnly = true;
@@ -160,6 +160,8 @@ namespace ActivityReservation
                             rc.ProtocolMessage.RedirectUri = authorizationConfiguration["RedirectUri"];
                             return Task.CompletedTask;
                         };
+
+                    options.SignedOutCallbackPath = "/";
                 })
                 ;
 
@@ -309,9 +311,10 @@ namespace ActivityReservation
             app.UseHealthCheck("/health");
             app.UseRequestLocalization();
 
+            app.UseStaticFiles();
+
             app.UseResponseCaching();
             app.UseResponseCompression();
-            app.UseStaticFiles();
 
             app.UseSwagger()
                 .UseSwaggerUI(c =>
@@ -340,14 +343,12 @@ namespace ActivityReservation
                     action = "NoticeDetails"
                 });
                 endpoints.MapControllerRoute(name: "areaRoute", "{area:exists}/{controller=Home}/{action=Index}");
-                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
             });
 
-            // initialize
-            eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
-            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); //操作日志
+            // initialize settings
 
-            ExcelSettings();
+            #region Logging Configure
 
             LogHelper.ConfigureLogging(builder =>
                 {
@@ -424,9 +425,16 @@ namespace ActivityReservation
                     };
                 });
 
+            #endregion Logging Configure
+
             // init data
             app.ApplicationServices.Initialize();
             EFAuditConfig(app);
+            ExcelSettings();
+
+            //
+            eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>();
+            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>();
         }
 
         private void EFAuditConfig(IApplicationBuilder applicationBuilder)

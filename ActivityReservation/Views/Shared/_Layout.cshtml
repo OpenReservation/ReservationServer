@@ -20,7 +20,6 @@
     @RenderSection("styles", required: false)
 </head>
 <body>
-    <a id="githubLink" class="hidden-print" style="position:fixed;top:0;right:0;z-index:19941008" href="https://github.com/WeihanLi/ActivityReservation"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=256%2C256" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
     <div class="navbar navbar-inverse navbar-fixed-top hidden-print">
         <div class="container">
             <div class="navbar-header">
@@ -37,6 +36,23 @@
                     <li>@Html.ActionLink(viewLocalizer["Notice"].Value, "Notice", "Home")</li>
                     <li>@Html.ActionLink(viewLocalizer["About"].Value, "About", "Home")</li>
                 </ul>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                @(User.Identity.Name) <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="https://id.weihanli.xyz/Manage" target="_blank">我的账户</a></li>
+                                <li><a href="https://id.weihanli.xyz/Manage/ChangePassword" target="_blank">修改密码</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("退出登录", "Logout", "Account")</li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
             </div>
         </div>
     </div>
