@@ -20,4 +20,4 @@ localization is used for multiple languages support
 
 ## Contact
 
-contact me if you need via email: <weihanli@outlook.com>
+contact me if you need: <weihanli@outlook.com>
