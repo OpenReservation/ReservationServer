@@ -6,7 +6,7 @@ trigger:
     include:
     - '*'
     exclude:
-    - '*.md'
+    - '**/*.md'
     - /ActivityReservation.Clients/
     - /docs/
     - /k8s/
