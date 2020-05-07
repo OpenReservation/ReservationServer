@@ -67,7 +67,7 @@ namespace ActivityReservation.AdminLogic.Controllers
                 return Json("活动室不存在");
             }
             if (_reservationPlaceHelper.Exist(p =>
-                p.PlaceName.ToUpperInvariant().Equals(newName.ToUpperInvariant()) && p.IsDel == false))
+                p.PlaceName.Equals(newName) && p.IsDel == false))
             {
                 return Json("活动室名称已存在");
             }
@@ -100,7 +100,7 @@ namespace ActivityReservation.AdminLogic.Controllers
         {
             if (!string.IsNullOrEmpty(placeName))
             {
-                if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName))
+                if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName && p.IsDel == false))
                 {
                     return Json("活动室已存在");
                 }
