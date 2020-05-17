@@ -81,10 +81,10 @@ namespace ActivityReservation.API.Test
             // register access control service
             services.AddAccessControlHelper<AdminPermissionRequireStrategy, AdminOnlyControlAccessStrategy>();
 
-            services.AddSingleton<IEventBus, EventBus>();
-            services.AddSingleton<IEventStore, EventStoreInMemory>();
-            //register EventHandlers
-            services.AddSingleton<MockNoticeViewEventHandler>();
+            services.AddEvents()
+                .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
+                .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
+                ;
 
             services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
 
@@ -106,8 +106,6 @@ namespace ActivityReservation.API.Test
                 endpoints.MapControllers();
             });
 
-            // initialize
-            eventBus.Subscribe<NoticeViewEvent, MockNoticeViewEventHandler>();
             TestDataInitializer.Initialize(app.ApplicationServices);
         }
     }
