@@ -42,6 +42,7 @@ using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 using WeihanLi.Npoi;
 using WeihanLi.Redis;
+using WeihanLi.Redis.Event;
 using WeihanLi.Web.Extensions;
 using WeihanLi.Web.Middlewares;
 
@@ -244,9 +245,11 @@ namespace ActivityReservation
                 .SetApplicationName(ApplicationHelper.ApplicationName)
                 .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
                 ;
-            services.AddSingleton<IEventBus, RedisEventBus>();
-            services.AddSingleton<IEventStore, EventStoreInRedis>();
-
+            services.AddEvents()
+                .UseRedisEventBus()
+                .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
+                .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
+                ;
             services.AddHostedService<RemoveOverdueReservationService>();
             // services.AddHostedService<CronLoggingTest>();
 
@@ -429,10 +432,6 @@ namespace ActivityReservation
             app.ApplicationServices.Initialize();
             EFAuditConfig(app);
             ExcelSettings();
-
-            //
-            eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>();
-            eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>();
         }
 
         private void EFAuditConfig(IApplicationBuilder applicationBuilder)
@@ -444,8 +443,7 @@ namespace ActivityReservation
                 builder
                     .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName),
                         ApplicationHelper.ApplicationName)
-                    .WithUserIdProvider(
-                        new AuditUserIdProvider(httpContextAccessor))
+                    .WithUserIdProvider(new AuditUserIdProvider(httpContextAccessor))
                     .WithHttpContextInfo(httpContextAccessor)
                     ;
             });

@@ -8,8 +8,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="WeihanLi.AspNetMvc.AccessControlHelper" Version="1.12.0" />
     <PackageReference Include="WeihanLi.AspNetMvc.MvcSimplePager" Version="1.6.0" />
-    <PackageReference Include="WeihanLi.Npoi" Version="1.9.2" />
-    <PackageReference Include="WeihanLi.Redis" Version="1.5.9" />
+    <PackageReference Include="WeihanLi.Npoi" Version="1.9.3" />
+    <PackageReference Include="WeihanLi.Redis" Version="1.6.0-preview-20200517-093616" />
     <PackageReference Include="WeihanLi.Web.Extensions" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
