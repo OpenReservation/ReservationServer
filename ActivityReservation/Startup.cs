@@ -245,11 +245,13 @@ namespace ActivityReservation
                 .SetApplicationName(ApplicationHelper.ApplicationName)
                 .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
                 ;
+            
+            // events
             services.AddEvents()
-                .UseRedisEventBus()
                 .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
                 .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
                 ;
+            
             services.AddHostedService<RemoveOverdueReservationService>();
             // services.AddHostedService<CronLoggingTest>();
 
