@@ -37,6 +37,7 @@ using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging;
 using WeihanLi.Common.Logging.Serilog;
+using WeihanLi.Common.Services;
 using WeihanLi.EntityFramework.Audit;
 using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
@@ -44,7 +45,7 @@ using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Redis.Event;
 using WeihanLi.Web.Extensions;
-using WeihanLi.Web.Middlewares;
+using WeihanLi.Web.Middleware;
 
 namespace ActivityReservation
 {
@@ -299,6 +300,26 @@ namespace ActivityReservation
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
             });
 
+            services.AddHttpContextUserIdProvider(options=>
+            {
+                options.UserIdFactory = context =>
+                {
+                    var user = context?.User;
+                    if (null != user && user.Identity.IsAuthenticated)
+                    {
+                        return $"{user.GetUserId<string>()}--{user.Identity.Name}";
+                    }
+
+                    var userIp = context.GetUserIP();
+                    if (null != userIp)
+                    {
+                        return userIp;
+                    }
+
+                    return $"{Environment.MachineName}__{Environment.UserName}";
+                };
+            });
+
             // RegisterAssemblyModules
             services.RegisterAssemblyModules();
 
@@ -438,15 +459,15 @@ namespace ActivityReservation
 
         private void EFAuditConfig(IApplicationBuilder applicationBuilder)
         {
-            var httpContextAccessor = applicationBuilder.ApplicationServices
-                .GetRequiredService<IHttpContextAccessor>();
+            var userIdProvider = applicationBuilder.ApplicationServices
+                .GetRequiredService<IUserIdProvider>();
             AuditConfig.Configure(builder =>
             {
                 builder
                     .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName),
                         ApplicationHelper.ApplicationName)
-                    .WithUserIdProvider(new AuditUserIdProvider(httpContextAccessor))
-                    .WithHttpContextInfo(httpContextAccessor)
+                    .WithUserIdProvider(userIdProvider)
+                    .WithHttpContextInfo(applicationBuilder.ApplicationServices.GetRequiredService<IHttpContextAccessor>())
                     ;
             });
         }
