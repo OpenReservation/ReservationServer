@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -44,7 +43,7 @@ namespace ActivityReservation.AdminLogic.Controllers
             var imgFile = Request.Form.Files["imgFile"];
             if (imgFile?.FileName == null)
             {
-                showError("请选择文件。");
+                await ShowError("请选择文件。");
                 return;
             }
 
@@ -55,25 +54,25 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
             if (!extTable.ContainsKey(dirName))
             {
-                showError("目录名不正确。");
+                await ShowError("目录名不正确。");
                 return;
             }
             var fileExt = Path.GetExtension(imgFile.FileName).ToLower();
             if (imgFile.Length > maxSize)
             {
-                showError("上传文件大小超过限制。");
+                await ShowError("上传文件大小超过限制。");
                 return;
             }
             if (string.IsNullOrEmpty(fileExt) ||
                 Array.IndexOf(((String)extTable[dirName]).Split(','), fileExt.Substring(1).ToLower()) == -1)
             {
-                showError($"上传文件扩展名是不允许的扩展名。\n只允许{extTable[dirName]}格式。");
+                await ShowError($"上传文件扩展名是不允许的扩展名。\n只允许{extTable[dirName]}格式。");
             }
             savePath += dirName + "/";
-            var ymd = DateTime.UtcNow.ToString("yyyyMMdd", DateTimeFormatInfo.InvariantInfo);
+            var ymd = DateTime.UtcNow.ToString("yyyyMM");
             savePath += ymd + "/";
 
-            var newFileName = DateTime.UtcNow.ToString("yyyyMMddHHmmss_ffff", DateTimeFormatInfo.InvariantInfo) + fileExt;
+            var newFileName = DateTime.UtcNow.ToString("yyyyMMddHHmmss") + fileExt;
             var filePath = savePath + newFileName;
             //save file
             using (var stream = new MemoryStream())
@@ -83,24 +82,23 @@ namespace ActivityReservation.AdminLogic.Controllers
                 var fileUrl = await _storageProvider.SaveBytes(stream.ToArray(), filePath);
                 if (!string.IsNullOrEmpty(fileUrl))
                 {
-                    Response.Body.Write(new { error = 0, url = fileUrl }.ToJson().GetBytes());
+                    await Response.Body.WriteAsync(new { error = 0, url = fileUrl }.ToJson().GetBytes());
                 }
                 else
                 {
-                    showError("上传图片失败");
+                    await ShowError("上传图片失败");
                 }
             }
         }
 
         [NonAction]
-        private void showError(string message)
+        private ValueTask ShowError(string message)
         {
-            var hash = new
+            return HttpContext.Response.Body.WriteAsync(new
             {
                 error = 1,
                 message
-            };
-            HttpContext.Response.Body.Write(hash.ToJson().GetBytes());
+            }.ToJson().GetBytes());
         }
 
         public ActionResult FileManager()
