@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -66,13 +65,14 @@ namespace ActivityReservation.Common
         public async Task<string> SaveBytes(byte[] bytes, string filePath)
         {
             var base64Str = Convert.ToBase64String(bytes);
-            using (var response = await _httpClient.PostAsFormAsync(PostFileApiPathFormat.FormatWith(_options.UserName, _options.RepositoryName, filePath),
-                new Dictionary<string, string>
-                {
-                    { "access_token", _options.AccessToken },
-                    { "content", base64Str },
-                    { "message" , $"add file" }
-                }))
+
+            var contentBytes =
+                $"access_token={_options.AccessToken}&message=upload_file&content={base64Str.UrlEncode()}"
+                    .GetBytes();
+            var byteArrayContent = new ByteArrayContent(contentBytes);
+
+            using (var response = await _httpClient.PostAsync(PostFileApiPathFormat.FormatWith(_options.UserName, _options.RepositoryName, filePath),
+                byteArrayContent))
             {
                 if (response.IsSuccessStatusCode)
                 {

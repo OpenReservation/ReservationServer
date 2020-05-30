@@ -213,6 +213,8 @@ namespace ActivityReservation
                 .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
                 ;
 
+            services.TryAddSingleton<NoProxyHttpClientHandler>();
+
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
                     client.Timeout = TimeSpan.FromSeconds(5);
