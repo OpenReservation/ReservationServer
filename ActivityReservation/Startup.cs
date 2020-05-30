@@ -43,7 +43,6 @@ using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 using WeihanLi.Npoi;
 using WeihanLi.Redis;
-using WeihanLi.Redis.Event;
 using WeihanLi.Web.Extensions;
 using WeihanLi.Web.Middleware;
 
@@ -70,10 +69,7 @@ namespace ActivityReservation
             });
 
             services.AddResponseCaching();
-            services.AddResponseCompression(options =>
-            {
-                options.EnableForHttps = true;
-            });
+            services.AddResponseCompression();
 
             services.AddControllersWithViews(options =>
                 {
@@ -183,25 +179,21 @@ namespace ActivityReservation
                 }
             }, 100);
 
-            services.AddHttpClient<GoogleRecaptchaHelper>(client =>
+            services.AddGoogleRecaptchaHelper(Configuration.GetSection("GoogleRecaptcha"), client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(3);
             });
-            services.Configure<GoogleRecaptchaOptions>(Configuration.GetSection("GoogleRecaptcha"));
-            services.AddGoogleRecaptchaHelper();
-
-            services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
-                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
             services.AddTencentCaptchaHelper(options =>
             {
                 options.AppId = Configuration["Tencent:Captcha:AppId"];
                 options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
+            }, client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(3);
             });
 
             // registerApplicationSettingService
             services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
-
-            // register access control service
 
             services.AddAuthorization(options =>
             {
@@ -215,6 +207,7 @@ namespace ActivityReservation
                 );
             });
 
+            // register access control service
             services.AddAccessControlHelper()
                 .AddResourceAccessStrategy<AdminPermissionRequireStrategy>()
                 .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
@@ -246,14 +239,14 @@ namespace ActivityReservation
                 .SetApplicationName(ApplicationHelper.ApplicationName)
                 .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
                 ;
-            
+
             // events
             services.AddEvents()
                 .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
                 .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
                 ;
-            
-            services.AddHostedService<RemoveOverdueReservationService>();
+
+            // services.AddHostedService<RemoveOverdueReservationService>();
             // services.AddHostedService<CronLoggingTest>();
 
             services.Configure<CustomExceptionHandlerOptions>(options =>
@@ -280,17 +273,11 @@ namespace ActivityReservation
                 };
             });
 
-            services.Configure<ForwardedHeadersOptions>(options =>
-            {
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-                options.ForwardLimit = null;
-                options.ForwardedHeaders = Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.All;
-            });
-
-            services.Configure<GiteeStorageOptions>(Configuration.GetSection("Storage:Gitee"));
-            services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
-            services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
+            // gitee storage
+            services.AddGiteeStorageProvider(Configuration.GetSection("Storage:Gitee"), options =>
+             {
+                 options.BaseAddress = new Uri("https://gitee.com");
+             });
 
             services.AddSwaggerGen(options =>
             {
@@ -300,7 +287,7 @@ namespace ActivityReservation
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
             });
 
-            services.AddHttpContextUserIdProvider(options=>
+            services.AddHttpContextUserIdProvider(options =>
             {
                 options.UserIdFactory = context =>
                 {
@@ -310,7 +297,7 @@ namespace ActivityReservation
                         return $"{user.GetUserId<string>()}--{user.Identity.Name}";
                     }
 
-                    var userIp = context.GetUserIP();
+                    var userIp = context?.GetUserIP();
                     if (null != userIp)
                     {
                         return userIp;
@@ -330,7 +317,6 @@ namespace ActivityReservation
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
-            app.UseForwardedHeaders();
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
             app.UseRequestLocalization();
@@ -466,6 +452,7 @@ namespace ActivityReservation
                 builder
                     .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName),
                         ApplicationHelper.ApplicationName)
+                    .EnrichWithProperty("Host", Environment.MachineName)
                     .WithUserIdProvider(userIdProvider)
                     .WithHttpContextInfo(applicationBuilder.ApplicationServices.GetRequiredService<IHttpContextAccessor>())
                     ;
