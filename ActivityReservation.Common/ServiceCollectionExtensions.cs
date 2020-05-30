@@ -77,8 +77,7 @@ namespace ActivityReservation.Common
         }
 
         public static IServiceCollection AddGiteeStorageProvider(this IServiceCollection services,
-            IConfiguration configuration,
-            Action<HttpClient> clientOptions = null)
+            IConfiguration configuration)
         {
             if (services == null)
             {
@@ -89,17 +88,11 @@ namespace ActivityReservation.Common
                 services.Configure<GiteeStorageOptions>(configuration.Bind);
             }
 
-            if (clientOptions == null)
-            {
-                services.AddHttpClient<GiteeStorageProvider>()
-                    .ConfigurePrimaryHttpMessageHandler<NoProxyHttpClientHandler>();
-            }
-            else
-            {
-                services.AddHttpClient<GiteeStorageProvider>(clientOptions)
-                    .ConfigurePrimaryHttpMessageHandler<NoProxyHttpClientHandler>();
-            }
-            return services.AddSingleton<IStorageProvider, GiteeStorageProvider>();
+            services.AddHttpClient<IStorageProvider, GiteeStorageProvider>()
+                .ConfigurePrimaryHttpMessageHandler<NoProxyHttpClientHandler>();
+
+            services.TryAddTransient<IStorageProvider, GiteeStorageProvider>();
+            return services;
         }
     }
 }

@@ -47,10 +47,8 @@ namespace ActivityReservation.Common
     /// </summary>
     public class GiteeStorageProvider : IStorageProvider
     {
-        private const string PostFileApiUrlFormat = "https://gitee.com/api/v5/repos/{0}/{1}/contents{2}";
-
         private const string PostFileApiPathFormat = "/api/v5/repos/{0}/{1}/contents{2}";
-        private const string RawFileUrlFormat = "https://gitee.com/{0}/{1}/raw/master{2}";
+        private const string RawFileUrlFormat = "/{0}/{1}/raw/master{2}";
 
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
@@ -61,6 +59,8 @@ namespace ActivityReservation.Common
             _logger = logger;
             _httpClient = httpClient;
             _options = options.Value;
+
+            _httpClient.BaseAddress = new Uri(_options.ApiBaseUrl);
         }
 
         public async Task<string> SaveBytes(byte[] bytes, string filePath)
@@ -76,8 +76,7 @@ namespace ActivityReservation.Common
             {
                 if (response.IsSuccessStatusCode)
                 {
-                    return RawFileUrlFormat
-                        .FormatWith(_options.UserName, _options.RepositoryName, filePath);
+                    return $"{_options.ApiBaseUrl}{RawFileUrlFormat.FormatWith(_options.UserName, _options.RepositoryName, filePath)}";
                 }
 
                 var result = await response.Content.ReadAsStringAsync();
@@ -90,6 +89,20 @@ namespace ActivityReservation.Common
 
     public class GiteeStorageOptions
     {
+        private string _apiBaseUrl = "https://gitee.com";
+
+        public string ApiBaseUrl
+        {
+            get => _apiBaseUrl;
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && Uri.TryCreate(value, UriKind.Absolute, out _))
+                {
+                    _apiBaseUrl = value;
+                }
+            }
+        }
+
         public string UserName { get; set; }
 
         public string RepositoryName { get; set; }

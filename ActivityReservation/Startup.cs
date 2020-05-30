@@ -274,10 +274,7 @@ namespace ActivityReservation
             });
 
             // gitee storage
-            services.AddGiteeStorageProvider(Configuration.GetSection("Storage:Gitee"), options =>
-             {
-                 options.BaseAddress = new Uri("https://gitee.com");
-             });
+            services.AddGiteeStorageProvider(Configuration.GetSection("Storage:Gitee"));
 
             services.AddSwaggerGen(options =>
             {
@@ -338,8 +335,11 @@ namespace ActivityReservation
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
-            app.UseRequestLog();
-            app.UsePerformanceLog();
+            if (env.IsDevelopment())
+            {
+                app.UseRequestLog();
+                app.UsePerformanceLog();
+            }
 
             app.UseAuthentication();
             app.UseAuthorization();
