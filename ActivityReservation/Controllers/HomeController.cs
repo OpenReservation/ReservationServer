@@ -133,7 +133,7 @@ namespace ActivityReservation.Controllers
         /// <param name="dt">预约日期</param>
         /// <param name="placeId">预约地点id</param>
         /// <returns></returns>
-        public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId, [FromServices]ReservationHelper reservationHelper)
+        public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId, [FromServices] ReservationHelper reservationHelper)
         {
             var periodsStatus = reservationHelper.GetAvailablePeriodsByDateAndPlace(dt, placeId);
             return Json(periodsStatus);
@@ -151,11 +151,11 @@ namespace ActivityReservation.Controllers
         [HttpPost]
         [Authorize]
         public async Task<ActionResult> MakeReservation(
-            [FromBody]ReservationViewModel model,
-            [FromHeader]string captcha,
-            [FromHeader]string captchaType,
-            [FromServices]CaptchaVerifyHelper captchaVerifyHelper,
-            [FromServices]IStringLocalizer<HomeController> localizer)
+            [FromBody] ReservationViewModel model,
+            [FromHeader] string captcha,
+            [FromHeader] string captchaType,
+            [FromServices] CaptchaVerifyHelper captchaVerifyHelper,
+            [FromServices] IStringLocalizer<HomeController> localizer)
         {
             var result = new ResultModel<bool>();
             var isCodeValid = await captchaVerifyHelper.ValidateVerifyCodeAsync(captchaType, captcha);
@@ -227,7 +227,7 @@ namespace ActivityReservation.Controllers
         /// 公告列表
         /// </summary>
         /// <returns></returns>
-        public ActionResult NoticeList(SearchHelperModel search, [FromServices]IBLLNotice noticeService)
+        public ActionResult NoticeList(SearchHelperModel search, [FromServices] IBLLNotice noticeService)
         {
             Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!string.IsNullOrEmpty(search.SearchItem1))
@@ -255,7 +255,7 @@ namespace ActivityReservation.Controllers
         /// <param name="eventBus"></param>
         /// <param name="cacheClient"></param>
         /// <returns></returns>
-        public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
+        public async Task<ActionResult> NoticeDetails(string path, [FromServices] IEventBus eventBus, [FromServices] ICacheClient cacheClient)
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
@@ -273,6 +273,7 @@ namespace ActivityReservation.Controllers
             return RedirectToAction("Notice");
         }
 
+        [HttpGet]
         public async Task<IActionResult> Chat(string msg)
         {
             if (string.IsNullOrWhiteSpace(msg))
@@ -281,7 +282,8 @@ namespace ActivityReservation.Controllers
             }
             return Ok(new
             {
-                text = await HttpContext.RequestServices.GetService<ChatBotHelper>().GetBotReplyAsync(msg)
+                text = await HttpContext.RequestServices.GetService<ChatBotHelper>()
+                    .GetBotReplyAsync(msg)
             });
         }
 
