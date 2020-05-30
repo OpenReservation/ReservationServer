@@ -91,7 +91,7 @@ namespace ActivityReservation.Common
             services.AddHttpClient<IStorageProvider, GiteeStorageProvider>()
                 .ConfigurePrimaryHttpMessageHandler<NoProxyHttpClientHandler>();
 
-            services.TryAddTransient<IStorageProvider, GiteeStorageProvider>();
+            services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
             return services;
         }
     }
