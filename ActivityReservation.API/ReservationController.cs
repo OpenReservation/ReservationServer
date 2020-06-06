@@ -7,6 +7,7 @@ using ActivityReservation.Database;
 using ActivityReservation.Helpers;
 using ActivityReservation.Models;
 using ActivityReservation.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -102,11 +103,12 @@ namespace ActivityReservation.API
         /// <param name="captchaVerifyHelper">captchaVerifyHelper</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> MakeReservation(
-            [FromBody]ReservationViewModel model,
-            [FromHeader]string captcha,
-            [FromHeader]string captchaType,
-            [FromServices]CaptchaVerifyHelper captchaVerifyHelper
+            [FromBody] ReservationViewModel model,
+            [FromHeader] string captcha,
+            [FromHeader] string captchaType,
+            [FromServices] CaptchaVerifyHelper captchaVerifyHelper
             )
         {
             var result = new ResultModel<bool> { Status = ResultStatus.RequestError };

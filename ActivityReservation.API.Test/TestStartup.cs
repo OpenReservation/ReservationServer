@@ -1,11 +1,9 @@
-﻿using System;
-using ActivityReservation.API.Test.MockServices;
+﻿using ActivityReservation.API.Test.MockServices;
 using ActivityReservation.Common;
 using ActivityReservation.Database;
 using ActivityReservation.Events;
 using ActivityReservation.Services;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +13,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Http;
 using WeihanLi.Redis;
+using WeihanLi.Web.Authentication;
+using WeihanLi.Web.Authentication.HeaderAuthentication;
 
 namespace ActivityReservation.API.Test
 {
@@ -53,7 +51,7 @@ namespace ActivityReservation.API.Test
                         NoStore = true
                     });
                 })
-                .AddApplicationPart(typeof(API.ApiControllerBase).Assembly)
+                .AddApplicationPart(typeof(ApiControllerBase).Assembly)
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
@@ -63,13 +61,10 @@ namespace ActivityReservation.API.Test
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Latest);
 
-            services.AddDataProtection().SetApplicationName(ApplicationHelper.ApplicationName);
-
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));
 
-            services.AddHttpClient<TencentCaptchaHelper>(client => client.Timeout = TimeSpan.FromSeconds(3))
-                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+            services.AddGoogleRecaptchaHelper(Configuration.GetSection("GoogleRecaptcha"));
             services.AddTencentCaptchaHelper(options =>
             {
                 options.AppId = Configuration["Tencent:Captcha:AppId"];
@@ -91,16 +86,28 @@ namespace ActivityReservation.API.Test
             // RegisterAssemblyModules
             services.RegisterAssemblyModules();
 
+            services
+                .AddAuthentication(HeaderAuthenticationDefaults.AuthenticationSchema)
+                .AddHeader()
+                //.AddAuthentication(QueryAuthenticationDefaults.AuthenticationSchema)
+                //.AddQuery()
+                ;
+
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IEventBus eventBus)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseResponseCaching();
 
             app.UseRouting();
+
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
