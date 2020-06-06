@@ -19,7 +19,7 @@ namespace ActivityReservation.API.Test.Controllers
         [Fact]
         public async Task GetReservationPlaceList()
         {
-            using (var response = await Client.GetAsync("/api/reservationPlace"))
+            using (var response = await Client.GetAsync("/api/reservationPlaces"))
             {
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 var responseString = await response.Content.ReadAsStringAsync();
@@ -37,7 +37,7 @@ namespace ActivityReservation.API.Test.Controllers
                     .ReservationPlaces.AsNoTracking()
                     .FirstOrDefaultAsync();
                 Assert.NotNull(place);
-                using (var response = await Client.GetAsync($"/api/reservationPlace/{place.PlaceId:N}/periods?dt={DateTime.Today:yyyy-MM-dd}"))
+                using (var response = await Client.GetAsync($"/api/reservationPlaces/{place.PlaceId:N}/periods?dt={DateTime.Today:yyyy-MM-dd}"))
                 {
                     Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                     var responseString = await response.Content.ReadAsStringAsync();

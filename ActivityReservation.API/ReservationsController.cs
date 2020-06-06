@@ -19,11 +19,11 @@ using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.API
 {
-    public class ReservationController : ApiControllerBase
+    public class ReservationsController : ApiControllerBase
     {
         private readonly IEFRepository<ReservationDbContext, Reservation> _repository;
 
-        public ReservationController(ILogger<ReservationController> logger, IEFRepository<ReservationDbContext, Reservation> repository) : base(logger)
+        public ReservationsController(ILogger<ReservationsController> logger, IEFRepository<ReservationDbContext, Reservation> repository) : base(logger)
         {
             _repository = repository;
         }
@@ -89,7 +89,10 @@ namespace ActivityReservation.API
             }
 
             var phoneNumValid = ValidateHelper.IsMobile(phone);
-            var userId = User.GetUserId<Guid>();
+            var userId = User.Identity.IsAuthenticated
+                ? User.GetUserId<Guid>()
+                : Guid.Empty
+                ;
             if (userId == Guid.Empty && phoneNumValid == false)
             {
                 return BadRequest();

@@ -12,11 +12,11 @@ using WeihanLi.EntityFramework;
 
 namespace ActivityReservation.API
 {
-    public class ReservationPlaceController : ApiControllerBase
+    public class ReservationPlacesController : ApiControllerBase
     {
         private readonly IEFRepository<ReservationDbContext, ReservationPlace> _repository;
 
-        public ReservationPlaceController(ILogger<ReservationPlaceController> logger, IEFRepository<ReservationDbContext, ReservationPlace> repository) : base(logger)
+        public ReservationPlacesController(ILogger<ReservationPlacesController> logger, IEFRepository<ReservationDbContext, ReservationPlace> repository) : base(logger)
         {
             _repository = repository;
         }
