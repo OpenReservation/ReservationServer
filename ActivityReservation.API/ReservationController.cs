@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
+using WeihanLi.Web.Extensions;
 
 namespace ActivityReservation.API
 {
@@ -86,12 +87,73 @@ namespace ActivityReservation.API
             {
                 return BadRequest();
             }
-            var detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(x => x.ReservationId == id && x.ReservationPersonPhone == phone), cancellationToken);
-            if (detail == null)
+
+            var phoneNumValid = ValidateHelper.IsMobile(phone);
+            var userId = User.GetUserId<Guid>();
+            if (userId == Guid.Empty && phoneNumValid == false)
             {
-                return NotFound();
+                return BadRequest();
             }
+
+            Reservation detail;
+            if (phoneNumValid)
+            {
+                detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(x => x.ReservationId == id && x.ReservationPersonPhone == phone), cancellationToken);
+                if (detail == null)
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(x => x.ReservationId == id && x.ReservedBy == userId), cancellationToken);
+                if (detail == null)
+                {
+                    return NotFound();
+                }
+            }
+
             return Ok(detail);
+        }
+
+        /// <summary>
+        /// 获取用户预约列表
+        /// </summary>
+        [Authorize]
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUserReservations(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber <= 0)
+            {
+                pageNumber = 1;
+            }
+            if (pageSize <= 0)
+            {
+                pageSize = 10;
+            }
+            var userId = User.GetUserId<Guid>();
+            Expression<Func<Reservation, bool>> predict = n => n.ReservedBy == userId;
+            var result = await _repository.GetPagedListResultAsync(
+                x => new ReservationListViewModel
+                {
+                    ReservationForDate = x.ReservationForDate,
+                    ReservationForTime = x.ReservationForTime,
+                    ReservationId = x.ReservationId,
+                    ReservationUnit = x.ReservationUnit,
+                    ReservationTime = x.ReservationTime,
+                    ReservationPlaceName = x.Place.PlaceName,
+                    ReservationActivityContent = x.ReservationActivityContent,
+                    ReservationPersonName = x.ReservationPersonName,
+                    ReservationPersonPhone = x.ReservationPersonPhone,
+                    ReservationStatus = x.ReservationStatus,
+                },
+                queryBuilder => queryBuilder
+                    .WithPredict(predict)
+                    .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
+                    .WithInclude(q => q.Include(x => x.Place))
+                , pageNumber, pageSize, HttpContext.RequestAborted);
+
+            return Ok(result);
         }
 
         /// <summary>
