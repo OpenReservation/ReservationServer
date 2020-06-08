@@ -178,7 +178,6 @@ namespace ActivityReservation.Controllers
 
                     result.Result = true;
                     result.Status = ResultStatus.Success;
-                    return Json(result);
                 }
             }
             catch (Exception ex)

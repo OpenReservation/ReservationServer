@@ -190,20 +190,20 @@ namespace ActivityReservation.API
                     .MakeReservation(model, out var msg))
                 {
                     result.ErrorMsg = msg;
-                    return Ok(result);
                 }
-
-                result.Result = true;
-                result.Status = ResultStatus.Success;
-                return Ok(result);
+                else
+                {
+                    result.Result = true;
+                    result.Status = ResultStatus.Success;
+                }
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, $"Make reservation exception: {ex.Message}");
                 result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
-                return Ok(result);
             }
+            return Ok(result);
         }
     }
 }
