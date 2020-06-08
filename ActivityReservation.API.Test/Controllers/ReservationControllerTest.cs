@@ -46,6 +46,7 @@ namespace ActivityReservation.API.Test.Controllers
             using var request = new HttpRequestMessage(HttpMethod.Post, "/api/reservations");
             request.Headers.TryAddWithoutValidation("UserId", GuidIdGenerator.Instance.NewId());
             request.Headers.TryAddWithoutValidation("UserName", Environment.UserName);
+            request.Headers.TryAddWithoutValidation("UserRoles", "User,ReservationManager");
 
             request.Content = new StringContent($@"{{""reservationUnit"":""nnnnn"",""reservationActivityContent"":""13211112222"",""reservationPersonName"":""谢谢谢"",""reservationPersonPhone"":""13211112222"",""reservationPlaceId"":""f9833d13-a57f-4bc0-9197-232113667ece"",""reservationPlaceName"":""第一多功能厅"",""reservationForDate"":""2020-06-13"",""reservationForTime"":""10:00~12:00"",""reservationForTimeIds"":""1""}}", Encoding.UTF8, "application/json");
 
@@ -58,7 +59,7 @@ namespace ActivityReservation.API.Test.Controllers
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, "/api/reservations");
 
-            request.Headers.TryAddWithoutValidation("X-UserName", Environment.UserName);
+            request.Headers.TryAddWithoutValidation("UserName", Environment.UserName);
 
             request.Content = new StringContent($@"{{""reservationUnit"":""nnnnn"",""reservationActivityContent"":""13211112222"",""reservationPersonName"":""谢谢谢"",""reservationPersonPhone"":""13211112222"",""reservationPlaceId"":""f9833d13-a57f-4bc0-9197-232113667ece"",""reservationPlaceName"":""第一多功能厅"",""reservationForDate"":""2020-06-13"",""reservationForTime"":""10:00~12:00"",""reservationForTimeIds"":""1""}}", Encoding.UTF8, "application/json");
 
