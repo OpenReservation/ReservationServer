@@ -286,7 +286,7 @@
                                 //请求服务器端接口，判断可用预约时间段
                                 var loading = layer.load(2);
                                 $.ajax({
-                                    url: `/api/ReservationPlace/${$scope.reservationModel.ReservationPlaceId
+                                    url: `/api/ReservationPlaces/${$scope.reservationModel.ReservationPlaceId
                                         }/periods?placeId=${$scope.reservationModel.ReservationPlaceId
                                         }&dt=${$scope.reservationModel.ReservationForDate}`,
                                     type: "get",
