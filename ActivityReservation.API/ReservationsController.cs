@@ -122,7 +122,7 @@ namespace ActivityReservation.API
         /// <summary>
         /// 获取用户预约列表
         /// </summary>
-        [Authorize]
+        [Authorize(Policy = "ReservationApi")]
         [HttpGet("user")]
         public async Task<IActionResult> GetUserReservations(int pageNumber = 1, int pageSize = 10)
         {

@@ -10,6 +10,7 @@ using ActivityReservation.Extensions;
 using ActivityReservation.Helpers;
 using ActivityReservation.Services;
 using ActivityReservation.ViewModels;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -132,6 +133,11 @@ namespace ActivityReservation
                     options.Cookie.HttpOnly = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 })
+                .AddIdentityServerAuthentication(options =>
+                {
+                    options.Authority = Configuration["Authorization:Authority"];
+                    options.RequireHttpsMetadata = false;
+                })
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
                     var authorizationConfiguration = Configuration.GetSection("Authorization");
@@ -198,12 +204,18 @@ namespace ActivityReservation
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ReservationManager", builder => builder
+                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .RequireRole("ReservationManager", "ReservationAdmin")
                 );
                 options.AddPolicy("ReservationAdmin", builder => builder
+                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
                     .RequireRole("ReservationAdmin")
+                );
+                options.AddPolicy("ReservationApi", builder => builder
+                    .AddAuthenticationSchemes(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
                 );
             });
 
