@@ -92,6 +92,10 @@ namespace ActivityReservation.API.Test
                 //.AddAuthentication(QueryAuthenticationDefaults.AuthenticationSchema)
                 //.AddQuery()
                 ;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ReservationApi", builder => builder.RequireAuthenticatedUser());
+            });
 
             // SetDependencyResolver
             DependencyResolver.SetDependencyResolver(services);
