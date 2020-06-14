@@ -168,7 +168,7 @@ namespace ActivityReservation.API
         /// <param name="captchaVerifyHelper">captchaVerifyHelper</param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "ReservationApi")]
         public async Task<IActionResult> MakeReservation(
             [FromBody] ReservationViewModel model,
             [FromHeader] string captcha,
