@@ -137,6 +137,9 @@ namespace ActivityReservation
                  {
                      options.Authority = Configuration["Authorization:Authority"];
                      options.RequireHttpsMetadata = false;
+
+                     options.NameClaimType = "name";
+                     options.RoleClaimType = "role";
                  })
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
