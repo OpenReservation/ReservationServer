@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using OpenReservation.Business;
 using OpenReservation.Models;
 using OpenReservation.ViewModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
@@ -205,7 +205,8 @@ namespace OpenReservation.Helpers
                         ReservationPersonName = reservation.ReservationPersonName,
                         ReservationPersonPhone = reservation.ReservationPersonPhone,
                         ReservationFromIp = context.GetUserIP(),
-                        ReservedBy = context.User.GetUserId<Guid>(),
+
+                        ReservedBy = context.User.GetUserId<Guid>("sub"),
 
                         UpdateBy = reservation.ReservationPersonName,
                         UpdateTime = DateTime.UtcNow,

@@ -3,15 +3,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenReservation.Database;
-using OpenReservation.Helpers;
-using OpenReservation.Models;
-using OpenReservation.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenReservation.Database;
+using OpenReservation.Helpers;
+using OpenReservation.Models;
+using OpenReservation.ViewModels;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
@@ -134,7 +134,7 @@ namespace OpenReservation.API
             {
                 pageSize = 10;
             }
-            var userId = User.GetUserId<Guid>();
+            var userId = User.GetUserId<Guid>("sub");
             Expression<Func<Reservation, bool>> predict = n => n.ReservedBy == userId;
             var result = await _repository.GetPagedListResultAsync(
                 x => new ReservationListViewModel
