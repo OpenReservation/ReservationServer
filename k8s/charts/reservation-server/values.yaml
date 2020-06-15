@@ -10,7 +10,7 @@ reservation:
   replicaCount: 1
 
   image:
-    repository: weihanli/activityreservation
+    repository: weihanli/OpenReservation
     tag: dev
     pullPolicy: IfNotPresent
 

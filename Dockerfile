@@ -15,19 +15,19 @@ COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
 
 ## diff between netcore2.2 and netcore3.0
-WORKDIR /src/ActivityReservation
+WORKDIR /src/OpenReservation
 RUN dotnet restore
 
 # copy everything and build
 COPY . .
-RUN dotnet publish -c Release -o out ActivityReservation/ActivityReservation.csproj
+RUN dotnet publish -c Release -o out OpenReservation/OpenReservation.csproj
 
 # build runtime image
 FROM base AS final
 
 LABEL Maintainer="WeihanLi"
 WORKDIR /app
-COPY --from=build-env /src/ActivityReservation/out .
+COPY --from=build-env /src/OpenReservation/out .
 
 EXPOSE 80
-ENTRYPOINT ["dotnet", "ActivityReservation.dll"]
+ENTRYPOINT ["dotnet", "OpenReservation.dll"]

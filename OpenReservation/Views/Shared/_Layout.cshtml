@@ -1,0 +1,102 @@
+﻿@using OpenReservation.Services
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IApplicationSettingService applicationSettings
+@inject IViewLocalizer viewLocalizer
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@($"{(string.IsNullOrEmpty(ViewBag.Title) ? "" : $"{ViewBag.Title}--")}{applicationSettings.GetSettingValue("SystemTitle")}") </title>
+    <meta name="keywords" content="@(applicationSettings.GetSettingValue("SystemKeywords"))" />
+    <environment names="Development">
+        <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    </environment>
+    <environment names="Staging,Production">
+        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    </environment>
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top hidden-print">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink(applicationSettings.GetSettingValue("SystemTitle"), "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink(viewLocalizer["Reservate"].Value, "Reservate", "Home")</li>
+                    <li>@Html.ActionLink(viewLocalizer["Notice"].Value, "Notice", "Home")</li>
+                    <li>@Html.ActionLink(viewLocalizer["About"].Value, "About", "Home")</li>
+                </ul>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                @(User.Identity.Name) <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="https://id.weihanli.xyz/Manage" target="_blank">我的账户</a></li>
+                                <li><a href="https://id.weihanli.xyz/Manage/ChangePassword" target="_blank">修改密码</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink("退出登录", "Logout", "Account")</li>
+                            </ul>
+                        </li>
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        <div class="main-content">@RenderBody()</div>
+        <hr class="hidden-print" />
+        <footer class="hidden-print">
+            <div class="row">
+                <div class="col-md-8">
+                    &copy; @DateTime.UtcNow.Year - @(applicationSettings.GetSettingValue("SystemTitle")) &nbsp;&nbsp;&nbsp;
+                    @Html.ActionLink(viewLocalizer["ManagementPortal"].Value, "Index", new { controller = "Home", area = "Admin" })
+                </div>
+                <div class="col-md-4 text-right">
+                    @await Html.PartialAsync("Common/SelectLanguage")
+                </div>
+            </div>
+            <div>
+                <p>Powered by @System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription </p>
+            </div>
+        </footer>
+    </div>
+    <!-- Google Analytics -->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-86200565-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics -->
+    <environment names="Development">
+        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>
+        <script src="~/Content/layer/layer.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+    </environment>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

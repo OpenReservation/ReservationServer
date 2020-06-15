@@ -1,4 +1,4 @@
-# ActivityReservation [![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/OpenReservation.ReservationServer?branchName=dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=7&branchName=dev)
+# OpenReservation [![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/OpenReservation.ReservationServer?branchName=dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=7&branchName=dev)
 
 ## Intro
 
@@ -54,8 +54,8 @@ appveyor => travis => Azure Pipeline
 
 ### 2.0
 
-- [x] 活动室预约 SPA <https://github.com/WeihanLi/ActivityReservation/tree/dev/ActivityReservation.Clients/ReservationClient>（angular8 + material)
-- [x] 微信小程序预约 <https://github.com/WeihanLi/ActivityReservation/tree/dev/ActivityReservation.Clients/WxAppClient>
+- [x] 活动室预约 SPA <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>（angular8 + material)
+- [x] 微信小程序预约 <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/WxAppClient>
 - [x] 从单机到集群，详细修改参考：<https://www.cnblogs.com/weihanli/p/aspnetcore-migrate-standalone-to-cluster.html>
 
 ### 3.0

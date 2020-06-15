@@ -1,0 +1,47 @@
+﻿@model IPagedListModel<OpenReservation.Models.OperationLog>
+@{
+    Layout = null;
+}
+@if (Model.Data.Count > 0)
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>日志模块</th>
+                <th>日志内容</th>
+                <th>操作人</th>
+                <th>操作IP</th>
+                <th>操作时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>
+                        @item.LogModule
+                    </td>
+                    <td>
+                        @item.LogContent
+                    </td>
+                    <td>
+                        @item.OperBy
+                    </td>
+                    <td>
+                        @item.IpAddress
+                    </td>
+                    <td>
+                        @item.OperTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
+}
+else
+{
+    <div class="nodata-tip">
+        暂时没有数据.
+    </div>
+}

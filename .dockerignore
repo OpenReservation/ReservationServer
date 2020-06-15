@@ -15,7 +15,7 @@ LICENSE
 .vs
 *.yaml
 *.yml
-ActivityReservation.Clients
+OpenReservation.Clients
 docs
 images
 k8s

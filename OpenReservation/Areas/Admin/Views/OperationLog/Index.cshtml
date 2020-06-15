@@ -1,0 +1,69 @@
+﻿@using System.ComponentModel
+@using System.Reflection
+@using OpenReservation.Helpers
+@{
+    ViewBag.Title = "操作日志";
+    var logModuleType = typeof(OperLogModule);
+    var logMudulesList = new List<SelectListItem>();
+    logMudulesList.Add(new SelectListItem("所有", "", true));
+    logMudulesList.AddRange(
+        Enum.GetValues(logModuleType).Cast<OperLogModule>()
+        .Select(_ => logModuleType.GetField(_.ToString()).GetCustomAttribute<DescriptionAttribute>()?.Description ?? _.ToString())
+        .Select(_=> new SelectListItem(_, _))
+    );
+}
+<div class="table-wraper">
+    <div class="table-header">
+        <h3 class="table-title">操作日志</h3>
+        <div class="form-inline" style="margin: 0.6em 0">
+            <div class="form-group">
+                <select id="logModuleName" onchange="loadData()" asp-items="logMudulesList" class="form-control"></select>
+                <input type="search" value="" id="logContent" placeholder="日志内容" class="form-control" />
+            </div>
+            <button id="btnSearch" type="button" class="btn btn-success">搜索</button>
+        </div>
+    </div>
+    <div class="table-body" id="div_main"></div>
+</div>
+@section scripts{
+    <script>
+        var pageSize = 10, pageIndex = 1;
+
+        //加载数据
+        function loadData(pIndex) {
+            if (!pIndex) {
+                pageIndex = 1;
+            } else {
+                pageIndex = pIndex;
+            }
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> 正在玩命加载中，请稍后...');
+            $.ajax({
+                url: "/Admin/OperationLog/List",
+                data: {
+                    "PageIndex": pageIndex,
+                    "PageSize": pageSize,
+                    "SearchItem0": "",
+                    "SearchItem1": $("#logModuleName").val(),
+                    "SearchItem2": $("#logContent").val()
+                },
+                success: function (data, status) {
+                    if (status == "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        $("#div_main").html('');
+                        layer.msg('数据加载异常，请稍后重试！');
+                    }
+                }
+            });
+        }
+
+        //搜索
+        $("#btnSearch").on("click",
+            function () {
+                loadData();
+            });
+        $(function () {
+            loadData();
+        });
+    </script>
+}

@@ -53,7 +53,7 @@ helm install reservation-client --set service.nodePort=32156 reservation-client
 不使用 helm，也可以直接使用下面的命令来安装
 
 ``` bash
-kubectl apply -f https://raw.githubusercontent.com/WeihanLi/ActivityReservation/dev/ActivityReservation.Clients/ReservationClient/k8s-deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/WeihanLi/OpenReservation/dev/OpenReservation.Clients/ReservationClient/k8s-deploy.yaml
 ```
 
 提供了一个部署在我的 k8s 上的在线示例的 <https://reservation-client.weihanli.xyz>

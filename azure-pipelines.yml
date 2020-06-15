@@ -7,7 +7,7 @@ trigger:
     - '*'
     exclude:
     - '**/*.md'
-    - /ActivityReservation.Clients/
+    - /OpenReservation.Clients/
     - /docs/
     - /k8s/
 
@@ -16,7 +16,7 @@ pool:
 
 variables:
   tagName: '$(Build.BuildNumber)'
-  repoName: 'activityreservation'
+  repoName: 'open-reservation'
   stableImageName: '$(dockerId)/$(repoName):stable'
   latestImageName: '$(dockerId)/$(repoName):latest'
   branchImageName: '$(dockerId)/$(repoName):$(Build.SourceBranchName)'

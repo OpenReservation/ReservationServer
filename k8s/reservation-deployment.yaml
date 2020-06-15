@@ -28,7 +28,7 @@ spec:
             value: "1"
       containers:        
         - name: reservation-server
-          image: weihanli/activityreservation:latest
+          image: weihanli/openreservation:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:

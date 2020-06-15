@@ -72,4 +72,4 @@ k8s 部署 yaml 定义可以参考下面的链接：
 - [Redis](../../k8s/redis.yaml)
 - [ElasticSearch](../../k8s/elasticsearch.yaml)
 - [Kibana](../../k8s//kibana.yaml)
-- [ActivityReservation](../../k8s/reservation-deployment.yaml)（使用了 configMap 挂载了配置文件，可以不用）
+- [OpenReservation](../../k8s/reservation-deployment.yaml)（使用了 configMap 挂载了配置文件，可以不用）
