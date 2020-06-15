@@ -133,11 +133,11 @@ namespace ActivityReservation
                     options.Cookie.HttpOnly = true;
                     options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
                 })
-                .AddIdentityServerAuthentication(options =>
-                {
-                    options.Authority = Configuration["Authorization:Authority"];
-                    options.RequireHttpsMetadata = false;
-                })
+                .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
+                 {
+                     options.Authority = Configuration["Authorization:Authority"];
+                     options.RequireHttpsMetadata = false;
+                 })
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
                 {
                     var authorizationConfiguration = Configuration.GetSection("Authorization");
