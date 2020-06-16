@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using OpenReservation.Database;
 using OpenReservation.Models;
 using OpenReservation.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 
@@ -25,7 +24,7 @@ namespace OpenReservation.Helpers
 
                 if (!dbContext.Database.IsRelational())
                 {
-                    if (!dbContext.Users.AsNoTracking().Any())
+                    if (!dbContext.SystemSettings.AsNoTracking().Any())
                     {
                         settings = InitData(dbContext);
                     }
@@ -38,7 +37,7 @@ namespace OpenReservation.Helpers
                 {
                     using (var transaction = dbContext.Database.BeginTransaction(System.Data.IsolationLevel.Serializable))
                     {
-                        if (!dbContext.Users.AsNoTracking().Any())
+                        if (!dbContext.SystemSettings.AsNoTracking().Any())
                         {
                             settings = InitData(dbContext);
                             transaction.Commit();
@@ -60,31 +59,6 @@ namespace OpenReservation.Helpers
 
         private static IReadOnlyCollection<SystemSettings> InitData(ReservationDbContext dbContext)
         {
-            dbContext.Users.Add(new User
-            {
-                UserId = Guid.NewGuid(),
-                UserName = "admin",
-                UserMail = "admin@weihanli.xyz",
-                UserPassword = SecurityHelper.SHA256("Admin888"),
-                IsSuper = true
-            });
-            dbContext.Users.Add(new User
-            {
-                UserId = Guid.NewGuid(),
-                UserName = "Alice",
-                UserMail = "Alice@weihanli.xyz",
-                UserPassword = SecurityHelper.SHA256("Test1234"),
-                IsSuper = false
-            });
-            dbContext.Users.Add(new User
-            {
-                UserId = Guid.NewGuid(),
-                UserName = "test",
-                UserMail = "test@weihanli.xyz",
-                UserPassword = SecurityHelper.SHA256("Test1234"),
-                IsSuper = false
-            });
-
             var blockTypes = new List<BlockType>
             {
                 new BlockType { TypeId = Guid.NewGuid(), TypeName = "Contact Phone" },

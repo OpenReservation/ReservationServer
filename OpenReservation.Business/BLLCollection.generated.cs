@@ -7,14 +7,6 @@ using WeihanLi.EntityFramework;
 
 namespace OpenReservation.Business
 {
-	public partial interface IBLLUser: IEFRepository<ReservationDbContext, User>{}
-
-	public partial class BLLUser : EFRepository<ReservationDbContext, User>,  IBLLUser
-    {
-        public BLLUser(ReservationDbContext dbContext) : base(dbContext)
-        {
-        }
-    }
 	public partial interface IBLLBlockType: IEFRepository<ReservationDbContext, BlockType>{}
 
 	public partial class BLLBlockType : EFRepository<ReservationDbContext, BlockType>,  IBLLBlockType
@@ -92,7 +84,6 @@ namespace OpenReservation.Business
     {
         public static IServiceCollection AddBLL(this IServiceCollection services)
         {
-                services.TryAddScoped<IBLLUser, BLLUser>();
                 services.TryAddScoped<IBLLBlockType, BLLBlockType>();
                 services.TryAddScoped<IBLLBlockEntity, BLLBlockEntity>();
                 services.TryAddScoped<IBLLOperationLog, BLLOperationLog>();

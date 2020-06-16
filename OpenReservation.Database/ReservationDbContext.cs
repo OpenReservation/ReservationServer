@@ -1,6 +1,6 @@
 ﻿using System;
-using OpenReservation.Models;
 using Microsoft.EntityFrameworkCore;
+using OpenReservation.Models;
 using WeihanLi.EntityFramework.Audit;
 
 namespace OpenReservation.Database
@@ -19,16 +19,12 @@ namespace OpenReservation.Database
             modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
             modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
-            modelBuilder.Entity<AuditRecord>()
-                .ToTable("AuditRecords");
-
             if (!Database.ProviderName.EndsWith("InMemory", StringComparison.OrdinalIgnoreCase))
             {
                 modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
             }
         }
 
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<BlockType> BlockTypes { get; set; }
         public virtual DbSet<BlockEntity> BlockEntities { get; set; }
         public virtual DbSet<OperationLog> OperationLogs { get; set; }

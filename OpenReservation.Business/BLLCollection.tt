@@ -6,7 +6,6 @@
 <#@ import namespace="System.Collections.Generic" #> 
 <#
 	string[] types = {
-		"User",
 		"BlockType",
 		"BlockEntity",
 		"OperationLog",

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using OpenReservation.Database;
 using OpenReservation.Models;
 using OpenReservation.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using WeihanLi.Common.Helpers;
 
 namespace OpenReservation.API.Test
 {
@@ -20,30 +19,8 @@ namespace OpenReservation.API.Test
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
                 dbContext.Database.EnsureCreated();
-                if (!dbContext.Users.AsNoTracking().Any())
+                if (!dbContext.SystemSettings.AsNoTracking().Any())
                 {
-                    dbContext.Users.Add(new User
-                    {
-                        UserId = Guid.NewGuid(),
-                        UserName = "admin",
-                        UserPassword = SecurityHelper.SHA256("Admin888"),
-                        IsSuper = true
-                    });
-                    dbContext.Users.Add(new User
-                    {
-                        UserId = Guid.NewGuid(),
-                        UserName = "Alice",
-                        UserPassword = SecurityHelper.SHA256("Test1234"),
-                        IsSuper = false
-                    });
-                    dbContext.Users.Add(new User
-                    {
-                        UserId = Guid.NewGuid(),
-                        UserName = "test",
-                        UserPassword = SecurityHelper.SHA256("Test1234"),
-                        IsSuper = false
-                    });
-
                     var blockTypes = new List<BlockType>
                     {
                         new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
