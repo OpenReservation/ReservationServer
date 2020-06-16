@@ -2,18 +2,11 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using OpenReservation.AuditEnrichers;
-using OpenReservation.Common;
-using OpenReservation.Database;
-using OpenReservation.Events;
-using OpenReservation.Extensions;
-using OpenReservation.Helpers;
-using OpenReservation.Services;
-using OpenReservation.ViewModels;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
@@ -28,8 +21,18 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using OpenReservation.AuditEnrichers;
+using OpenReservation.Common;
+using OpenReservation.Database;
+using OpenReservation.Events;
+using OpenReservation.Extensions;
+using OpenReservation.Helpers;
+using OpenReservation.Models;
+using OpenReservation.Services;
+using OpenReservation.ViewModels;
 using Serilog;
 using StackExchange.Redis;
 using WeihanLi.Common;
@@ -46,8 +49,6 @@ using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 using WeihanLi.Web.Middleware;
-using OpenReservation.Models;
-using Microsoft.OpenApi.Models;
 
 namespace OpenReservation
 {
@@ -221,6 +222,7 @@ namespace OpenReservation
                 options.AddPolicy("ReservationApi", builder => builder
                     .AddAuthenticationSchemes(IdentityServerAuthenticationDefaults.AuthenticationScheme)
                     .RequireAuthenticatedUser()
+                    .RequireScope("ReservationApi")
                 );
             });
 
@@ -311,7 +313,7 @@ namespace OpenReservation
                 });
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    { 
+                    {
                         new OpenApiSecurityScheme
                         {
                             Reference = new OpenApiReference()
@@ -319,7 +321,7 @@ namespace OpenReservation
                                 Id = "Bearer",
                                 Type = ReferenceType.SecurityScheme
                             }
-                        }, Array.Empty<string>() 
+                        }, Array.Empty<string>()
                     }
                 });
             });
@@ -540,7 +542,7 @@ namespace OpenReservation
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
                 .HasColumnOutputFormatter(status => status.GetDescription())
-                .HasColumnIndex(8);            
+                .HasColumnIndex(8);
         }
     }
 }
