@@ -308,7 +308,7 @@ namespace OpenReservation
                     var user = context?.User;
                     if (null != user && user.Identity.IsAuthenticated)
                     {
-                        return $"{user.GetUserId<string>()}--{user.Identity.Name}";
+                        return $"{user.GetUserId()}--{user.Identity.Name}";
                     }
 
                     var userIp = context?.GetUserIP();
