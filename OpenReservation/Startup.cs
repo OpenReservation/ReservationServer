@@ -47,6 +47,7 @@ using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 using WeihanLi.Web.Middleware;
 using OpenReservation.Models;
+using Microsoft.OpenApi.Models;
 
 namespace OpenReservation
 {
@@ -300,6 +301,27 @@ namespace OpenReservation
 
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Models.Notice).Assembly.GetName().Name}.xml"));
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
+                // Add security definitions
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Description = "Please enter into field the word 'Bearer' followed by a space and the JWT value",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { 
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference()
+                            {
+                                Id = "Bearer",
+                                Type = ReferenceType.SecurityScheme
+                            }
+                        }, Array.Empty<string>() 
+                    }
+                });
             });
 
             services.AddHttpContextUserIdProvider(options =>
@@ -518,7 +540,7 @@ namespace OpenReservation
             settings.Property(r => r.ReservationStatus)
                 .HasColumnTitle("审核状态")
                 .HasColumnOutputFormatter(status => status.GetDescription())
-                .HasColumnIndex(8);
+                .HasColumnIndex(8);            
         }
     }
 }
