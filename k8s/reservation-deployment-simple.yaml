@@ -28,7 +28,7 @@ spec:
             value: "1"
       containers:        
         - name: reservation-server
-          image: weihanli/openreservation:dev
+          image: openreservation/reservation-server:dev
           imagePullPolicy: Always
           resources:
             limits:

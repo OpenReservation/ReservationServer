@@ -16,11 +16,11 @@ pool:
 
 variables:
   tagName: '$(Build.BuildNumber)'
-  repoName: 'open-reservation'
-  stableImageName: '$(dockerId)/$(repoName):stable'
-  latestImageName: '$(dockerId)/$(repoName):latest'
-  branchImageName: '$(dockerId)/$(repoName):$(Build.SourceBranchName)'
-  imageName: '$(dockerId)/$(repoName):$(tagName)'
+  repoName: 'reservation-server'
+  stableImageName: 'openreservation/$(repoName):stable'
+  latestImageName: 'openreservation/$(repoName):latest'
+  branchImageName: 'openreservation/$(repoName):$(Build.SourceBranchName)'
+  imageName: 'openreservation/$(repoName):$(tagName)'
 
 steps:
 - task: UseDotNet@2
