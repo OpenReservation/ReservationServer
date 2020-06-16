@@ -46,6 +46,7 @@ using WeihanLi.Npoi;
 using WeihanLi.Redis;
 using WeihanLi.Web.Extensions;
 using WeihanLi.Web.Middleware;
+using OpenReservation.Models;
 
 namespace OpenReservation
 {
@@ -467,10 +468,10 @@ namespace OpenReservation
             AuditConfig.Configure(builder =>
             {
                 builder
-                    .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName),
-                        ApplicationHelper.ApplicationName)
+                    .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName), ApplicationHelper.ApplicationName)
                     .EnrichWithProperty("Host", Environment.MachineName)
                     .WithUserIdProvider(userIdProvider)
+                    .IgnoreEntity<OperationLog>()
                     .WithHttpContextInfo(applicationBuilder.ApplicationServices.GetRequiredService<IHttpContextAccessor>())
                     ;
             });
