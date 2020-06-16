@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
@@ -182,10 +182,10 @@ namespace OpenReservation.AdminLogic.Controllers
             try
             {
                 var bStatus = (status > 0);
-                if(bStatus)
+                if (bStatus)
                 {
                     // 验证是否有可用的预约时间段
-                    if(!_reservationPeriodHelper.Exist(p=>p.PlaceId == placeId))
+                    if (!_reservationPeriodHelper.Exist(p => p.PlaceId == placeId))
                     {
                         return Json("没有可用的预约时间段，不可修改为已启用，请先添加预约时间段");
                     }
@@ -318,7 +318,9 @@ namespace OpenReservation.AdminLogic.Controllers
             {
                 return Json("预约时间段不能为空");
             }
-            if (!_reservationPeriodHelper.Exist(p => p.PeriodId == periodId))
+
+            var period = _reservationPeriodHelper.Fetch(p => p.PeriodId == periodId);
+            if (period is null)
             {
                 return Json("预约时间段不存在");
             }
@@ -326,6 +328,19 @@ namespace OpenReservation.AdminLogic.Controllers
             var result = _reservationPeriodHelper.Update(new ReservationPeriod() { PeriodId = periodId, IsDeleted = true }, p => p.IsDeleted);
             if (result > 0)
             {
+                if (!_reservationPeriodHelper.Exist(x => x.PlaceId == period.PlaceId))
+                {
+                    // no valid period for place, disable place
+                    _reservationPlaceHelper.Update(
+                        new ReservationPlace()
+                        {
+                            PlaceId = period.PlaceId,
+                            IsActive = false,
+                            UpdateTime = DateTime.UtcNow,
+                            UpdateBy = UserName
+                        }, p => p.IsActive, p => p.UpdateTime, p => p.UpdateBy);
+                }
+
                 OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, UserName);
             }
             return Json(result > 0 ? "" : "删除失败");
