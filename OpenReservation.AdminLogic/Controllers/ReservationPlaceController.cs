@@ -163,7 +163,7 @@ namespace OpenReservation.AdminLogic.Controllers
         }
 
         /// <summary>
-        /// 删除活动室
+        /// 更新活动室状态
         /// </summary>
         /// <param name="placeId"> 活动室id </param>
         /// <param name="placeName"> 活动室名称 </param>
@@ -182,6 +182,15 @@ namespace OpenReservation.AdminLogic.Controllers
             try
             {
                 var bStatus = (status > 0);
+                if(bStatus)
+                {
+                    // 验证是否有可用的预约时间段
+                    if(!_reservationPeriodHelper.Exist(p=>p.PlaceId == placeId))
+                    {
+                        return Json("没有可用的预约时间段，不可修改为已启用，请先添加预约时间段");
+                    }
+                }
+
                 _reservationPlaceHelper.Update(
                     new ReservationPlace()
                     {
