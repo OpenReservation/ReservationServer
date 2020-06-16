@@ -1,7 +1,7 @@
 apiVersion: v2
 name: reservation-client
 description: reservation-angular-client Helm chart for Kubernetes
-icon: https://raw.githubusercontent.com/WeihanLi/OpenReservation/dev/OpenReservation/wwwroot/favicon.ico
+icon: https://raw.githubusercontent.com/OpenReservation/ReservationServer/dev/OpenReservation/wwwroot/favicon.ico
 home: https://reservation-client.weihanli.xyz
 keywords:
   - reservation
