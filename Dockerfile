@@ -6,6 +6,9 @@ RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/a
 # https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
 
+EXPOSE 80
+LABEL Maintainer="WeihanLi"
+
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build-env
 WORKDIR /src
 
@@ -25,9 +28,7 @@ RUN dotnet publish -c Release -o out OpenReservation/OpenReservation.csproj
 # build runtime image
 FROM base AS final
 
-LABEL Maintainer="WeihanLi"
 WORKDIR /app
 COPY --from=build-env /src/OpenReservation/out .
 
-EXPOSE 80
 ENTRYPOINT ["dotnet", "OpenReservation.dll"]
