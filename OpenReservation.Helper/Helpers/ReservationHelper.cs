@@ -20,6 +20,11 @@ namespace OpenReservation.Helpers
         /// </summary>
         private const int MaxReservationDiffDays = 7;
 
+        /// <summary>
+        /// 最多可预约次数/每天
+        /// </summary>
+        private const int MaxReservationCount = 3;
+
         private readonly IBLLReservationPeriod _bllReservationPeriod;
         private readonly IBLLReservation _bllReservation;
         private readonly IBLLDisabledPeriod _bllDisabledPeriod;
@@ -203,7 +208,7 @@ namespace OpenReservation.Helpers
                         if (_bllReservation.Count(r =>
                             r.ReservedBy == userId &&
                             r.ReservationTime.AddHours(8).Date == DateTime.UtcNow.AddHours(8).Date
-                        ) >= 3)
+                        ) >= MaxReservationCount)
                         {
                             msg = "今日预约已达上限，请明日再约";
                             return false;
