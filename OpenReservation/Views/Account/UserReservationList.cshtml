@@ -1,39 +1,42 @@
 ﻿@using OpenReservation.Models
+@using OpenReservation.ViewModels
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<ReservationListViewModel> Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
 @model IPagedListModel<OpenReservation.ViewModels.ReservationListViewModel>
 @{
     Layout = null;
 }
-@if (Model.Data.Count > 0)
+@if (Model.Data != null && Model.Data.Count > 0)
 {
     <table class="table table-hover">
         <thead>
             <tr>
-                <th>活动室名称</th>
-                <th>预约使用日期</th>
-                <th>预约使用时间</th>
-                <th>预约单位</th>
-                <th>活动内容</th>
-                <th>预约人姓名</th>
-                <th>预约人联系方式</th>
-                <th>预约时间</th>
-                <th>审核状态</th>
-                <th>操作</th>
+                <th>@Localizer["ReservationPlaceName"]</th>
+                <th>@Localizer["ReservationForDate"]</th>
+                <th>@Localizer["ReservationForTime"]</th>
+                <th>@Localizer["ReservationUnit"]</th>
+                <th>@Localizer["ReservationActivityContent"]</th>
+                <th>@Localizer["ReservationPersonName"]</th>
+                <th>@Localizer["ReservationPersonPhone"]</th>
+                <th>@Localizer["ReservationTime"]</th>
+                <th>@Localizer["ReservationStatus"]</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.Data)
             {
-                string status = "待审核", className = "";
+                string status = @SharedLocalizer[$"ReservationStatus_{item.ReservationStatus}"], className = "";
                 switch ((int)item.ReservationStatus)
                 {
                     case 0:
+                        className = "";
                         break;
                     case 1:
-                        status = "审核通过";
                         className = "bg-success";
                         break;
                     case 2:
-                        status = "审核未通过";
                         className = "bg-danger";
                         break;
                     default:
@@ -68,26 +71,14 @@
                         @Html.Raw(status)
                     </td>
                     <td>
-                        <button class="btn btn-danger" onclick="DeleteReservation('@item.ReservationId')">删除</button>
-                        @if (item.ReservationStatus == 0)
-                        {
-                            <button onclick="UpdateStatus('@item.ReservationId', 1)" class="btn btn-success">通过</button>
-                            <button onclick="UpdateStatus('@item.ReservationId', -1)" class="btn btn-warning">不通过</button>
-                        }
                         @if (item.ReservationStatus == ReservationStatus.Reviewed)
                         {
-                            <button class="btn btn-default" onclick="ViewReservation('@item.ReservationId', '@item.ReservationPersonPhone')">打印</button>
+                            <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
                         }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    @Html.Pager(Model.Pager, pageIndex => $"javascript:loadData({pageIndex})", "PagerPartial", PagingDisplayMode.IfNeeded)
 }
-else
-{
-    <div class="nodata-tip">
-        暂时没有数据.
-    </div>
-}
+@Html.Pager(Model.Pager, pageIndex => $"javascript:loadData({pageIndex})", "PagerPartial", PagingDisplayMode.IfNeeded)

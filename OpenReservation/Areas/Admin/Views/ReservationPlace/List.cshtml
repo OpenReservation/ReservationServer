@@ -26,7 +26,7 @@
                         @item.PlaceName
                     </td>
                     <td>
-                        @item.UpdateTime.ToString("yyyy-MM-dd HH:mm:ss")
+                        @item.UpdateTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss")
                     </td>
                     <td>
                         @if (item.IsActive)
@@ -54,7 +54,7 @@
             }
         </tbody>
     </table>
-    @Html.Pager(Model.Pager, pageIndex => String.Format("javascript:loadData({0})", pageIndex), "PagerPartial", PagingDisplayMode.IfNeeded)
+    @Html.Pager(Model.Pager, pageIndex => $"javascript:loadData({pageIndex})", "PagerPartial", PagingDisplayMode.IfNeeded)
 }
 else
 {

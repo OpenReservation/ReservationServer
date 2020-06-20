@@ -134,7 +134,7 @@ namespace OpenReservation.API
             {
                 pageSize = 10;
             }
-            var userId = User.GetUserId<Guid>("sub");
+            var userId = User.GetUserId<Guid>();
             Expression<Func<Reservation, bool>> predict = n => n.ReservedBy == userId;
             var result = await _repository.GetPagedListResultAsync(
                 x => new ReservationListViewModel

@@ -206,7 +206,7 @@ namespace OpenReservation.Helpers
                         ReservationPersonPhone = reservation.ReservationPersonPhone,
                         ReservationFromIp = context.GetUserIP(),
 
-                        ReservedBy = context.User.GetUserId<Guid>("sub"),
+                        ReservedBy = context.User.GetUserId<Guid>(),
 
                         UpdateBy = reservation.ReservationPersonName,
                         UpdateTime = DateTime.UtcNow,
