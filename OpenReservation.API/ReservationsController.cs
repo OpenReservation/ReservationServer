@@ -15,6 +15,7 @@ using OpenReservation.ViewModels;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Models;
 using WeihanLi.EntityFramework;
+using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 
 namespace OpenReservation.API
@@ -38,10 +39,11 @@ namespace OpenReservation.API
         [HttpGet]
         public async Task<IActionResult> GetAsync(string phone, int pageNumber = 1, int pageSize = 10)
         {
-            Expression<Func<Reservation, bool>> predict = n => true;
+            Expression<Func<Reservation, bool>> predict = n => n.ReservationStatus != ReservationStatus.Canceled;
             if (!string.IsNullOrWhiteSpace(phone))
             {
-                predict = n => n.ReservationPersonPhone == phone.Trim();
+                phone = phone.Trim();
+                predict = predict.And(n => n.ReservationPersonPhone == phone);
             }
 
             var result = await _repository.GetPagedListResultAsync(
@@ -117,6 +119,35 @@ namespace OpenReservation.API
             }
 
             return Ok(detail);
+        }
+
+        /// <summary>
+        /// 取消预约
+        /// </summary>
+        /// <param name="id">id</param>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> CancelReservation(Guid id)
+        {
+            var userId = User.GetUserId<Guid>();
+            if (userId == Guid.Empty)
+                return Unauthorized();
+
+            var exists = await _repository.ExistAsync(x => x.ReservationId == id && x.ReservedBy == userId);
+            if (!exists)
+            {
+                return NotFound();
+            }
+
+            var result = await _repository.UpdateAsync(
+                new Reservation() { ReservationId = id, ReservationStatus = ReservationStatus.Canceled, },
+                r => r.ReservationStatus);
+
+            return new ResultModel()
+            {
+                Status = result > 0
+                    ? ResultStatus.Success
+                    : ResultStatus.ProcessFail,
+            }.GetOkObjectResult();
         }
 
         /// <summary>

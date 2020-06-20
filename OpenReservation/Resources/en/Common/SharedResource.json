@@ -5,5 +5,6 @@
   "LoadDataException": "loading data exception, please retry later",
   "ReservationStatus_UnReviewed": "UnReviewed",
   "ReservationStatus_Reviewed": "Reviewed",
-  "ReservationStatus_Rejected": "Rejected"
+  "ReservationStatus_Rejected": "Rejected",
+  "ReservationStatus_Canceled": "Canceled"
 }

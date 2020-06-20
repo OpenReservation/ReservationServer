@@ -70,6 +70,7 @@ namespace OpenReservation.Models
         /// 0：待审核
         /// 1：审核通过
         /// 2：审核不通过
+        /// 3: 已取消
         /// </summary>
         [Column]
         public ReservationStatus ReservationStatus { get; set; }
@@ -147,5 +148,11 @@ namespace OpenReservation.Models
         /// </summary>
         [Description("已删除")]
         Deleted = 3,
+
+        /// <summary>
+        /// 已取消
+        /// </summary>
+        [Description("已取消")]
+        Canceled = 4,
     }
 }

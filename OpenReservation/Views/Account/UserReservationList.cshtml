@@ -28,16 +28,19 @@
             @foreach (var item in Model.Data)
             {
                 string status = @SharedLocalizer[$"ReservationStatus_{item.ReservationStatus}"], className = "";
-                switch ((int)item.ReservationStatus)
+                switch (item.ReservationStatus)
                 {
-                    case 0:
+                    case ReservationStatus.UnReviewed:
                         className = "";
                         break;
-                    case 1:
+                    case ReservationStatus.Reviewed:
                         className = "bg-success";
                         break;
-                    case 2:
+                    case ReservationStatus.Rejected:
                         className = "bg-danger";
+                        break;
+                    case ReservationStatus.Canceled:
+                        className = "bg-warning";
                         break;
                     default:
                         break;

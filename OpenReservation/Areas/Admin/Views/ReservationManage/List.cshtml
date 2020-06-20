@@ -24,17 +24,21 @@
             @foreach (var item in Model.Data)
             {
                 string status = "待审核", className = "";
-                switch ((int)item.ReservationStatus)
+                switch (item.ReservationStatus)
                 {
-                    case 0:
+                    case ReservationStatus.UnReviewed:
                         break;
-                    case 1:
+                    case ReservationStatus.Reviewed:
                         status = "审核通过";
                         className = "bg-success";
                         break;
-                    case 2:
+                    case ReservationStatus.Rejected:
                         status = "审核未通过";
                         className = "bg-danger";
+                        break;
+                    case ReservationStatus.Canceled:
+                        className = "bg-warning";
+                        status = "已取消";
                         break;
                     default:
                         break;
@@ -69,7 +73,7 @@
                     </td>
                     <td>
                         <button class="btn btn-danger" onclick="DeleteReservation('@item.ReservationId')">删除</button>
-                        @if (item.ReservationStatus == 0)
+                        @if (item.ReservationStatus == ReservationStatus.UnReviewed)
                         {
                             <button onclick="UpdateStatus('@item.ReservationId', 1)" class="btn btn-success">通过</button>
                             <button onclick="UpdateStatus('@item.ReservationId', -1)" class="btn btn-warning">不通过</button>

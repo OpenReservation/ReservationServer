@@ -45,7 +45,9 @@ namespace OpenReservation.Helpers
             var reservationList = _bllReservation.Select(r =>
                 r.ReservationForDate == dt
                 && r.ReservationPlaceId == placeId
-                && r.ReservationStatus != ReservationStatus.Rejected);
+                && r.ReservationStatus != ReservationStatus.Rejected
+                && r.ReservationStatus != ReservationStatus.Canceled
+                );
 
             var reservationPeriod = _bllReservationPeriod
                 .Select(_ => _.PlaceId == placeId)

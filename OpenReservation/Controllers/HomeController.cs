@@ -58,14 +58,14 @@ namespace OpenReservation.Controllers
         /// <returns></returns>
         public ActionResult ReservationList(SearchHelperModel search)
         {
-            Expression<Func<Reservation, bool>> whereLambda = (m => true);
+            Expression<Func<Reservation, bool>> whereLambda = (m => m.ReservationStatus != ReservationStatus.Canceled);
             if (!string.IsNullOrWhiteSpace(search.SearchItem0) && DateTime.TryParse(search.SearchItem0, out var date))
             {
-                whereLambda = m => m.ReservationForDate == date.Date;
+                whereLambda = whereLambda.And(m => m.ReservationForDate == date.Date);
             }
             if (!string.IsNullOrWhiteSpace(search.SearchItem1))
             {
-                whereLambda = m => m.ReservationPersonPhone == search.SearchItem1.Trim();
+                whereLambda = whereLambda.And(m => m.ReservationPersonPhone == search.SearchItem1.Trim());
             }
             //load data
             var list = _reservationBLL.GetPagedListResult(
