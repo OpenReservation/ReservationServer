@@ -73,7 +73,7 @@
                     <td>
                         @if (item.ReservationStatus == ReservationStatus.Reviewed)
                         {
-                            <button type="button" class="btn btn-default" onclick="view('@item.ReservationId')">查看</button>
+                            <button type="button" class="btn btn-default" onclick="view('@item.ReservationId', '@item.ReservationPersonPhone')">查看</button>
                         }
                     </td>
                 </tr>
