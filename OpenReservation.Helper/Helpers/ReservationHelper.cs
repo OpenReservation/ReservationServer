@@ -196,6 +196,20 @@ namespace OpenReservation.Helpers
                     }
 
                     var context = DependencyResolver.ResolveService<IHttpContextAccessor>().HttpContext;
+                    var userId = context.User.GetUserId<Guid>();
+
+                    if (!isAdmin)
+                    {
+                        if (_bllReservation.Count(r =>
+                            r.ReservedBy == userId &&
+                            r.ReservationTime.AddHours(8).Date == DateTime.UtcNow.AddHours(8).Date
+                        ) >= 3)
+                        {
+                            msg = "今日预约已达上限，请明日再约";
+                            return false;
+                        }
+                    }
+
                     var reservationEntity = new Reservation()
                     {
                         ReservationForDate = reservation.ReservationForDate,
@@ -208,9 +222,10 @@ namespace OpenReservation.Helpers
                         ReservationPersonPhone = reservation.ReservationPersonPhone,
                         ReservationFromIp = context.GetUserIP(),
 
-                        ReservedBy = context.User.GetUserId<Guid>(),
+                        ReservedBy = userId,
 
                         UpdateBy = reservation.ReservationPersonName,
+                        ReservationTime = DateTime.UtcNow,
                         UpdateTime = DateTime.UtcNow,
                         ReservationId = Guid.NewGuid()
                     };

@@ -35,7 +35,7 @@ namespace OpenReservation.Models
         /// 预约时间
         /// </summary>
         [Column]
-        public DateTime ReservationTime { get; set; } = DateTime.UtcNow;
+        public DateTime ReservationTime { get; set; }
 
         /// <summary>
         /// 预约使用时间
