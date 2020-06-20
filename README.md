@@ -63,7 +63,7 @@ appveyor => travis => Azure Pipeline
 - [x] 多语言支持
 - [x] 用户系统（需要登录才能预约，登录支持 Github 登录）
 - [x] 我的预约记录
-- [ ] 取消预约
+- [x] 取消预约
 - [ ] 更通用的预约流程，待优化
 
 ### 4.0
@@ -74,3 +74,4 @@ appveyor => travis => Azure Pipeline
 ## Contact
 
 Contact me if you need: <weihanli@outlook.com>
+
