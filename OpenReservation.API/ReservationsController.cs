@@ -126,6 +126,7 @@ namespace OpenReservation.API
         /// </summary>
         /// <param name="id">id</param>
         [HttpDelete("{id}")]
+        [Authorize(Policy = "ReservationApi")]
         public async Task<IActionResult> CancelReservation(Guid id)
         {
             var userId = User.GetUserId<Guid>();
