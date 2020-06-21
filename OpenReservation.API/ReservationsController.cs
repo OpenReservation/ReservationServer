@@ -138,7 +138,7 @@ namespace OpenReservation.API
             && x.ReservationForDate > DateTime.UtcNow.AddHours(8).Date);
             if (!exists)
             {
-                return Forbid();
+                return new StatusCodeResult(403);
             }
 
             var result = await _repository.UpdateAsync(
