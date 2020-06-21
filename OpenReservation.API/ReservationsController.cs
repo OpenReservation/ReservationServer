@@ -140,7 +140,10 @@ namespace OpenReservation.API
             }
 
             var result = await _repository.UpdateAsync(
-                new Reservation() { ReservationId = id, ReservationStatus = ReservationStatus.Canceled, },
+                new Reservation() { 
+                    ReservationId = id, 
+                    ReservationStatus = ReservationStatus.Canceled, 
+                },
                 r => r.ReservationStatus);
 
             return new ResultModel()
@@ -156,6 +159,7 @@ namespace OpenReservation.API
         /// </summary>
         [Authorize(Policy = "ReservationApi")]
         [HttpGet("user")]
+        [ResponseCache(CacheProfileName = "noCache")]
         public async Task<IActionResult> GetUserReservations(int pageNumber = 1, int pageSize = 10)
         {
             if (pageNumber <= 0)
