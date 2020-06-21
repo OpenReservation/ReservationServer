@@ -133,10 +133,12 @@ namespace OpenReservation.API
             if (userId == Guid.Empty)
                 return Unauthorized();
 
-            var exists = await _repository.ExistAsync(x => x.ReservationId == id && x.ReservedBy == userId);
+            var exists = await _repository.ExistAsync(x => x.ReservationId == id 
+            && x.ReservedBy == userId
+            && x.ReservationForDate > DateTime.UtcNow.AddHours(8).Date);
             if (!exists)
             {
-                return NotFound();
+                return Forbid();
             }
 
             var result = await _repository.UpdateAsync(
