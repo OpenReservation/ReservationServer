@@ -131,7 +131,7 @@ namespace OpenReservation.API
         {
             var userId = User.GetUserId<Guid>();
             if (userId == Guid.Empty)
-                return Unauthorized();
+                return new StatusCodeResult(401);
 
             var exists = await _repository.ExistAsync(x => x.ReservationId == id 
             && x.ReservedBy == userId
