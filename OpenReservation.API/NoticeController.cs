@@ -16,6 +16,9 @@ using WeihanLi.Redis;
 
 namespace OpenReservation.API
 {
+    /// <summary>
+    /// 公告 API
+    /// </summary>
     public class NoticeController : ApiControllerBase
     {
         private readonly IEFRepository<ReservationDbContext, Notice> _repository;
