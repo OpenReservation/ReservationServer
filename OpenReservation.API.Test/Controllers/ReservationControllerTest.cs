@@ -23,7 +23,7 @@ namespace OpenReservation.API.Test.Controllers
             using var response = await Client.GetAsync("/api/reservations");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var responseString = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<PagedListModel<ReservationListViewModel>>(responseString);
+            var result = JsonConvert.DeserializeObject<PagedListResult<ReservationListViewModel>>(responseString);
             Assert.NotNull(result);
         }
 

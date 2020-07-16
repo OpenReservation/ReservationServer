@@ -20,7 +20,7 @@ namespace OpenReservation.API.Test.Controllers
             {
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 var responseString = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<PagedListModel<Notice>>(responseString);
+                var result = JsonConvert.DeserializeObject<PagedListResult<Notice>>(responseString);
                 Assert.NotNull(result);
             }
         }

@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WeihanLi.EntityFramework" Version="1.8.0" />
+    <PackageReference Include="WeihanLi.EntityFramework" Version="1.9.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj">
