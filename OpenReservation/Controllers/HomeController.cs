@@ -56,7 +56,7 @@ namespace OpenReservation.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        public ActionResult ReservationList(SearchHelperModel search)
+        public async Task<ActionResult> ReservationList(SearchHelperModel search)
         {
             Expression<Func<Reservation, bool>> whereLambda = (m => m.ReservationStatus != ReservationStatus.Canceled);
             if (!string.IsNullOrWhiteSpace(search.SearchItem0) && DateTime.TryParse(search.SearchItem0, out var date))
@@ -68,7 +68,7 @@ namespace OpenReservation.Controllers
                 whereLambda = whereLambda.And(m => m.ReservationPersonPhone == search.SearchItem1.Trim());
             }
             //load data
-            var list = _reservationBLL.GetPagedListResult(
+            var list = await _reservationBLL.GetPagedListResultAsync(
                 x => new ReservationListViewModel
                 {
                     ReservationForDate = x.ReservationForDate,
@@ -114,7 +114,8 @@ namespace OpenReservation.Controllers
         /// <returns></returns>
         public ActionResult IsReservationForDateValid(DateTime reservationForDate)
         {
-            var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailable(reservationForDate, false, out var msg);
+            var isValid = HttpContext.RequestServices.GetService<ReservationHelper>()
+                .IsReservationForDateAvailable(reservationForDate, false, out var msg);
             if (isValid)
             {
                 return Json(ResultModel.Success(true));
@@ -226,7 +227,7 @@ namespace OpenReservation.Controllers
         /// 公告列表
         /// </summary>
         /// <returns></returns>
-        public ActionResult NoticeList(SearchHelperModel search, [FromServices] IBLLNotice noticeService)
+        public async Task<ActionResult> NoticeList(SearchHelperModel search, [FromServices] IBLLNotice noticeService)
         {
             Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
             if (!string.IsNullOrEmpty(search.SearchItem1))
@@ -235,7 +236,7 @@ namespace OpenReservation.Controllers
             }
             try
             {
-                var noticeList = noticeService.Paged(search.PageIndex, search.PageSize, whereLamdba,
+                var noticeList = await noticeService.PagedAsync(search.PageIndex, search.PageSize, whereLamdba,
                     n => n.NoticePublishTime, false);
                 var data = noticeList.ToPagedList();
                 return View(data);
@@ -243,7 +244,7 @@ namespace OpenReservation.Controllers
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                throw;
+                return View(PagedListResult<Notice>.Empty.ToPagedList());
             }
         }
 

@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using OpenReservation.Database;
-using OpenReservation.Helpers;
-using OpenReservation.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenReservation.Database;
+using OpenReservation.Helpers;
+using OpenReservation.Models;
 using WeihanLi.EntityFramework;
 
 namespace OpenReservation.API
@@ -36,8 +36,11 @@ namespace OpenReservation.API
                 p.PlaceId,
                 p.MaxReservationPeriodNum
             }, builder => builder
-         .WithPredict(x => x.IsActive)
-         .WithOrderBy(x => x.OrderBy(_ => _.PlaceIndex).ThenBy(_ => _.UpdateTime)), cancellationToken);
+             .WithPredict(x => x.IsActive)
+             .WithOrderBy(x => x
+                 .OrderBy(_ => _.PlaceIndex)
+                 .ThenBy(_ => _.UpdateTime)),
+                cancellationToken);
             return Ok(result);
         }
 

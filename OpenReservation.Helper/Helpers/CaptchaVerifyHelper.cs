@@ -1,9 +1,8 @@
 ﻿using System;
-using OpenReservation.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using OpenReservation.Common;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
@@ -47,7 +46,7 @@ namespace OpenReservation.Helpers
                 {
                     try
                     {
-                        var request = JsonConvert.DeserializeObject<TencentCaptchaRequest>(captchaInfo);
+                        var request = captchaInfo.JsonToObject<TencentCaptchaRequest>();
                         if (request.UserIP.IsNullOrWhiteSpace())
                         {
                             request.UserIP = DependencyResolver.Current.GetRequiredService<IHttpContextAccessor>()

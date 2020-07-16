@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using OpenReservation.Database;
 using OpenReservation.Events;
 using OpenReservation.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
@@ -38,7 +37,7 @@ namespace OpenReservation.API
         [HttpGet]
         public async Task<IActionResult> GetAsync(string keyword, int pageNumber = 1, int pageSize = 10)
         {
-            Expression<Func<Notice, bool>> predict = ExpressionHelper.True<Notice>();
+            var predict = ExpressionHelper.True<Notice>();
             if (!string.IsNullOrWhiteSpace(keyword))
             {
                 keyword = keyword.Trim();
@@ -68,7 +67,7 @@ namespace OpenReservation.API
         /// <returns></returns>
         [HttpGet("{path}")]
         [ResponseCache(CacheProfileName = "noCache")]
-        public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices]IEventBus eventBus, [FromServices]ICacheClient cacheClient)
+        public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices] IEventBus eventBus, [FromServices] ICacheClient cacheClient)
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -77,7 +76,7 @@ namespace OpenReservation.API
             var notice = await cacheClient.GetOrSetAsync(
                 $"Notice_{path.Trim()}",
                 () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
-                TimeSpan.FromHours(1));
+                TimeSpan.FromMinutes(3));
 
             if (notice == null)
             {
