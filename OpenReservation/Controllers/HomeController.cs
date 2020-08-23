@@ -205,6 +205,10 @@ namespace OpenReservation.Controllers
                 return Content("请求异常，请验证手机号");
             }
             var r = _reservationBLL.Fetch(re => re.ReservationId == id);
+            if (null == r)
+            {
+                return Content("请求异常，预约不存在");
+            }
             if (r.ReservationPersonPhone != phone.Trim())
             {
                 return Content("请求异常，或者手机号输入有误");
