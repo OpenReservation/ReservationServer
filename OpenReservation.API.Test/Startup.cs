@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Net.Http;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using OpenReservation.API.Test.MockServices;
@@ -11,25 +15,41 @@ using OpenReservation.Common;
 using OpenReservation.Database;
 using OpenReservation.Events;
 using OpenReservation.Services;
-using WeihanLi.Common;
 using WeihanLi.Common.Event;
+using WeihanLi.Common.Helpers;
 using WeihanLi.Redis;
 using WeihanLi.Web.Authentication;
 using WeihanLi.Web.Authentication.HeaderAuthentication;
 
 namespace OpenReservation.API.Test
 {
-    public class TestStartup
+    public class Startup
     {
-        public TestStartup(IConfiguration configuration)
+        public void ConfigureHost(IHostBuilder hostBuilder)
         {
-            Configuration = configuration;
+            var baseUrl = $"http://localhost:{NetHelper.GetRandomPort()}";
+
+            hostBuilder
+                .ConfigureWebHostDefaults(builder =>
+                {
+                    builder.UseUrls(baseUrl);
+                    builder.ConfigureServices((context, services) =>
+                    {
+                        services.TryAddSingleton<APITestFixture>();
+                        services.TryAddSingleton(new HttpClient()
+                        {
+                            BaseAddress = new Uri(baseUrl)
+                        });
+
+                        ConfigureServices(services, context.Configuration);
+                    });
+                    builder.Configure(Configure);
+                })
+                ;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        private void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddResponseCaching();
 
@@ -64,11 +84,11 @@ namespace OpenReservation.API.Test
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));
 
-            services.AddGoogleRecaptchaHelper(Configuration.GetSection("GoogleRecaptcha"));
+            services.AddGoogleRecaptchaHelper(configuration.GetSection("GoogleRecaptcha"));
             services.AddTencentCaptchaHelper(options =>
             {
-                options.AppId = Configuration["Tencent:Captcha:AppId"];
-                options.AppSecret = Configuration["Tencent:Captcha:AppSecret"];
+                options.AppId = configuration["Tencent:Captcha:AppId"];
+                options.AppSecret = configuration["Tencent:Captcha:AppSecret"];
             });
 
             // registerApplicationSettingService
@@ -96,19 +116,15 @@ namespace OpenReservation.API.Test
             {
                 options.AddPolicy("ReservationApi", builder => builder.RequireAuthenticatedUser());
             });
-
-            // SetDependencyResolver
-            DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        private void Configure(IApplicationBuilder app)
         {
             app.UseResponseCaching();
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             app.UseAuthentication();
             app.UseAuthorization();
 
