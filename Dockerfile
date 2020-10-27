@@ -5,6 +5,7 @@ RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/a
     apk add --no-cache icu-libs
 # https://www.abhith.net/blog/docker-sql-error-on-aspnet-core-alpine/
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT false
+ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 
 EXPOSE 80
 LABEL Maintainer="WeihanLi"
