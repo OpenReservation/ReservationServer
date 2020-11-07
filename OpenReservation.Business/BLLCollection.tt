@@ -3,7 +3,6 @@
 <#@ Assembly Name="System.Core" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Collections" #>
-<#@ import namespace="System.Collections.Generic" #> 
 <#
 	string[] types = {
 		"BlockType",
@@ -19,8 +18,6 @@
 #>
 using OpenReservation.Database;
 using OpenReservation.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.EntityFramework;
 
 namespace OpenReservation.Business
@@ -40,20 +37,4 @@ namespace OpenReservation.Business
 <#		 
     } 
 #>
-
-    public static class BusinessExtensions
-    {
-        public static IServiceCollection AddBLL(this IServiceCollection services)
-        {
-<# 
-            foreach (var item in types)
-            {
-#>
-                services.TryAddScoped<IBLL<#= item #>, BLL<#= item #>>();
-<#		 
-            }
-#>
-            return services;
-        }
-    }
 }

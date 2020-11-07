@@ -103,7 +103,7 @@ namespace OpenReservation
                 })
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization()
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+                ;
 
             var supportedCultureNames = Configuration.GetSection("Localization:SupportedCultures")?.Get<string[]>();
             if (supportedCultureNames == null || supportedCultureNames.Length == 0)
@@ -232,17 +232,14 @@ namespace OpenReservation
                 .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
                 ;
 
-            services.TryAddSingleton<NoProxyHttpClientHandler>();
-
+            services.TryAddTransient<NoProxyHttpClientHandler>();
             services.AddHttpClient<ChatBotHelper>(client =>
                 {
                     client.Timeout = TimeSpan.FromSeconds(5);
-                })
-                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+                });
             services.TryAddSingleton<ChatBotHelper>();
 
-            services.AddHttpClient<WechatAPI.Helper.WeChatHelper>()
-                .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+            services.AddHttpClient<WechatAPI.Helper.WeChatHelper>();
             services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
 
             services.AddRedisConfig(options =>
@@ -276,17 +273,17 @@ namespace OpenReservation
 
                 options.OnException = (context, logger, exception) =>
                 {
-                    if (exception is TaskCanceledException || exception is OperationCanceledException)
-                    {
-                        return Task.CompletedTask;
-                    }
+                    var ex = exception;
                     if (exception is AggregateException aggregateException)
                     {
-                        var ex = aggregateException.Unwrap();
-                        if (ex is TaskCanceledException || ex is OperationCanceledException)
-                        {
-                            return Task.CompletedTask;
-                        }
+                        ex = aggregateException.Unwrap();
+                    }
+
+                    if (context.RequestAborted.IsCancellationRequested && (
+                        ex is TaskCanceledException || ex is OperationCanceledException)
+                        )
+                    {
+                        return Task.CompletedTask;
                     }
 
                     logger.LogError(exception, exception.Message);
@@ -299,9 +296,9 @@ namespace OpenReservation
 
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc(ApplicationHelper.ApplicationName, new Microsoft.OpenApi.Models.OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
+                options.SwaggerDoc(ApplicationHelper.ApplicationName, new OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
 
-                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Models.Notice).Assembly.GetName().Name}.xml"));
+                options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
                 options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
                 // Add security definitions
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -348,14 +345,13 @@ namespace OpenReservation
 
             // RegisterAssemblyModules
             services.RegisterAssemblyModules();
-
-            // SetDependencyResolver
-            DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
+            DependencyResolver.SetDependencyResolver(app.ApplicationServices);
+
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
             app.UseRequestLocalization();
@@ -375,7 +371,7 @@ namespace OpenReservation
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
 
             if (env.IsDevelopment())
             {

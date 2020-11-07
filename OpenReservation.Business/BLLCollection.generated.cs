@@ -1,8 +1,5 @@
-﻿ 
-using OpenReservation.Database;
+﻿using OpenReservation.Database;
 using OpenReservation.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.EntityFramework;
 
 namespace OpenReservation.Business
@@ -77,23 +74,6 @@ namespace OpenReservation.Business
     {
         public BLLDisabledPeriod(ReservationDbContext dbContext) : base(dbContext)
         {
-        }
-    }
-
-    public static class BusinessExtensions
-    {
-        public static IServiceCollection AddBLL(this IServiceCollection services)
-        {
-                services.TryAddScoped<IBLLBlockType, BLLBlockType>();
-                services.TryAddScoped<IBLLBlockEntity, BLLBlockEntity>();
-                services.TryAddScoped<IBLLOperationLog, BLLOperationLog>();
-                services.TryAddScoped<IBLLReservation, BLLReservation>();
-                services.TryAddScoped<IBLLReservationPlace, BLLReservationPlace>();
-                services.TryAddScoped<IBLLReservationPeriod, BLLReservationPeriod>();
-                services.TryAddScoped<IBLLSystemSettings, BLLSystemSettings>();
-                services.TryAddScoped<IBLLNotice, BLLNotice>();
-                services.TryAddScoped<IBLLDisabledPeriod, BLLDisabledPeriod>();
-            return services;
         }
     }
 }
