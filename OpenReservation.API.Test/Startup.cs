@@ -48,7 +48,6 @@ namespace OpenReservation.API.Test
                 ;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         private void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             services.AddResponseCaching();
@@ -118,7 +117,6 @@ namespace OpenReservation.API.Test
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         private void Configure(IApplicationBuilder app)
         {
             app.UseResponseCaching();
