@@ -1,8 +1,7 @@
-﻿using System;
-using System.Net.Http;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,7 +15,6 @@ using OpenReservation.Database;
 using OpenReservation.Events;
 using OpenReservation.Services;
 using WeihanLi.Common.Event;
-using WeihanLi.Common.Helpers;
 using WeihanLi.Redis;
 using WeihanLi.Web.Authentication;
 using WeihanLi.Web.Authentication.HeaderAuthentication;
@@ -27,19 +25,16 @@ namespace OpenReservation.API.Test
     {
         public void ConfigureHost(IHostBuilder hostBuilder)
         {
-            var baseUrl = $"http://localhost:{NetHelper.GetRandomPort()}";
-
             hostBuilder
                 .ConfigureWebHostDefaults(builder =>
                 {
-                    builder.UseUrls(baseUrl);
+                    builder.UseTestServer();
                     builder.ConfigureServices((context, services) =>
                     {
+                        services.TryAddSingleton(sp =>
+                            sp.GetRequiredService<IHost>().GetTestClient()
+                            );
                         services.TryAddSingleton<APITestFixture>();
-                        services.TryAddSingleton(new HttpClient()
-                        {
-                            BaseAddress = new Uri(baseUrl)
-                        });
 
                         ConfigureServices(services, context.Configuration);
                     });
