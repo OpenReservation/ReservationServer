@@ -233,14 +233,14 @@ namespace OpenReservation.Controllers
         /// <returns></returns>
         public async Task<ActionResult> NoticeList(SearchHelperModel search, [FromServices] IBLLNotice noticeService)
         {
-            Expression<Func<Notice, bool>> whereLamdba = (n => !n.IsDeleted && n.CheckStatus);
+            Expression<Func<Notice, bool>> whereExpression = (n => !n.IsDeleted && n.CheckStatus);
             if (!string.IsNullOrEmpty(search.SearchItem1))
             {
-                whereLamdba = whereLamdba.And(n => n.NoticeTitle.Contains(search.SearchItem1.Trim()));
+                whereExpression = whereExpression.And(n => n.NoticeTitle.Contains(search.SearchItem1.Trim()));
             }
             try
             {
-                var noticeList = await noticeService.PagedAsync(search.PageIndex, search.PageSize, whereLamdba,
+                var noticeList = await noticeService.PagedAsync(search.PageIndex, search.PageSize, whereExpression,
                     n => n.NoticePublishTime, false);
                 var data = noticeList.ToPagedList();
                 return View(data);

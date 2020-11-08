@@ -28,7 +28,6 @@ using OpenReservation.AuditEnrichers;
 using OpenReservation.Common;
 using OpenReservation.Database;
 using OpenReservation.Events;
-using OpenReservation.Extensions;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.Services;
@@ -38,7 +37,6 @@ using StackExchange.Redis;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Http;
 using WeihanLi.Common.Logging;
 using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.Common.Services;
@@ -54,16 +52,29 @@ namespace OpenReservation
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration.ReplacePlaceholders();
+            HostEnvironment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
+        public IWebHostEnvironment HostEnvironment { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                options.MinimumSameSitePolicy = SameSiteMode.Unspecified;
+                options.Secure = CookieSecurePolicy.SameAsRequest;
+                options.OnAppendCookie = cookieContext =>
+                    AuthenticationHelper.CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+                options.OnDeleteCookie = cookieContext =>
+                    AuthenticationHelper.CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
+            });
+
             services.AddHealthChecks();
 
             services.AddJsonLocalization(options =>
@@ -125,6 +136,11 @@ namespace OpenReservation
                     {
                         options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                         options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+
+                        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultForbidScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     })
                 .AddCookie(options =>
                 {
@@ -134,7 +150,7 @@ namespace OpenReservation
 
                     // Cookie settings
                     options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
                 })
                 .AddIdentityServerAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme, options =>
                  {
@@ -172,6 +188,24 @@ namespace OpenReservation
                         };
                 })
                 ;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ReservationManager", builder => builder
+                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireRole("ReservationManager", "ReservationAdmin")
+                );
+                options.AddPolicy("ReservationAdmin", builder => builder
+                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireRole("ReservationAdmin")
+                );
+                options.AddPolicy("ReservationApi", builder => builder
+                    .AddAuthenticationSchemes(IdentityServerAuthenticationDefaults.AuthenticationScheme)
+                    .RequireAuthenticatedUser()
+                    .RequireScope("ReservationApi")
+                );
+            });
 
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(option =>
@@ -203,28 +237,24 @@ namespace OpenReservation
             {
                 client.Timeout = TimeSpan.FromSeconds(3);
             });
+            services.AddHttpClient<ChatBotHelper>(client =>
+            {
+                client.Timeout = TimeSpan.FromSeconds(5);
+            });
+            services.TryAddSingleton<ChatBotHelper>();
+            services.AddHttpClient<WechatAPI.Helper.WeChatHelper>();
+            services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
 
             // registerApplicationSettingService
-            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
-
-            services.AddAuthorization(options =>
+            if (HostEnvironment.IsDevelopment())
             {
-                options.AddPolicy("ReservationManager", builder => builder
-                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .RequireRole("ReservationManager", "ReservationAdmin")
-                );
-                options.AddPolicy("ReservationAdmin", builder => builder
-                    .AddAuthenticationSchemes(OpenIdConnectDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .RequireRole("ReservationAdmin")
-                );
-                options.AddPolicy("ReservationApi", builder => builder
-                    .AddAuthenticationSchemes(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-                    .RequireAuthenticatedUser()
-                    .RequireScope("ReservationApi")
-                );
-            });
+                services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
+                services.TryAddSingleton<ICacheClient, InMemoryCacheClient>();
+            }
+            else
+            {
+                services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInRedisService>();
+            }
 
             // register access control service
             services.AddAccessControlHelper()
@@ -232,40 +262,32 @@ namespace OpenReservation
                 .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
                 ;
 
-            services.TryAddTransient<NoProxyHttpClientHandler>();
-            services.AddHttpClient<ChatBotHelper>(client =>
-                {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                });
-            services.TryAddSingleton<ChatBotHelper>();
-
-            services.AddHttpClient<WechatAPI.Helper.WeChatHelper>();
-            services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
-
-            services.AddRedisConfig(options =>
-            {
-                options.RedisServers = new[]
-                {
-                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
-                };
-                options.CachePrefix = "OpenReservation"; //  ApplicationHelper.ApplicationName by default
-                options.DefaultDatabase = 2;
-            });
-
             // DataProtection persist in redis
-            services.AddDataProtection()
-                .SetApplicationName(ApplicationHelper.ApplicationName)
-                .PersistKeysToStackExchangeRedis(() => DependencyResolver.Current.ResolveService<IConnectionMultiplexer>().GetDatabase(5), "DataProtection-Keys")
-                ;
+            var dataProtectionBuilder = services.AddDataProtection()
+                .SetApplicationName(ApplicationHelper.ApplicationName);
+
+            if (!HostEnvironment.IsDevelopment())
+            {
+                services.AddRedisConfig(options =>
+                {
+                    options.RedisServers = new[]
+                    {
+                        new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
+                    };
+                    options.CachePrefix = "OpenReservation";
+                });
+
+                dataProtectionBuilder.PersistKeysToStackExchangeRedis(
+                    () => DependencyResolver.Current
+                        .ResolveService<IDatabase>(),
+                    "DataProtection-Keys");
+            }
 
             // events
             services.AddEvents()
                 .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
                 .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
                 ;
-
-            // services.AddHostedService<RemoveOverdueReservationService>();
-            // services.AddHostedService<CronLoggingTest>();
 
             services.Configure<CustomExceptionHandlerOptions>(options =>
             {
@@ -348,9 +370,10 @@ namespace OpenReservation
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
             DependencyResolver.SetDependencyResolver(app.ApplicationServices);
+            app.UseCookiePolicy();
 
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
@@ -372,12 +395,6 @@ namespace OpenReservation
             app.UseRouting();
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
-
-            if (env.IsDevelopment())
-            {
-                app.UseRequestLog();
-                app.UsePerformanceLog();
-            }
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -456,9 +473,9 @@ namespace OpenReservation
                 .AddSentry(options =>
                 {
                     options.Dsn = Configuration.GetAppSetting("SentryClientKey");
-                    options.Environment = env.EnvironmentName;
+                    options.Environment = HostEnvironment.EnvironmentName;
                     options.MinimumEventLevel = LogLevel.Error;
-                    options.Debug = env.IsDevelopment();
+                    options.Debug = HostEnvironment.IsDevelopment();
 
                     options.BeforeSend = (sentryEvent) =>
                     {

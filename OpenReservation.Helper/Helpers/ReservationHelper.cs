@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenReservation.Business;
 using OpenReservation.Models;
 using OpenReservation.ViewModels;
+using StackExchange.Redis;
 using WeihanLi.Common;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
@@ -190,68 +191,85 @@ namespace OpenReservation.Helpers
                 return false;
             }
 
-            using (var redisLock = RedisManager.GetRedLockClient($"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}"))
+            var reservationKey =
+                $"reservation:{reservation.ReservationPlaceId:N}:{reservation.ReservationForDate:yyyyMMdd}";
+
+            var redis = DependencyResolver.Current.GetService<IDatabase>();
+            if (redis != null)
             {
-                if (redisLock.TryLock())
+                using (var redisLock = RedisManager.GetRedLockClient(reservationKey))
                 {
-                    if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId, reservation.ReservationForTimeIds))
+                    if (redisLock.TryLock())
                     {
-                        msg = "预约时间段冲突，请重新选择预约时间段";
+                        return CheckInner(out msg);
+                    }
+                    else
+                    {
+                        msg = "系统繁忙，请稍后重试！";
                         return false;
                     }
-
-                    var context = DependencyResolver.ResolveService<IHttpContextAccessor>().HttpContext;
-                    var userId = context.User.GetUserId<Guid>();
-
-                    if (!isAdmin)
-                    {
-                        if (_bllReservation.Count(r =>
-                            r.ReservedBy == userId &&
-                            r.ReservationTime.AddHours(8).Date == DateTime.UtcNow.AddHours(8).Date
-                        ) >= MaxReservationCount)
-                        {
-                            msg = "今日预约已达上限，请明日再约";
-                            return false;
-                        }
-                    }
-
-                    var reservationEntity = new Reservation()
-                    {
-                        ReservationForDate = reservation.ReservationForDate,
-                        ReservationForTime = reservation.ReservationForTime,
-                        ReservationPlaceId = reservation.ReservationPlaceId,
-
-                        ReservationUnit = reservation.ReservationUnit,
-                        ReservationActivityContent = reservation.ReservationActivityContent,
-                        ReservationPersonName = reservation.ReservationPersonName,
-                        ReservationPersonPhone = reservation.ReservationPersonPhone,
-                        ReservationFromIp = context.GetUserIP(),
-
-                        ReservedBy = userId,
-
-                        UpdateBy = reservation.ReservationPersonName,
-                        ReservationTime = DateTime.UtcNow,
-                        UpdateTime = DateTime.UtcNow,
-                        ReservationId = Guid.NewGuid()
-                    };
-                    //验证最大可预约时间段，同一个手机号，同一个IP地址
-                    foreach (var item in reservation.ReservationForTimeIds.SplitArray<int>())
-                    {
-                        reservationEntity.ReservationPeriod += (1 << item);
-                    }
-                    if (isAdmin)
-                    {
-                        reservationEntity.ReservationStatus = ReservationStatus.Reviewed;
-                    }
-                    _bllReservation.Insert(reservationEntity);
-
-                    return true;
                 }
-                else
+            }
+
+            lock (reservationKey)
+            {
+                return CheckInner(out msg);
+            }
+
+            bool CheckInner(out string errorMsg)
+            {
+                if (!IsReservationForPeriodAvailable(reservationForDate, reservation.ReservationPlaceId, reservation.ReservationForTimeIds))
                 {
-                    msg = "系统繁忙，请稍后重试！";
+                    errorMsg = "预约时间段冲突，请重新选择预约时间段";
                     return false;
                 }
+
+                var context = DependencyResolver.ResolveService<IHttpContextAccessor>().HttpContext;
+                var userId = context.User.GetUserId<Guid>();
+
+                if (!isAdmin)
+                {
+                    if (_bllReservation.Count(r =>
+                        r.ReservedBy == userId &&
+                        r.ReservationTime.AddHours(8).Date == DateTime.UtcNow.AddHours(8).Date
+                    ) >= MaxReservationCount)
+                    {
+                        errorMsg = "今日预约已达上限，请明日再约";
+                        return false;
+                    }
+                }
+
+                var reservationEntity = new Reservation()
+                {
+                    ReservationForDate = reservation.ReservationForDate,
+                    ReservationForTime = reservation.ReservationForTime,
+                    ReservationPlaceId = reservation.ReservationPlaceId,
+
+                    ReservationUnit = reservation.ReservationUnit,
+                    ReservationActivityContent = reservation.ReservationActivityContent,
+                    ReservationPersonName = reservation.ReservationPersonName,
+                    ReservationPersonPhone = reservation.ReservationPersonPhone,
+                    ReservationFromIp = context.GetUserIP(),
+
+                    ReservedBy = userId,
+
+                    UpdateBy = reservation.ReservationPersonName,
+                    ReservationTime = DateTime.UtcNow,
+                    UpdateTime = DateTime.UtcNow,
+                    ReservationId = Guid.NewGuid()
+                };
+                //验证最大可预约时间段，同一个手机号，同一个IP地址
+                foreach (var item in reservation.ReservationForTimeIds.SplitArray<int>())
+                {
+                    reservationEntity.ReservationPeriod += (1 << item);
+                }
+                if (isAdmin)
+                {
+                    reservationEntity.ReservationStatus = ReservationStatus.Reviewed;
+                }
+                _bllReservation.Insert(reservationEntity);
+                errorMsg = string.Empty;
+                return true;
             }
         }
     }
