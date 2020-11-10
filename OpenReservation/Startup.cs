@@ -270,6 +270,7 @@ namespace OpenReservation
             {
                 services.AddRedisConfig(options =>
                 {
+                    options.DefaultDatabase = 0;
                     options.RedisServers = new[]
                     {
                         new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
