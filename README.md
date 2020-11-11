@@ -1,25 +1,25 @@
-# ActivityReservation [![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/WeihanLi.ActivityReservation?branchName=dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=7?branchName=dev)
+# OpenReservation [![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/OpenReservation.ReservationServer?branchName=dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=7&branchName=dev)
 
 ## Intro
 
-活动室预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
-修改为线上预约+线下盖章审批的方式来预约学校的活动室。
+预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
+修改为线上预约+线下盖章审批的方式来预约学校的活动室，由此逐步演化而来。
 
 目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，
 
 - 演示地址：<https://reservation.weihanli.xyz>
-- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular8 +material SPA)
+- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular10 + material SPA)
 - 小程序演示 demo:
 
   ![wxAppCode](./images/wxAppCode.jpg)
 
-- 后台登录地址： <https://reservation.weihanli.xyz/Admin/Account/Login>
+- 后台登录地址： <https://reservation.weihanli.xyz/Admin/>
 
   后台登录账号：
 
-  管理员用户名: admin 密码: Admin888
+  管理员用户名: admin 密码: Admin@888
 
-  普通用户： Alice 密码：Test1234
+  普通用户： Alice 密码：Test@1234
 
   管理员有更多的权限，可以设置更多系统相关的配置，也可以增加系统普通管理员
 
@@ -54,22 +54,24 @@ appveyor => travis => Azure Pipeline
 
 ### 2.0
 
-- [x] 活动室预约 SPA <https://github.com/WeihanLi/ActivityReservation/tree/dev/ActivityReservation.Clients/ReservationClient>（angular8 + material)
-- [x] 微信小程序预约 <https://github.com/WeihanLi/ActivityReservation/tree/dev/ActivityReservation.Clients/WxAppClient>
+- [x] 活动室预约 SPA <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>（angular8 + material)
+- [x] 微信小程序预约 <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/WxAppClient>
 - [x] 从单机到集群，详细修改参考：<https://www.cnblogs.com/weihanli/p/aspnetcore-migrate-standalone-to-cluster.html>
 
 ### 3.0
 
-- [ ] 用户系统（需要登录才能预约，登录支持 微信/QQ/Github 登录，使用 ids4 搭建统一的登录平台，统一用户系统）
-- [ ] 我的预约记录
-- [ ] 取消预约（加以限制，一天内最多预约三次）
-- [ ] 更通用的预约流程，待优化
+- [x] 多语言支持
+- [x] 用户系统（需要登录才能预约，登录支持 Github 登录）
+- [x] 我的预约记录
+- [x] 取消预约
 
 ### 4.0
 
+- [ ] 更通用的预约流程
 - [ ] 增加组织的概念，多租户
 - [ ] ReservationService as a Service，打造 Saas 预约服务平台
 
 ## Contact
 
 Contact me if you need: <weihanli@outlook.com>
+

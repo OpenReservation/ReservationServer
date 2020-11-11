@@ -1,0 +1,66 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Localization
+@inject IViewLocalizer Localizer
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@{
+    ViewBag.Title = "我的预约";
+}
+@section styles{
+    <style>
+        .table > tbody > tr > td {
+            vertical-align: middle;
+        }
+    </style>
+}
+<div class="container">
+    <div class="form-inline" style="margin: 1em 0;display: none">
+        <div class="form-group">
+            <input type="search" name="SearchItem1" id="contactPhone" value="" placeholder="@Localizer["ReservationPhoneNumber"]" class="form-control" />
+        </div>
+        <button id="btnSearch" type="button" class="btn btn-primary">@SharedLocalizer["Search"]</button> <br />
+    </div>
+    <div id="div_main">
+    </div>
+    <form id="checkForm" class="hidden" action="@Url.Action("Check","Home")" method="post">
+        <input name="id" id="reId" value="" />
+        <input name="phone" id="rePhone" />
+    </form>
+</div>
+@section scripts{
+    <script>
+        var pageSize = 10;
+
+        function loadData(pageIndex) {
+            $("#div_main").html('<br /><img src="/images/loading.gif" /> @(SharedLocalizer["LoadingTip"])');
+            if (!pageIndex) {
+                pageIndex = 1;
+            }
+            $.get("/Account/UserReservationList",
+                { "pageNumber": pageIndex, "pageSize": pageSize },
+                function (data, status) {
+                    if (status === "success") {
+                        $("#div_main").html(data);
+                    } else {
+                        $("#div_main").html('');
+                        layer.msg('@(SharedLocalizer["LoadDataException"])');
+                    }
+                });
+        }
+
+        function view(id, phone) {
+            $("#rePhone").val(phone);
+            $("#reId").val(id);
+
+            $("#checkForm").submit();
+        }
+
+        //search
+        $("#btnSearch").on("click",
+            function () {
+                loadData();
+            });
+        $(function () {
+            loadData();
+        });
+    </script>
+}

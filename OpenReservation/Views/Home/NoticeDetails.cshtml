@@ -1,0 +1,19 @@
+﻿@model OpenReservation.Models.Notice
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewBag.Title = Model.NoticeTitle;
+}
+<header style="text-align:center">
+    <h2>
+        @Model.NoticeTitle
+    </h2>
+</header>
+<section style="text-align:center">
+    @Localizer["PublishTime:"] @Model.NoticePublishTime.AddHours(8).ToString("yyyy-MM-dd HH:mm:ss") &nbsp;&nbsp;
+    @Localizer["ViewCount:"] @Model.NoticeVisitCount
+</section>
+<section>
+    @Html.Raw(Model.NoticeContent)
+</section>
+<footer></footer>

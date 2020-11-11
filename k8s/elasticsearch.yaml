@@ -24,12 +24,21 @@ spec:
     spec:
       containers:
         - name: elasticsearch
-          image: elasticsearch:5.6-alpine
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.4.2
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "768Mi"
+              memory: "1280Mi"
               cpu: "100m"
+            requests:
+              memory: "1024Mi"
+              cpu: "100m"
+          readinessProbe:
+            httpGet:
+              path: /_cluster/health
+              port: 9200
+            initialDelaySeconds: 60
+            periodSeconds: 20
           ports:
             - containerPort: 9200
               name: "p9200"
@@ -37,8 +46,10 @@ spec:
               name: "p9300"
               
           env:
+            - name: discovery.type
+              value: "single-node"
             - name: ES_JAVA_OPTS
-              value: "-Xms512m -Xmx512m"
+              value: "-Xms832m -Xmx832m"
 
 ---
 apiVersion: v1

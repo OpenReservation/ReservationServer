@@ -1,7 +1,7 @@
 apiVersion: v2
 name: reservation-server
 description: reservation-server Helm chart for Kubernetes
-icon: https://raw.githubusercontent.com/WeihanLi/ActivityReservation/dev/ActivityReservation/wwwroot/favicon.ico
+icon: https://raw.githubusercontent.com/WeihanLi/OpenReservation/dev/OpenReservation/wwwroot/favicon.ico
 home: https://reservation.weihanli.xyz
 keywords:
   - reservation
@@ -23,7 +23,7 @@ version: 1.0.0
 # incremented each time you make changes to the application.
 appVersion: 2.0.0
 sources:
-- https://github.com/WeihanLi/ActivityReservation
+- https://github.com/OpenReservation/ReservationServer
 maintainers:
 - name: WeihanLi
   email: weihanli@outlook.com

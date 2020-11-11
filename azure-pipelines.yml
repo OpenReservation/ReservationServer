@@ -6,8 +6,8 @@ trigger:
     include:
     - '*'
     exclude:
-    - '*.md'
-    - /ActivityReservation.Clients/
+    - '**/*.md'
+    - /OpenReservation.Clients/
     - /docs/
     - /k8s/
 
@@ -16,21 +16,27 @@ pool:
 
 variables:
   tagName: '$(Build.BuildNumber)'
-  repoName: 'activityreservation'
-  stableImageName: '$(dockerId)/$(repoName):stable'
-  latestImageName: '$(dockerId)/$(repoName):latest'
-  branchImageName: '$(dockerId)/$(repoName):$(Build.SourceBranchName)'
-  imageName: '$(dockerId)/$(repoName):$(tagName)'
+  repoName: 'reservation-server'
+  stableImageName: 'openreservation/$(repoName):stable'
+  latestImageName: 'openreservation/$(repoName):latest'
+  branchImageName: 'openreservation/$(repoName):$(Build.SourceBranchName)'
+  imageName: 'openreservation/$(repoName):$(tagName)'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 3.1.x
+
 - script: dotnet --info
   displayName: 'dotnet info'
 
-# - script: dotnet build -c Release
-#   displayName: 'dotnet build'
+- script: dotnet build -c Release
+  displayName: 'dotnet build'
 
-# - script: dotnet test 
-#   displayName: 'dotnet test'
+- script: dotnet test 
+  displayName: 'dotnet test'
 
 - script: docker build -f Dockerfile -t $(imageName) -t $(branchImageName) -t $(latestImageName) -t $(stableImageName) .
   displayName: 'Docker build Script'
@@ -58,4 +64,4 @@ steps:
     runOptions: inline
 
     inline: |
-      kubectl set image deployment/activityreservation activityreservation=$(imageName) --record=true
+      kubectl set image deployment/reservation-server reservation-server=$(imageName) --record=true

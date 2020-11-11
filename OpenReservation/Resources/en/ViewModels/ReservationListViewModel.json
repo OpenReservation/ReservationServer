@@ -1,0 +1,11 @@
+{
+  "ReservationForDate": "ReservationForDate",
+  "ReservationForTime": "ReservationForTime",
+  "ReservationPersonPhone": "ContactPhone",
+  "ReservationPersonName": "ContactPerson",
+  "ReservationUnit": "Unit",
+  "ReservationPlaceName": "PlaceName",
+  "ReservationActivityContent": "ActivityContent",
+  "ReservationTime": "ReservationTime",
+  "ReservationStatus": "Status"
+}

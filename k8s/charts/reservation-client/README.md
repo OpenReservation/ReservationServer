@@ -6,8 +6,8 @@
 
 开源项目地址：
 
-- 活动室预约服务器端：<https://github.com/WeihanLi/ActivityReservation>
-- 活动室预约客户端：<https://github.com/WeihanLi/ActivityReservation/tree/dev/ActivityReservation.Clients/ReservationClient>
+- 活动室预约服务器端：<https://github.com/OpenReservation/ReservationServer>
+- 活动室预约客户端：<https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>
 
 ## 安装使用
 

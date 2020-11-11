@@ -22,18 +22,23 @@ spec:
       labels:
         app: kibana
     spec:
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
       containers:        
         - name: kibana
-          image: kibana:5.6
+          image: docker.elastic.co/kibana/kibana:7.4.2
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "128Mi"
+              memory: "512Mi"
               cpu: "100m"
+            requests:
+              memory: "128Mi"
+              cpu: "80m"
+          readinessProbe:
+            httpGet:
+              path: /api/status
+              port: 5601
+            initialDelaySeconds: 60
+            periodSeconds: 20
           ports:
             - containerPort: 5601
           env:

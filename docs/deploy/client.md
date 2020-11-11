@@ -12,6 +12,17 @@
 docker pull weihanli/reservation-client:latest #拉取最新的单机版镜像
 
 docker run -d -p 9000:80 --name=reservation-client weihanli/reservation-client:latest # 运行容器
+
+docker run -d -p 9000:80 --name=reservation-client -v $(pwd)/assets/config.js:/usr/share/nginx/html/assets/config.js weihanli/reservation-client:latest # 挂载配置文件
+```
+
+sample `config.js`:
+
+``` js
+var env = {
+    ApiBaseUrl: "https://reservation.weihanli.top"
+};
+window["__env"]= env;
 ```
 
 容器启动成功之后，访问 `http://localhost:9000` 即可
@@ -42,7 +53,7 @@ helm install reservation-client --set service.nodePort=32156 reservation-client
 不使用 helm，也可以直接使用下面的命令来安装
 
 ``` bash
-kubectl apply -f https://raw.githubusercontent.com/WeihanLi/ActivityReservation/dev/ActivityReservation.Clients/ReservationClient/k8s-deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/WeihanLi/OpenReservation/dev/OpenReservation.Clients/ReservationClient/k8s-deploy.yaml
 ```
 
 提供了一个部署在我的 k8s 上的在线示例的 <https://reservation-client.weihanli.xyz>

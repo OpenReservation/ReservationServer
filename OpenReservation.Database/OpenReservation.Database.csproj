@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>OpenReservation.Database</RootNamespace>
+    <AssemblyName>OpenReservation.Database</AssemblyName>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WeihanLi.EntityFramework" Version="1.9.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj">
+    </ProjectReference>
+  </ItemGroup>
+</Project>

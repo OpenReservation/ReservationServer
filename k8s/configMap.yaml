@@ -34,7 +34,7 @@ data:
       "Logging": {
         "LogLevel": {
           "Default": "Warning",
-          "ActivityReservation": "Debug",
+          "OpenReservation": "Debug",
           "RequestLog": "Debug"
         }
       }

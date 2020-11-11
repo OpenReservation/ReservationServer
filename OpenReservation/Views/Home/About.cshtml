@@ -1,0 +1,42 @@
+﻿@using OpenReservation.Services
+@using Microsoft.Extensions.Localization
+@inject IApplicationSettingService applicationSettings
+@inject IStringLocalizer<SharedResource> SharedLocalizer
+@{
+    ViewBag.Title = SharedLocalizer["About"];
+}
+<h2>@SharedLocalizer["About"]</h2>
+<div class="table-body" style="padding: 1em; font-size: 1em; line-height: 1.5em">
+    <h3>关于活动室预约系统</h3>
+    <p>@(applicationSettings.GetSettingValue("SystemDescription")) <br /></p>
+    <p>
+        活动室预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
+        修改为线上预约+线下盖章审批的方式来预约学校的活动室。
+    </p>
+    <p>目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，</p>
+    <p>项目地址：<a href="https://github.com/OpenReservation/ReservationServer">https://github.com/OpenReservation/ReservationServer</a></p>
+    <p>演示地址：<a href="https://reservation.weihanli.xyz">https://reservation.weihanli.xyz</a></p>
+    <p>新版演示地址：<a href="https://reservation-client.weihanli.xyz">https://reservation-client.weihanli.xyz</a></p>
+    <p>演示小程序：<img src="https://raw.githubusercontent.com/WeihanLi/OpenReservation/dev/images/wxAppCode.jpg" /></p>
+    <p>后台登录地址： <a href="https://reservation.weihanli.xyz/Admin/">https://reservation.weihanli.xyz/Admin/</a></p>
+    <p>后台登录账号：</p>
+    <p>
+        管理员用户名: admin 密码: Admin@888
+        普通用户： Alice 密码：Test1234
+    </p>
+    <p>管理员有更多的权限，可以设置更多系统相关的配置</p>
+
+    <h3>关于技术</h3>
+    <p>使用的技术演化：</p>
+    <p>ASP.NET WebForm =&gt; ASP.NET MVC =&gt; ASP.NET Core</p>
+    <p>部署方式：</p>
+    <p>IIS =&gt; <code>Docker</code>+<code>nginx</code> =&gt; <code>Docker</code>+<code>kubernetes</code>+<code>nginx</code></p>
+    <p>CI/CD:</p>
+    <p>appveyor =&gt; travis =&gt; Azure Pipeline</p>
+
+    <h3>联系方式</h3>
+    <p>
+        联系电话：@(applicationSettings.GetSettingValue("SystemContactPhone")) <br />
+        联系邮箱：@(applicationSettings.GetSettingValue("SystemContactEmail")) <br />
+    </p>
+</div>

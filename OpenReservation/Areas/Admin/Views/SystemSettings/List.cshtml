@@ -1,0 +1,43 @@
+﻿@model IPagedListModel<OpenReservation.Models.SystemSettings>
+@{
+    Layout = null;
+}
+@if (Model.Data.Count() > 0)
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>设置名称</th>
+                <th>设置含义</th>
+                <th>设置值</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Data)
+            {
+                <tr>
+                    <td>
+                        @item.SettingName
+                    </td>
+                    <td>
+                        @item.DisplayName
+                    </td>
+                    <td>
+                        @item.SettingValue
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default" onclick="Update('@item.SettingId', '@item.SettingName', this)">更新</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.Pager(Model.Pager, pageIndex => $"javascript:loadData({pageIndex})", "PagerPartial", PagingDisplayMode.IfNeeded)
+}
+else
+{
+    <div class="nodata-tip">
+        暂时没有数据.
+    </div>
+}

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reservation-server
+  namespace: default
+  labels:
+    app: reservation-server
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
+  selector:
+    matchLabels:
+      app: reservation-server
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: reservation-server
+    spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "1"
+      containers:        
+        - name: reservation-server
+          image: openreservation/reservation-server:dev
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          readinessProbe:
+            tcpSocket:
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          ports:
+            - containerPort: 80
+          env:
+            - name: Reservation_AppSettings__DbType
+              value: InMemory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: reservation-server
+spec:
+  selector:
+    app: reservation-server
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 31220
+  type: NodePort
