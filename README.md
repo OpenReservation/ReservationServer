@@ -64,10 +64,10 @@ appveyor => travis => Azure Pipeline
 - [x] 用户系统（需要登录才能预约，登录支持 Github 登录）
 - [x] 我的预约记录
 - [x] 取消预约
-- [ ] 更通用的预约流程，待优化
 
 ### 4.0
 
+- [ ] 更通用的预约流程
 - [ ] 增加组织的概念，多租户
 - [ ] ReservationService as a Service，打造 Saas 预约服务平台
 
