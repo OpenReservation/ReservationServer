@@ -2,10 +2,10 @@
   <PropertyGroup>
     <RootNamespace>OpenReservation.Database</RootNamespace>
     <AssemblyName>OpenReservation.Database</AssemblyName>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WeihanLi.EntityFramework" Version="1.9.1" />
+    <PackageReference Include="WeihanLi.EntityFramework" Version="2.0.0-preview-*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj">

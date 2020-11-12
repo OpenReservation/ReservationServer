@@ -45,18 +45,10 @@ namespace OpenReservation.AdminLogic.Controllers
             {
                 whereLambda = whereLambda.And(l => l.LogContent.Contains(search.SearchItem2.Trim()));
             }
-            try
-            {
-                var logList = operationLogHelper.Paged(search.PageIndex, search.PageSize,
+            var logList = operationLogHelper.Paged(search.PageIndex, search.PageSize,
                      whereLambda, l => l.OperTime, false);
-                var dataList = logList.ToPagedList();
-                return View(dataList);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("ex");
-                throw ex;
-            }
+            var dataList = logList.ToPagedList();
+            return View(dataList);
         }
 
         private readonly IBLLOperationLog operationLogHelper;

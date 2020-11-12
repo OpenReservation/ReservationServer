@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-alpine AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS base
 
 RUN apk add libgdiplus --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted && \
     apk add terminus-font && \
@@ -10,7 +10,7 @@ ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 EXPOSE 80
 LABEL Maintainer="WeihanLi"
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
@@ -18,7 +18,6 @@ WORKDIR /src
 COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
 
-## diff between netcore2.2 and netcore3.0
 WORKDIR /src/OpenReservation
 RUN dotnet restore
 

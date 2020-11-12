@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
-		<VersionMajor>3</VersionMajor>
-		<VersionMinor>1</VersionMinor>
+		<VersionMajor>4</VersionMajor>
+		<VersionMinor>0</VersionMinor>
 		<VersionPatch>0</VersionPatch>
 		<VersionRevision>0</VersionRevision>
 		<VersionPrefix Condition="'$(VersionRevision)'=='0'">$(VersionMajor).$(VersionMinor).$(VersionPatch)</VersionPrefix>
@@ -15,6 +15,6 @@
     <RepositoryUrl>https://github.com/OpenReservation/ReservationServer</RepositoryUrl>
     <Authors>WeihanLi</Authors>
     <Copyright>Copyright 2015-2020 (c) WeihanLi</Copyright>
-    <DotNetCorePackageVersion>3.1.10</DotNetCorePackageVersion>
+    <DotNetPackageVersion>5.0.0</DotNetPackageVersion>
   </PropertyGroup>
 </Project>
