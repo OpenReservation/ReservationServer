@@ -50,13 +50,11 @@ namespace OpenReservation.Common
 
             if (null != clientConfigure)
             {
-                services.AddHttpClient<TencentCaptchaHelper>(clientConfigure)
-                    .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+                services.AddHttpClient<TencentCaptchaHelper>(clientConfigure);
             }
             else
             {
-                services.AddHttpClient<TencentCaptchaHelper>()
-                    .ConfigurePrimaryHttpMessageHandler(() => new NoProxyHttpClientHandler());
+                services.AddHttpClient<TencentCaptchaHelper>();
             }
             services.TryAddSingleton<TencentCaptchaHelper>();
             return services;
@@ -88,8 +86,7 @@ namespace OpenReservation.Common
                 services.Configure<GiteeStorageOptions>(configuration.Bind);
             }
 
-            services.AddHttpClient<IStorageProvider, GiteeStorageProvider>()
-                .ConfigurePrimaryHttpMessageHandler<NoProxyHttpClientHandler>();
+            services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
 
             services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
             return services;
