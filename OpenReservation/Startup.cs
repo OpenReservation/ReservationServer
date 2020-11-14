@@ -108,7 +108,7 @@ namespace OpenReservation
                 })
                 .AddJsonOptions(options=>
                 {
-                    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 })
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization()
