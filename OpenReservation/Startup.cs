@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
@@ -23,8 +22,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using OpenReservation.AuditEnrichers;
 using OpenReservation.Common;
 using OpenReservation.Database;
@@ -106,7 +103,7 @@ namespace OpenReservation
                         NoStore = true
                     });
                 })
-                .AddJsonOptions(options=>
+                .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                 })
@@ -348,10 +345,9 @@ namespace OpenReservation
             {
                 options.UserIdFactory = context =>
                 {
-                    var user = context?.User;
-                    if (null != user && user.Identity.IsAuthenticated)
+                    if (context?.User.Identity?.IsAuthenticated == true)
                     {
-                        return $"{user.GetUserId()}--{user.Identity.Name}";
+                        return $"{context.User.GetUserId()}--{context.User.Identity.Name}";
                     }
 
                     var userIp = context?.GetUserIP();
@@ -379,16 +375,14 @@ namespace OpenReservation
             app.UseRequestLocalization();
 
             app.UseStaticFiles();
-
             app.UseResponseCaching();
-            app.UseResponseCompression();
 
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
-                    // c.RoutePrefix = string.Empty; //
+                    // c.RoutePrefix = string.Empty;
                     c.SwaggerEndpoint($"/swagger/{ApplicationHelper.ApplicationName}/swagger.json", "活动室预约系统 API");
-                    c.DocumentTitle = "活动室预约系统 API";
+                    c.DocumentTitle = "OpenReservation API";
                 });
 
             app.UseRouting();
@@ -410,17 +404,24 @@ namespace OpenReservation
                 endpoints.MapDefaultControllerRoute();
             });
 
+            // init data
+            app.ApplicationServices.Initialize();
+
             // initialize settings
+            LoggingConfig(loggerFactory);
+            EFAuditConfig(app);
+            ExcelSettings();
+        }
 
-            #region Logging Configure
-
+        private void LoggingConfig(ILoggerFactory loggerFactory)
+        {
             LogHelper.ConfigureLogging(builder =>
                 {
                     builder.AddSerilog(loggingConfig =>
                         {
                             loggingConfig
                                 .Enrich.FromLogContext()
-                                .Enrich.WithHttpContextInfo(app.ApplicationServices, (logEvent, propertyFactory, httpContext) =>
+                                .Enrich.WithHttpContextInfo(DependencyResolver.Current, (logEvent, propertyFactory, httpContext) =>
                                     {
                                         logEvent.AddPropertyIfAbsent(
                                             propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
@@ -488,13 +489,6 @@ namespace OpenReservation
                         return sentryEvent;
                     };
                 });
-
-            #endregion Logging Configure
-
-            // init data
-            app.ApplicationServices.Initialize();
-            EFAuditConfig(app);
-            ExcelSettings();
         }
 
         private void EFAuditConfig(IApplicationBuilder applicationBuilder)

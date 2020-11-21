@@ -8,17 +8,18 @@ namespace OpenReservation
     {
         public static void Main(string[] args)
         {
-            var host = Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, builder) =>
-                {
-                    builder.AddEnvironmentVariables("Reservation_");
-                })
-                .ConfigureWebHostDefaults(webHostBuilder =>
-                {
-                    webHostBuilder.UseStartup<Startup>();
-                })
-                .Build();
-            host.Run();
+            Host.CreateDefaultBuilder(args)
+               .ConfigureAppConfiguration((context, builder) =>
+               {
+                   builder.AddEnvironmentVariables("Reservation_");
+               })
+               .ConfigureWebHostDefaults(webHostBuilder =>
+               {
+                   webHostBuilder.UseStartup<Startup>();
+               })
+               .Build()
+               .Run()
+               ;
         }
     }
 }
