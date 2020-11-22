@@ -30,6 +30,7 @@ using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.Services;
 using OpenReservation.ViewModels;
+using Prometheus;
 using Serilog;
 using StackExchange.Redis;
 using WeihanLi.Common;
@@ -388,12 +389,13 @@ namespace OpenReservation
             app.UseRouting();
 
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
-
+            app.UseHttpMetrics();
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapMetrics();
                 endpoints.MapControllers();
                 endpoints.MapControllerRoute("Notice", "/Notice/{path}.html", new
                 {
