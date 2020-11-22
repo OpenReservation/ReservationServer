@@ -7,7 +7,7 @@
 开源项目地址：
 
 - 活动室预约服务器端：<https://github.com/OpenReservation/ReservationServer>
-- 活动室预约客户端：<https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>
+- 活动室预约客户端：<https://github.com/OpenReservation/angular-client>
 
 ## 安装使用
 
@@ -26,4 +26,4 @@ helm install reservation-client --set service.nodePort=32156 reservation-client
 
 如果不是使用 Node-Port 方式访问的，可以通过 `kubectl port-forward svc/<svcName> 31256:80` 来创建一个端口转发，然后访问 `http://localhost:31256` 来访问应用
 
-提供了一个部署在我的 k8s 上的在线示例的 <https://reservation-client0.weihanli.xyz>
+提供了一个部署在我的 k8s 上的在线示例的 <https://reservation-client.weihanli.xyz>

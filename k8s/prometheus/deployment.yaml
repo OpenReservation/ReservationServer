@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
+  selector:
+    matchLabels:
+      app: prometheus
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:        
+        - name: prometheus
+          image: prom/prometheus
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            tcpSocket:
+              port: 9090
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9090
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          ports:
+            - containerPort: 80
+          volumeMounts:
+          - name: config
+            mountPath: /etc/prometheus/prometheus.yml
+            subPath: default
+
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-config

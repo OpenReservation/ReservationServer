@@ -7,7 +7,7 @@
 开源项目地址：
 
 - 活动室预约服务器端：<https://github.com/OpenReservation/ReservationServer>
-- 活动室预约客户端：<https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>
+- 活动室预约客户端：<https://github.com/OpenReservation/angular-client>
 
 ## 安装使用
 

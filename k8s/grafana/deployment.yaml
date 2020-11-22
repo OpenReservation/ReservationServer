@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
+  selector:
+    matchLabels:
+      app: grafana
+  minReadySeconds: 0
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:        
+        - name: grafana
+          image: grafana/grafana
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+          ports:
+            - containerPort: 3000
