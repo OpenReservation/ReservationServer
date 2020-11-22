@@ -59,9 +59,9 @@ metadata:
 spec:
   selector:
     app: reservation-server
+  type: NodePort
   ports:
   - protocol: TCP
     port: 80
     targetPort: 80
     nodePort: 31220
-  type: NodePort
