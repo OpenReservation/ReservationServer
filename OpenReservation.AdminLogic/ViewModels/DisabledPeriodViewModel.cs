@@ -28,10 +28,5 @@ namespace OpenReservation.AdminLogic.ViewModels
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
-
-        public bool IsModelValid()
-        {
-            return EndDate >= StartDate;
-        }
     }
 }

@@ -21,7 +21,8 @@ namespace OpenReservation.Database
 
             if (!Database.ProviderName.EndsWith("InMemory", StringComparison.OrdinalIgnoreCase))
             {
-                modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath); // path
+                // create index on path for better query performance
+                modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath);
             }
         }
 

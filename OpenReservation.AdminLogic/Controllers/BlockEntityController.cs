@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
+using WeihanLi.Common.Helpers;
 
 namespace OpenReservation.AdminLogic.Controllers
 {
@@ -39,7 +40,7 @@ namespace OpenReservation.AdminLogic.Controllers
         public ActionResult List(SearchHelperModel search)
         {
             //默认查询全部
-            Expression<Func<BlockEntity, bool>> whereLambda = (b => true);
+            Expression<Func<BlockEntity, bool>> whereLambda = ExpressionHelper.True<BlockEntity>();
             //判断查询条件
             if (!string.IsNullOrEmpty(search.SearchItem1) && !("0".Equals(search.SearchItem1)))
             {

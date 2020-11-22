@@ -64,7 +64,7 @@ namespace OpenReservation.AdminLogic.Controllers
             var result = new ResultModel<bool>();
             if (ModelState.IsValid)
             {
-                if (!model.IsModelValid())
+                if (model.EndDate < model.StartDate)
                 {
                     result.Status = ResultStatus.RequestError;
                     result.ErrorMsg = "结束日期必须大于开始日期";
