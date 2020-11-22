@@ -19,4 +19,4 @@ data:
     scrape_configs:
       - job_name: 'reservation-server'
         static_configs:
-        - targets: ['reservation-server']
+        - targets: ['reservation-server.default']
