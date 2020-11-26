@@ -133,7 +133,7 @@ namespace OpenReservation.API
             if (userId == Guid.Empty)
                 return new StatusCodeResult(401);
 
-            var exists = await _repository.ExistAsync(x => x.ReservationId == id 
+            var exists = await _repository.ExistAsync(x => x.ReservationId == id
             && x.ReservedBy == userId
             && x.ReservationForDate > DateTime.UtcNow.AddHours(8).Date);
             if (!exists)
@@ -142,9 +142,10 @@ namespace OpenReservation.API
             }
 
             var result = await _repository.UpdateAsync(
-                new Reservation() { 
-                    ReservationId = id, 
-                    ReservationStatus = ReservationStatus.Canceled, 
+                new Reservation()
+                {
+                    ReservationId = id,
+                    ReservationStatus = ReservationStatus.Canceled,
                 },
                 r => r.ReservationStatus);
 
@@ -224,7 +225,7 @@ namespace OpenReservation.API
             }
             try
             {
-                if (!HttpContext.RequestServices.GetService<ReservationHelper>()
+                if (!HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                     .MakeReservation(model, out var msg))
                 {
                     result.ErrorMsg = msg;
