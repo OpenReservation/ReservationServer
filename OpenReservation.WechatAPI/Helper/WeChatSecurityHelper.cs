@@ -1,4 +1,5 @@
-﻿using Tencent;
+﻿using Microsoft.Extensions.Logging;
+using Tencent;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 
@@ -9,15 +10,17 @@ namespace OpenReservation.WechatAPI.Helper
         private static readonly WXBizMsgCrypt Wxcpt =
             new WXBizMsgCrypt(MpWeChatConsts.Token, MpWeChatConsts.AESKey, MpWeChatConsts.AppId);
 
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(WechatSecurityHelper));
 
         private readonly string _signature, _timestamp, _nonce;
 
-        public WechatSecurityHelper(string signature, string timestamp, string nonce)
+        private readonly ILogger _logger;
+
+        public WechatSecurityHelper(string signature, string timestamp, string nonce, ILogger logger)
         {
             _signature = signature;
             _timestamp = timestamp;
             _nonce = nonce;
+            _logger = logger;
         }
 
         /// <summary>
@@ -31,7 +34,7 @@ namespace OpenReservation.WechatAPI.Helper
             var result = Wxcpt.EncryptMsg(msg, _timestamp, _nonce, ref encryptMsg);
             if (result != 0)
             {
-                Logger.Error("微信消息加密失败,result:" + result);
+                _logger.Error("微信消息加密失败,result:" + result);
             }
             return encryptMsg;
         }
@@ -47,7 +50,7 @@ namespace OpenReservation.WechatAPI.Helper
             var result = Wxcpt.DecryptMsg(_signature, _timestamp, _nonce, msg, ref decryptMsg);
             if (result != 0)
             {
-                Logger.Error("消息解密失败,result:" + result);
+                _logger.Error("消息解密失败,result:" + result);
             }
             return decryptMsg;
         }

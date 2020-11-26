@@ -48,7 +48,6 @@ namespace OpenReservation.WechatAPI.Controllers
         [ActionName("Index")]
         public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
         {
-            Logger.LogDebug("request msg:" + model.ToJson());
             using (var ms = new MemoryStream())
             {
                 await Request.Body.CopyToAsync(ms);
@@ -57,7 +56,6 @@ namespace OpenReservation.WechatAPI.Controllers
                 using (var reader = new StreamReader(ms, System.Text.Encoding.UTF8))
                 {
                     model.RequestContent = await reader.ReadToEndAsync();
-                    Logger.LogDebug("RequestContent from Request:" + model.RequestContent);
                 }
             }
             if (string.IsNullOrEmpty(model.RequestContent))
@@ -65,8 +63,7 @@ namespace OpenReservation.WechatAPI.Controllers
                 return Content("RequestContent 为空");
             }
 
-            var context = new WeChatContext(model);
-            return await WechatAsync(context);
+            return await WechatAsync(model);
         }
     }
 }

@@ -8,6 +8,7 @@ using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
+using Microsoft.Extensions.Logging;
 
 namespace OpenReservation.WechatAPI.Helper
 {
@@ -16,9 +17,14 @@ namespace OpenReservation.WechatAPI.Helper
     /// </summary>
     internal class MpWechatMsgHandler
     {
-        private static readonly ILogHelperLogger Logger = LogHelper.GetLogger(typeof(MpWechatMsgHandler));
+        private readonly ILogger _logger;
 
-        public static async Task<string> ReturnMessageAsync(string postStr)
+        public MpWechatMsgHandler(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public async Task<string> ReturnMessageAsync(string postStr)
         {
             var responseContent = "";
             try
@@ -32,7 +38,6 @@ namespace OpenReservation.WechatAPI.Helper
                     var limiter = RedisManager.GetRateLimiterClient($"wechatMsgRateLimiter-{msgId}", TimeSpan.FromSeconds(20));
                     if (!await limiter.AcquireAsync())
                     {
-                        Logger.Info($"duplicate msg blocked, msg id: {msgId}");
                         return string.Empty;
                     }
                 }
@@ -65,7 +70,7 @@ namespace OpenReservation.WechatAPI.Helper
             }
             catch (Exception ex)
             {
-                Logger.Error(ex, "回复消息发生异常，异常信息：" + ex.Message);
+                _logger.Error(ex, "回复消息发生异常，异常信息：" + ex.Message);
             }
             return responseContent;
         }
@@ -78,8 +83,7 @@ namespace OpenReservation.WechatAPI.Helper
             var Content = xmldoc.SelectSingleNode("/xml/Recognition");
             if (Content != null)
             {
-                //设置回复消息
-                reply = await DependencyResolver.Current.ResolveService<ChatBotHelper>()
+                reply = await DependencyResolver.ResolveService<ChatBotHelper>()
                     .GetBotReplyAsync(Content.InnerText);
                 if (reply == "error")
                 {
@@ -89,9 +93,8 @@ namespace OpenReservation.WechatAPI.Helper
                     FromUserName.InnerText,
                     ToUserName.InnerText,
                     DateTime.UtcNow.Ticks,
-                    String.IsNullOrEmpty(reply) ? "Sorry,I can not follow you." : reply);
+                    string.IsNullOrEmpty(reply) ? "Sorry,I can not follow you." : reply);
             }
-            //Logger.Debug("接受的消息：" + Content.InnerText + "\r\n 发送的消息：" + reply);
             return responseContent;
         }
 

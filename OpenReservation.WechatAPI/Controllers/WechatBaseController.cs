@@ -3,6 +3,7 @@ using OpenReservation.WechatAPI.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Extensions;
+using OpenReservation.WechatAPI.Model;
 
 namespace OpenReservation.WechatAPI.Controllers
 {
@@ -20,8 +21,9 @@ namespace OpenReservation.WechatAPI.Controllers
             Logger = logger;
         }
 
-        internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WeChatContext wechatContext)
+        internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatMsgRequestModel request)
         {
+            WeChatContext wechatContext = new WeChatContext(request, Logger);
             var response = await wechatContext.GetResponseAsync();
             if (response.IsNullOrEmpty())
             {

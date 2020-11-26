@@ -417,58 +417,36 @@ namespace OpenReservation
 
         private void LoggingConfig(ILoggerFactory loggerFactory)
         {
-            LogHelper.ConfigureLogging(builder =>
-                {
-                    builder.AddSerilog(loggingConfig =>
+            SerilogHelper.LogInit(loggingConfig =>
+            {
+                loggingConfig
+                    .Enrich.FromLogContext()
+                    .Enrich.WithHttpContextInfo(DependencyResolver.Current, (logEvent, propertyFactory, httpContext) =>
                         {
-                            loggingConfig
-                                .Enrich.FromLogContext()
-                                .Enrich.WithHttpContextInfo(DependencyResolver.Current, (logEvent, propertyFactory, httpContext) =>
-                                    {
-                                        logEvent.AddPropertyIfAbsent(
-                                            propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
-                                        logEvent.AddPropertyIfAbsent(
-                                            propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
-                                        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod",
-                                            httpContext.Request.Method));
+                            logEvent.AddPropertyIfAbsent(
+                                propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
+                            logEvent.AddPropertyIfAbsent(
+                                propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
+                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod",
+                                httpContext.Request.Method));
 
-                                        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer",
-                                            httpContext.Request.Headers["Referer"].ToString()));
-                                        if (httpContext.Response.HasStarted)
-                                        {
-                                            logEvent.AddPropertyIfAbsent(
-                                                propertyFactory.CreateProperty("ResponseStatus",
-                                                    httpContext.Response.StatusCode));
-                                        }
-                                    })
-                                ;
-
-                            var esConnString = Configuration.GetConnectionString("ElasticSearch");
-                            if (esConnString.IsNotNullOrWhiteSpace())
+                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer",
+                                httpContext.Request.Headers["Referer"].ToString()));
+                            if (httpContext.Response.HasStarted)
                             {
-                                loggingConfig.WriteTo.Elasticsearch(esConnString, $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
+                                logEvent.AddPropertyIfAbsent(
+                                    propertyFactory.CreateProperty("ResponseStatus",
+                                        httpContext.Response.StatusCode));
                             }
                         })
-                        .WithFilter((providerType, categoryName, logLevel, exception) =>
-                        {
-                            if (exception != null)
-                            {
-                                var ex = exception.Unwrap();
-                                if (ex is TaskCanceledException || ex is OperationCanceledException)
-                                {
-                                    return false;
-                                }
-                            }
+                    ;
 
-                            if ((categoryName.StartsWith("Microsoft") || categoryName.StartsWith("System")) &&
-                                logLevel <= LogHelperLogLevel.Info)
-                            {
-                                return false;
-                            }
-
-                            return true;
-                        });
-                });
+                var esConnString = Configuration.GetConnectionString("ElasticSearch");
+                if (esConnString.IsNotNullOrWhiteSpace())
+                {
+                    loggingConfig.WriteTo.Elasticsearch(esConnString, $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
+                }
+            });
 
             loggerFactory
                 .AddSerilog()
