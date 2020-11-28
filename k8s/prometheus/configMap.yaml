@@ -17,9 +17,18 @@ data:
 
     # A scrape configuration containing exactly one endpoint to scrape:
     scrape_configs:
-      - job_name: 'reservation-server'
-        static_configs:
-        - targets: ['reservation-server.default']
+      - job_name: 'kubernetes-service-endpoints'
+        kubernetes_sd_configs:
+        - role: endpoints
+        relabel_configs:
+        - action: labelmap
+          regex: __meta_kubernetes_service_label_(.+)
+        - source_labels: [__meta_kubernetes_namespace]
+          action: replace
+          target_label: kubernetes_namespace
+        - source_labels: [__meta_kubernetes_service_name]
+          action: replace
+          target_label: kubernetes_name
       - job_name: 'sparktodo-api'
         static_configs:
         - targets: ['sparktodo-api.default']
