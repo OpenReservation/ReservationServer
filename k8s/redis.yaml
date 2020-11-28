@@ -22,7 +22,7 @@ spec:
         app: redis
     
     spec:
-    - containers:
+      containers:
       - name: redis
         image: redis:alpine
         imagePullPolicy: IfNotPresent
