@@ -14,7 +14,8 @@ export let options = {
   duration: '5m',
 };
 
-const host = "https://reservation.weihanli.xyz";
+// const host = "https://reservation.weihanli.xyz";
+const host = "http://localhost:65026";
 
 export default function () {
   let res = http.get(`${host}/api/notice`);
