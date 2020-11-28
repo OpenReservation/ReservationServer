@@ -6,7 +6,6 @@ metadata:
   labels:
     app: prometheus
 spec:
-  serviceAccountName: prometheus
   replicas: 1
   revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
   selector:
@@ -23,11 +22,11 @@ spec:
       labels:
         app: prometheus
     spec:
+      serviceAccountName: prometheus
       containers:
         - name: prometheus
           image: prom/prometheus
           imagePullPolicy: IfNotPresent
-          restartPolicy: Always
           resources:
             limits:
               memory: "512Mi"
