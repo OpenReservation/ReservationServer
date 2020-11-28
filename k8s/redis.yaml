@@ -22,12 +22,16 @@ spec:
         app: redis
     
     spec:
-      containers:
-        - name: redis
-          image: redis:alpine
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 6379
+    - containers:
+      - name: redis
+        image: redis:alpine
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "80m"
+        ports:
+          - containerPort: 6379
 
 ---
 apiVersion: v1
