@@ -22,7 +22,7 @@ data:
         - role: endpoints
         relabel_configs:
         - action: labelmap
-          regex: __meta_kubernetes_service_label_(.+)
+          regex: __meta_kubernetes_pod_label_(.+)
         - source_labels: [__meta_kubernetes_namespace]
           action: replace
           target_label: k8s_namespace
@@ -35,6 +35,3 @@ data:
           replacement: $1
           target_label: k8s_pod
           action: replace
-      - job_name: 'sparktodo-api'
-        static_configs:
-        - targets: ['sparktodo-api.default']
