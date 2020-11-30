@@ -51,6 +51,8 @@ namespace OpenReservation
 {
     public class Startup
     {
+        private static readonly Counter exceptionCounter = Metrics.CreateCounter("Unhandled exception", "Unhandled Exception", "error");
+
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration.ReplacePlaceholders();
@@ -306,6 +308,9 @@ namespace OpenReservation
                     }
 
                     logger.LogError(exception, exception.Message);
+
+                    exceptionCounter.WithLabels(exception.Message).Inc();
+
                     return Task.CompletedTask;
                 };
             });
@@ -373,11 +378,8 @@ namespace OpenReservation
 
             app.UseCustomExceptionHandler();
             app.UseHealthCheck("/health");
-            app.UseRequestLocalization();
 
             app.UseStaticFiles();
-            app.UseResponseCaching();
-
             app.UseSwagger()
                 .UseSwaggerUI(c =>
                 {
@@ -386,10 +388,13 @@ namespace OpenReservation
                     c.DocumentTitle = "OpenReservation API";
                 });
 
-            app.UseRouting();
+            app.UseRequestLocalization();
+            app.UseResponseCaching();
 
+            app.UseRouting();
             app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
             app.UseHttpMetrics();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
