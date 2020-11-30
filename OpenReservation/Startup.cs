@@ -51,7 +51,7 @@ namespace OpenReservation
 {
     public class Startup
     {
-        private static readonly Counter exceptionCounter = Metrics.CreateCounter("Unhandled exception", "Unhandled Exception", "error");
+        private static readonly Counter exceptionCounter = Metrics.CreateCounter("Unhandled_exception", "Unhandled Exception", "error");
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
