@@ -28,10 +28,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: "256Mi"
+              memory: "128Mi"
               cpu: "50m"
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /api/health
               port: 3000
             initialDelaySeconds: 60
             periodSeconds: 10
