@@ -366,6 +366,12 @@ namespace OpenReservation
                 };
             });
 
+            // prometheus counters metrics
+            services.AddPrometheusCounters();
+            services.AddPrometheusAspNetCoreMetrics();
+            services.AddPrometheusAspNetCoreMetrics();
+            services.AddPrometheusHttpClientMetrics();
+
             // RegisterAssemblyModules
             services.RegisterAssemblyModules();
         }

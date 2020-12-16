@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="$(DotNetPackageVersion)" />  
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="$(DotNetPackageVersion)" />  
     <PackageReference Include="prometheus-net.AspNetCore" Version="4.0.0" />  
+    <PackageReference Include="prometheus-net.Contrib" Version="0.9.0" />  
     <PackageReference Include="prometheus-net.DotNetRuntime" Version="3.4.0" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="2.1.8" />
     <PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
