@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Prometheus.DotNetRuntime;
 
 namespace OpenReservation
@@ -16,6 +17,7 @@ namespace OpenReservation
                {
                    builder.AddEnvironmentVariables("Reservation_");
                })
+               .ConfigureLogging(builder => builder.AddJsonConsole())
                .ConfigureWebHostDefaults(webHostBuilder =>
                {
                    webHostBuilder.UseStartup<Startup>();
