@@ -31,13 +31,11 @@ using OpenReservation.Models;
 using OpenReservation.Services;
 using OpenReservation.ViewModels;
 using Prometheus;
-using Serilog;
 using StackExchange.Redis;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Logging;
-using WeihanLi.Common.Logging.Serilog;
 using WeihanLi.Common.Services;
 using WeihanLi.EntityFramework.Audit;
 using WeihanLi.Extensions;
@@ -428,39 +426,7 @@ namespace OpenReservation
 
         private void LoggingConfig(ILoggerFactory loggerFactory)
         {
-            SerilogHelper.LogInit(loggingConfig =>
-            {
-                loggingConfig
-                    .Enrich.FromLogContext()
-                    .Enrich.WithHttpContextInfo(DependencyResolver.Current, (logEvent, propertyFactory, httpContext) =>
-                        {
-                            logEvent.AddPropertyIfAbsent(
-                                propertyFactory.CreateProperty("RequestIP", httpContext.GetUserIP()));
-                            logEvent.AddPropertyIfAbsent(
-                                propertyFactory.CreateProperty("RequestPath", httpContext.Request.Path));
-                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("RequestMethod",
-                                httpContext.Request.Method));
-
-                            logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("Referer",
-                                httpContext.Request.Headers["Referer"].ToString()));
-                            if (httpContext.Response.HasStarted)
-                            {
-                                logEvent.AddPropertyIfAbsent(
-                                    propertyFactory.CreateProperty("ResponseStatus",
-                                        httpContext.Response.StatusCode));
-                            }
-                        })
-                    ;
-
-                var esConnString = Configuration.GetConnectionString("ElasticSearch");
-                if (esConnString.IsNotNullOrWhiteSpace())
-                {
-                    loggingConfig.WriteTo.Elasticsearch(esConnString, $"logstash-{ApplicationHelper.ApplicationName.ToLower()}");
-                }
-            });
-
             loggerFactory
-                .AddSerilog()
                 .AddSentry(options =>
                 {
                     options.Dsn = Configuration.GetAppSetting("SentryClientKey");
