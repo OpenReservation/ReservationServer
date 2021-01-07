@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Prometheus.DotNetRuntime;
@@ -13,11 +14,19 @@ namespace OpenReservation
             DotNetRuntimeStatsBuilder.Default().StartCollecting();
 
             Host.CreateDefaultBuilder(args)
-               .ConfigureAppConfiguration((context, builder) =>
+               .ConfigureAppConfiguration(builder =>
                {
                    builder.AddEnvironmentVariables("Reservation_");
                })
                .ConfigureLogging(builder => builder.AddJsonConsole())
+               .ConfigureServices(services =>
+               {
+                   // prometheus counters metrics
+                   services.AddPrometheusCounters();
+                   services.AddPrometheusAspNetCoreMetrics();
+                   services.AddPrometheusSqlClientMetrics();
+                   services.AddPrometheusHttpClientMetrics();
+               })
                .ConfigureWebHostDefaults(webHostBuilder =>
                {
                    webHostBuilder.UseStartup<Startup>();
