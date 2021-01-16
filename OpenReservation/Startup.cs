@@ -30,6 +30,7 @@ using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.Services;
 using OpenReservation.ViewModels;
+using Polly;
 using Prometheus;
 using StackExchange.Redis;
 using WeihanLi.Common;
@@ -235,7 +236,7 @@ namespace OpenReservation
             services.AddHttpClient<ChatBotHelper>(client =>
             {
                 client.Timeout = TimeSpan.FromSeconds(5);
-            });
+            }).AddTransientHttpErrorPolicy(builder => builder.RetryAsync(5));
             services.TryAddSingleton<ChatBotHelper>();
             services.AddHttpClient<WechatAPI.Helper.WeChatHelper>();
             services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
@@ -287,7 +288,7 @@ namespace OpenReservation
 
             services.Configure<CustomExceptionHandlerOptions>(options =>
             {
-                options.OnRequestAborted = (context, logger) => Task.CompletedTask;
+                options.OnRequestAborted = (_, _) => Task.CompletedTask;
 
                 options.OnException = (context, logger, exception) =>
                 {
