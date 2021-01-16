@@ -10,11 +10,11 @@
 	</PropertyGroup>
   
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>9</LangVersion>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/OpenReservation/ReservationServer</RepositoryUrl>
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2015-2020 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2015-2021 (c) WeihanLi</Copyright>
     <DotNetPackageVersion>5.0.0</DotNetPackageVersion>
   </PropertyGroup>
 </Project>
