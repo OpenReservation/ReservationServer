@@ -53,7 +53,7 @@ namespace OpenReservation.API
         [HttpGet("{placeId}/periods")]
         public IActionResult GetPeriodsAsync(Guid placeId, DateTime dt)
         {
-            var result = HttpContext.RequestServices.GetService<ReservationHelper>()
+            var result = HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                 .GetAvailablePeriodsByDateAndPlace(dt, placeId);
             return Ok(result);
         }

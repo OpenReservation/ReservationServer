@@ -20,7 +20,6 @@ using OpenReservation.WorkContexts;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
-using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
 
@@ -100,7 +99,7 @@ namespace OpenReservation.Controllers
         [Authorize]
         public ActionResult Reservate()
         {
-            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
+            var places = HttpContext.RequestServices.GetRequiredService<IBLLReservationPlace>()
                 .Select(s => s.IsDel == false && s.IsActive)
                 .OrderBy(_ => _.PlaceIndex)
                 .ThenBy(_ => _.PlaceName)
@@ -114,7 +113,7 @@ namespace OpenReservation.Controllers
         /// <returns></returns>
         public ActionResult IsReservationForDateValid(DateTime reservationForDate)
         {
-            var isValid = HttpContext.RequestServices.GetService<ReservationHelper>()
+            var isValid = HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                 .IsReservationForDateAvailable(reservationForDate, false, out var msg);
             if (isValid)
             {
@@ -170,7 +169,7 @@ namespace OpenReservation.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>()
+                    if (!HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                         .MakeReservation(model, out var msg))
                     {
                         result.ErrorMsg = msg;
@@ -213,7 +212,7 @@ namespace OpenReservation.Controllers
             {
                 return Content("请求异常，或者手机号输入有误");
             }
-            r.Place = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
+            r.Place = HttpContext.RequestServices.GetRequiredService<IBLLReservationPlace>()
                 .Fetch(p => p.PlaceId == r.ReservationPlaceId);
             return View(r);
         }
@@ -241,7 +240,7 @@ namespace OpenReservation.Controllers
             try
             {
                 var noticeList = await noticeService.PagedAsync(search.PageIndex, search.PageSize, whereExpression,
-                    n => n.NoticePublishTime, false);
+                    n => n.NoticePublishTime);
                 var data = noticeList.ToPagedList();
                 return View(data);
             }
@@ -265,7 +264,7 @@ namespace OpenReservation.Controllers
             {
                 var notice = await cacheClient.GetOrSetAsync(
                     $"Notice_{path.Trim()}",
-                    () => HttpContext.RequestServices.GetService<IBLLNotice>()
+                    () => HttpContext.RequestServices.GetRequiredService<IBLLNotice>()
                         .FetchAsync(n => n.NoticeCustomPath == path.Trim()),
                     TimeSpan.FromMinutes(1));
                 if (notice != null)
@@ -286,7 +285,7 @@ namespace OpenReservation.Controllers
             }
             return Ok(new
             {
-                text = await HttpContext.RequestServices.GetService<ChatBotHelper>()
+                text = await HttpContext.RequestServices.GetRequiredService<ChatBotHelper>()
                     .GetBotReplyAsync(msg)
             });
         }

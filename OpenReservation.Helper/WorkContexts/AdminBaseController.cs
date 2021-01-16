@@ -1,7 +1,7 @@
-﻿using OpenReservation.Helpers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OpenReservation.Helpers;
 
 namespace OpenReservation.WorkContexts
 {
@@ -19,6 +19,6 @@ namespace OpenReservation.WorkContexts
         /// <summary>
         /// 管理员姓名
         /// </summary>
-        public string UserName => User.Identity.Name;
+        public string UserName => User.Identity?.Name;
     }
 }

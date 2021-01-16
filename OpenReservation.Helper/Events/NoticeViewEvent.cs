@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using OpenReservation.Database;
-using Microsoft.EntityFrameworkCore;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
-using WeihanLi.Extensions;
 using WeihanLi.Redis;
 
 namespace OpenReservation.Events

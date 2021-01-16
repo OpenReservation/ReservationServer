@@ -9,7 +9,7 @@ namespace OpenReservation.Extensions
 {
     public static class RequestLogExtension
     {
-        private static readonly HashSet<string> ExcludeHeaders = new HashSet<string>();
+        private static readonly HashSet<string> ExcludeHeaders = new();
 
         static RequestLogExtension()
         {
@@ -20,14 +20,14 @@ namespace OpenReservation.Extensions
         {
             applicationBuilder.Use(async (context, next) =>
             {
-                var logger = context.RequestServices.GetService<ILoggerFactory>()
+                var logger = context.RequestServices.GetRequiredService<ILoggerFactory>()
                 .CreateLogger("RequestLog");
                 var requestInfo = $@"Request Info:
 Host: {context.Request.Host}, Path:{context.Request.Path},
 Headers: {context.Request.Headers
                     .Where(h => !ExcludeHeaders.Contains(h.Key))
                     .Select(h => $"{h.Key}={h.Value.ToString()}").StringJoin(",")},
-ConnectionIP: {context.Connection.RemoteIpAddress.MapToIPv4()},
+ConnectionIP: {context.Connection.RemoteIpAddress?.MapToIPv4()},
 ";
                 logger.LogInformation(requestInfo);
                 await next();

@@ -91,7 +91,7 @@ namespace OpenReservation.API
             }
 
             var phoneNumValid = ValidateHelper.IsMobile(phone);
-            var userId = User.Identity.IsAuthenticated
+            var userId = User.Identity?.IsAuthenticated == true
                 ? User.GetUserId<Guid>()
                 : Guid.Empty
                 ;
@@ -100,24 +100,16 @@ namespace OpenReservation.API
                 return BadRequest();
             }
 
-            Reservation detail;
-            if (phoneNumValid)
+            Expression<Func<Reservation, bool>> predict = r => r.ReservationId == id;
+            predict = userId != Guid.Empty
+                ? predict.And(x => x.ReservedBy == userId)
+                : predict.And(x => x.ReservationPersonPhone == phone)
+                ;
+            var detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(predict), cancellationToken);
+            if (detail == null)
             {
-                detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(x => x.ReservationId == id && x.ReservationPersonPhone == phone), cancellationToken);
-                if (detail == null)
-                {
-                    return NotFound();
-                }
+                return NotFound();
             }
-            else
-            {
-                detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(x => x.ReservationId == id && x.ReservedBy == userId), cancellationToken);
-                if (detail == null)
-                {
-                    return NotFound();
-                }
-            }
-
             return Ok(detail);
         }
 

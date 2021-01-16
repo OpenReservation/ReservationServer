@@ -2,16 +2,15 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.ViewModels;
 using OpenReservation.WorkContexts;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
@@ -31,7 +30,7 @@ namespace OpenReservation.AdminLogic.Controllers
 
         public ActionResult Reservate()
         {
-            var places = HttpContext.RequestServices.GetService<IBLLReservationPlace>()
+            var places = HttpContext.RequestServices.GetRequiredService<IBLLReservationPlace>()
                 .Select(r => r.IsActive)
                 .OrderBy(p => p.PlaceId)
                 .ThenBy(p => p.PlaceName)
@@ -45,14 +44,14 @@ namespace OpenReservation.AdminLogic.Controllers
         /// <param name="model">预约信息实体</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult MakeReservation([FromBody]ReservationViewModel model)
+        public ActionResult MakeReservation([FromBody] ReservationViewModel model)
         {
             var result = new ResultModel<bool> { Result = false, Status = ResultStatus.RequestError };
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (!HttpContext.RequestServices.GetService<ReservationHelper>()
+                    if (!HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                         .MakeReservation(model, out var msg, true))
                     {
                         result.ErrorMsg = msg;
@@ -154,7 +153,7 @@ namespace OpenReservation.AdminLogic.Controllers
                 .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
                 .WithInclude(q => q.Include(x => x.Place)
                 ));
-            var excelBytes = reservations.ToExcelBytes(ExcelFormat.Xls);
+            var excelBytes = reservations.ToExcelBytes();
 
             var fileName = (beginDate.HasValue && endDate.HasValue)
                 ? $"{beginDate:yyyyMMdd}-{endDate:yyyyMMdd}活动室预约信息.xls"

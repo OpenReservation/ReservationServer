@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using OpenReservation.Business;
-using OpenReservation.Helpers;
-using OpenReservation.Models;
-using OpenReservation.WorkContexts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenReservation.Business;
+using OpenReservation.Helpers;
+using OpenReservation.Models;
+using OpenReservation.WorkContexts;
 using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;
-using WeihanLi.Common.Helpers;
 
 namespace OpenReservation.AdminLogic.Controllers
 {
@@ -24,12 +24,12 @@ namespace OpenReservation.AdminLogic.Controllers
         // GET: Admin/BlockEntity
         public ActionResult Index()
         {
-            return View(HttpContext.RequestServices.GetService<IBLLBlockType>().Select(_ => true));
+            return View(HttpContext.RequestServices.GetRequiredService<IBLLBlockType>().Select(_ => true));
         }
 
         public JsonResult BlockTypes()
         {
-            return Json(HttpContext.RequestServices.GetService<IBLLBlockType>().Get());
+            return Json(HttpContext.RequestServices.GetRequiredService<IBLLBlockType>().Get());
         }
 
         /// <summary>

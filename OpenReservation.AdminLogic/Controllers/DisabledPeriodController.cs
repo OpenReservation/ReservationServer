@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using OpenReservation.AdminLogic.ViewModels;
 using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Models;
 
@@ -48,7 +47,7 @@ namespace OpenReservation.AdminLogic.Controllers
             }
 
             var pageList = _bllDisabledPeriod.Paged(pageIndex, pageSize,
-                whereLambda, p => p.UpdatedTime, false);
+                whereLambda, p => p.UpdatedTime);
             var data = pageList.ToPagedList();
             return View(data);
         }

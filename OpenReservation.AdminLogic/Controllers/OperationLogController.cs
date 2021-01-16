@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.AccessControlHelper;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Extensions;
@@ -46,7 +46,7 @@ namespace OpenReservation.AdminLogic.Controllers
                 whereLambda = whereLambda.And(l => l.LogContent.Contains(search.SearchItem2.Trim()));
             }
             var logList = operationLogHelper.Paged(search.PageIndex, search.PageSize,
-                     whereLambda, l => l.OperTime, false);
+                     whereLambda, l => l.OperTime);
             var dataList = logList.ToPagedList();
             return View(dataList);
         }

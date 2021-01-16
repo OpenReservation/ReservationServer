@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using OpenReservation.Database;
 using OpenReservation.Models;
 using OpenReservation.Services;
-using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 
 namespace OpenReservation.Helpers
@@ -61,9 +60,9 @@ namespace OpenReservation.Helpers
         {
             var blockTypes = new List<BlockType>
             {
-                new BlockType { TypeId = Guid.NewGuid(), TypeName = "Contact Phone" },
-                new BlockType { TypeId = Guid.NewGuid(), TypeName = "IP" },
-                new BlockType { TypeId = Guid.NewGuid(), TypeName = "Contact Name" }
+                new() { TypeId = Guid.NewGuid(), TypeName = "Contact Phone" },
+                new() { TypeId = Guid.NewGuid(), TypeName = "IP" },
+                new() { TypeId = Guid.NewGuid(), TypeName = "Contact Name" }
             };
             dbContext.BlockTypes.AddRange(blockTypes);
 
@@ -156,35 +155,35 @@ namespace OpenReservation.Helpers
             //sys settings init
             var settings = new List<SystemSettings>
             {
-                new SystemSettings
+                new()
                 {
                     SettingId = Guid.NewGuid(),
                     SettingName = "SystemTitle",
                     DisplayName = "系统标题/SystemTitle",
                     SettingValue = "OpenReservation"
                 },
-                new SystemSettings
+                new()
                 {
                     SettingId = Guid.NewGuid(),
                     SettingName = "SystemKeywords",
                     DisplayName = "系统关键词/Keywords",
                     SettingValue = "预约,活动室,预定,reservation,booking"
                 },
-                new SystemSettings
+                new()
                 {
                     SettingId = Guid.NewGuid(),
                     SettingName = "SystemDescription",
                     DisplayName = "系统简介/Description",
                     SettingValue = "online reservation system powered by powerful asp.net core"
                 },
-                new SystemSettings
+                new()
                 {
                     SettingId = Guid.NewGuid(),
                     SettingName = "SystemContactPhone",
                     DisplayName = "系统联系人联系电话/ContactPhone",
                     SettingValue = "13245642365"
                 },
-                new SystemSettings
+                new()
                 {
                     SettingId = Guid.NewGuid(),
                     SettingName = "SystemContactEmail",

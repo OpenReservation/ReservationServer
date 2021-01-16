@@ -1,9 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OpenReservation.Common;
-using WeihanLi.Common;
 using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 

@@ -150,7 +150,7 @@ namespace OpenReservation.AdminLogic.Controllers
                 _reservationPlaceHelper.Update(
                     new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = UserName }, x => x.IsDel, x => x.UpdateBy,
                     x => x.UpdateTime);
-                OperLogHelper.AddOperLog($"删除活动室{placeId.ToString()}:{placeName}", OperLogModule.ReservationPlace,
+                OperLogHelper.AddOperLog($"删除活动室{placeId}:{placeName}", OperLogModule.ReservationPlace,
                     UserName);
                 return Json("");
             }
@@ -159,7 +159,6 @@ namespace OpenReservation.AdminLogic.Controllers
                 Logger.Error(ex);
                 return Json("删除活动室失败，发生异常：" + ex.Message);
             }
-            ;
         }
 
         /// <summary>

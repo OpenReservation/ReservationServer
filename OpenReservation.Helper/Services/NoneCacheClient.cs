@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Memory;
 using StackExchange.Redis;
 using WeihanLi.Redis;
 
 namespace OpenReservation.Services
 {
-    public class InMemoryCacheClient : ICacheClient
+    public class NoneCacheClient : ICacheClient
     {
-        private readonly IMemoryCache _cache;
-
-        public InMemoryCacheClient(IMemoryCache cache)
-        {
-            _cache = cache;
-        }
-
         public bool Expire(string key, TimeSpan? expiresIn, CommandFlags flags = CommandFlags.None)
         {
             throw new NotImplementedException();

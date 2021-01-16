@@ -35,7 +35,6 @@ using StackExchange.Redis;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Logging;
 using WeihanLi.Common.Services;
 using WeihanLi.EntityFramework.Audit;
 using WeihanLi.Extensions;
@@ -49,7 +48,7 @@ namespace OpenReservation
 {
     public class Startup
     {
-        private static readonly Counter exceptionCounter = Metrics.CreateCounter("Unhandled_exception", "Unhandled Exception", "error");
+        private static readonly Counter ExceptionCounter = Metrics.CreateCounter("Unhandled_exception", "Unhandled Exception", "error");
 
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
@@ -245,7 +244,7 @@ namespace OpenReservation
             if (HostEnvironment.IsDevelopment())
             {
                 services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
-                services.TryAddSingleton<ICacheClient, InMemoryCacheClient>();
+                services.TryAddSingleton<ICacheClient, NoneCacheClient>();
             }
             else
             {
@@ -307,7 +306,7 @@ namespace OpenReservation
 
                     logger.LogError(exception, exception.Message);
 
-                    exceptionCounter.WithLabels(exception.Message).Inc();
+                    ExceptionCounter.WithLabels(exception.Message).Inc();
 
                     return Task.CompletedTask;
                 };
@@ -431,8 +430,7 @@ namespace OpenReservation
                     options.BeforeSend = (sentryEvent) =>
                     {
                         // ignore TaskCanceledException/OperationCanceledException
-                        if (sentryEvent.Exception is TaskCanceledException ||
-                            sentryEvent.Exception is OperationCanceledException)
+                        if (sentryEvent.Exception is OperationCanceledException or TaskCanceledException)
                         {
                             return null;
                         }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using OpenReservation.AdminLogic.ViewModels;
 using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 
 namespace OpenReservation.AdminLogic.Controllers
@@ -33,7 +33,7 @@ namespace OpenReservation.AdminLogic.Controllers
         /// </summary>
         /// <param name="search">查询信息</param>
         /// <returns></returns>
-        public ActionResult List([FromQuery]SearchHelperModel search)
+        public ActionResult List([FromQuery] SearchHelperModel search)
         {
             Expression<Func<Notice, bool>> whereExpression = (n => true);
             if (!string.IsNullOrEmpty(search.SearchItem1))
@@ -43,7 +43,7 @@ namespace OpenReservation.AdminLogic.Controllers
             try
             {
                 var list = _bLLNotice.Paged(search.PageIndex, search.PageSize,
-                    whereExpression, n => n.NoticePublishTime, false);
+                    whereExpression, n => n.NoticePublishTime);
                 return View(list.ToPagedList());
             }
             catch (Exception ex)
@@ -69,7 +69,7 @@ namespace OpenReservation.AdminLogic.Controllers
         /// <param name="model">公告信息</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult Create([FromForm]NoticeViewModel model)
+        public ActionResult Create([FromForm] NoticeViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -163,7 +163,7 @@ namespace OpenReservation.AdminLogic.Controllers
         }
 
         [HttpPost]
-        public ActionResult Preview([FromForm]NoticeViewModel model)
+        public ActionResult Preview([FromForm] NoticeViewModel model)
         {
             return View(model);
         }

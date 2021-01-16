@@ -16,7 +16,7 @@ namespace OpenReservation.Extensions
                 await next();
                 profiler.Stop();
 
-                var logger = context.RequestServices.GetService<ILoggerFactory>()
+                var logger = context.RequestServices.GetRequiredService<ILoggerFactory>()
                     .CreateLogger("PerformanceLog");
                 logger.LogInformation("TraceId:{TraceId}, RequestMethod:{RequestMethod}, RequestPath:{RequestPath}, ElapsedMilliseconds:{ElapsedMilliseconds}, Response StatusCode: {StatusCode}",
                     context.TraceIdentifier, context.Request.Method, context.Request.Path, profiler.ElapsedMilliseconds, context.Response.StatusCode);

@@ -23,9 +23,9 @@ namespace OpenReservation.API.Test
                 {
                     var blockTypes = new List<BlockType>
                     {
-                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
-                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
-                        new BlockType {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
+                        new() {TypeId = Guid.NewGuid(), TypeName = "联系方式"},
+                        new() {TypeId = Guid.NewGuid(), TypeName = "IP地址"},
+                        new() {TypeId = Guid.NewGuid(), TypeName = "预约人姓名"}
                     };
                     dbContext.BlockTypes.AddRange(blockTypes);
 
@@ -105,35 +105,35 @@ namespace OpenReservation.API.Test
                     //sys settings init
                     settings = new List<SystemSettings>
                         {
-                            new SystemSettings
+                            new()
                             {
                                 SettingId = Guid.NewGuid(),
                                 SettingName = "SystemTitle",
                                 DisplayName = "系统标题",
                                 SettingValue = "活动室预约系统"
                             },
-                            new SystemSettings
+                            new()
                             {
                                 SettingId = Guid.NewGuid(),
                                 SettingName = "SystemKeywords",
                                 DisplayName = "系统关键词",
                                 SettingValue = "预约,活动室,预定,reservation"
                             },
-                            new SystemSettings
+                            new()
                             {
                                 SettingId = Guid.NewGuid(),
                                 SettingName = "SystemDescription",
                                 DisplayName = "系统简介",
                                 SettingValue = "活动室预约系统是一个基于ASP.NET MVC 开发的一个在线预约系统。"
                             },
-                            new SystemSettings
+                            new()
                             {
                                 SettingId = Guid.NewGuid(),
                                 SettingName = "SystemContactPhone",
                                 DisplayName = "系统联系人联系电话",
                                 SettingValue = "13245642365"
                             },
-                            new SystemSettings
+                            new()
                             {
                                 SettingId = Guid.NewGuid(),
                                 SettingName = "SystemContactEmail",

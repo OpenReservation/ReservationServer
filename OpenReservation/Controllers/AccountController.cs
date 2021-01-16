@@ -77,9 +77,9 @@ namespace OpenReservation.Controllers
         [AllowAnonymous]
         public IActionResult Logout()
         {
-            if (User.Identity.IsAuthenticated)
+            if (User.Identity?.IsAuthenticated == true)
             {
-                Logger.Info($"{HttpContext.User.Identity.Name} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
+                Logger.Info($"{User.Identity.Name} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
 
                 return new SignOutResult(new[] { "Cookies", "OpenIdConnect" });
             }

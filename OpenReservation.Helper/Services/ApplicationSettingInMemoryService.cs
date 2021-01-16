@@ -5,7 +5,7 @@ namespace OpenReservation.Services
 {
     public class ApplicationSettingInMemoryService : IApplicationSettingService
     {
-        private readonly ConcurrentDictionary<string, string> _settingDictionary = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _settingDictionary = new();
 
         public int AddSettings(Dictionary<string, string> dictionary)
         {

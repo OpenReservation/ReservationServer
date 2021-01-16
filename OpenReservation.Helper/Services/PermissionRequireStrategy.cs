@@ -17,7 +17,11 @@ namespace OpenReservation.Services
 
         public bool IsCanAccess(string accessKey)
         {
-            var user = _accessor.HttpContext.User;
+            var user = _accessor.HttpContext?.User;
+            if (user?.Identity is null)
+            {
+                return false;
+            }
             return user.Identity.IsAuthenticated && user.IsInRole(AdminRoleName);
         }
 
@@ -43,7 +47,11 @@ namespace OpenReservation.Services
 
         public bool IsControlCanAccess(string accessKey)
         {
-            var user = _accessor.HttpContext.User;
+            var user = _accessor.HttpContext?.User;
+            if (user?.Identity is null)
+            {
+                return false;
+            }
             return user.Identity.IsAuthenticated && user.IsInRole("ReservationAdmin");
         }
     }

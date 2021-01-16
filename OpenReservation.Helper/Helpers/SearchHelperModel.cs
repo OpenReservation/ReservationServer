@@ -2,19 +2,19 @@
 {
     public class SearchHelperModel
     {
-        private int pageNumber = 1, pageSize = 10;
+        private int _pageNumber = 1, _pageSize = 10;
 
         /// <summary>
         /// 当前页码索引
         /// </summary>
         public int PageIndex
         {
-            get => pageNumber;
+            get => _pageNumber;
             set
             {
                 if (value > 0)
                 {
-                    pageNumber = value;
+                    _pageNumber = value;
                 }
             }
         }
@@ -24,12 +24,12 @@
         /// </summary>
         public int PageSize
         {
-            get => pageSize;
+            get => _pageSize;
             set
             {
                 if (value > 0)
                 {
-                    pageSize = value;
+                    _pageSize = value;
                 }
             }
         }
