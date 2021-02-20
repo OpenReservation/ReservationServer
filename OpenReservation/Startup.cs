@@ -54,12 +54,12 @@ namespace OpenReservation
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration.ReplacePlaceholders();
-            HostEnvironment = environment;
+            Environment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
-        public IWebHostEnvironment HostEnvironment { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -211,6 +211,10 @@ namespace OpenReservation
                 {
                     option.UseInMemoryDatabase("Reservation");
                 }
+                else if ("Sqlite".EqualsIgnoreCase(dbType))
+                {
+                    option.UseSqlite("Data Source=Reservation.db;Cache=Shared");
+                }
                 else if ("MySql".EqualsIgnoreCase(dbType))
                 {
                     option.UseMySql(Configuration.GetConnectionString("Reservation"));
@@ -219,7 +223,7 @@ namespace OpenReservation
                 {
                     option.UseSqlServer(Configuration.GetConnectionString("Reservation"));
                 }
-            }, 100);
+            });
 
             services.AddGoogleRecaptchaHelper(Configuration.GetSection("GoogleRecaptcha"), client =>
             {
@@ -242,10 +246,9 @@ namespace OpenReservation
             services.TryAddSingleton<WechatAPI.Helper.WeChatHelper>();
 
             // registerApplicationSettingService
-            if (HostEnvironment.IsDevelopment())
+            if (Environment.IsDevelopment())
             {
                 services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
-                services.TryAddSingleton<ICacheClient, NoneCacheClient>();
             }
             else
             {
@@ -258,22 +261,21 @@ namespace OpenReservation
                 .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
                 ;
 
+            services.AddRedisConfig(options =>
+            {
+                options.DefaultDatabase = 0;
+                options.RedisServers = new[]
+                {
+                    new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
+                };
+                options.CachePrefix = "OpenReservation";
+            });
+
             // DataProtection persist in redis
             var dataProtectionBuilder = services.AddDataProtection()
                 .SetApplicationName(ApplicationHelper.ApplicationName);
-
-            if (!HostEnvironment.IsDevelopment())
+            if (!Environment.IsDevelopment())
             {
-                services.AddRedisConfig(options =>
-                {
-                    options.DefaultDatabase = 0;
-                    options.RedisServers = new[]
-                    {
-                        new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
-                    };
-                    options.CachePrefix = "OpenReservation";
-                });
-
                 dataProtectionBuilder.PersistKeysToStackExchangeRedis(
                     () => DependencyResolver.Current
                         .ResolveService<IDatabase>(),
@@ -360,7 +362,7 @@ namespace OpenReservation
                         return userIp;
                     }
 
-                    return $"{Environment.MachineName}__{Environment.UserName}";
+                    return $"{System.Environment.MachineName}__{System.Environment.UserName}";
                 };
             });
 
@@ -424,9 +426,9 @@ namespace OpenReservation
                 .AddSentry(options =>
                 {
                     options.Dsn = Configuration.GetAppSetting("SentryClientKey");
-                    options.Environment = HostEnvironment.EnvironmentName;
+                    options.Environment = Environment.EnvironmentName;
                     options.MinimumEventLevel = LogLevel.Error;
-                    options.Debug = HostEnvironment.IsDevelopment();
+                    options.Debug = Environment.IsDevelopment();
 
                     options.BeforeSend = (sentryEvent) =>
                     {
@@ -449,7 +451,7 @@ namespace OpenReservation
             {
                 builder
                     .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName), ApplicationHelper.ApplicationName)
-                    .EnrichWithProperty("Host", Environment.MachineName)
+                    .EnrichWithProperty("Host", System.Environment.MachineName)
                     .WithUserIdProvider(userIdProvider)
                     .IgnoreEntity<OperationLog>()
                     .WithHttpContextInfo(applicationBuilder.ApplicationServices.GetRequiredService<IHttpContextAccessor>())
