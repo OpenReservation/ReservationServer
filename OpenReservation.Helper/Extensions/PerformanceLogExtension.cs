@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Common;
+using WeihanLi.Common.Helpers;
 
 namespace OpenReservation.Extensions
 {
@@ -11,15 +11,13 @@ namespace OpenReservation.Extensions
         {
             applicationBuilder.Use(async (context, next) =>
             {
-                var profiler = new StopwatchProfiler();
-                profiler.Start();
+                var watch = ValueStopwatch.StartNew();
                 await next();
-                profiler.Stop();
-
+                watch.Stop();
                 var logger = context.RequestServices.GetRequiredService<ILoggerFactory>()
                     .CreateLogger("PerformanceLog");
                 logger.LogInformation("TraceId:{TraceId}, RequestMethod:{RequestMethod}, RequestPath:{RequestPath}, ElapsedMilliseconds:{ElapsedMilliseconds}, Response StatusCode: {StatusCode}",
-                    context.TraceIdentifier, context.Request.Method, context.Request.Path, profiler.ElapsedMilliseconds, context.Response.StatusCode);
+                    context.TraceIdentifier, context.Request.Method, context.Request.Path, watch.Elapsed.TotalMilliseconds, context.Response.StatusCode);
             });
             return applicationBuilder;
         }
