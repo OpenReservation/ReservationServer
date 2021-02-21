@@ -7,7 +7,7 @@ namespace OpenReservation.Database
 {
     public class ReservationDbContext : AuditDbContext
     {
-        public ReservationDbContext(DbContextOptions options) : base(options)
+        public ReservationDbContext(DbContextOptions<ReservationDbContext> options) : base(options)
         {
         }
 

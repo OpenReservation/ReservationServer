@@ -40,8 +40,6 @@ services:
   redis:
     container_name: redis
     image: redis:alpine
-    # ports: 
-    #   - 6379:6379
     restart: always
     healthcheck:
         test: ["CMD", "redis-cli", "-h", "127.0.0.1", "PING"]
@@ -49,19 +47,17 @@ services:
         timeout: 10s
         retries: 10
 
-  # db:
-  #   container_name: mysql
-  #   image: mysql:8.0
-  #   ports: 
-  #     - 3306:3306
-  #   environment:
-  #     - 'MYSQL_ROOT_PASSWORD=Admin888'
-  #   restart: always
-  #   healthcheck:
-  #       test: ["CMD", "mysqladmin", "ping"]
-  #       interval: 30s
-  #       timeout: 10s
-  #       retries: 10
+  db:
+    container_name: mysql
+    image: mysql:8.0
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=Admin888'
+    restart: always
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping"]
+        interval: 30s
+        timeout: 10s
+        retries: 10
 
   reservation:
     build:
@@ -69,11 +65,12 @@ services:
       dockerfile: Dockerfile
     container_name: reservation
     environment:
-      - 'Reservation_AppSettings__DbType=InMemory'
+      - 'Reservation_AppSettings__DbType=MySql'
       - 'Reservation_ConnectionStrings__ElasticSearch='
-      # - 'Reservation_ConnectionStrings__Reservation=server=db-server;database=Reservation;uid=root;pwd=Admin888;'
+      - 'Reservation_ConnectionStrings__Reservation=server=db-server;database=Reservation;uid=root;pwd=Admin888;'
+      - 'Reservation_ConnectionStrings__Redis=redis-server'
     ports:
-      - 9080:80      
+      - 65026:80
     depends_on:
       # - elasticsearch
       redis:
@@ -82,6 +79,6 @@ services:
         condition: service_healthy
     links: 
       # - elasticsearch:elasticsearch
-      # - db:db-server
+      - db:db-server
       - redis:redis-server
       

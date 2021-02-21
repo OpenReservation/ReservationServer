@@ -31,6 +31,7 @@ using OpenReservation.Models;
 using OpenReservation.Services;
 using OpenReservation.ViewModels;
 using Polly;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Prometheus;
 using StackExchange.Redis;
 using WeihanLi.Common;
@@ -204,24 +205,29 @@ namespace OpenReservation
             });
 
             // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(option =>
+            services.AddDbContext<ReservationDbContext>(option =>
             {
-                var dbType = Configuration.GetAppSetting("DbType");
-                if ("InMemory".EqualsIgnoreCase(dbType))
+                var dbType = Configuration.GetAppSetting<DbType>("DbType");
+                switch (dbType)
                 {
-                    option.UseInMemoryDatabase("Reservation");
-                }
-                else if ("Sqlite".EqualsIgnoreCase(dbType))
-                {
-                    option.UseSqlite("Data Source=Reservation.db;Cache=Shared");
-                }
-                else if ("MySql".EqualsIgnoreCase(dbType))
-                {
-                    option.UseMySql(Configuration.GetConnectionString("Reservation"));
-                }
-                else
-                {
-                    option.UseSqlServer(Configuration.GetConnectionString("Reservation"));
+                    case DbType.InMemory:
+                        option.UseInMemoryDatabase("Reservation");
+                        break;
+
+                    case DbType.Sqlite:
+                        option.UseSqlite("Data Source=Reservation.db;Cache=Shared");
+                        break;
+
+                    case DbType.MySql:
+                        option.UseMySql(Configuration.GetConnectionString("Reservation"),
+                           new MySqlServerVersion(new Version(8, 0)), 
+                           mySqlOptions => mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend)
+                        );
+                        break;
+
+                    default:
+                        option.UseSqlServer(Configuration.GetConnectionString("Reservation"));
+                        break;
                 }
             });
 
