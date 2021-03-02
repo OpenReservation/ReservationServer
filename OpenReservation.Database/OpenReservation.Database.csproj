@@ -2,7 +2,7 @@
   <PropertyGroup>
     <RootNamespace>OpenReservation.Database</RootNamespace>
     <AssemblyName>OpenReservation.Database</AssemblyName>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="WeihanLi.EntityFramework" Version="2.0.0-preview-*" />
