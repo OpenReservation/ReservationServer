@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using NPOI.SS.UserModel;
 using OpenReservation.AuditEnrichers;
 using OpenReservation.Common;
 using OpenReservation.Database;
@@ -220,7 +221,7 @@ namespace OpenReservation
 
                     case DbType.MySql:
                         option.UseMySql(Configuration.GetConnectionString("Reservation"),
-                           new MySqlServerVersion(new Version(8, 0)), 
+                           new MySqlServerVersion(new Version(8, 0)),
                            mySqlOptions => mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend)
                         );
                         break;
@@ -471,9 +472,22 @@ namespace OpenReservation
 
             settings
                 .HasAuthor("WeihanLi")
-                .HasTitle("活动室预约信息")
-                .HasDescription("活动室预约信息")
-                .HasSheetConfiguration(0, "活动室预约信息", true)
+                .HasTitle("预约信息")
+                .HasDescription("预约信息")
+                .HasSheetSetting(x =>
+                {
+                    x.AutoColumnWidthEnabled = true;
+                    x.SheetName = "预约信息";
+                    x.RowAction = row =>
+                    {
+                        if (row.RowNum == 0)
+                        {
+                            var style = row.Sheet.Workbook.CreateCellStyle();
+                            style.Alignment = HorizontalAlignment.Center;
+                            row.Cells.ForEach(c => c.CellStyle = style);
+                        }
+                    };
+                })
                 ;
 
             settings.Property(r => r.ReservationId).Ignored();
