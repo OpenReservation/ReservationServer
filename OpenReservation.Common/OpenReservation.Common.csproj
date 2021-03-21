@@ -8,6 +8,6 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(DotNetPackageVersion)" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.45" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.46" />
   </ItemGroup>
 </Project>
