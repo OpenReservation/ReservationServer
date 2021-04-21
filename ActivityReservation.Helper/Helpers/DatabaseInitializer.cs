@@ -19,7 +19,11 @@ namespace ActivityReservation.Helpers
             using (var scope = serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
+#if DEBUG
+
                 dbContext.Database.EnsureDeleted();
+
+#endif
                 dbContext.Database.EnsureCreated();
                 if (!dbContext.Users.AsNoTracking().Any())
                 {
