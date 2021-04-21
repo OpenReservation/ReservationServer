@@ -121,14 +121,14 @@ namespace ActivityReservation
             //register EventHandlers
             services.AddSingleton<OperationLogEventHandler>();
             services.AddSingleton<NoticeViewEventHandler>();
-
-            // SetDependencyResolver
-            DependencyResolver.SetDependencyResolver(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, IEventBus eventBus)
         {
+            // SetDependencyResolver
+            DependencyResolver.SetDependencyResolver(app.ApplicationServices);
+
             eventBus.Subscribe<OperationLogEvent, OperationLogEventHandler>(); // 注册操作日志 Event
             eventBus.Subscribe<NoticeViewEvent, NoticeViewEventHandler>(); // 公告
 

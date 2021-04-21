@@ -19,9 +19,11 @@ namespace ActivityReservation.Helpers
             using (var scope = serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<ReservationDbContext>();
+                dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
                 if (!dbContext.Users.AsNoTracking().Any())
                 {
+                    Console.WriteLine("db initializing ...");
                     dbContext.Users.Add(new User
                     {
                         UserId = Guid.NewGuid(),
@@ -46,97 +48,112 @@ namespace ActivityReservation.Helpers
                     new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1,MaxReservationPeriodNum = 2}});
                     dbContext.ReservationPeriods.AddRange(new[]
                     {
-                    new ReservationPeriod
-                    {
-                        PeriodId = Guid.NewGuid(),
-                        PeriodIndex = 3,
-                        PeriodTitle = "8:00~10:00",
-                        PeriodDescription = "8:00~10:00",
-                        PlaceId = placeId,
-                        CreateBy = "System",
-                        CreateTime = DateTime.UtcNow,
-                        UpdateBy = "System",
-                        UpdateTime = DateTime.UtcNow
-                    },
-                    new ReservationPeriod
-                    {
-                        PeriodId = Guid.NewGuid(),
-                        PeriodIndex = 1,
-                        PeriodTitle = "10:00~12:00",
-                        PeriodDescription = "10:00~12:00",
-                        PlaceId = placeId,
-                        CreateBy = "System",
-                        CreateTime = DateTime.UtcNow,
-                        UpdateBy = "System",
-                        UpdateTime = DateTime.UtcNow
-                    },
-                    new ReservationPeriod
-                    {
-                        PeriodId = Guid.NewGuid(),
-                        PeriodIndex = 2,
-                        PeriodTitle = "13:00~16:00",
-                        PeriodDescription = "13:00~16:00",
-                        PlaceId = placeId,
-                        CreateBy = "System",
-                        CreateTime = DateTime.UtcNow,
-                        UpdateBy = "System",
-                        UpdateTime = DateTime.UtcNow
-                    },
-                    new ReservationPeriod
-                    {
-                        PeriodId = Guid.NewGuid(),
-                        PeriodIndex = 1,
-                        PeriodTitle = "08:00~18:00",
-                        PeriodDescription = "08:00~18:00",
-                        PlaceId = placeId1,
-                        CreateBy = "System",
-                        CreateTime = DateTime.UtcNow.AddSeconds(3),
-                        UpdateBy = "System",
-                        UpdateTime = DateTime.UtcNow
-                    },
-                });
+                        new ReservationPeriod
+                        {
+                            PeriodId = Guid.NewGuid(),
+                            PeriodIndex = 3,
+                            PeriodTitle = "8:00~10:00",
+                            PeriodDescription = "8:00~10:00",
+                            PlaceId = placeId,
+                            CreateBy = "System",
+                            CreateTime = DateTime.UtcNow,
+                            UpdateBy = "System",
+                            UpdateTime = DateTime.UtcNow
+                        },
+                        new ReservationPeriod
+                        {
+                            PeriodId = Guid.NewGuid(),
+                            PeriodIndex = 1,
+                            PeriodTitle = "10:00~12:00",
+                            PeriodDescription = "10:00~12:00",
+                            PlaceId = placeId,
+                            CreateBy = "System",
+                            CreateTime = DateTime.UtcNow,
+                            UpdateBy = "System",
+                            UpdateTime = DateTime.UtcNow
+                        },
+                        new ReservationPeriod
+                        {
+                            PeriodId = Guid.NewGuid(),
+                            PeriodIndex = 2,
+                            PeriodTitle = "13:00~16:00",
+                            PeriodDescription = "13:00~16:00",
+                            PlaceId = placeId,
+                            CreateBy = "System",
+                            CreateTime = DateTime.UtcNow,
+                            UpdateBy = "System",
+                            UpdateTime = DateTime.UtcNow
+                        },
+                        new ReservationPeriod
+                        {
+                            PeriodId = Guid.NewGuid(),
+                            PeriodIndex = 1,
+                            PeriodTitle = "08:00~18:00",
+                            PeriodDescription = "08:00~18:00",
+                            PlaceId = placeId1,
+                            CreateBy = "System",
+                            CreateTime = DateTime.UtcNow.AddSeconds(3),
+                            UpdateBy = "System",
+                            UpdateTime = DateTime.UtcNow
+                        },
+                    });
                     //sys settings init
                     settings = new List<SystemSettings>
-                {
-                    new SystemSettings
                     {
-                        SettingId = Guid.NewGuid(),
-                        SettingName = "SystemTitle",
-                        DisplayName = "系统标题",
-                        SettingValue = "活动室预约系统"
-                    },
-                    new SystemSettings
-                    {
-                        SettingId = Guid.NewGuid(),
-                        SettingName = "SystemKeywords",
-                        DisplayName = "系统关键词",
-                        SettingValue = "预约,活动室,预定,reservation"
-                    },
-                    new SystemSettings
-                    {
-                        SettingId = Guid.NewGuid(),
-                        SettingName = "SystemDescription",
-                        DisplayName = "系统简介",
-                        SettingValue = "活动室预约系统是一个基于ASP.NET MVC 开发的一个在线预约系统。"
-                    },
-                    new SystemSettings
-                    {
-                        SettingId = Guid.NewGuid(),
-                        SettingName = "SystemContactPhone",
-                        DisplayName = "系统联系人联系电话",
-                        SettingValue = "13245642365"
-                    },
-                    new SystemSettings
-                    {
-                        SettingId = Guid.NewGuid(),
-                        SettingName = "SystemContactEmail",
-                        DisplayName = "系统联系邮箱",
-                        SettingValue = "weihanli@outlook.com"
-                    }
-                };
+                        new SystemSettings
+                        {
+                            SettingId = Guid.NewGuid(),
+                            SettingName = "SystemTitle",
+                            DisplayName = "系统标题",
+                            SettingValue = "活动室预约系统"
+                        },
+                        new SystemSettings
+                        {
+                            SettingId = Guid.NewGuid(),
+                            SettingName = "SystemKeywords",
+                            DisplayName = "系统关键词",
+                            SettingValue = "预约,活动室,预定,reservation"
+                        },
+                        new SystemSettings
+                        {
+                            SettingId = Guid.NewGuid(),
+                            SettingName = "SystemDescription",
+                            DisplayName = "系统简介",
+                            SettingValue = "活动室预约系统是一个基于ASP.NET MVC 开发的一个在线预约系统。"
+                        },
+                        new SystemSettings
+                        {
+                            SettingId = Guid.NewGuid(),
+                            SettingName = "SystemContactPhone",
+                            DisplayName = "系统联系人联系电话",
+                            SettingValue = "13245642365"
+                        },
+                        new SystemSettings
+                        {
+                            SettingId = Guid.NewGuid(),
+                            SettingName = "SystemContactEmail",
+                            DisplayName = "系统联系邮箱",
+                            SettingValue = "weihanli@outlook.com"
+                        }
+                    };
                     dbContext.SystemSettings.AddRange(settings);
 
+                    var notice = new Notice()
+                    {
+                        NoticeId = Guid.NewGuid(),
+                        NoticeTitle = "test",
+                        NoticeCustomPath = "test",
+                        NoticePath = "test.html",
+                        CheckStatus = true,
+                        NoticeContent = "<h2>This is a test</h2>",
+                        NoticePublishTime = DateTime.UtcNow,
+                        NoticePublisher = "admin"
+                    };
+                    dbContext.Notices.Add(notice);
+
                     dbContext.SaveChanges();
+
+                    Console.WriteLine("db initialized.");
                 }
                 else
                 {
