@@ -15,9 +15,9 @@ namespace ActivityReservation.Events
         // ...
     }
 
-    public class NoticeViewEventHandler : IEventHandler<NoticeViewEvent>
+    public class NoticeViewEventHandler : EventHandlerBase<NoticeViewEvent>
     {
-        public async Task Handle(NoticeViewEvent @event)
+        public override async Task Handle(NoticeViewEvent @event)
         {
             await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
             {

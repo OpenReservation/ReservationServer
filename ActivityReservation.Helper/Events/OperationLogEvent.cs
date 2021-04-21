@@ -28,7 +28,7 @@ namespace ActivityReservation.Events
         public string OperBy { get; set; }
     }
 
-    public class OperationLogEventHandler : IEventHandler<OperationLogEvent>
+    public class OperationLogEventHandler : EventHandlerBase<OperationLogEvent>
     {
         private readonly ILogger _logger;
         private readonly IBLLOperationLog _operationLogRepo;
@@ -39,7 +39,7 @@ namespace ActivityReservation.Events
             _operationLogRepo = operationLogRepo;
         }
 
-        public async Task Handle(OperationLogEvent @event)
+        public override async Task Handle(OperationLogEvent @event)
         {
             try
             {

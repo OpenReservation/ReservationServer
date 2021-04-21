@@ -17,7 +17,6 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.AspNetMvc.MvcSimplePager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
-using WeihanLi.EntityFramework;
 using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 
@@ -46,12 +45,6 @@ namespace ActivityReservation.Controllers
         {
             Expression<Func<Reservation, bool>> whereLambda = (m => true);
             //补充查询条件
-            //根据预约日期查询
-            if (!string.IsNullOrWhiteSpace(search.SearchItem0))
-            {
-                whereLambda = m =>
-                    EF.Functions.DateDiffDay(DateTime.Parse(search.SearchItem0), m.ReservationForDate) == 0;
-            }
             //根据预约人联系方式查询
             if (!string.IsNullOrWhiteSpace(search.SearchItem1))
             {
@@ -104,12 +97,12 @@ namespace ActivityReservation.Controllers
             var isValid = HttpContext.RequestServices.GetService<ReservationHelper>().IsReservationForDateAvailable(reservationForDate, false, out var msg);
             if (isValid)
             {
-                return Json(JsonResultModel.Success(true));
+                return Json(ResultModel.Success(true));
             }
             else
             {
                 var jsonResult =
-                    new JsonResultModel<bool> { Status = JsonResultStatus.Success, Result = false, ErrorMsg = msg };
+                    new ResultModel<bool> { Status = ResultStatus.Success, Result = false, ErrorMsg = msg };
                 return Json(jsonResult);
             }
         }
@@ -136,20 +129,20 @@ namespace ActivityReservation.Controllers
         /// <returns></returns>
         [HttpPost]
         public async System.Threading.Tasks.Task<ActionResult> MakeReservation(
-            [FromBody]ReservationViewModel model,
-            [FromHeader]string captcha,
-            [FromHeader]string captchaType)
+            [FromBody] ReservationViewModel model,
+            [FromHeader] string captcha,
+            [FromHeader] string captchaType)
         {
             if (string.IsNullOrWhiteSpace(captchaType))
             {
                 captchaType = "Tencent";
             }
-            var result = new JsonResultModel<bool>();
+            var result = new ResultModel<bool>();
             var isCodeValid = await HttpContext.RequestServices.GetService<CaptchaVerifyHelper>()
                 .ValidateVerifyCodeAsync(captchaType, captcha);
             if (!isCodeValid)
             {
-                result.Status = JsonResultStatus.RequestError;
+                result.Status = ResultStatus.RequestError;
                 result.ErrorMsg = "验证码有误, 请重新验证";
                 return Json(result);
             }
@@ -189,12 +182,12 @@ namespace ActivityReservation.Controllers
                     if (bValue > 0)
                     {
                         result.Result = true;
-                        result.Status = JsonResultStatus.Success;
+                        result.Status = ResultStatus.Success;
                     }
                     else
                     {
                         result.ErrorMsg = "预约失败";
-                        result.Status = JsonResultStatus.ProcessFail;
+                        result.Status = ResultStatus.ProcessFail;
                     }
                     return Json(result);
                 }
@@ -202,7 +195,7 @@ namespace ActivityReservation.Controllers
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                result.Status = JsonResultStatus.ProcessFail;
+                result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
             }
             return Json(result);
@@ -273,7 +266,7 @@ namespace ActivityReservation.Controllers
         /// <param name="path">访问路径</param>
         /// <param name="eventBus"></param>
         /// <returns></returns>
-        public async Task<ActionResult> NoticeDetails(string path, [FromServices]IEventBus eventBus)
+        public async Task<ActionResult> NoticeDetails(string path, [FromServices] IEventBus eventBus)
         {
             if (string.IsNullOrWhiteSpace(path))
             {

@@ -25,7 +25,7 @@ namespace ActivityReservation.Helpers
             }
             if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
             {
-                var request = captchaInfo.JsonToType<TencentCaptchaRequest>();
+                var request = captchaInfo.JsonToObject<TencentCaptchaRequest>();
                 if (request.UserIP.IsNullOrWhiteSpace())
                 {
                     request.UserIP = DependencyResolver.Current.GetRequiredService<IHttpContextAccessor>()

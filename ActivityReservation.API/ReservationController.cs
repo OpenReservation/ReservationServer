@@ -104,7 +104,7 @@ namespace ActivityReservation.API
         [HttpPost]
         public async Task<IActionResult> MakeReservation([FromBody]ReservationViewModel model, [FromHeader]string captcha, [FromHeader]string captchaType = "Tencent")
         {
-            var result = new JsonResultModel<bool> { Status = JsonResultStatus.RequestError };
+            var result = new ResultModel<bool> { Status = ResultStatus.RequestError };
             if (string.IsNullOrWhiteSpace(captchaType))
             {
                 captchaType = "Tencent";
@@ -151,13 +151,13 @@ namespace ActivityReservation.API
                 }
                 await _repository.InsertAsync(reservation);
                 result.Result = true;
-                result.Status = JsonResultStatus.Success;
+                result.Status = ResultStatus.Success;
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, $"活动室预约失败：{ex.Message}");
-                result.Status = JsonResultStatus.ProcessFail;
+                result.Status = ResultStatus.ProcessFail;
                 result.ErrorMsg = ex.Message;
                 return Ok(result);
             }

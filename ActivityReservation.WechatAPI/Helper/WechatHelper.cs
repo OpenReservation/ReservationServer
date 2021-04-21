@@ -54,7 +54,7 @@ namespace ActivityReservation.WechatAPI.Helper
                     var tokenRes = await RetryHelper.TryInvokeAsync(() => _httpClient
                             .GetStringAsync(
                                 GetAccessTokenUrlFormat.FormatWith(WeChatConsts.AppId, WeChatConsts.AppSecret))
-                            .ContinueWith(r => r.Result.JsonToType<AccessTokenEntity>()),
+                            .ContinueWith(r => r.Result.JsonToObject<AccessTokenEntity>()),
                         result => result.AccessToken.IsNotNullOrWhiteSpace());
                     entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(7140);
                     return tokenRes;
@@ -101,7 +101,7 @@ namespace ActivityReservation.WechatAPI.Helper
             var url = UpdateMpWechatMenuUrlFormat.FormatWith(accessToken);
             var response = await _httpClient.PostAsJsonAsync(url, menu);
             var result = await response.Content.ReadAsStringAsync()
-                .ContinueWith(r => r.Result.JsonToType<WechatResponseEntity>());
+                .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
             return result.Success;
         }
 
@@ -119,7 +119,7 @@ namespace ActivityReservation.WechatAPI.Helper
             }
             var url = DeleteMpWechatMenuUrlFormat.FormatWith(accessToken);
             var result = await _httpClient.GetStringAsync(url)
-                .ContinueWith(r => r.Result.JsonToType<WechatResponseEntity>());
+                .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
             return result.Success;
         }
     }
