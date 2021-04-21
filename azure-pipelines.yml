@@ -11,13 +11,18 @@ trigger:
     - /docs/
 
 pool:
-  vmImage: 'Ubuntu 16.04'
+  vmImage: 'ubuntu-latest'
 
 variables:
   tagName: 'standalone'
   imageName: '$(dockerId)/activityreservation:$(tagName)'
 
 steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk'
+  inputs:
+    packageType: sdk
+    version: 3.1.x
 
 - script: dotnet build -c Release
   displayName: 'dotnet build'
