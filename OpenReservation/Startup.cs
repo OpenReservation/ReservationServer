@@ -32,7 +32,6 @@ using OpenReservation.Models;
 using OpenReservation.Services;
 using OpenReservation.ViewModels;
 using Polly;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Prometheus;
 using StackExchange.Redis;
 using WeihanLi.Common;
@@ -221,8 +220,7 @@ namespace OpenReservation
 
                     case DbType.MySql:
                         option.UseMySql(Configuration.GetConnectionString("Reservation"),
-                           new MySqlServerVersion(new Version(8, 0)),
-                           mySqlOptions => mySqlOptions.CharSetBehavior(CharSetBehavior.NeverAppend)
+                           new MySqlServerVersion(new Version(8, 0))
                         );
                         break;
 

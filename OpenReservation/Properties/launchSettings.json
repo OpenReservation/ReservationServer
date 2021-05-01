@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ActivityReservation": {
+    "OpenReservation": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
