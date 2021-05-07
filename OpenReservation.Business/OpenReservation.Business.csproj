@@ -4,22 +4,11 @@
     <AssemblyName>OpenReservation.Business</AssemblyName>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
-  
+  <PropertyGroup>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenReservation.Database\OpenReservation.Database.csproj" />
-    <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="BLLCollection.generated.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>BLLCollection.tt</DependentUpon>
-    </Compile>
-    <None Update="BLLCollection.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BLLCollection.generated.cs</LastGenOutput>
-    </None>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <ProjectReference Include="..\OpenReservation.Database\OpenReservation.Database.csproj"
+                      OutputItemType="Analyzer" />
   </ItemGroup>
 </Project>

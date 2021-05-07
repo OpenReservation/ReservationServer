@@ -3,12 +3,25 @@
     <RootNamespace>OpenReservation.Database</RootNamespace>
     <AssemblyName>OpenReservation.Database</AssemblyName>
     <TargetFramework>net5.0</TargetFramework>
+    <GetTargetPathDependsOn>;GetDependencyTargetPaths</GetTargetPathDependsOn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="WeihanLi.EntityFramework" Version="2.0.0-preview-*" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.9.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WeihanLi.EntityFramework" Version="2.0.0-preview-*" GeneratePathProperty="true" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj">
     </ProjectReference>
   </ItemGroup>
+  <Target Name="GetDependencyTargetPaths">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PKGWeihanLi_EntityFramework)\lib\netstandard2.1\WeihanLi.EntityFramework.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
 </Project>
