@@ -17,7 +17,7 @@ namespace OpenReservation.Database
         {
             var dbContextType = context.Compilation.GetTypeByMetadataName(typeof(DbSet<>).FullName);
             var reservationDbContextType = context.Compilation.GetTypeByMetadataName(typeof(ReservationDbContext).FullName);
-            var propertySymbols = reservationDbContextType!.GetMembers()
+            var propertySymbols = reservationDbContextType.GetMembers()
                 .OfType<IMethodSymbol>()
                 .Where(x => x.IsVirtual
                         && x.MethodKind == MethodKind.PropertyGet
@@ -26,7 +26,7 @@ namespace OpenReservation.Database
                             IsGenericType: true,
                             IsUnboundGenericType: false,
                         } typeSymbol
-                        && ReferenceEquals(typeSymbol.ConstructedFrom.ContainingAssembly, dbContextType!.ContainingAssembly)
+                        && ReferenceEquals(typeSymbol.ConstructedFrom.ContainingAssembly, dbContextType.ContainingAssembly)
                         )
                 .ToArray()
                 ;
