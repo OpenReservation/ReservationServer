@@ -9,6 +9,7 @@
 
 - 演示地址：<https://reservation.weihanli.xyz>
 - 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular10 + material SPA)
+- REST API Swagger：<https://reservation.weihanli.xyz/swagger>
 - 小程序演示 demo:
 
   ![wxAppCode](./images/wxAppCode.jpg)
