@@ -1,14 +1,14 @@
 ﻿@{
-    ViewBag.Title = "活动室列表";
+    ViewBag.Title = "预约项目列表";
 }
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">
-            活动室列表<small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室</button></small>
+            预约项目列表<small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加预约项目</button></small>
         </h3>
         <div class="form-inline" style="margin: 0.6em 0">
             <div class="form-group">
-                <input type="search" value="" id="placeName" placeholder="活动室名称" class="form-control" />
+                <input type="search" value="" id="placeName" placeholder="项目名称" class="form-control" />
             </div>
             <button id="btnSearch" type="button" class="btn btn-success">搜索</button>
         </div>
@@ -18,8 +18,8 @@
 <div id="editPlace" style="padding: 1em 2.2em; display: none">
     <form>
         <div class="input-group">
-            <label for="inputPlaceName">请输入要活动室名称</label> <br />
-            <input type="text" required="required" class="form-control" value="" id="inputPlaceName" placeholder="活动室名称" />
+            <label for="inputPlaceName">请输入要项目名称</label> <br />
+            <input type="text" required="required" class="form-control" value="" id="inputPlaceName" placeholder="预约项目名称" />
         </div>
     </form>
 </div>
@@ -60,13 +60,13 @@
                 $("#btnAdd").attr("disabled", "disabled");
                 layer.open({
                     type: 1,
-                    title: "添加活动室",
+                    title: "添加预约项目",
                     btn: ["添加", "取消"],
                     content: $("#editPlace"),
                     yes: function (index) {
                         var placeName = $("#inputPlaceName").val();
                         if (!placeName) {
-                            layer.msg("活动室名称不能为空");
+                            layer.msg("预约项目名称不能为空");
                             return;
                         }
                         $.post("/Admin/ReservationPlace/AddPlace",
@@ -99,13 +99,13 @@
             //layer
             layer.open({
                 type: 1,
-                title: "编辑活动室名称",
+                title: "编辑预约项目名称",
                 btn: ["更新", "取消"],
                 content: $("#editPlace"),
                 yes: function (index) {
                     var newPlaceName = $("#inputPlaceName").val();
                     if (!newPlaceName) {
-                        layer.msg('活动室名称不能为空');
+                        layer.msg('预约项目名称不能为空');
                         return;
                     }
                     $.post("/Admin/ReservationPlace/UpdatePlaceName",
@@ -135,7 +135,7 @@
         function deletePlace(placeId, placeName, obj) {
             //disable
             $(obj).attr("disabled", "disabled");
-            layer.confirm("确定要删除活动室【" + placeName + "】吗？",
+            layer.confirm("确定要删除预约项目【" + placeName + "】吗？",
                 {
                     title: "警告"
                 },
@@ -162,7 +162,7 @@
         function updatePlaceStatus(placeId, placeName, status, obj) {
             $(obj).attr("disabled", "disabled");
             var oper = (parseInt(status) > 0 ? "启用" : "禁用");
-            layer.confirm("将要 " + oper + " 活动室【" + placeName + "】，是否继续？",
+            layer.confirm("将要 " + oper + " 预约项目【" + placeName + "】，是否继续？",
                 { title: "警告" },
                 function (index) {
                     $.post("/Admin/ReservationPlace/UpdatePlaceStatus",

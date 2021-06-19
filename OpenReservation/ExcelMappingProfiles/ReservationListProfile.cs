@@ -33,7 +33,7 @@ namespace OpenReservation.ExcelMappingProfiles
             settings.Property(r => r.ReservationId).Ignored();
 
             settings.Property(r => r.ReservationPlaceName)
-                .HasColumnTitle("活动室名称")
+                .HasColumnTitle("预约项目")
                 .HasColumnIndex(0);
             settings.Property(r => r.ReservationForDate)
                 .HasColumnTitle("预约使用日期")

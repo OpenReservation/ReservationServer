@@ -1,13 +1,13 @@
 ﻿@model List<OpenReservation.Models.ReservationPeriod>
 @{
-    ViewBag.Title = "活动室预约时间段管理";
+    ViewBag.Title = "预约项目预约时间段管理";
 }
 <div class="table-wraper">
     <div class="table-header">
         <h3 class="table-title">
-            活动室预约时间段管理
-            <small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加活动室预约时间段</button></small>
-            <small>&nbsp;&nbsp;<a href="@Url.Action("Index","ReservationPlace", new{ area = "Admin"})">返回活动室管理</a></small>
+            预约项目预约时间段管理
+            <small>&nbsp;&nbsp;<button type="button" id="btnAdd" class="btn btn-primary btn-sm">添加预约时间段</button></small>
+            <small>&nbsp;&nbsp;<a href="@Url.Action("Index","ReservationPlace", new{ area = "Admin"})">返回预约项目管理</a></small>
         </h3>
     </div>
     <div class="table-body" id="div_main">

@@ -4,8 +4,8 @@
   "ReservationPersonPhone": "ContactPhone",
   "ReservationPersonName": "ContactPerson",
   "ReservationUnit": "Unit",
-  "ReservationPlaceName": "PlaceName",
-  "ReservationActivityContent": "ActivityContent",
+  "ReservationPlaceName": "Project Name",
+  "ReservationActivityContent": "Description",
   "ReservationTime": "ReservationTime",
   "ReservationStatus": "Status"
 }
