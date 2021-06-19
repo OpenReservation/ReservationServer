@@ -115,16 +115,14 @@ namespace OpenReservation.AdminLogic.Controllers
         /// <summary>
         /// 重新加载系统配置
         /// </summary>
-        /// <returns></returns>
         public IActionResult ReloadConfiguration()
         {
-            var configurationRoot = HttpContext.RequestServices.GetService<IConfiguration>() as IConfigurationRoot;
-            if (null == configurationRoot)
+            if (HttpContext.RequestServices.GetService<IConfiguration>() is IConfigurationRoot configurationRoot)
             {
-                return BadRequest();
+                configurationRoot.Reload();
+                return Ok();
             }
-            configurationRoot.Reload();
-            return Ok();
+            return BadRequest();
         }
     }
 }
