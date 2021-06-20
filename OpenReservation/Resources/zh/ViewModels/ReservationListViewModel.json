@@ -5,7 +5,7 @@
   "ReservationPersonName": "预约人姓名",
   "ReservationUnit": "预约单位",
   "ReservationPlaceName": "预约项目",
-  "ReservationActivityContent": "介绍",
+  "ReservationActivityContent": "备注",
   "ReservationTime": "预约时间",
   "ReservationStatus": "审核状态"
 }
