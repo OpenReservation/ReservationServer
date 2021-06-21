@@ -14,20 +14,12 @@ using WeihanLi.Redis;
 namespace OpenReservation.AdminLogic.Controllers
 {
     /// <summary>
-    /// 预约活动室管理
+    /// 预约项目管理
     /// </summary>
     public class ReservationPlaceController : AdminBaseController
     {
-        /// <summary>
-        /// 活动室管理首页
-        /// </summary>
-        /// <returns></returns>
         public ActionResult Index() => View();
 
-        /// <summary>
-        /// 活动室列表页面
-        /// </summary>
-        /// <returns></returns>
         public ActionResult List(string placeName, int pageIndex, int pageSize)
         {
             if (pageIndex <= 0)
@@ -50,7 +42,7 @@ namespace OpenReservation.AdminLogic.Controllers
         }
 
         /// <summary>
-        /// 更新活动室名称
+        /// 更新预约项目名称
         /// </summary>
         /// <param name="placeId">活动室id</param>
         /// <param name="newName">修改后的活动室名称</param>
@@ -60,16 +52,16 @@ namespace OpenReservation.AdminLogic.Controllers
         {
             if (string.IsNullOrEmpty(newName))
             {
-                return Json("活动室名称不能为空");
+                return Json("预约项目名称不能为空");
             }
             if (!_reservationPlaceHelper.Exist(p => p.PlaceId == placeId))
             {
-                return Json("活动室不存在");
+                return Json("预约项目不存在");
             }
             if (_reservationPlaceHelper.Exist(p =>
                 p.PlaceName.Equals(newName) && p.IsDel == false))
             {
-                return Json("活动室名称已存在");
+                return Json("名称已存在");
             }
             try
             {
@@ -81,102 +73,116 @@ namespace OpenReservation.AdminLogic.Controllers
                         UpdateBy = UserName,
                         UpdateTime = DateTime.UtcNow
                     }, x => x.PlaceName, x => x.UpdateBy, x => x.UpdateTime);
-                OperLogHelper.AddOperLog($"更新活动室 {placeId.ToString()} 名称，从 {beforeName} 修改为 {newName}",
+                OperLogHelper.AddOperLog($"更新预约项目 {placeId:N} 名称，从 {beforeName} 修改为 {newName}",
                     OperLogModule.ReservationPlace, UserName);
                 return Json("");
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                return Json("更新活动室名称失败，发生异常：" + ex.Message);
+                return Json("更新失败，发生异常：" + ex.Message);
             }
         }
 
-        /// <summary>
-        /// 添加活动室
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult AddPlace(string placeName)
+        public ActionResult AddPlace(string placeName, Guid? duplicateFrom)
         {
-            if (!string.IsNullOrEmpty(placeName))
+            if (string.IsNullOrEmpty(placeName))
             {
-                if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName && p.IsDel == false))
+                return Json("名称不能为空");
+            }
+            if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName && p.IsDel == false))
+            {
+                return Json("预约项目已存在");
+            }
+
+            var place = new ReservationPlace()
+            {
+                PlaceId = Guid.NewGuid(),
+                PlaceName = placeName,
+                UpdateBy = UserName
+            };
+            var isDuplicate = false;
+            if (duplicateFrom.GetValueOrDefault() != Guid.Empty)
+            {
+                var duplicatePlace = _reservationPlaceHelper.Fetch(x => x.PlaceId == duplicateFrom);
+                isDuplicate = duplicatePlace != null;
+                if (isDuplicate)
                 {
-                    return Json("活动室已存在");
-                }
-                var place = new ReservationPlace()
-                {
-                    PlaceId = Guid.NewGuid(),
-                    PlaceName = placeName,
-                    UpdateBy = UserName
-                };
-                try
-                {
-                    _reservationPlaceHelper.Insert(place);
-                    //记录日志
-                    OperLogHelper.AddOperLog($"新增活动室：{placeName}", OperLogModule.ReservationPlace, place.UpdateBy);
-                    return Json("");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                    return Json("添加失败，出现异常：" + ex.Message);
+                    place.MaxReservationPeriodNum = duplicatePlace.MaxReservationPeriodNum;
                 }
             }
-            else
+            try
             {
-                return Json("活动室名称不能为空");
+                _reservationPlaceHelper.Insert(place);
+                //记录日志
+                OperLogHelper.AddOperLog($"新增预约项目：{placeName}", OperLogModule.ReservationPlace, place.UpdateBy);
+                if (isDuplicate)
+                {
+                    var periods = _reservationPeriodHelper.Select(x => x.PlaceId == duplicateFrom);
+                    foreach(var period in periods)
+                    {
+                        period.PeriodId = Guid.NewGuid();
+                        period.PlaceId = place.PlaceId;
+                    }
+                    _reservationPeriodHelper.Insert(periods);
+                }
+                return Json("");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Json("添加失败，出现异常：" + ex.Message);
             }
         }
 
         /// <summary>
         /// 删除活动室
         /// </summary>
-        /// <param name="placeId"> 活动室id </param>
-        /// <param name="placeName"> 活动室名称 </param>
+        /// <param name="placeId">id </param>
+        /// <param name="placeName"> 名称 </param>
         /// <returns></returns>
         public JsonResult DeletePlace(Guid placeId, string placeName)
         {
             if (string.IsNullOrEmpty(placeName))
             {
-                return Json("活动室名称不能为空");
+                return Json("名称不能为空");
             }
             if (!_reservationPlaceHelper.Exist(p => p.PlaceId == placeId))
             {
-                return Json("活动室不存在");
+                return Json("预约项目不存在");
             }
             try
             {
                 _reservationPlaceHelper.Update(
                     new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = UserName }, x => x.IsDel, x => x.UpdateBy,
                     x => x.UpdateTime);
-                OperLogHelper.AddOperLog($"删除活动室{placeId}:{placeName}", OperLogModule.ReservationPlace,
+                OperLogHelper.AddOperLog($"删除预约项目{placeId}:{placeName}", OperLogModule.ReservationPlace,
                     UserName);
                 return Json("");
             }
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                return Json("删除活动室失败，发生异常：" + ex.Message);
+                return Json("删除失败，发生异常：" + ex.Message);
             }
         }
 
         /// <summary>
-        /// 更新活动室状态
+        /// 更新状态
         /// </summary>
-        /// <param name="placeId"> 活动室id </param>
-        /// <param name="placeName"> 活动室名称 </param>
-        /// <param name="status">活动室状态，大于0启用，否则禁用</param>
+        /// <param name="placeId"> id </param>
+        /// <param name="placeName"> 名称 </param>
+        /// <param name="status">状态，大于0启用，否则禁用</param>
         /// <returns></returns>
         public JsonResult UpdatePlaceStatus(Guid placeId, string placeName, int status)
         {
             if (string.IsNullOrEmpty(placeName))
             {
-                return Json("活动室名称不能为空");
+                return Json("名称不能为空");
             }
             if (!_reservationPlaceHelper.Exist(p => p.PlaceId == placeId))
             {
-                return Json("活动室不存在");
+                return Json("预约项目不存在");
             }
             try
             {
@@ -202,7 +208,7 @@ namespace OpenReservation.AdminLogic.Controllers
                     x => x.UpdateTime
                     );
                 OperLogHelper.AddOperLog(
-                    $"修改活动室{placeId.ToString()}:{placeName}状态，{((status > 0) ? "启用" : "禁用")}",
+                    $"修改活动室{placeId:N}:{placeName}状态，{((status > 0) ? "启用" : "禁用")}",
                     OperLogModule.ReservationPlace, UserName);
                 return Json("");
             }
@@ -280,7 +286,7 @@ namespace OpenReservation.AdminLogic.Controllers
             }
             if (model.PlaceId == Guid.Empty)
             {
-                return Json("预约地点不能为空");
+                return Json("预约项目不能为空");
             }
 
             if (model.PeriodTitle.IsNullOrWhiteSpace())

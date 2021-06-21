@@ -48,6 +48,7 @@
                             <button type="button" class='btn btn-warning' onclick="updatePlaceStatus('@item.PlaceId', '@item.PlaceName', 1, this)">启用</button>
                         }
                         <button type="button" class="btn btn-primary" onclick="editPlace('@item.PlaceId', '@item.PlaceName', this)">编辑</button>
+                        <button type="button" class="btn btn-primary" onclick="duplicate('@item.PlaceId', '@item.PlaceName', this)">复制</button>
                         <a role="button" class="btn btn-primary" href="/Admin/ReservationPlace/ReservationPeriod?placeId=@(item.PlaceId.ToString("N"))">预约时间段管理</a>
                     </td>
                 </tr>

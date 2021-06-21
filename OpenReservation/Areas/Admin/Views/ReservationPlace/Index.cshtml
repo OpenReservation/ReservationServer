@@ -91,6 +91,45 @@
                 });
             });
 
+        //duplicate
+        function duplicate(placeId, placeName, obj) {
+            $(obj).attr("disabled");
+            $("#inputPlaceName").val(placeName);
+            //layer
+            layer.open({
+                type: 1,
+                title: "编辑预约项目名称",
+                btn: ["更新", "取消"],
+                content: $("#editPlace"),
+                yes: function (index) {
+                    var newPlaceName = $("#inputPlaceName").val();
+                    if (!newPlaceName) {
+                        layer.msg('预约项目名称不能为空');
+                        return;
+                    }
+                   $.post("/Admin/ReservationPlace/AddPlace",
+                            { "placeName": newPlaceName, "duplicateFrom": placeId },
+                            function (data) {
+                                if (!data) {
+                                    loadData();
+                                    $(obj).removeAttr("disabled");
+                                    layer.close(index);
+                                } else {
+                                    layer.msg(data);
+                                }
+                            });
+                },
+                btn2: function (index) {
+                    $(obj).removeAttr("disabled");
+                    layer.close(index);
+                },
+                cancel: function (index) {
+                    $(obj).removeAttr("disabled");
+                    layer.close(index);
+                }
+            });
+        }
+
         //edit placeName
         function editPlace(placeId, placeName, obj) {
             $("#inputPlaceName").val(placeName);
