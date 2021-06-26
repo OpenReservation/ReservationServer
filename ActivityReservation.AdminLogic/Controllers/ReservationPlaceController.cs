@@ -91,41 +91,54 @@ namespace ActivityReservation.AdminLogic.Controllers
             }
         }
 
-        /// <summary>
-        /// 添加活动室
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult AddPlace(string placeName)
+        public ActionResult AddPlace(string placeName, Guid? duplicateFrom)
         {
-            if (!string.IsNullOrEmpty(placeName))
+            if (string.IsNullOrEmpty(placeName))
             {
-                if (_reservationPlaceHelper.Exist(p =>
-                    p.PlaceName.ToUpperInvariant().Equals(placeName.ToUpperInvariant()) && p.IsDel == false))
+                return Json("名称不能为空");
+            }
+            if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName && p.IsDel == false))
+            {
+                return Json("已存在");
+            }
+
+            var place = new ReservationPlace()
+            {
+                PlaceId = Guid.NewGuid(),
+                PlaceName = placeName,
+                UpdateBy = UserName
+            };
+            var isDuplicate = false;
+            if (duplicateFrom.GetValueOrDefault() != Guid.Empty)
+            {
+                var duplicatePlace = _reservationPlaceHelper.Fetch(x => x.PlaceId == duplicateFrom);
+                isDuplicate = duplicatePlace != null;
+                if (isDuplicate)
                 {
-                    return Json("活动室已存在");
-                }
-                var place = new ReservationPlace()
-                {
-                    PlaceId = Guid.NewGuid(),
-                    PlaceName = placeName,
-                    UpdateBy = UserName
-                };
-                try
-                {
-                    _reservationPlaceHelper.Insert(place);
-                    //记录日志
-                    OperLogHelper.AddOperLog($"新增活动室：{placeName}", OperLogModule.ReservationPlace, place.UpdateBy);
-                    return Json("");
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex);
-                    return Json("添加失败，出现异常：" + ex.Message);
+                    place.MaxReservationPeriodNum = duplicatePlace.MaxReservationPeriodNum;
                 }
             }
-            else
+            try
             {
-                return Json("活动室名称不能为空");
+                _reservationPlaceHelper.Insert(place);
+                //记录日志
+                OperLogHelper.AddOperLog($"新增预约项目：{placeName}", OperLogModule.ReservationPlace, place.UpdateBy);
+                if (isDuplicate)
+                {
+                    var periods = _reservationPeriodHelper.Select(x => x.PlaceId == duplicateFrom);
+                    foreach(var period in periods)
+                    {
+                        period.PeriodId = Guid.NewGuid();
+                        period.PlaceId = place.PlaceId;
+                    }
+                    _reservationPeriodHelper.Insert(periods);
+                }
+                return Json("");
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                return Json("添加失败，出现异常：" + ex.Message);
             }
         }
 
