@@ -5,10 +5,10 @@
 预约系统，起初的设计和开发是因为学校活动室预约流程希望从之前繁琐低效的完全线下预约
 修改为线上预约+线下盖章审批的方式来预约学校的活动室，由此逐步演化而来。
 
-目前使用 ASP.NET Core 开发, 使用 Docker + k8s + nginx 部署，
+目前使用 ASP.NET Core 开发, 部署在 Kubernetes 上
 
 - 演示地址：<https://reservation.weihanli.xyz>
-- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular10 + material SPA)
+- 新版预约客户端演示地址：<https://reservation-client.weihanli.xyz>  (angular + material SPA)
 - REST API Swagger：<https://reservation.weihanli.xyz/swagger>
 - 小程序演示 demo:
 
