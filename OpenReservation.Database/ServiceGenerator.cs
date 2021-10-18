@@ -58,7 +58,7 @@ namespace OpenReservation.Business
         {{
         }}
     }}
-                 ");
+");
             }
             codeBuilder.AppendLine("}");
             var codeText = codeBuilder.ToString();
