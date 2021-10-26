@@ -1,33 +1,16 @@
-﻿using System;
-using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
-using System.Collections.Immutable;
-using Microsoft.CodeAnalysis.CSharp.Testing.XUnit;
+﻿using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using OpenReservation.Database;
 using Xunit;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis.Text;
 using System.Text;
+using Microsoft.CodeAnalysis.Testing;
 using Microsoft.EntityFrameworkCore;
 using OpenReservation.Models;
-using WeihanLi.EntityFramework;
-using WeihanLi.Common.Data;
-using System.Reflection;
 
 namespace OpenReservation.SourceGeneratorTest
 {
-    public class ServiceGeneratorTester : CSharpSourceGeneratorTest<ServiceGenerator, XUnitVerifier>
-    {
-        public LanguageVersion LanguageVersion { get; set; } = LanguageVersion.Latest;
-
-        protected override ParseOptions CreateParseOptions()
-        {
-            return ((CSharpParseOptions)base.CreateParseOptions()).WithLanguageVersion(LanguageVersion);
-        }
-    }
-
     public class ServiceGeneratorTest
     {
         [Fact]
@@ -69,7 +52,7 @@ namespace OpenReservation.Business
 
 }}
 ";
-            var tester = new ServiceGeneratorTester()
+            var tester = new CSharpSourceGeneratorTest<ServiceGenerator, XUnitVerifier>()
             {
                 TestState =
                 {
@@ -77,21 +60,16 @@ namespace OpenReservation.Business
                     GeneratedSources =
                     {
                         (typeof(ServiceGenerator), $"{nameof(ServiceGenerator)}.cs", SourceText.From(generated, Encoding.UTF8)),
-                    },
-                    AdditionalReferences = 
-                    {
-                        MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                        MetadataReference.CreateFromFile(typeof(DbContext).Assembly.Location),
-                        MetadataReference.CreateFromFile(typeof(Repository<>).Assembly.Location),
-                        MetadataReference.CreateFromFile(typeof(EFRepository<,>).Assembly.Location),
-                        MetadataReference.CreateFromFile(typeof(SystemSettings).Assembly.Location),
-                        MetadataReference.CreateFromFile(Assembly.Load("netstandard").Location),
-                        MetadataReference.CreateFromFile(Assembly.Load("System.Runtime").Location),
                     }
                 },
             };
+            tester.ReferenceAssemblies = ReferenceAssemblies.Net.Net50;
 
-            tester.TestBehaviors = Microsoft.CodeAnalysis.Testing.TestBehaviors.SkipSuppressionCheck;
+            tester.TestState.AdditionalReferences.Add(typeof(SystemSettings).Assembly);
+            tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.Common.DependencyResolver).Assembly);
+            tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.EntityFramework.EFRepository<,>).Assembly);
+            tester.TestState.AdditionalReferences.Add(typeof(DbContext).Assembly); ;
+
             await tester.RunAsync();
         }
     }
