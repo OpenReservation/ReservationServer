@@ -72,8 +72,7 @@ namespace OpenReservation.API.Test
                     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
                     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Latest);
+                });
 
             // addDbContext
             services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));

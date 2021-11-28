@@ -63,7 +63,9 @@ namespace OpenReservation.Business
                     }
                 },
             };
-            tester.ReferenceAssemblies = ReferenceAssemblies.Net.Net50;
+            tester.ReferenceAssemblies = new ReferenceAssemblies("net6.0", 
+                    new PackageIdentity("Microsoft.NETCore.App.Ref", "6.0.0"), 
+                    System.IO.Path.Combine("ref", "net6.0"));
 
             tester.TestState.AdditionalReferences.Add(typeof(SystemSettings).Assembly);
             tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.Common.DependencyResolver).Assembly);

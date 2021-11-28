@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <NoWarn>$(NoWarn);SYSLIB0021;SYSLIB0022</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenReservation.Helper\OpenReservation.Helper.csproj" />

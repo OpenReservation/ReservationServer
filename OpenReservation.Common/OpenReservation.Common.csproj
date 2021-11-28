@@ -1,13 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>OpenReservation.Common</RootNamespace>
-    <AssemblyName>OpenReservation.Common</AssemblyName>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(DotNetPackageVersion)" />
-    <PackageReference Include="WeihanLi.Common" Version="1.0.46" />
+    <PackageReference Include="WeihanLi.Common" Version="1.0.47" />
   </ItemGroup>
 </Project>
