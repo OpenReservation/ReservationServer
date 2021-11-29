@@ -64,4 +64,4 @@ steps:
     runOptions: inline
 
     inline: |
-      kubectl set image deployment/reservation-server reservation-server=$(imageName) --record=true
+      kubectl set image deployment/reservation-server reservation-server=$(imageName)
