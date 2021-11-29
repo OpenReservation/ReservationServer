@@ -128,7 +128,7 @@ namespace OpenReservation.Services
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Logger.LogInformation("Service is starting.");
-            _timer.Change(TimeSpan.FromSeconds(SecurityHelper.Random.Next(10)), _period);
+            _timer.Change(TimeSpan.FromSeconds(Random.Shared.Next(10)), _period);
             return Task.CompletedTask;
         }
 
