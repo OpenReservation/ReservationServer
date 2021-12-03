@@ -15,6 +15,7 @@ Host.CreateDefaultBuilder(args)
     })
     .ConfigureLogging(builder => builder.AddJsonConsole(options =>
     {
+        options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]";
         options.JsonWriterOptions = new System.Text.Json.JsonWriterOptions()
         {
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
