@@ -88,9 +88,9 @@ namespace OpenReservation.Services
         }
     }
 
-    public abstract class TimerScheduledService : IHostedService, IDisposable
+    public abstract class TimerScheduledService : BackgroundService
     {
-        private readonly Timer _timer;
+        private readonly PeriodicTimer _timer;
         private readonly TimeSpan _period;
         protected readonly ILogger Logger;
 
@@ -98,47 +98,43 @@ namespace OpenReservation.Services
         {
             Logger = logger;
             _period = period;
-            _timer = new Timer(Execute, null, Timeout.Infinite, 0);
+            _timer = new PeriodicTimer(_period);
         }
 
-        public void Execute(object state = null)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             try
             {
-                Logger.LogInformation("Begin execute service");
-                ExecuteAsync().Wait();
+                while (await _timer.WaitForNextTickAsync(stoppingToken))
+                {
+                    try
+                    {
+                        Logger.LogInformation("Begin execute service");
+                        await ExecuteInternal(stoppingToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError(ex, "Execute exception");
+                    }
+                    finally
+                    {
+                        Logger.LogInformation("Execute finished");
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (OperationCanceledException operationCancelledException)
             {
-                Logger.LogError(ex, "Execute exception");
-            }
-            finally
-            {
-                Logger.LogInformation("Execute finished");
+                Logger.LogWarning(operationCancelledException, "service stopped");
             }
         }
 
-        protected abstract Task ExecuteAsync();
+        protected abstract Task ExecuteInternal(CancellationToken stoppingToken);
 
-        public virtual void Dispose()
-        {
-            _timer?.Dispose();
-        }
-
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            Logger.LogInformation("Service is starting.");
-            _timer.Change(TimeSpan.FromSeconds(Random.Shared.Next(10)), _period);
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
+        public override Task StopAsync(CancellationToken cancellationToken)
         {
             Logger.LogInformation("Service is stopping.");
-
-            _timer?.Change(Timeout.Infinite, 0);
-
-            return Task.CompletedTask;
+            _timer.Dispose();
+            return base.StopAsync(cancellationToken);
         }
     }
 }
