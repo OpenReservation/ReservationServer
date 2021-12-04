@@ -277,3 +277,5 @@ __pycache__/
 # Cake - Uncomment if you are using it
 # tools/
 *.db
+*.db-shm
+*.db-wal

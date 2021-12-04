@@ -7,8 +7,8 @@ using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using WeihanLi.AspNetMvc.AccessControlHelper;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Web.AccessControlHelper;
+using WeihanLi.Web.Pager;
 using WeihanLi.Extensions;
 
 namespace OpenReservation.AdminLogic.Controllers

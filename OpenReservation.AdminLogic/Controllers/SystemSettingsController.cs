@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WeihanLi.AspNetMvc.AccessControlHelper;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Web.AccessControlHelper;
+using WeihanLi.Web.Pager;
 
 namespace OpenReservation.AdminLogic.Controllers
 {

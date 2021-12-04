@@ -10,7 +10,7 @@ using OpenReservation.Business;
 using OpenReservation.Models;
 using OpenReservation.ViewModels;
 using OpenReservation.WorkContexts;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Web.Pager;
 using WeihanLi.Web.Extensions;
 
 namespace OpenReservation.Controllers

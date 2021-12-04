@@ -27,6 +27,7 @@ using OpenReservation.Common;
 using OpenReservation.Database;
 using OpenReservation.Events;
 using OpenReservation.ExcelMappingProfiles;
+using OpenReservation.Helper.Services;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.Services;
@@ -370,6 +371,7 @@ namespace OpenReservation
                 };
             });
 
+            services.AddHostedService<TimedHealthCheckService>();
             // RegisterAssemblyModules
             services.RegisterAssemblyModules();
         }

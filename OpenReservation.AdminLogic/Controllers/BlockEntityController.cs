@@ -9,7 +9,7 @@ using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Web.Pager;
 using WeihanLi.Common.Helpers;
 using WeihanLi.EntityFramework;
 using WeihanLi.Redis;

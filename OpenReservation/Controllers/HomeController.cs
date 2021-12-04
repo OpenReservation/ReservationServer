@@ -17,7 +17,7 @@ using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.ViewModels;
 using OpenReservation.WorkContexts;
-using WeihanLi.AspNetMvc.MvcSimplePager;
+using WeihanLi.Web.Pager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
