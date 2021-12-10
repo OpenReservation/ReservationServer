@@ -94,35 +94,3 @@ mysql:
   slave:
     persistence:
       enabled: false
-
-# elasticsearch:
-#   svcName: elasticsearch-elasticsearch
-#   master:
-#     name: ''
-#   image:
-#     tag: 7.4.2
-
-
-# kibana:
-#   image:
-#     tag: 7.4.2
-#   service:
-#     type: NodePort
-#     nodePort: 32601
-
-# mssql-linux:
-#   nameOverride: db-server
-#   fullnameOverride: db-server
-#   acceptEula:
-#     value: Y
-#   image:
-#     tag: 2017-latest
-#   sapassword: Admin888
-#   resources:
-#     limits:
-#       cpu: 0.8
-#       memory: 1Gi
-#     requests:
-#       cpu: 0.5
-#       memory: 800Mi
-
