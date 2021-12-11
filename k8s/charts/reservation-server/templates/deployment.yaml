@@ -45,9 +45,6 @@ spec:
         - name: init-redis
           image: busybox:1.31
           command: ['sh', '-c', 'until nslookup {{ .Values.redis.svcName }}; do echo waiting for redis; sleep 2; done;']
-        - name: init-mysql
-          image: busybox:1.31
-          command: ['sh', '-c', 'until nslookup {{ .Values.mysql.svcName }}; do echo waiting for mysql; sleep 10; done;']
 
       volumes:
       - name: settings
