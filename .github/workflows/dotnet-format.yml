@@ -1,0 +1,38 @@
+name: dotnet-format
+
+on: "push"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET 6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+        include-prerelease: true
+    - name: build
+      run: dotnet build
+    - name: format
+      run: dotnet format
+    - name: check for changes
+      run: |
+        if git diff --exit-code; then
+          echo "has_changes=false" >> $GITHUB_ENV
+        else
+          echo "has_changes=true" >> $GITHUB_ENV
+        fi
+    - name: Commit and Push
+      if: ${{ env.has_changes == 'true' }}
+      shell: bash
+      run: |
+        # echo $GITHUB_REF_NAME
+        # echo $GITHUB_SHA
+        git config --local user.name "github-actions[bot]"
+        git config --local user.email "weihanli@outlook.com"
+        git add -u
+        git commit -m "Automated dotnet-format update from commit ${GITHUB_SHA} on ${GITHUB_REF}"
+        git log -1
+        remote_repo="https://${GITHUB_ACTOR}:${{secrets.GITHUB_TOKEN}}@github.com/${GITHUB_REPOSITORY}.git"
+        git push "${remote_repo}" HEAD:${GITHUB_REF}
