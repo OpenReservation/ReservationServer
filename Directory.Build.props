@@ -11,6 +11,7 @@
   
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <ImplcitUsings>enable</ImplcitUsings>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/OpenReservation/ReservationServer</RepositoryUrl>
     <Authors>WeihanLi</Authors>
