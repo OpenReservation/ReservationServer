@@ -1,19 +1,18 @@
 ﻿using Newtonsoft.Json;
 
-namespace OpenReservation.WechatAPI.Entities
-{
-    internal class AccessTokenEntity
-    {
-        /// <summary>
-        /// AccessToken
-        /// </summary>
-        [JsonProperty("access_token")]
-        public string AccessToken { get; set; }
+namespace OpenReservation.WechatAPI.Entities;
 
-        /// <summary>
-        /// ExpiresIn(s)
-        /// </summary>
-        [JsonProperty("expires_in")]
-        public int ExpiresIn { get; set; }
-    }
+internal class AccessTokenEntity
+{
+    /// <summary>
+    /// AccessToken
+    /// </summary>
+    [JsonProperty("access_token")]
+    public string AccessToken { get; set; }
+
+    /// <summary>
+    /// ExpiresIn(s)
+    /// </summary>
+    [JsonProperty("expires_in")]
+    public int ExpiresIn { get; set; }
 }

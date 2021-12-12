@@ -1,35 +1,34 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace OpenReservation.Services
+namespace OpenReservation.Services;
+
+public class ApplicationSettingInMemoryService : IApplicationSettingService
 {
-    public class ApplicationSettingInMemoryService : IApplicationSettingService
+    private readonly ConcurrentDictionary<string, string> _settingDictionary = new();
+
+    public int AddSettings(Dictionary<string, string> dictionary)
     {
-        private readonly ConcurrentDictionary<string, string> _settingDictionary = new();
-
-        public int AddSettings(Dictionary<string, string> dictionary)
+        if (dictionary != null && dictionary.Count > 0)
         {
-            if (dictionary != null && dictionary.Count > 0)
+            foreach (var item in dictionary)
             {
-                foreach (var item in dictionary)
-                {
-                    _settingDictionary[item.Key] = item.Value;
-                }
-                return dictionary.Count;
+                _settingDictionary[item.Key] = item.Value;
             }
-            return 0;
+            return dictionary.Count;
         }
+        return 0;
+    }
 
-        public string GetSettingValue(string settingKey)
-        {
-            _settingDictionary.TryGetValue(settingKey, out var val);
-            return val;
-        }
+    public string GetSettingValue(string settingKey)
+    {
+        _settingDictionary.TryGetValue(settingKey, out var val);
+        return val;
+    }
 
-        public string SetSettingValue(string settingKey, string settingValue)
-        {
-            _settingDictionary[settingKey] = settingValue;
-            return settingValue;
-        }
+    public string SetSettingValue(string settingKey, string settingValue)
+    {
+        _settingDictionary[settingKey] = settingValue;
+        return settingValue;
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenReservation.Services
+namespace OpenReservation.Services;
+
+public interface IApplicationSettingService
 {
-    public interface IApplicationSettingService
-    {
-        string GetSettingValue(string settingKey);
+    string GetSettingValue(string settingKey);
 
-        string SetSettingValue(string settingKey, string settingValue);
+    string SetSettingValue(string settingKey, string settingValue);
 
-        int AddSettings(Dictionary<string, string> dictionary);
-    }
+    int AddSettings(Dictionary<string, string> dictionary);
 }

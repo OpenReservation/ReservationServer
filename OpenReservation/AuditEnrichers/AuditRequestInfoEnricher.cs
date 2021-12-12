@@ -4,76 +4,75 @@ using Microsoft.Extensions.DependencyInjection;
 using WeihanLi.EntityFramework.Audit;
 using WeihanLi.Web.Extensions;
 
-namespace OpenReservation.AuditEnrichers
+namespace OpenReservation.AuditEnrichers;
+
+public class AuditHttpContextEnricher : IAuditPropertyEnricher
 {
-    public class AuditHttpContextEnricher : IAuditPropertyEnricher
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly Action<AuditEntry, HttpContext> _enrichAction;
+
+    public AuditHttpContextEnricher(IHttpContextAccessor httpContextAccessor) : this(httpContextAccessor, null)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly Action<AuditEntry, HttpContext> _enrichAction;
+    }
 
-        public AuditHttpContextEnricher(IHttpContextAccessor httpContextAccessor) : this(httpContextAccessor, null)
+    public AuditHttpContextEnricher(IHttpContextAccessor httpContextAccessor, Action<AuditEntry, HttpContext> enrichAction)
+    {
+        _httpContextAccessor = httpContextAccessor;
+        if (enrichAction == null)
         {
+            _enrichAction = (auditEntry, httpContext) =>
+            {
+                auditEntry.WithProperty("RequestIP", httpContext.GetUserIP());
+                auditEntry.WithProperty("RequestPath", httpContext.Request.Path);
+                auditEntry.WithProperty("RequestMethod", httpContext.Request.Method);
+            };
         }
-
-        public AuditHttpContextEnricher(IHttpContextAccessor httpContextAccessor, Action<AuditEntry, HttpContext> enrichAction)
+        else
         {
-            _httpContextAccessor = httpContextAccessor;
-            if (enrichAction == null)
-            {
-                _enrichAction = (auditEntry, httpContext) =>
-                {
-                    auditEntry.WithProperty("RequestIP", httpContext.GetUserIP());
-                    auditEntry.WithProperty("RequestPath", httpContext.Request.Path);
-                    auditEntry.WithProperty("RequestMethod", httpContext.Request.Method);
-                };
-            }
-            else
-            {
-                _enrichAction = enrichAction;
-            }
-        }
-
-        public void Enrich(AuditEntry auditEntry)
-        {
-            if (_httpContextAccessor.HttpContext != null)
-            {
-                _enrichAction.Invoke(auditEntry, _httpContextAccessor.HttpContext);
-            }
+            _enrichAction = enrichAction;
         }
     }
 
-    public static class EnricherExtensions
+    public void Enrich(AuditEntry auditEntry)
     {
-        public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IServiceProvider serviceProvider)
+        if (_httpContextAccessor.HttpContext != null)
         {
-            if (enrich == null)
-                throw new ArgumentNullException(nameof(enrich));
-
-            return enrich.WithEnricher(new AuditHttpContextEnricher(serviceProvider.GetRequiredService<IHttpContextAccessor>()));
+            _enrichAction.Invoke(auditEntry, _httpContextAccessor.HttpContext);
         }
+    }
+}
 
-        public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IServiceProvider serviceProvider, Action<AuditEntry, HttpContext> enrichAction)
-        {
-            if (enrich == null)
-                throw new ArgumentNullException(nameof(enrich));
+public static class EnricherExtensions
+{
+    public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IServiceProvider serviceProvider)
+    {
+        if (enrich == null)
+            throw new ArgumentNullException(nameof(enrich));
 
-            return enrich.WithEnricher(new AuditHttpContextEnricher(serviceProvider.GetRequiredService<IHttpContextAccessor>(), enrichAction));
-        }
+        return enrich.WithEnricher(new AuditHttpContextEnricher(serviceProvider.GetRequiredService<IHttpContextAccessor>()));
+    }
 
-        public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IHttpContextAccessor httpContextAccessor)
-        {
-            if (enrich == null)
-                throw new ArgumentNullException(nameof(enrich));
+    public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IServiceProvider serviceProvider, Action<AuditEntry, HttpContext> enrichAction)
+    {
+        if (enrich == null)
+            throw new ArgumentNullException(nameof(enrich));
 
-            return enrich.WithEnricher(new AuditHttpContextEnricher(httpContextAccessor));
-        }
+        return enrich.WithEnricher(new AuditHttpContextEnricher(serviceProvider.GetRequiredService<IHttpContextAccessor>(), enrichAction));
+    }
 
-        public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IHttpContextAccessor httpContextAccessor, Action<AuditEntry, HttpContext> enrichAction)
-        {
-            if (enrich == null)
-                throw new ArgumentNullException(nameof(enrich));
+    public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IHttpContextAccessor httpContextAccessor)
+    {
+        if (enrich == null)
+            throw new ArgumentNullException(nameof(enrich));
 
-            return enrich.WithEnricher(new AuditHttpContextEnricher(httpContextAccessor, enrichAction));
-        }
+        return enrich.WithEnricher(new AuditHttpContextEnricher(httpContextAccessor));
+    }
+
+    public static IAuditConfigBuilder WithHttpContextInfo(this IAuditConfigBuilder enrich, IHttpContextAccessor httpContextAccessor, Action<AuditEntry, HttpContext> enrichAction)
+    {
+        if (enrich == null)
+            throw new ArgumentNullException(nameof(enrich));
+
+        return enrich.WithEnricher(new AuditHttpContextEnricher(httpContextAccessor, enrichAction));
     }
 }

@@ -1,6 +1,5 @@
-﻿namespace OpenReservation.Common
+﻿namespace OpenReservation.Common;
+
+public class SharedResource
 {
-    public class SharedResource
-    {
-    }
 }

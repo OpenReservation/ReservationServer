@@ -8,62 +8,61 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Extensions;
 
-namespace OpenReservation.WechatAPI.Controllers
+namespace OpenReservation.WechatAPI.Controllers;
+
+/// <summary>
+/// 微信入口
+/// </summary>
+public class HomeController : WeChatBaseController
 {
-    /// <summary>
-    /// 微信入口
-    /// </summary>
-    public class HomeController : WeChatBaseController
+    public HomeController(ILogger<HomeController> logger) : base(logger)
     {
-        public HomeController(ILogger<HomeController> logger) : base(logger)
-        {
-        }
+    }
 
-        [HttpGet]
-        [ActionName("Index")]
-        public async System.Threading.Tasks.Task GetAsync([FromQuery]WechatMsgRequestModel model)
+    [HttpGet]
+    [ActionName("Index")]
+    public async System.Threading.Tasks.Task GetAsync([FromQuery]WechatMsgRequestModel model)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                var echoStr = HttpContext.Request.Query["echostr"].FirstOrDefault();
+                if (!string.IsNullOrEmpty(echoStr))
                 {
-                    var echoStr = HttpContext.Request.Query["echostr"].FirstOrDefault();
-                    if (!string.IsNullOrEmpty(echoStr))
-                    {
-                        await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error($"Wechat GET 发生异常,异常信息：{ex.Message}", ex);
+                    await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
                 }
             }
+            catch (Exception ex)
+            {
+                Logger.Error($"Wechat GET 发生异常,异常信息：{ex.Message}", ex);
+            }
         }
+    }
 
-        /// <summary>
-        /// POST
-        /// </summary>
-        /// <param name="model">微信消息</param>
-        [HttpPost]
-        [ActionName("Index")]
-        public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
+    /// <summary>
+    /// POST
+    /// </summary>
+    /// <param name="model">微信消息</param>
+    [HttpPost]
+    [ActionName("Index")]
+    public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
+    {
+        using (var ms = new MemoryStream())
         {
-            using (var ms = new MemoryStream())
-            {
-                await Request.Body.CopyToAsync(ms);
-                ms.Seek(0, SeekOrigin.Begin);
+            await Request.Body.CopyToAsync(ms);
+            ms.Seek(0, SeekOrigin.Begin);
 
-                using (var reader = new StreamReader(ms, System.Text.Encoding.UTF8))
-                {
-                    model.RequestContent = await reader.ReadToEndAsync();
-                }
-            }
-            if (string.IsNullOrEmpty(model.RequestContent))
+            using (var reader = new StreamReader(ms, System.Text.Encoding.UTF8))
             {
-                return Content("RequestContent 为空");
+                model.RequestContent = await reader.ReadToEndAsync();
             }
-
-            return await WechatAsync(model);
         }
+        if (string.IsNullOrEmpty(model.RequestContent))
+        {
+            return Content("RequestContent 为空");
+        }
+
+        return await WechatAsync(model);
     }
 }

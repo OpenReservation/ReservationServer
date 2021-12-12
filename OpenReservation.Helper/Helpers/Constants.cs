@@ -1,7 +1,6 @@
-﻿namespace OpenReservation.Helpers
+﻿namespace OpenReservation.Helpers;
+
+public static class Constants
 {
-    public static class Constants
-    {
-        public const string BlackListCacheKey = "BlackListInfo";
-    }
+    public const string BlackListCacheKey = "BlackListInfo";
 }

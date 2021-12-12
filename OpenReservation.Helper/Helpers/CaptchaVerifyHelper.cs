@@ -4,49 +4,48 @@ using OpenReservation.Common;
 using WeihanLi.Extensions;
 using WeihanLi.Web.Extensions;
 
-namespace OpenReservation.Helpers
+namespace OpenReservation.Helpers;
+
+public class CaptchaVerifyHelper
 {
-    public class CaptchaVerifyHelper
+    private readonly GoogleRecaptchaHelper _googleRecaptchaHelper;
+    private readonly TencentCaptchaHelper _tencentCaptchaHelper;
+    private readonly IHttpContextAccessor _contextAccessor;
+
+    public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper, TencentCaptchaHelper tencentCaptchaHelper, IHttpContextAccessor httpContextAccessor)
     {
-        private readonly GoogleRecaptchaHelper _googleRecaptchaHelper;
-        private readonly TencentCaptchaHelper _tencentCaptchaHelper;
-        private readonly IHttpContextAccessor _contextAccessor;
+        _googleRecaptchaHelper = googleRecaptchaHelper;
+        _tencentCaptchaHelper = tencentCaptchaHelper;
+        _contextAccessor = httpContextAccessor;
+    }
 
-        public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper, TencentCaptchaHelper tencentCaptchaHelper, IHttpContextAccessor httpContextAccessor)
+    public async System.Threading.Tasks.Task<bool> ValidateVerifyCodeAsync(string captchaType, string captchaInfo)
+    {
+        if (string.IsNullOrWhiteSpace(captchaType))
         {
-            _googleRecaptchaHelper = googleRecaptchaHelper;
-            _tencentCaptchaHelper = tencentCaptchaHelper;
-            _contextAccessor = httpContextAccessor;
+            captchaType = "Tencent";
         }
-
-        public async System.Threading.Tasks.Task<bool> ValidateVerifyCodeAsync(string captchaType, string captchaInfo)
+        if (captchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
         {
-            if (string.IsNullOrWhiteSpace(captchaType))
-            {
-                captchaType = "Tencent";
-            }
-            if (captchaType.Equals("None", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-            if (string.IsNullOrWhiteSpace(captchaInfo))
-            {
-                return false;
-            }
-            if (captchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
-            {
-                return await _googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
-            }
-            if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
-            {
-                var request = captchaInfo.JsonToObject<TencentCaptchaRequest>();
-                if (request.UserIP.IsNullOrWhiteSpace())
-                {
-                    request.UserIP = _contextAccessor.HttpContext.GetUserIP();
-                }
-                return await _tencentCaptchaHelper.IsValidRequestAsync(request);
-            }
+            return true;
+        }
+        if (string.IsNullOrWhiteSpace(captchaInfo))
+        {
             return false;
         }
+        if (captchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
+        {
+            return await _googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
+        }
+        if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
+        {
+            var request = captchaInfo.JsonToObject<TencentCaptchaRequest>();
+            if (request.UserIP.IsNullOrWhiteSpace())
+            {
+                request.UserIP = _contextAccessor.HttpContext.GetUserIP();
+            }
+            return await _tencentCaptchaHelper.IsValidRequestAsync(request);
+        }
+        return false;
     }
 }

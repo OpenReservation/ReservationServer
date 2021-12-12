@@ -5,91 +5,90 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using WeihanLi.Common.Http;
 
-namespace OpenReservation.Common
+namespace OpenReservation.Common;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddGoogleRecaptchaHelper(this IServiceCollection services, Action<HttpClient> clientOptions = null)
     {
-        public static IServiceCollection AddGoogleRecaptchaHelper(this IServiceCollection services, Action<HttpClient> clientOptions = null)
+        if (services == null)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (null == clientOptions)
-            {
-                services.AddHttpClient<GoogleRecaptchaHelper>();
-            }
-            else
-            {
-                services.AddHttpClient<GoogleRecaptchaHelper>(clientOptions);
-            }
-            services.TryAddSingleton<GoogleRecaptchaHelper>();
-            return services;
+            throw new ArgumentNullException(nameof(services));
         }
 
-        public static IServiceCollection AddGoogleRecaptchaHelper(this IServiceCollection services, IConfiguration configuration, Action<HttpClient> clientOptions = null)
+        if (null == clientOptions)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-            if (null != configuration)
-            {
-                services.Configure<GoogleRecaptchaOptions>(configuration.Bind);
-            }
-            return services.AddGoogleRecaptchaHelper(clientOptions);
+            services.AddHttpClient<GoogleRecaptchaHelper>();
+        }
+        else
+        {
+            services.AddHttpClient<GoogleRecaptchaHelper>(clientOptions);
+        }
+        services.TryAddSingleton<GoogleRecaptchaHelper>();
+        return services;
+    }
+
+    public static IServiceCollection AddGoogleRecaptchaHelper(this IServiceCollection services, IConfiguration configuration, Action<HttpClient> clientOptions = null)
+    {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+        if (null != configuration)
+        {
+            services.Configure<GoogleRecaptchaOptions>(configuration.Bind);
+        }
+        return services.AddGoogleRecaptchaHelper(clientOptions);
+    }
+
+    public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<HttpClient> clientConfigure = null)
+    {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
         }
 
-        public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<HttpClient> clientConfigure = null)
+        if (null != clientConfigure)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
+            services.AddHttpClient<TencentCaptchaHelper>(clientConfigure);
+        }
+        else
+        {
+            services.AddHttpClient<TencentCaptchaHelper>();
+        }
+        services.TryAddSingleton<TencentCaptchaHelper>();
+        return services;
+    }
 
-            if (null != clientConfigure)
-            {
-                services.AddHttpClient<TencentCaptchaHelper>(clientConfigure);
-            }
-            else
-            {
-                services.AddHttpClient<TencentCaptchaHelper>();
-            }
-            services.TryAddSingleton<TencentCaptchaHelper>();
-            return services;
+    public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<TencentCaptchaOptions> action, Action<HttpClient> clientConfigure = null)
+    {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+        if (action == null)
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+        services.Configure(action);
+        return services.AddTencentCaptchaHelper();
+    }
+
+    public static IServiceCollection AddGiteeStorageProvider(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+        if (null != configuration)
+        {
+            services.Configure<GiteeStorageOptions>(configuration.Bind);
         }
 
-        public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<TencentCaptchaOptions> action, Action<HttpClient> clientConfigure = null)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-            if (action == null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
-            services.Configure(action);
-            return services.AddTencentCaptchaHelper();
-        }
+        services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
 
-        public static IServiceCollection AddGiteeStorageProvider(this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-            if (null != configuration)
-            {
-                services.Configure<GiteeStorageOptions>(configuration.Bind);
-            }
-
-            services.AddHttpClient<IStorageProvider, GiteeStorageProvider>();
-
-            services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
-            return services;
-        }
+        services.TryAddSingleton<IStorageProvider, GiteeStorageProvider>();
+        return services;
     }
 }

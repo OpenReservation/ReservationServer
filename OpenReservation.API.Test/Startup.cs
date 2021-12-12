@@ -19,113 +19,112 @@ using WeihanLi.Redis;
 using WeihanLi.Web.Authentication;
 using WeihanLi.Web.Authentication.HeaderAuthentication;
 
-namespace OpenReservation.API.Test
+namespace OpenReservation.API.Test;
+
+public class Startup
 {
-    public class Startup
+    public void ConfigureHost(IHostBuilder hostBuilder)
     {
-        public void ConfigureHost(IHostBuilder hostBuilder)
-        {
-            hostBuilder
-                .ConfigureWebHostDefaults(builder =>
+        hostBuilder
+            .ConfigureWebHostDefaults(builder =>
+            {
+                builder.UseTestServer();
+                builder.ConfigureServices((context, services) =>
                 {
-                    builder.UseTestServer();
-                    builder.ConfigureServices((context, services) =>
-                    {
-                        services.TryAddSingleton(sp =>
-                            sp.GetRequiredService<IHost>().GetTestClient()
-                            );
-                        services.TryAddSingleton<APITestFixture>();
+                    services.TryAddSingleton(sp =>
+                        sp.GetRequiredService<IHost>().GetTestClient()
+                    );
+                    services.TryAddSingleton<APITestFixture>();
 
-                        ConfigureServices(services, context.Configuration);
-                    });
-                    builder.Configure(Configure);
-                })
-                ;
-        }
-
-        private void ConfigureServices(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddResponseCaching();
-
-            services.AddControllers(options =>
-                {
-                    options.CacheProfiles.Add("default", new CacheProfile()
-                    {
-                        Duration = 300,
-                        VaryByQueryKeys = new[] { "*" }
-                    });
-                    options.CacheProfiles.Add("private", new CacheProfile()
-                    {
-                        Duration = 300,
-                        Location = ResponseCacheLocation.Client,
-                        VaryByQueryKeys = new[] { "*" }
-                    });
-                    options.CacheProfiles.Add("noCache", new CacheProfile()
-                    {
-                        NoStore = true
-                    });
-                })
-                .AddApplicationPart(typeof(ApiControllerBase).Assembly)
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                    options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
-                    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                    ConfigureServices(services, context.Configuration);
                 });
+                builder.Configure(Configure);
+            })
+            ;
+    }
 
-            // addDbContext
-            services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));
+    private void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddResponseCaching();
 
-            services.AddGoogleRecaptchaHelper(configuration.GetSection("GoogleRecaptcha"));
-            services.AddTencentCaptchaHelper(options =>
+        services.AddControllers(options =>
             {
-                options.AppId = configuration["Tencent:Captcha:AppId"];
-                options.AppSecret = configuration["Tencent:Captcha:AppSecret"];
+                options.CacheProfiles.Add("default", new CacheProfile()
+                {
+                    Duration = 300,
+                    VaryByQueryKeys = new[] { "*" }
+                });
+                options.CacheProfiles.Add("private", new CacheProfile()
+                {
+                    Duration = 300,
+                    Location = ResponseCacheLocation.Client,
+                    VaryByQueryKeys = new[] { "*" }
+                });
+                options.CacheProfiles.Add("noCache", new CacheProfile()
+                {
+                    NoStore = true
+                });
+            })
+            .AddApplicationPart(typeof(ApiControllerBase).Assembly)
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
-            // registerApplicationSettingService
-            services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
-            // register access control service
-            services.AddAccessControlHelper<AdminPermissionRequireStrategy, AdminOnlyControlAccessStrategy>();
+        // addDbContext
+        services.AddDbContextPool<ReservationDbContext>(options => options.UseInMemoryDatabase("Reservation"));
 
-            services.AddEvents()
-                .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
-                .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
-                ;
-
-            services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
-
-            // RegisterAssemblyModules
-            services.RegisterAssemblyModules();
-
-            services
-                .AddAuthentication(HeaderAuthenticationDefaults.AuthenticationSchema)
-                .AddHeader()
-                //.AddAuthentication(QueryAuthenticationDefaults.AuthenticationSchema)
-                //.AddQuery()
-                ;
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy("ReservationApi", builder => builder.RequireAuthenticatedUser());
-            });
-        }
-
-        private void Configure(IApplicationBuilder app)
+        services.AddGoogleRecaptchaHelper(configuration.GetSection("GoogleRecaptcha"));
+        services.AddTencentCaptchaHelper(options =>
         {
-            app.UseResponseCaching();
+            options.AppId = configuration["Tencent:Captcha:AppId"];
+            options.AppSecret = configuration["Tencent:Captcha:AppSecret"];
+        });
 
-            app.UseRouting();
+        // registerApplicationSettingService
+        services.TryAddSingleton<IApplicationSettingService, ApplicationSettingInMemoryService>();
+        // register access control service
+        services.AddAccessControlHelper<AdminPermissionRequireStrategy, AdminOnlyControlAccessStrategy>();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+        services.AddEvents()
+            .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
+            .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
+            ;
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+        services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
 
-            TestDataInitializer.Initialize(app.ApplicationServices);
-        }
+        // RegisterAssemblyModules
+        services.RegisterAssemblyModules();
+
+        services
+            .AddAuthentication(HeaderAuthenticationDefaults.AuthenticationSchema)
+            .AddHeader()
+            //.AddAuthentication(QueryAuthenticationDefaults.AuthenticationSchema)
+            //.AddQuery()
+            ;
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy("ReservationApi", builder => builder.RequireAuthenticatedUser());
+        });
+    }
+
+    private void Configure(IApplicationBuilder app)
+    {
+        app.UseResponseCaching();
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+        TestDataInitializer.Initialize(app.ApplicationServices);
     }
 }

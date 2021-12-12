@@ -13,78 +13,77 @@ using OpenReservation.WorkContexts;
 using WeihanLi.Web.Pager;
 using WeihanLi.Web.Extensions;
 
-namespace OpenReservation.Controllers
+namespace OpenReservation.Controllers;
+
+public class AccountController : FrontBaseController
 {
-    public class AccountController : FrontBaseController
+    public AccountController(ILogger<AccountController> logger) : base(logger)
     {
-        public AccountController(ILogger<AccountController> logger) : base(logger)
-        {
-        }
+    }
 
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
 
-        /// <summary>
-        /// 用户预约列表
-        /// </summary>
-        [Authorize]
-        public ActionResult UserReservation()
-        {
-            return View();
-        }
+    /// <summary>
+    /// 用户预约列表
+    /// </summary>
+    [Authorize]
+    public ActionResult UserReservation()
+    {
+        return View();
+    }
 
-        [Authorize]
-        public async Task<ActionResult> UserReservationList(
-            [FromQuery] int pageNumber,
-            [FromQuery] int pageSize,
-            [FromServices] IBLLReservation reservationBLL)
+    [Authorize]
+    public async Task<ActionResult> UserReservationList(
+        [FromQuery] int pageNumber,
+        [FromQuery] int pageSize,
+        [FromServices] IBLLReservation reservationBLL)
+    {
+        if (pageNumber <= 0)
         {
-            if (pageNumber <= 0)
+            pageNumber = 1;
+        }
+        if (pageSize <= 0)
+        {
+            pageSize = 10;
+        }
+        var userId = User.GetUserId<Guid>();
+        Expression<Func<Reservation, bool>> predict = n => n.ReservedBy == userId;
+        var result = await reservationBLL.GetPagedListResultAsync(
+            x => new ReservationListViewModel
             {
-                pageNumber = 1;
-            }
-            if (pageSize <= 0)
-            {
-                pageSize = 10;
-            }
-            var userId = User.GetUserId<Guid>();
-            Expression<Func<Reservation, bool>> predict = n => n.ReservedBy == userId;
-            var result = await reservationBLL.GetPagedListResultAsync(
-                x => new ReservationListViewModel
-                {
-                    ReservationForDate = x.ReservationForDate,
-                    ReservationForTime = x.ReservationForTime,
-                    ReservationId = x.ReservationId,
-                    ReservationUnit = x.ReservationUnit,
-                    ReservationTime = x.ReservationTime,
-                    ReservationPlaceName = x.Place.PlaceName,
-                    ReservationActivityContent = x.ReservationActivityContent,
-                    ReservationPersonName = x.ReservationPersonName,
-                    ReservationPersonPhone = x.ReservationPersonPhone,
-                    ReservationStatus = x.ReservationStatus,
-                },
-                queryBuilder => queryBuilder
-                    .WithPredict(predict)
-                    .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
-                    .WithInclude(q => q.Include(x => x.Place))
-                , pageNumber, pageSize, HttpContext.RequestAborted);
+                ReservationForDate = x.ReservationForDate,
+                ReservationForTime = x.ReservationForTime,
+                ReservationId = x.ReservationId,
+                ReservationUnit = x.ReservationUnit,
+                ReservationTime = x.ReservationTime,
+                ReservationPlaceName = x.Place.PlaceName,
+                ReservationActivityContent = x.ReservationActivityContent,
+                ReservationPersonName = x.ReservationPersonName,
+                ReservationPersonPhone = x.ReservationPersonPhone,
+                ReservationStatus = x.ReservationStatus,
+            },
+            queryBuilder => queryBuilder
+                .WithPredict(predict)
+                .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
+                .WithInclude(q => q.Include(x => x.Place))
+            , pageNumber, pageSize, HttpContext.RequestAborted);
 
-            return View(result.ToPagedList());
-        }
+        return View(result.ToPagedList());
+    }
 
-        [AllowAnonymous]
-        public IActionResult Logout()
+    [AllowAnonymous]
+    public IActionResult Logout()
+    {
+        if (User.Identity?.IsAuthenticated == true)
         {
-            if (User.Identity?.IsAuthenticated == true)
-            {
-                Logger.Info($"{User.Identity.Name} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
+            Logger.Info($"{User.Identity.Name} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
 
-                return new SignOutResult(new[] { "Cookies", "OpenIdConnect" });
-            }
-
-            return RedirectToAction("Index", "Home");
+            return new SignOutResult(new[] { "Cookies", "OpenIdConnect" });
         }
+
+        return RedirectToAction("Index", "Home");
     }
 }

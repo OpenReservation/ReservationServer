@@ -5,31 +5,30 @@ using Microsoft.Extensions.Logging;
 using WeihanLi.Extensions;
 using OpenReservation.WechatAPI.Model;
 
-namespace OpenReservation.WechatAPI.Controllers
+namespace OpenReservation.WechatAPI.Controllers;
+
+[Area("WeChat")]
+[WechatRequestValid]
+public class WeChatBaseController : Controller
 {
-    [Area("WeChat")]
-    [WechatRequestValid]
-    public class WeChatBaseController : Controller
+    /// <summary>
+    /// logger
+    /// </summary>
+    protected readonly ILogger Logger;
+
+    public WeChatBaseController(ILogger logger)
     {
-        /// <summary>
-        /// logger
-        /// </summary>
-        protected readonly ILogger Logger;
+        Logger = logger;
+    }
 
-        public WeChatBaseController(ILogger logger)
+    internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatMsgRequestModel request)
+    {
+        WeChatContext wechatContext = new WeChatContext(request, Logger);
+        var response = await wechatContext.GetResponseAsync();
+        if (response.IsNullOrEmpty())
         {
-            Logger = logger;
+            return Content("");
         }
-
-        internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatMsgRequestModel request)
-        {
-            WeChatContext wechatContext = new WeChatContext(request, Logger);
-            var response = await wechatContext.GetResponseAsync();
-            if (response.IsNullOrEmpty())
-            {
-                return Content("");
-            }
-            return new WechatResult(response);
-        }
+        return new WechatResult(response);
     }
 }

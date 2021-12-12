@@ -5,50 +5,49 @@ using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Redis;
 
-namespace OpenReservation.Events
+namespace OpenReservation.Events;
+
+public class NoticeViewEvent : EventBase
 {
-    public class NoticeViewEvent : EventBase
-    {
-        public Guid NoticeId { get; set; }
+    public Guid NoticeId { get; set; }
 
-        // UserId
-        // IP
-        // ...
+    // UserId
+    // IP
+    // ...
+}
+
+public abstract class OnceEventHandlerBase<TEvent> : EventHandlerBase<TEvent> where TEvent : class, IEventBase
+{
+    protected async Task<bool> IsHandleNeeded(TEvent @event)
+    {
+        var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
+            TimeSpan.FromMinutes(2));
+        return await limiter.AcquireAsync();
     }
 
-    public abstract class OnceEventHandlerBase<TEvent> : EventHandlerBase<TEvent> where TEvent : class, IEventBase
+    protected async Task<bool> Release(TEvent @event)
     {
-        protected async Task<bool> IsHandleNeeded(TEvent @event)
-        {
-            var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
-                TimeSpan.FromMinutes(2));
-            return await limiter.AcquireAsync();
-        }
-
-        protected async Task<bool> Release(TEvent @event)
-        {
-            var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
-                TimeSpan.FromMinutes(2));
-            return await limiter.ReleaseAsync();
-        }
+        var limiter = RedisManager.GetRateLimiterClient($"{@event.GetType().FullName}_{@event.EventId}",
+            TimeSpan.FromMinutes(2));
+        return await limiter.ReleaseAsync();
     }
+}
 
-    public class NoticeViewEventHandler : OnceEventHandlerBase<NoticeViewEvent>
+public class NoticeViewEventHandler : OnceEventHandlerBase<NoticeViewEvent>
+{
+    public override async Task Handle(NoticeViewEvent @event)
     {
-        public override async Task Handle(NoticeViewEvent @event)
+        if (await IsHandleNeeded(@event))
         {
-            if (await IsHandleNeeded(@event))
+            await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
             {
-                await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
-                {
-                    var notice = await dbContext.Notices.FindAsync(@event.NoticeId);
-                    notice.NoticeVisitCount += 1;
-                    await dbContext.SaveChangesAsync();
+                var notice = await dbContext.Notices.FindAsync(@event.NoticeId);
+                notice.NoticeVisitCount += 1;
+                await dbContext.SaveChangesAsync();
 
-                    // var conn = dbContext.Database.GetDbConnection();
-                    // await conn.ExecuteAsync($@"UPDATE tabNotice SET NoticeVisitCount = NoticeVisitCount +1 WHERE NoticeId = @NoticeId", new { @event.NoticeId });
-                });
-            }
+                // var conn = dbContext.Database.GetDbConnection();
+                // await conn.ExecuteAsync($@"UPDATE tabNotice SET NoticeVisitCount = NoticeVisitCount +1 WHERE NoticeId = @NoticeId", new { @event.NoticeId });
+            });
         }
     }
 }

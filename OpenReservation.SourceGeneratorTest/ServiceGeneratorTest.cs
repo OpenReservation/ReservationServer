@@ -9,14 +9,14 @@ using Microsoft.CodeAnalysis.Testing;
 using Microsoft.EntityFrameworkCore;
 using OpenReservation.Models;
 
-namespace OpenReservation.SourceGeneratorTest
+namespace OpenReservation.SourceGeneratorTest;
+
+public class ServiceGeneratorTest
 {
-    public class ServiceGeneratorTest
+    [Fact]
+    public async Task Test1()
     {
-        [Fact]
-        public async Task Test1()
-        {
-            var code = @"
+        var code = @"
 using System;
 using Microsoft.EntityFrameworkCore;
 using OpenReservation.Models;
@@ -32,8 +32,8 @@ namespace OpenReservation.Database
     }
 }
 ";
-            var item = "SystemSettings";
-            var generated = $@"
+        var item = "SystemSettings";
+        var generated = $@"
 using OpenReservation.Database;
 using OpenReservation.Models;
 using WeihanLi.EntityFramework;
@@ -52,27 +52,26 @@ namespace OpenReservation.Business
 
 }}
 ";
-            var tester = new CSharpSourceGeneratorTest<ServiceGenerator, XUnitVerifier>()
+        var tester = new CSharpSourceGeneratorTest<ServiceGenerator, XUnitVerifier>()
+        {
+            TestState =
             {
-                TestState =
+                Sources = { code },
+                GeneratedSources =
                 {
-                    Sources = { code },
-                    GeneratedSources =
-                    {
-                        (typeof(ServiceGenerator), $"{nameof(ServiceGenerator)}.cs", SourceText.From(generated, Encoding.UTF8)),
-                    }
-                },
-            };
-            tester.ReferenceAssemblies = new ReferenceAssemblies("net6.0", 
-                    new PackageIdentity("Microsoft.NETCore.App.Ref", "6.0.0"), 
-                    System.IO.Path.Combine("ref", "net6.0"));
+                    (typeof(ServiceGenerator), $"{nameof(ServiceGenerator)}.cs", SourceText.From(generated, Encoding.UTF8)),
+                }
+            },
+        };
+        tester.ReferenceAssemblies = new ReferenceAssemblies("net6.0", 
+            new PackageIdentity("Microsoft.NETCore.App.Ref", "6.0.0"), 
+            System.IO.Path.Combine("ref", "net6.0"));
 
-            tester.TestState.AdditionalReferences.Add(typeof(SystemSettings).Assembly);
-            tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.Common.DependencyResolver).Assembly);
-            tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.EntityFramework.EFRepository<,>).Assembly);
-            tester.TestState.AdditionalReferences.Add(typeof(DbContext).Assembly); ;
+        tester.TestState.AdditionalReferences.Add(typeof(SystemSettings).Assembly);
+        tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.Common.DependencyResolver).Assembly);
+        tester.TestState.AdditionalReferences.Add(typeof(WeihanLi.EntityFramework.EFRepository<,>).Assembly);
+        tester.TestState.AdditionalReferences.Add(typeof(DbContext).Assembly); ;
 
-            await tester.RunAsync();
-        }
+        await tester.RunAsync();
     }
 }

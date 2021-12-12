@@ -5,91 +5,90 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using WeihanLi.Extensions;
 
-namespace OpenReservation.Common
+namespace OpenReservation.Common;
+
+/// <summary>
+/// ChatBotHelper
+/// </summary>
+public class ChatBotHelper
 {
     /// <summary>
-    /// ChatBotHelper
+    /// 青云客请求地址格式，详情参见 http://api.qingyunke.com/
+    /// 0：message
     /// </summary>
-    public class ChatBotHelper
+    private const string QingyunkeRequestUrlFormat = "http://api.qingyunke.com/api.php?key=free&appid=0&msg={0}";
+
+    /// <summary>
+    /// logger
+    /// </summary>
+    private readonly ILogger _logger;
+
+    private readonly HttpClient _httpClient;
+
+    public ChatBotHelper(HttpClient httpClient, ILogger<ChatBotHelper> logger)
     {
-        /// <summary>
-        /// 青云客请求地址格式，详情参见 http://api.qingyunke.com/
-        /// 0：message
-        /// </summary>
-        private const string QingyunkeRequestUrlFormat = "http://api.qingyunke.com/api.php?key=free&appid=0&msg={0}";
+        _httpClient = httpClient;
+        _logger = logger;
+    }
 
-        /// <summary>
-        /// logger
-        /// </summary>
-        private readonly ILogger _logger;
-
-        private readonly HttpClient _httpClient;
-
-        public ChatBotHelper(HttpClient httpClient, ILogger<ChatBotHelper> logger)
+    /// <summary>
+    /// 获取机器人回复【异步】
+    /// </summary>
+    /// <param name="request">请求</param>
+    /// <returns>回复信息</returns>
+    public async Task<string> GetBotReplyAsync(string request)
+    {
+        if (request.IsNullOrWhiteSpace())
         {
-            _httpClient = httpClient;
-            _logger = logger;
+            return string.Empty;
         }
-
-        /// <summary>
-        /// 获取机器人回复【异步】
-        /// </summary>
-        /// <param name="request">请求</param>
-        /// <returns>回复信息</returns>
-        public async Task<string> GetBotReplyAsync(string request)
+        try
         {
-            if (request.IsNullOrWhiteSpace())
+            using (var response = await _httpClient.
+                       GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode())))
             {
-                return string.Empty;
-            }
-            try
-            {
-                using (var response = await _httpClient.
-                    GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode())))
+                var responseText = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(responseText))
                 {
-                    var responseText = await response.Content.ReadAsStringAsync();
-                    if (!string.IsNullOrEmpty(responseText))
+                    var res = responseText.JsonToObject<QingyunkeResponseModel>();
+                    if (res != null && res.Result == 0)
                     {
-                        var res = responseText.JsonToObject<QingyunkeResponseModel>();
-                        if (res != null && res.Result == 0)
-                        {
-                            return res.Content;
-                        }
+                        return res.Content;
                     }
                 }
+            }
 
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "调用 Qingyunke API 出错");
-            }
-            return "error";
+            return string.Empty;
         }
-
-        private class QingyunkeResponseModel
+        catch (Exception ex)
         {
-            /// <summary>
-            /// result
-            /// </summary>
-            [JsonProperty("result")]
-            public int Result { get; set; }
+            _logger.LogError(ex, "调用 Qingyunke API 出错");
+        }
+        return "error";
+    }
 
-            private string _content;
+    private class QingyunkeResponseModel
+    {
+        /// <summary>
+        /// result
+        /// </summary>
+        [JsonProperty("result")]
+        public int Result { get; set; }
 
-            /// <summary>
-            /// content
-            /// </summary>
-            [JsonProperty("content")]
-            public string Content
+        private string _content;
+
+        /// <summary>
+        /// content
+        /// </summary>
+        [JsonProperty("content")]
+        public string Content
+        {
+            get => _content;
+            set
             {
-                get => _content;
-                set
+                if (!string.IsNullOrEmpty(value))
                 {
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        _content = value.Replace("{br}", "\n");
-                    }
+                    _content = value.Replace("{br}", "\n");
                 }
             }
         }
