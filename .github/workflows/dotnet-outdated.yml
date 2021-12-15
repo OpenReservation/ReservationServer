@@ -24,7 +24,7 @@ jobs:
       run: dotnet-outdated -u
     - name: Build again
       run: |
-        if dotnet build --exit-code; then
+        if dotnet build; then
           echo "has_breaking_changes=false" >> $GITHUB_ENV
         else
           echo "has_breaking_changes=true" >> $GITHUB_ENV
