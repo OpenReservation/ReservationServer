@@ -10,7 +10,7 @@
     <PackageReference Include="prometheus-net.AspNetCore" Version="5.0.2" />  
     <PackageReference Include="prometheus-net.Contrib" Version="0.9.5" />  
     <PackageReference Include="prometheus-net.DotNetRuntime" Version="4.2.2" />
-    <PackageReference Include="Sentry.Extensions.Logging" Version="3.12.2" />
+    <PackageReference Include="Sentry.Extensions.Logging" Version="3.12.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.3" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
