@@ -18,6 +18,9 @@ spec:
 
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9121"
       labels:
         app: redis
     
@@ -27,11 +30,25 @@ spec:
         image: redis:alpine
         imagePullPolicy: IfNotPresent
         resources:
+          requests:
+            memory: "32Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+        ports:
+          - containerPort: 6379
+      - name: redis-exporter
+        image: oliver006/redis_exporter:latest
+        resources:
+          requests:
+            cpu: 50m
+            memory: 100Mi
           limits:
             memory: "128Mi"
             cpu: "80m"
         ports:
-          - containerPort: 6379
+        - containerPort: 9121
 
 ---
 apiVersion: v1
