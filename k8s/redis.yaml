@@ -54,6 +54,8 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    prometheus.io/should_be_scraped: "true"
   name: redis-server
 spec:
   selector:
