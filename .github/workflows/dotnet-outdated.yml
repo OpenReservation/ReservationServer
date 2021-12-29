@@ -32,13 +32,9 @@ jobs:
     - name: Build again
       if: ${{ env.has_changes == 'true' }}
       run: |
-        if dotnet build; then
-          echo "has_breaking_changes=false" >> $GITHUB_ENV
-        else
-          echo "has_breaking_changes=true" >> $GITHUB_ENV
-        fi
+        dotnet build
     - name: Create Pull Request
-      if: ${{ env.has_breaking_changes == 'false' }}
+      if: ${{ env.has_changes == 'true' }}
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
