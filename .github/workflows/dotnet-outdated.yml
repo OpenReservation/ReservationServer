@@ -22,23 +22,23 @@ jobs:
       run: dotnet tool install --global dotnet-outdated-tool
     - name: Run dotnet-outdated
       run: dotnet-outdated -u
-    - name: Build again
-      run: |
-        if dotnet build; then
-          echo "has_breaking_changes=false" >> $GITHUB_ENV
-        else
-          echo "has_breaking_changes=true" >> $GITHUB_ENV
-        fi
     - name: check for changes
-      if: ${{ env.has_breaking_changes == 'false' }}
       run: |
         if git diff --exit-code; then
           echo "has_changes=false" >> $GITHUB_ENV
         else
           echo "has_changes=true" >> $GITHUB_ENV
         fi
-    - name: Create Pull Request
+    - name: Build again
       if: ${{ env.has_changes == 'true' }}
+      run: |
+        if dotnet build; then
+          echo "has_breaking_changes=false" >> $GITHUB_ENV
+        else
+          echo "has_breaking_changes=true" >> $GITHUB_ENV
+        fi
+    - name: Create Pull Request
+      if: ${{ env.has_breaking_changes == 'false' }}
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
