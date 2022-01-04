@@ -22,14 +22,10 @@ spec:
       labels:
         app: reservation-server
     spec:
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
       containers:        
         - name: reservation-server
           image: openreservation/reservation-server:dev
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             limits:
               memory: "256Mi"
