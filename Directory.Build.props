@@ -15,7 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/OpenReservation/ReservationServer</RepositoryUrl>
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2015-2021 (c) WeihanLi</Copyright>
+    <Copyright>Copyright 2015-2022 (c) WeihanLi</Copyright>
     <TargetFramework>net6.0</TargetFramework>
     <DotNetPackageVersion>6.0.0</DotNetPackageVersion>
   </PropertyGroup>
