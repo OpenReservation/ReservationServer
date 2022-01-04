@@ -68,6 +68,8 @@ spec:
             value: /diag/port
           - name: DOTNETMONITOR_Storage__DumpTempFolder
             value: /dumps
+          - name: DOTNETMONITOR_Urls
+            value: "http://+:52323"
           volumeMounts:
           - mountPath: /diag
             name: diagvol
@@ -108,6 +110,7 @@ spec:
     port: 52323
     protocol: TCP
     targetPort: 52323
+    nodePort: 31219
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
