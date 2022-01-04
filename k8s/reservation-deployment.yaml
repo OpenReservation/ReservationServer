@@ -6,7 +6,7 @@ metadata:
   labels:
     app: reservation-server
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
   selector:
     matchLabels:
