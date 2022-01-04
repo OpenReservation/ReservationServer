@@ -48,23 +48,56 @@ spec:
             periodSeconds: 10
           ports:
             - containerPort: 80
+          env:
+          - name: DOTNET_DiagnosticPorts
+            value: /diag/port
           volumeMounts:
           - name: settings
             mountPath: /app/appsettings.Production.json
             subPath: appsettings
-
+          - mountPath: /diag
+            name: diagvol
+          - mountPath: /dumps
+            name: dumpsvol
+        - name: dotnet-monitor
+          image: mcr.microsoft.com/dotnet/monitor
+          args: [ "--no-auth" ]
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 52323
+          env:
+          - name: DOTNETMONITOR_DiagnosticPort__ConnectionMode
+            value: Listen
+          - name: DOTNETMONITOR_DiagnosticPort__EndpointName
+            value: /diag/port
+          - name: DOTNETMONITOR_Storage__DumpTempFolder
+            value: /dumps
+          volumeMounts:
+          - mountPath: /diag
+            name: diagvol
+          - mountPath: /dumps
+            name: dumpsvol
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
       volumes:
         - name: settings
           configMap:
             name: reservation-configs
+        - name: diagvol
+          emptyDir: {}
+        - name: dumpsvol
+          emptyDir: {}
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: reservation-server
-  annotations:
-    prometheus.io/should_be_scraped: "true"
 spec:
   selector:
     app: reservation-server
@@ -74,3 +107,28 @@ spec:
     port: 80
     targetPort: 80
     nodePort: 31220
+  - name: dotnet-monitor
+    port: 52323
+    protocol: TCP
+    targetPort: 52323
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: reservation-server-monitor
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: reservation-server
+  namespaceSelector:
+    matchNames:
+    - default
+  endpoints:
+  - port: http
+    interval: 10s
+    path: /metrics
+  - port: dotnet-monitor
+    interval: 10s
+    path: /metrics
