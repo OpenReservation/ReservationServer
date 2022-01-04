@@ -103,7 +103,8 @@ spec:
     app: reservation-server
   type: NodePort
   ports:
-  - protocol: TCP
+  - name: http
+    protocol: TCP
     port: 80
     targetPort: 80
     nodePort: 31220
