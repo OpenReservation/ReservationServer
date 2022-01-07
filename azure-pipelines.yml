@@ -8,6 +8,8 @@ trigger:
     exclude:
     - '**/*.md'
     - /OpenReservation.Clients/
+    - /OpenReservation.API.Test/
+    - /OpenReservation.SourceGeneratorTest/
     - /docs/
     - /k8s/
 
