@@ -38,13 +38,13 @@ spec:
               path: /health
               port: 80
             initialDelaySeconds: 60
-            periodSeconds: 10
+            periodSeconds: 30
           livenessProbe:
             httpGet:
               path: /health
               port: 80
             initialDelaySeconds: 60
-            periodSeconds: 10
+            periodSeconds: 30
           ports:
             - containerPort: 80
           env:
