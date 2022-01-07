@@ -27,9 +27,12 @@ spec:
           image: openreservation/reservation-server:latest
           imagePullPolicy: Always
           resources:
+            requests:
+              cpu: 30m
+              memory: 32Mi
             limits:
-              memory: "256Mi"
-              cpu: "80m"
+              cpu: 80m
+              memory: 256Mi
           readinessProbe:
             httpGet:
               path: /health
@@ -44,9 +47,9 @@ spec:
             periodSeconds: 10
           ports:
             - containerPort: 80
-#           env:
-#           - name: DOTNET_DiagnosticPorts
-#             value: /diag/port
+          env:
+          - name: DOTNET_DiagnosticPorts
+            value: /diag/port
           volumeMounts:
           - name: settings
             mountPath: /app/appsettings.Production.json
@@ -65,7 +68,7 @@ spec:
             - containerPort: 52323
           env:
           - name: DOTNETMONITOR_DiagnosticPort__ConnectionMode
-            value: Connect
+            value: Listen
           - name: DOTNETMONITOR_DiagnosticPort__EndpointName
             value: /diag/port
           - name: DOTNETMONITOR_Storage__DumpTempFolder
