@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dotnet-monitor-configs
+  namespace: default
+data:
+  default: |
+    {
+      "urls": "http://*:52323",
+      "Metrics": {
+        "Enabled": "True",
+        "Endpoints": "http://*:52325",
+        "IncludeDefaultProviders": "True",
+        "MetricCount": "3",
+        "Providers": [
+          {
+            "ProviderName": "System.Runtime"
+          },
+          {
+            "ProviderName": "System.Net.Http"
+          },
+          {
+            "ProviderName": "Microsoft.EntityFrameworkCore"
+          },
+          {
+            "ProviderName": "Microsoft.Data.SqlClient.EventSource"
+          }
+        ]
+      }
+    }

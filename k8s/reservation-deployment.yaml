@@ -82,6 +82,9 @@ spec:
             name: dumpsvol
           - mountPath: /tmp
             name: tmpvol
+          - name: monitor-configs
+            mountPath: /etc/dotnet-monitor
+            subPath: default
           resources:
             requests:
               cpu: 30m
@@ -93,6 +96,9 @@ spec:
         - name: settings
           configMap:
             name: reservation-configs
+        - name: monitor-configs
+          configMap:
+            name: dotnet-monitor-configs
         - name: diagvol
           emptyDir: {}
         - name: dumpsvol
