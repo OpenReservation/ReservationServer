@@ -44,9 +44,9 @@ spec:
             periodSeconds: 10
           ports:
             - containerPort: 80
-          env:
-          - name: DOTNET_DiagnosticPorts
-            value: /diag/port
+#           env:
+#           - name: DOTNET_DiagnosticPorts
+#             value: /diag/port
           volumeMounts:
           - name: settings
             mountPath: /app/appsettings.Production.json
@@ -65,7 +65,7 @@ spec:
             - containerPort: 52323
           env:
           - name: DOTNETMONITOR_DiagnosticPort__ConnectionMode
-            value: Listen
+            value: Connect
           - name: DOTNETMONITOR_DiagnosticPort__EndpointName
             value: /diag/port
           - name: DOTNETMONITOR_Storage__DumpTempFolder
