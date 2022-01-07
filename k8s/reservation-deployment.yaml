@@ -55,6 +55,8 @@ spec:
             name: diagvol
           - mountPath: /dumps
             name: dumpsvol
+          - mountPath: /tmp
+            name: tmpvol
         - name: dotnet-monitor
           image: mcr.microsoft.com/dotnet/monitor
           args: [ "--no-auth" ]
@@ -75,6 +77,8 @@ spec:
             name: diagvol
           - mountPath: /dumps
             name: dumpsvol
+          - mountPath: /tmp
+            name: tmpvol
           resources:
             requests:
               cpu: 50m
@@ -89,6 +93,8 @@ spec:
         - name: diagvol
           emptyDir: {}
         - name: dumpsvol
+          emptyDir: {}
+        - name: tmpvol
           emptyDir: {}
 
 ---
