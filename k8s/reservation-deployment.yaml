@@ -75,6 +75,8 @@ spec:
             value: /dumps
           - name: DOTNETMONITOR_Urls
             value: "http://+:52323"
+          - name: XDG_CONFIG_HOME
+            value: "etc"
           volumeMounts:
           - mountPath: /diag
             name: diagvol
@@ -83,7 +85,7 @@ spec:
           - mountPath: /tmp
             name: tmpvol
           - name: monitor-configs
-            mountPath: /etc/dotnet-monitor
+            mountPath: /etc/dotnet-monitor/settings.json
             subPath: default
           resources:
             requests:
