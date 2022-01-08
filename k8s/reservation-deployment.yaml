@@ -116,18 +116,16 @@ metadata:
 spec:
   selector:
     app: reservation-server
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: http
     protocol: TCP
     port: 80
     targetPort: 80
-    nodePort: 31220
   - name: dotnet-monitor
     port: 52323
     protocol: TCP
     targetPort: 52323
-    nodePort: 31219
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor

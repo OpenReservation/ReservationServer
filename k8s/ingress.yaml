@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+    nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, OPTIONS, DELETE, PATCH"
+  name: reservation-server
+spec:
+  rules:
+  - host: "reservation.weihanli.top"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/?(.*)"
+        backend:
+          service:
+            name: reservation-server
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/monitor/?(.*)"
+        backend:
+          service:
+            name: reservation-server
+            port:
+              number: 52323
+  tls:
+  - hosts:
+    - reservation.weihanli.top
