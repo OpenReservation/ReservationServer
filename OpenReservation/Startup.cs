@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Net;
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -266,14 +267,22 @@ public class Startup
             .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
             ;
 
+        var redisConfiguration = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"));
+        var redisServers = redisConfiguration.EndPoints.Select(e => 
+        {
+            return e switch
+            {
+                DnsEndPoint dnsEndPoint => new RedisServerConfiguration(dnsEndPoint.Host, dnsEndPoint.Port > 0 ? dnsEndPoint.Port : 6379),
+                IPEndPoint ipEndPoint => new RedisServerConfiguration(ipEndPoint.Address.ToString(), ipEndPoint.Port > 0 ? ipEndPoint.Port : 6379),
+                _ => throw new ArgumentException()
+            };
+        }).ToArray();
         services.AddRedisConfig(options =>
         {
+            options.Password = redisConfiguration.Password;
             options.DefaultDatabase = 0;
-            options.RedisServers = new[]
-            {
-                new RedisServerConfiguration(Configuration.GetConnectionString("Redis")  ?? "127.0.0.1"),
-            };
             options.CachePrefix = "OpenReservation";
+            options.RedisServers = redisServers;
         });
 
         // DataProtection persist in redis
