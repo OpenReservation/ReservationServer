@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt
+  name: prometheus
+spec:
+  rules:
+  - host: "prometheus.lemonsharp.top"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: prometheus-server
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - prometheus.lemonsharp.top
