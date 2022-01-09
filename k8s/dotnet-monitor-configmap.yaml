@@ -8,10 +8,7 @@ data:
     {
       "urls": "http://*:52323",
       "Metrics": {
-        "Enabled": "True",
-        "Endpoints": "http://*:52325",
-        "IncludeDefaultProviders": "True",
-        "MetricCount": "3",
+        "IncludeDefaultProviders": true,
         "Providers": [
           {
             "ProviderName": "System.Runtime"
