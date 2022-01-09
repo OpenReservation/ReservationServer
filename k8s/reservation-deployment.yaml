@@ -76,7 +76,7 @@ spec:
           - name: DOTNETMONITOR_Urls
             value: "http://+:52323"
           - name: XDG_CONFIG_HOME
-            value: "etc"
+            value: "/etc"
           volumeMounts:
           - mountPath: /diag
             name: diagvol
