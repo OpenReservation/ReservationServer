@@ -132,7 +132,7 @@ kind: ServiceMonitor
 metadata:
   name: reservation-server-monitor
   labels:
-    release: monitoring
+    release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
