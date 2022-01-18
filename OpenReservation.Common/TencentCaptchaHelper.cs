@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 using WeihanLi.Extensions;
 
 namespace OpenReservation.Common;
@@ -49,18 +51,21 @@ public class TencentCaptchaHelper
         /// 1:验证成功，0:验证失败，100:AppSecretKey参数校验错误
         /// </summary>
         [JsonProperty("response")]
+        [JsonPropertyName("response")]
         public int Code { get; set; }
 
         /// <summary>
         /// 恶意等级 [0, 100]
         /// </summary>
         [JsonProperty("evil_level")]
+        [JsonPropertyName("evil_level")]
         public string EvilLevel { get; set; }
 
         /// <summary>
         /// 错误信息
         /// </summary>
         [JsonProperty("err_msg")]
+        [JsonPropertyName("err_msg")]
         public string ErrorMsg { get; set; }
     }
 
@@ -82,18 +87,8 @@ public class TencentCaptchaHelper
     public async Task<bool> IsValidRequestAsync(TencentCaptchaRequest request)
     {
         // 参考文档：https://007.qq.com/captcha/#/gettingStart
-        var response = await _httpClient.GetAsync(
+        var result = await _httpClient.GetFromJsonAsync<TencentCaptchaResponse>(
             $"{TencentCaptchaVerifyUrl}?aid={_captchaOptions.AppId}&AppSecretKey={_captchaOptions.AppSecret}&Ticket={request.Ticket}&Randstr={request.Nonce}&UserIP={request.UserIP}");
-        var responseText = await response.Content.ReadAsStringAsync();
-        if (responseText.IsNotNullOrEmpty())
-        {
-            _logger.Debug($"Tencent captcha verify response:{responseText}");
-            var result = responseText.JsonToObject<TencentCaptchaResponse>();
-            if (result.Code == 1)
-            {
-                return true;
-            }
-        }
-        return false;
+        return 1 == result?.Code;
     }
 }
