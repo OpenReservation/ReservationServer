@@ -3,6 +3,7 @@ using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using WeihanLi.Common;
 using WeihanLi.Common.Http;
 
 namespace OpenReservation.Common;
@@ -11,11 +12,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddGoogleRecaptchaHelper(this IServiceCollection services, Action<HttpClient> clientOptions = null)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
+        Guard.NotNull(services);
         if (null == clientOptions)
         {
             services.AddHttpClient<GoogleRecaptchaHelper>();
@@ -30,10 +27,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddGoogleRecaptchaHelper(this IServiceCollection services, IConfiguration configuration, Action<HttpClient> clientOptions = null)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        Guard.NotNull(services);
         if (null != configuration)
         {
             services.Configure<GoogleRecaptchaOptions>(configuration.Bind);
@@ -43,11 +37,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<HttpClient> clientConfigure = null)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
+        Guard.NotNull(services);
         if (null != clientConfigure)
         {
             services.AddHttpClient<TencentCaptchaHelper>(clientConfigure);
@@ -62,14 +52,8 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddTencentCaptchaHelper(this IServiceCollection services, Action<TencentCaptchaOptions> action, Action<HttpClient> clientConfigure = null)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-        if (action == null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        Guard.NotNull(services);
+        Guard.NotNull(action);
         services.Configure(action);
         return services.AddTencentCaptchaHelper();
     }
@@ -77,10 +61,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddGiteeStorageProvider(this IServiceCollection services,
         IConfiguration configuration)
     {
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
+        Guard.NotNull(services);
         if (null != configuration)
         {
             services.Configure<GiteeStorageOptions>(configuration.Bind);

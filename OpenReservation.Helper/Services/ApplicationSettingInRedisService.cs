@@ -26,7 +26,7 @@ public class ApplicationSettingInRedisService : IApplicationSettingService
 
     public int AddSettings(Dictionary<string, string> dictionary)
     {
-        if (dictionary != null && dictionary.Count > 0)
+        if (dictionary is { Count: > 0 })
         {
             _hashClient.Set(ApplicationSettingKey, dictionary);
             return dictionary.Count;
