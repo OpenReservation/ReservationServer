@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenReservation.API.Test", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenReservation.SourceGeneratorTest", "OpenReservation.SourceGeneratorTest\OpenReservation.SourceGeneratorTest.csproj", "{F9013EAE-9D30-4B91-8997-D04303CA40B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenReservation.UnitTest", "OpenReservation.UnitTest\OpenReservation.UnitTest.csproj", "{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,10 @@ Global
 		{F9013EAE-9D30-4B91-8997-D04303CA40B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9013EAE-9D30-4B91-8997-D04303CA40B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9013EAE-9D30-4B91-8997-D04303CA40B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -110,6 +116,7 @@ Global
 		{ED81FF93-4223-41B4-A35C-ED4C3FE7567A} = {25F466A7-EDB0-492E-8902-0A757720E0FD}
 		{B3883A46-BB6F-4E00-ACDA-7EC7346EA852} = {4442BA2B-D78B-4863-BA2C-3FE238644AE8}
 		{F9013EAE-9D30-4B91-8997-D04303CA40B1} = {4442BA2B-D78B-4863-BA2C-3FE238644AE8}
+		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5} = {4442BA2B-D78B-4863-BA2C-3FE238644AE8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {328EF779-5328-4251-9FC2-946EECC3ED2D}

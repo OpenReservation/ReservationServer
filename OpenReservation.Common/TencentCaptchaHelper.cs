@@ -1,12 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json.Serialization;
-using WeihanLi.Extensions;
+using System.Threading.Tasks;
 
 namespace OpenReservation.Common;
 
@@ -45,7 +44,7 @@ public class TencentCaptchaRequest
 
 public class TencentCaptchaHelper
 {
-    private class TencentCaptchaResponse
+    internal class TencentCaptchaResponse
     {
         /// <summary>
         /// 1:验证成功，0:验证失败，100:AppSecretKey参数校验错误
