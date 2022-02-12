@@ -1,13 +1,13 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.EntityFrameworkCore;
 using OpenReservation.Database;
-using OpenReservation.Models;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis.Text;
+using System.Text;
+using Microsoft.CodeAnalysis.Testing;
+using Microsoft.EntityFrameworkCore;
+using OpenReservation.Models;
 
 namespace OpenReservation.SourceGeneratorTest;
 
@@ -40,6 +40,7 @@ using WeihanLi.EntityFramework;
 
 namespace OpenReservation.Business
 {{
+
     public partial interface IBLL{item}: IEFRepository<ReservationDbContext, {item}>{{}}
 
     public partial class BLL{item} : EFRepository<ReservationDbContext, {item}>,  IBLL{item}
@@ -48,6 +49,7 @@ namespace OpenReservation.Business
         {{
         }}
     }}
+
 }}
 ";
         var tester = new CSharpSourceGeneratorTest<ServiceGenerator, XUnitVerifier>()
@@ -61,8 +63,8 @@ namespace OpenReservation.Business
                 }
             },
         };
-        tester.ReferenceAssemblies = new ReferenceAssemblies("net6.0",
-            new PackageIdentity("Microsoft.NETCore.App.Ref", "6.0.0"),
+        tester.ReferenceAssemblies = new ReferenceAssemblies("net6.0", 
+            new PackageIdentity("Microsoft.NETCore.App.Ref", "6.0.0"), 
             System.IO.Path.Combine("ref", "net6.0"));
 
         tester.TestState.AdditionalReferences.Add(typeof(SystemSettings).Assembly);
