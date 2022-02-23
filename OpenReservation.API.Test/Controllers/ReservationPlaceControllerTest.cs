@@ -1,11 +1,10 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using OpenReservation.Database;
 using OpenReservation.Models;
+using System;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OpenReservation.API.Test.Controllers;
@@ -19,10 +18,7 @@ public class ReservationPlaceControllerTest : ControllerTestBase
     [Fact]
     public async Task GetReservationPlaceList()
     {
-        using var response = await Client.GetAsync("/api/reservationPlaces");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<ReservationPlace[]>(responseString);
+        var result = await Client.GetFromJsonAsync<ReservationPlace[]>("/api/reservationPlaces");
         Assert.NotNull(result);
     }
 
@@ -34,10 +30,8 @@ public class ReservationPlaceControllerTest : ControllerTestBase
             .ReservationPlaces.AsNoTracking()
             .FirstOrDefaultAsync();
         Assert.NotNull(place);
-        using var response = await Client.GetAsync($"/api/reservationPlaces/{place.PlaceId:N}/periods?dt={DateTime.Today:yyyy-MM-dd}");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<ReservationPeriod[]>(responseString);
+
+        var result = await Client.GetFromJsonAsync<ReservationPeriod[]>($"/api/reservationPlaces/{place.PlaceId:N}/periods?dt={DateTime.Today:yyyy-MM-dd}");
         Assert.NotNull(result);
     }
 }

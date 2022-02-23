@@ -1,7 +1,7 @@
-﻿using System.Net;
+﻿using OpenReservation.Models;
+using System.Net;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using OpenReservation.Models;
 using WeihanLi.Common.Models;
 using Xunit;
 
@@ -16,10 +16,7 @@ public class NoticeControllerTest : ControllerTestBase
     [Fact]
     public async Task GetNoticeList()
     {
-        using var response = await Client.GetAsync("/api/notice");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<PagedListResult<Notice>>(responseString);
+        var result = await Client.GetFromJsonAsync<PagedListResult<Notice>>("/api/notice");
         Assert.NotNull(result);
     }
 
@@ -27,10 +24,7 @@ public class NoticeControllerTest : ControllerTestBase
     public async Task GetNoticeDetails()
     {
         var path = "test-notice";
-        using var response = await Client.GetAsync($"/api/notice/{path}");
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var responseString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<Notice>(responseString);
+        var result = await Client.GetFromJsonAsync<Notice>($"/api/notice/{path}");
         Assert.NotNull(result);
         Assert.Equal(path, result.NoticeCustomPath);
     }
