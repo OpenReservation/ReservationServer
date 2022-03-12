@@ -7,6 +7,7 @@ using OpenReservation.Models;
 using OpenReservation.WorkContexts;
 using System.Linq.Expressions;
 using WeihanLi.Common.Models;
+using WeihanLi.Extensions;
 using WeihanLi.Web.Pager;
 
 namespace OpenReservation.AdminLogic.Controllers;
@@ -70,7 +71,7 @@ public class DisabledPeriodController : AdminBaseController
             else
             {
                 var list = _bllDisabledPeriod.Select(p => model.StartDate <= p.StartDate && model.EndDate >= p.EndDate);
-                if (list != null && list.Any())
+                if (list.HasValue())
                 {
                     result.Status = ResultStatus.RequestError;
                     result.Msg = "该时间段已经被禁用，不可重复添加！";
