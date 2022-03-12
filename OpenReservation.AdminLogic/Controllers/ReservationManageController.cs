@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,10 +7,11 @@ using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.ViewModels;
 using OpenReservation.WorkContexts;
-using WeihanLi.Web.Pager;
+using System.Linq.Expressions;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
 using WeihanLi.Npoi;
+using WeihanLi.Web.Pager;
 
 namespace OpenReservation.AdminLogic.Controllers;
 
@@ -46,7 +43,7 @@ public class ReservationManageController : AdminBaseController
     [HttpPost]
     public ActionResult MakeReservation([FromBody] ReservationViewModel model)
     {
-        var result = new ResultModel<bool> { Result = false, Status = ResultStatus.RequestError };
+        var result = new Result<bool> { Status = ResultStatus.RequestError };
         try
         {
             if (ModelState.IsValid)
@@ -54,14 +51,14 @@ public class ReservationManageController : AdminBaseController
                 if (!HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                         .MakeReservation(model, out var msg, true))
                 {
-                    result.ErrorMsg = msg;
+                    result.Msg = msg;
                     return Json(result);
                 }
 
                 OperLogHelper.AddOperLog(
                     $"管理员 {UserName} 后台预约 {model.ReservationForDate:yyyy-MM-dd} {model.ReservationPlaceName}：{model.ReservationActivityContent}",
                     OperLogModule.Reservation, UserName);
-                result.Result = true;
+                result.Data = true;
                 result.Status = ResultStatus.Success;
                 return Json(result);
             }
@@ -70,7 +67,7 @@ public class ReservationManageController : AdminBaseController
         {
             Logger.Error(ex);
             result.Status = ResultStatus.ProcessFail;
-            result.ErrorMsg = ex.Message;
+            result.Msg = ex.Message;
         }
         return Json(result);
     }

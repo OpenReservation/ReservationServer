@@ -1,15 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OpenReservation.AdminLogic.ViewModels;
 using OpenReservation.Business;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.WorkContexts;
-using WeihanLi.Web.Pager;
+using System.Linq.Expressions;
 using WeihanLi.Common.Models;
+using WeihanLi.Web.Pager;
 
 namespace OpenReservation.AdminLogic.Controllers;
 
@@ -60,13 +58,13 @@ public class DisabledPeriodController : AdminBaseController
     [HttpPost]
     public JsonResult AddPeriod(DisabledPeriodViewModel model)
     {
-        var result = new ResultModel<bool>();
+        var result = new Result<bool>();
         if (ModelState.IsValid)
         {
             if (model.EndDate < model.StartDate)
             {
                 result.Status = ResultStatus.RequestError;
-                result.ErrorMsg = "结束日期必须大于开始日期";
+                result.Msg = "结束日期必须大于开始日期";
                 return Json(result);
             }
             else
@@ -75,7 +73,7 @@ public class DisabledPeriodController : AdminBaseController
                 if (list != null && list.Any())
                 {
                     result.Status = ResultStatus.RequestError;
-                    result.ErrorMsg = "该时间段已经被禁用，不可重复添加！";
+                    result.Msg = "该时间段已经被禁用，不可重复添加！";
                     return Json(result);
                 }
                 var period = new DisabledPeriod
@@ -92,13 +90,13 @@ public class DisabledPeriodController : AdminBaseController
                 if (count > 0)
                 {
                     result.Status = ResultStatus.Success;
-                    result.Result = true;
-                    result.ErrorMsg = "";
+                    result.Data = true;
+                    result.Msg = "";
                 }
                 else
                 {
                     result.Status = ResultStatus.ProcessFail;
-                    result.ErrorMsg = "添加失败";
+                    result.Msg = "添加失败";
                 }
                 return Json(result);
             }
@@ -106,7 +104,7 @@ public class DisabledPeriodController : AdminBaseController
         else
         {
             result.Status = ResultStatus.RequestError;
-            result.ErrorMsg = "请求参数异常";
+            result.Msg = "请求参数异常";
             return Json(result);
         }
     }
@@ -119,18 +117,18 @@ public class DisabledPeriodController : AdminBaseController
     /// <returns></returns>
     public JsonResult UpdatePeriodStatus(Guid periodId, int status)
     {
-        var result = new ResultModel<bool>();
+        var result = new Result<bool>();
         var period = _bllDisabledPeriod.Fetch(p => p.PeriodId == periodId);
         if (period == null)
         {
-            result.ErrorMsg = "时间段不存在，请求参数异常";
+            result.Msg = "时间段不存在，请求参数异常";
             result.Status = ResultStatus.RequestError;
             return Json(result);
         }
         if ((status > 0 && period.IsActive) || (status <= 0 && !period.IsActive))
         {
-            result.ErrorMsg = "不需要更新状态";
-            result.Result = true;
+            result.Msg = "不需要更新状态";
+            result.Data = true;
             result.Status = ResultStatus.Success;
         }
         else
@@ -145,7 +143,7 @@ public class DisabledPeriodController : AdminBaseController
                     OperLogModule.DisabledPeriod, UserName);
 
                 result.Status = ResultStatus.Success;
-                result.Result = true;
+                result.Data = true;
             }
         }
         return Json(result);

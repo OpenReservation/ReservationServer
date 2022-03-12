@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -133,7 +129,7 @@ public class ReservationsController : ApiControllerBase
             return new StatusCodeResult(403);
         }
 
-        var result = await _repository.UpdateAsync(
+        var updateResult = await _repository.UpdateAsync(
             new Reservation()
             {
                 ReservationId = id,
@@ -141,12 +137,13 @@ public class ReservationsController : ApiControllerBase
             },
             r => r.ReservationStatus);
 
-        return new ResultModel()
-        {
-            Status = result > 0
+        var status = updateResult > 0
                 ? ResultStatus.Success
-                : ResultStatus.ProcessFail,
-        }.GetOkObjectResult();
+                : ResultStatus.ProcessFail;
+        return new Result()
+        {
+            Status = status,
+        }.GetRestResult();
     }
 
     /// <summary>
@@ -207,12 +204,12 @@ public class ReservationsController : ApiControllerBase
         [FromServices] CaptchaVerifyHelper captchaVerifyHelper
     )
     {
-        var result = new ResultModel<bool> { Status = ResultStatus.RequestError };
+        var result = new Result<bool> { Status = ResultStatus.RequestError };
         var isCodeValid = await captchaVerifyHelper
             .ValidateVerifyCodeAsync(captchaType, captcha);
         if (!isCodeValid)
         {
-            result.ErrorMsg = "验证码有误, 请重新验证";
+            result.Msg = "验证码有误, 请重新验证";
             return Ok(result);
         }
         try
@@ -220,11 +217,11 @@ public class ReservationsController : ApiControllerBase
             if (!HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                     .MakeReservation(model, out var msg))
             {
-                result.ErrorMsg = msg;
+                result.Msg = msg;
             }
             else
             {
-                result.Result = true;
+                result.Data = true;
                 result.Status = ResultStatus.Success;
             }
         }
@@ -232,7 +229,7 @@ public class ReservationsController : ApiControllerBase
         {
             Logger.Error(ex, $"Make reservation exception: {ex.Message}");
             result.Status = ResultStatus.ProcessFail;
-            result.ErrorMsg = ex.Message;
+            result.Msg = ex.Message;
         }
         return Ok(result);
     }

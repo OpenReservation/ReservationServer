@@ -117,12 +117,11 @@ public class HomeController : FrontBaseController
             .IsReservationForDateAvailable(reservationForDate, false, out var msg);
         if (isValid)
         {
-            return Json(ResultModel.Success(true));
+            return Json(Result.Success(true));
         }
         else
         {
-            var jsonResult =
-                new ResultModel<bool> { Status = ResultStatus.Success, Result = false, ErrorMsg = msg };
+            var jsonResult = Result.Success(false, msg);
             return Json(jsonResult);
         }
     }
@@ -157,12 +156,12 @@ public class HomeController : FrontBaseController
         [FromServices] CaptchaVerifyHelper captchaVerifyHelper,
         [FromServices] IStringLocalizer<HomeController> localizer)
     {
-        var result = new ResultModel<bool>();
+        var result = new Result<bool>();
         var isCodeValid = await captchaVerifyHelper.ValidateVerifyCodeAsync(captchaType, captcha);
         if (!isCodeValid)
         {
             result.Status = ResultStatus.RequestError;
-            result.ErrorMsg = localizer["InvalidCaptchaInfo"];
+            result.Msg = localizer["InvalidCaptchaInfo"];
             return Json(result);
         }
         try
@@ -172,11 +171,11 @@ public class HomeController : FrontBaseController
                 if (!HttpContext.RequestServices.GetRequiredService<ReservationHelper>()
                         .MakeReservation(model, out var msg))
                 {
-                    result.ErrorMsg = msg;
+                    result.Msg = msg;
                     return Json(result);
                 }
 
-                result.Result = true;
+                result.Data = true;
                 result.Status = ResultStatus.Success;
             }
         }
@@ -184,7 +183,7 @@ public class HomeController : FrontBaseController
         {
             Logger.Error(ex);
             result.Status = ResultStatus.ProcessFail;
-            result.ErrorMsg = ex.Message;
+            result.Msg = ex.Message;
         }
         return Json(result);
     }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using WeihanLi.Web.AccessControlHelper;
 using WeihanLi.Common.Models;
+using WeihanLi.Web.AccessControlHelper;
 
 namespace OpenReservation.Services;
 
@@ -32,9 +32,9 @@ public class AdminPermissionRequireStrategy : IResourceAccessStrategy
         StatusCode = 403
     };
 
-    public IActionResult DisallowedAjaxResult => new JsonResult(new ResultModel
+    public IActionResult DisallowedAjaxResult => new JsonResult(new Result
     {
-        ErrorMsg = "No Permission",
+        Msg = "No Permission",
         Status = ResultStatus.NoPermission
     });
 }
