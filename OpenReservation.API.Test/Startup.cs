@@ -66,12 +66,9 @@ public class Startup
                 });
             })
             .AddApplicationPart(typeof(ApiControllerBase).Assembly)
-            .AddNewtonsoftJson(options =>
+            .AddJsonOptions(options =>
             {
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-                options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc; // 设置时区为 UTC
-                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.JsonSerializerOptions.PropertyNamingPolicy = null;
             });
 
         // addDbContext
