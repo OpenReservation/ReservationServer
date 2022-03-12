@@ -5,8 +5,8 @@
     <Compile Remove="ServiceGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WeihanLi.EntityFramework" Version="2.0.0" GeneratePathProperty="true" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" GeneratePathProperty="true" />
+    <PackageReference Include="WeihanLi.EntityFramework" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj" />
