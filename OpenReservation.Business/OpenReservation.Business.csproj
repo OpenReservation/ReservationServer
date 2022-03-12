@@ -3,7 +3,29 @@
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenReservation.Database\OpenReservation.Database.csproj"
-                      OutputItemType="Analyzer" />
+    <None Include="BLLCollection.generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BLLCollection.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OpenReservation.Database\OpenReservation.Database.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="BLLCollection.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BLLCollection.generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="BLLCollection.generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>BLLCollection.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>
