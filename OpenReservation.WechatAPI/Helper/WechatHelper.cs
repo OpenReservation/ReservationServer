@@ -94,7 +94,7 @@ public class WeChatHelper
             return false;
         }
         var url = SendMsgUrlFormat.FormatWith(accessToken);
-        using (var response = await _httpClient.PostAsJsonAsync(url, msg))
+        using (var response = await _httpClient.PostJsonRequestAsync(url, msg))
         {
             var responseText = await response.Content.ReadAsStringAsync();
             _logger.LogInformation($"send wechat msg response: {responseText}");
@@ -140,7 +140,7 @@ public class WeChatHelper
             return false;
         }
         var url = UpdateMpWechatMenuUrlFormat.FormatWith(accessToken);
-        var response = await _httpClient.PostAsJsonAsync(url, menu);
+        var response = await _httpClient.PostJsonRequestAsync(url, menu);
         var result = await response.Content.ReadAsStringAsync()
             .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
         return result.Success;
