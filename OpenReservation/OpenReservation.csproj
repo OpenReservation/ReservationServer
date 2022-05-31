@@ -9,7 +9,7 @@
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.5" />  
     <PackageReference Include="prometheus-net.AspNetCore" Version="6.0.0" />  
     <PackageReference Include="prometheus-net.Contrib" Version="0.9.5" />  
-    <PackageReference Include="prometheus-net.DotNetRuntime" Version="4.2.3" />
+    <PackageReference Include="prometheus-net.DotNetRuntime" Version="4.2.4" />
     <PackageReference Include="Sentry.Extensions.Logging" Version="3.17.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
     <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="1.0.3" />
