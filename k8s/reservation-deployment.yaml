@@ -61,7 +61,7 @@ spec:
           - mountPath: /tmp
             name: tmpvol
         - name: dotnet-monitor
-          image: mcr.microsoft.com/dotnet/monitor
+          image: mcr.microsoft.com/dotnet/monitor:6
           args: [ "--no-auth" ]
           imagePullPolicy: Always
           ports:
@@ -127,23 +127,23 @@ spec:
     protocol: TCP
     targetPort: 52323
 ---
-apiVersion: monitoring.coreos.com/v1
-kind: ServiceMonitor
-metadata:
-  name: reservation-server-monitor
-  labels:
-    release: kube-prometheus-stack
-spec:
-  selector:
-    matchLabels:
-      app: reservation-server
-  namespaceSelector:
-    matchNames:
-    - default
-  endpoints:
-  - port: http
-    interval: 10s
-    path: /metrics
-  - port: dotnet-monitor
-    interval: 10s
-    path: /metrics
+# apiVersion: monitoring.coreos.com/v1
+# kind: ServiceMonitor
+# metadata:
+#   name: reservation-server-monitor
+#   labels:
+#     release: kube-prometheus-stack
+# spec:
+#   selector:
+#     matchLabels:
+#       app: reservation-server
+#   namespaceSelector:
+#     matchNames:
+#     - default
+#   endpoints:
+#   - port: http
+#     interval: 10s
+#     path: /metrics
+#   - port: dotnet-monitor
+#     interval: 10s
+#     path: /metrics
