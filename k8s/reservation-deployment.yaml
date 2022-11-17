@@ -61,8 +61,8 @@ spec:
           - mountPath: /tmp
             name: tmpvol
         - name: dotnet-monitor
-          image: mcr.microsoft.com/dotnet/monitor:6
-          args: [ "--no-auth" ]
+          image: mcr.microsoft.com/dotnet/monitor:7
+          args: [ "collect", "--urls", "http://+:52323", "--no-auth" ]
           imagePullPolicy: Always
           ports:
             - containerPort: 52323
@@ -73,8 +73,6 @@ spec:
             value: /diag/port
           - name: DOTNETMONITOR_Storage__DumpTempFolder
             value: /dumps
-          - name: DOTNETMONITOR_Urls
-            value: "http://+:52323"
           - name: XDG_CONFIG_HOME
             value: "/etc"
           volumeMounts:
