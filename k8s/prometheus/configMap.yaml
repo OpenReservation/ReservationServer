@@ -21,9 +21,6 @@ data:
         kubernetes_sd_configs:
         - role: endpoints
         relabel_configs:
-        - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_should_be_scraped]
-          action: keep
-          regex: true
         - action: labelmap
           regex: __meta_kubernetes_pod_label_(.+)
         - source_labels: [__meta_kubernetes_namespace]
