@@ -4,9 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OpenReservation;
-using Prometheus.DotNetRuntime;
-
-DotNetRuntimeStatsBuilder.Default().StartCollecting();
 
 Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration(builder =>
@@ -21,14 +18,6 @@ Host.CreateDefaultBuilder(args)
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
     }))
-    .ConfigureServices(services =>
-    {
-        // prometheus counters metrics
-        services.AddPrometheusCounters();
-        services.AddPrometheusAspNetCoreMetrics();
-        services.AddPrometheusSqlClientMetrics();
-        services.AddPrometheusHttpClientMetrics();
-    })
     .ConfigureWebHostDefaults(webHostBuilder =>
     {
         webHostBuilder.UseStartup<Startup>();

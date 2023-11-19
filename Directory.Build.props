@@ -13,8 +13,8 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/OpenReservation/ReservationServer</RepositoryUrl>
     <Authors>WeihanLi</Authors>
-    <Copyright>Copyright 2015-2022 (c) WeihanLi</Copyright>
-    <TargetFramework>net7.0</TargetFramework>
-    <DotNetPackageVersion>7.0.0</DotNetPackageVersion>
+    <Copyright>Copyright 2015-2023 (c) WeihanLi</Copyright>
+    <TargetFramework>net8.0</TargetFramework>
+    <DotNetPackageVersion>8.0.0</DotNetPackageVersion>
   </PropertyGroup>
 </Project>

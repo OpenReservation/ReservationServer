@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WeihanLi.Common;
 using WeihanLi.Common.Models;
+using WeihanLi.Common.Services;
 using Xunit;
 
 namespace OpenReservation.API.Test.Controllers;
