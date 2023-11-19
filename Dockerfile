@@ -1,11 +1,11 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 
 # use forward headers
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 
 LABEL Maintainer="WeihanLi"
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
@@ -28,3 +28,4 @@ WORKDIR /app
 COPY --from=build-env /src/OpenReservation/out .
 
 ENTRYPOINT ["dotnet", "OpenReservation.dll"]
+ENV ASPNETCORE_HTTP_PORTS=80
