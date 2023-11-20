@@ -2,6 +2,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 
 # use forward headers
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+# configure http port to use 80
+ENV ASPNETCORE_HTTP_PORTS=80
 
 LABEL Maintainer="WeihanLi"
 
@@ -28,4 +30,3 @@ WORKDIR /app
 COPY --from=build-env /src/OpenReservation/out .
 
 ENTRYPOINT ["dotnet", "OpenReservation.dll"]
-ENV ASPNETCORE_HTTP_PORTS=80
