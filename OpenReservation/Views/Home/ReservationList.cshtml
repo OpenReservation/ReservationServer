@@ -53,10 +53,10 @@
                         @Html.Raw(item.ReservationForTime.Replace(",", "<br />"))
                     </td>
                     <td>
-                        @item.ReservationUnit
+                        @item.ReservationUnit?.Truncate(10)
                     </td>
                     <td>
-                        @item.ReservationActivityContent
+                        @item.ReservationActivityContent?.Truncate(20)
                     </td>
                     <td>
                         @(WeihanLi.Common.Helpers.StringHelper.HideSensitiveInfo(item.ReservationPersonName, 1, 0, 2))
