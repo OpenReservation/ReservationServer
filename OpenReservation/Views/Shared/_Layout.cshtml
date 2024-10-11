@@ -14,7 +14,7 @@
         <link href="~/Content/bootstrap.css" rel="stylesheet" />
     </environment>
     <environment names="Staging,Production">
-        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha512-rt/SrQ4UNIaGfDyEXZtNcyWvQeOq0QLygHluFQcSjaGB04IxWhal71tKuzP6K8eYXYB6vJV4pHkXcmFGGQ1/0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </environment>
     <link href="~/Content/Site.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
@@ -94,9 +94,9 @@
         <script src="~/Content/layer/layer.js"></script>
     </environment>
     <environment names="Staging,Production">
-        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js" integrity="sha512-jGsMH83oKe9asCpkOVkBnUrDDTp8wl+adkB2D+//JtlxO4SrLoJdhbOysIFQJloQFD+C4Fl1rMsQZF76JjV0eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/js/bootstrap.min.js" integrity="sha512-7rusk8kGPFynZWu26OKbTeI+QPoYchtxsmPeBqkHIEXJxeun4yJ4ISYe7C6sz9wdxeE1Gk3VxsIWgCZTc+vX3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/layer/3.5.1/layer.min.js" integrity="sha512-0iG/yadTz/ltYp8fbzzZeJqp7ub0a0O8o3BFUKlCqUg7G72OSM2ASLiaheRfek5Plo6vJ4Wv7OBjYnPbOuwO1w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </environment>
     @RenderSection("scripts", required: false)
 </body>
