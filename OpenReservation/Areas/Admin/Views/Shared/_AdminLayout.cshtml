@@ -10,12 +10,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@($"{ViewBag.Title} -- {applicationSettings.GetSettingValue("SystemTitle")}") </title>
-    <environment names="Development">
-        <link href="~/Content/bootstrap.css" rel="stylesheet" />
-    </environment>
-    <environment names="Staging,Production">
-        <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    </environment>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
     <style type="text/css">
         @@media only screen and (max-width:780px) {
             #githubLink {
@@ -70,17 +65,9 @@
             <p>&copy; @DateTime.UtcNow.Year - @applicationSettings.GetSettingValue("SystemTitle") &nbsp;&nbsp; HostIp: <strong>@(Dns.GetHostAddresses(Dns.GetHostName()).FirstOrDefault(_ => _.AddressFamily == AddressFamily.InterNetwork)) </strong></p>
         </footer>
     </div>
-    <environment names="Development">
-        <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-        <script src="~/Scripts/bootstrap.min.js"></script>
-        <script src="~/Content/layer/layer.js"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://cdn.bootcss.com/twitter-bootstrap/3.4.0/js/bootstrap.min.js"></script>
-        <script src="https://cdn.bootcss.com/layer/2.3/layer.js"></script>
-    </environment>
-
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Content/layer/layer.js"></script>
     @RenderSection("scripts", required: false)
 </body>
 </html>
