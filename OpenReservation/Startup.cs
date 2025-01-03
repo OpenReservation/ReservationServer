@@ -1,29 +1,18 @@
 ﻿using System.Net;
-using System;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using OpenReservation.AuditEnrichers;
 using OpenReservation.Common;
 using OpenReservation.Database;
 using OpenReservation.Events;
@@ -38,7 +27,6 @@ using StackExchange.Redis;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Services;
 using WeihanLi.EntityFramework;
 using WeihanLi.EntityFramework.Audit;
 using WeihanLi.EntityFramework.Interceptors;
@@ -117,9 +105,9 @@ public class Startup
             ;
 
         var supportedCultureNames = Configuration.GetSection("Localization:SupportedCultures")?.Get<string[]>();
-        if (supportedCultureNames == null || supportedCultureNames.Length == 0)
+        if (supportedCultureNames is not { Length: not 0 })
         {
-            supportedCultureNames = new[] { "zh", "en" };
+            supportedCultureNames = ["zh", "en"];
         }
         var supportedCultures = supportedCultureNames.Select(name => new CultureInfo(name)).ToArray();
         services.Configure<RequestLocalizationOptions>(options =>
@@ -232,6 +220,9 @@ public class Startup
             }
         });
         services.AddEFAutoUpdateInterceptor();
+        services.AddEFAutoAudit(config =>
+        {
+        });
 
         services.AddGoogleRecaptchaHelper(Configuration.GetSection("GoogleRecaptcha"), client =>
         {
@@ -269,14 +260,14 @@ public class Startup
             .AddControlAccessStrategy<AdminOnlyControlAccessStrategy>()
             ;
 
-        var redisConfiguration = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"));
+        var redisConfiguration = ConfigurationOptions.Parse(Configuration.GetRequiredConnectionString("Redis"));
         var redisServers = redisConfiguration.EndPoints.Select(e => 
         {
             return e switch
             {
                 DnsEndPoint dnsEndPoint => new RedisServerConfiguration(dnsEndPoint.Host, dnsEndPoint.Port > 0 ? dnsEndPoint.Port : 6379),
                 IPEndPoint ipEndPoint => new RedisServerConfiguration(ipEndPoint.Address.ToString(), ipEndPoint.Port > 0 ? ipEndPoint.Port : 6379),
-                _ => throw new ArgumentException()
+                _ => throw new ArgumentException("Invalid redis configuration")
             };
         }).ToArray();
         services.AddRedisConfig(options =>
@@ -316,8 +307,7 @@ public class Startup
                     ex = aggregateException.Unwrap();
                 }
 
-                if (context.RequestAborted.IsCancellationRequested && (
-                        ex is TaskCanceledException || ex is OperationCanceledException)
+                if (context.RequestAborted.IsCancellationRequested && ex is TaskCanceledException or OperationCanceledException
                    )
                 {
                     return Task.CompletedTask;
@@ -338,8 +328,8 @@ public class Startup
         {
             options.SwaggerDoc(ApplicationHelper.ApplicationName, new OpenApiInfo { Title = "活动室预约系统 API", Version = "1.0" });
 
-            options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(Notice).Assembly.GetName().Name}.xml"));
-            options.IncludeXmlComments(System.IO.Path.Combine(AppContext.BaseDirectory, $"{typeof(API.NoticeController).Assembly.GetName().Name}.xml"), true);
+            options.IncludeXmlComments(typeof(Notice).Assembly);
+            options.IncludeXmlComments(typeof(API.NoticeController).Assembly, true);
             // Add security definitions
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
             {
@@ -445,17 +435,16 @@ public class Startup
                 options.Environment = Environment.EnvironmentName;
                 options.MinimumEventLevel = LogLevel.Error;
                 options.Debug = Environment.IsDevelopment();
+                options.SetBeforeSend(sentryEvent =>
+                {
+                    // ignore TaskCanceledException/OperationCanceledException
+                    if (sentryEvent.Exception is OperationCanceledException or TaskCanceledException)
+                    {
+                        return null;
+                    }
 
-                // options.BeforeSend = (sentryEvent) =>
-                // {
-                //     // ignore TaskCanceledException/OperationCanceledException
-                //     if (sentryEvent.Exception is OperationCanceledException or TaskCanceledException)
-                //     {
-                //         return null;
-                //     }
-
-                //     return sentryEvent;
-                // };
+                    return sentryEvent;
+                });
             });
     }
 
