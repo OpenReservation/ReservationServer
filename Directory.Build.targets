@@ -1,5 +1,0 @@
-<Project>
-  <ItemGroup>
-    <Using Include="$(RootNamespace)" />
-  </ItemGroup>
-</Project>

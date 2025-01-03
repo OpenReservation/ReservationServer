@@ -53,7 +53,8 @@ public class OperLogHelper
         };
         try
         {
-            return _eventBus.Publish(logEvent);
+            _ = _eventBus.PublishAsync(logEvent);
+            return true;
         }
         catch (Exception e)
         {

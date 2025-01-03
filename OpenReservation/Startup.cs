@@ -39,7 +39,9 @@ using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Common.Services;
+using WeihanLi.EntityFramework;
 using WeihanLi.EntityFramework.Audit;
+using WeihanLi.EntityFramework.Interceptors;
 using WeihanLi.Extensions;
 using WeihanLi.Extensions.Localization.Json;
 using WeihanLi.Npoi;
@@ -206,30 +208,30 @@ public class Startup
         });
 
         // addDbContext
-        services.AddDbContext<ReservationDbContext>(option =>
+        services.AddDbContext<ReservationDbContext>((provider, options) =>
         {
+            options.AddInterceptors
+            ([
+                provider.GetRequiredService<AutoUpdateInterceptor>(),
+                provider.GetRequiredService<AuditInterceptor>()
+            ]);
             var dbType = Configuration.GetAppSetting<DbType>("DbType");
             switch (dbType)
             {
                 case DbType.InMemory:
-                    option.UseInMemoryDatabase("Reservation");
+                    options.UseInMemoryDatabase("Reservation");
                     break;
 
                 case DbType.Sqlite:
-                    option.UseSqlite("Data Source=Reservation.db;Cache=Shared");
-                    break;
-
-                case DbType.MySql:
-                    option.UseMySql(Configuration.GetConnectionString("Reservation"),
-                        new MySqlServerVersion(new Version(8, 0))
-                    );
+                    options.UseSqlite("Data Source=Reservation.db;Cache=Shared");
                     break;
 
                 default:
-                    option.UseSqlServer(Configuration.GetConnectionString("Reservation"));
+                    options.UseSqlServer(Configuration.GetConnectionString("Reservation"));
                     break;
             }
         });
+        services.AddEFAutoUpdateInterceptor();
 
         services.AddGoogleRecaptchaHelper(Configuration.GetSection("GoogleRecaptcha"), client =>
         {
@@ -431,7 +433,6 @@ public class Startup
 
         // initialize settings
         LoggingConfig(loggerFactory);
-        EFAuditConfig(app);
         ExcelSettings();
     }
 
@@ -445,33 +446,17 @@ public class Startup
                 options.MinimumEventLevel = LogLevel.Error;
                 options.Debug = Environment.IsDevelopment();
 
-                options.BeforeSend = (sentryEvent) =>
-                {
-                    // ignore TaskCanceledException/OperationCanceledException
-                    if (sentryEvent.Exception is OperationCanceledException or TaskCanceledException)
-                    {
-                        return null;
-                    }
+                // options.BeforeSend = (sentryEvent) =>
+                // {
+                //     // ignore TaskCanceledException/OperationCanceledException
+                //     if (sentryEvent.Exception is OperationCanceledException or TaskCanceledException)
+                //     {
+                //         return null;
+                //     }
 
-                    return sentryEvent;
-                };
+                //     return sentryEvent;
+                // };
             });
-    }
-
-    private void EFAuditConfig(IApplicationBuilder applicationBuilder)
-    {
-        var userIdProvider = applicationBuilder.ApplicationServices
-            .GetRequiredService<IUserIdProvider>();
-        AuditConfig.Configure(builder =>
-        {
-            builder
-                .EnrichWithProperty(nameof(ApplicationHelper.ApplicationName), ApplicationHelper.ApplicationName)
-                .EnrichWithProperty("Host", System.Environment.MachineName)
-                .WithUserIdProvider(userIdProvider)
-                .IgnoreEntity<OperationLog>()
-                .WithHttpContextInfo(applicationBuilder.ApplicationServices.GetRequiredService<IHttpContextAccessor>())
-                ;
-        });
     }
 
     private void ExcelSettings()

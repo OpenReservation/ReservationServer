@@ -8,7 +8,7 @@ namespace OpenReservation.API.Test.MockServices;
 
 internal class MockNoticeViewEventHandler : EventHandlerBase<NoticeViewEvent>
 {
-    public override async Task Handle(NoticeViewEvent @event)
+    public override async Task Handle(NoticeViewEvent @event, EventProperties eventProperties)
     {
         await DependencyResolver.Current.TryInvokeServiceAsync<ReservationDbContext>(async dbContext =>
         {

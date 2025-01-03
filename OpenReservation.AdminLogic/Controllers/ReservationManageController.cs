@@ -43,7 +43,7 @@ public class ReservationManageController : AdminBaseController
     [HttpPost]
     public ActionResult MakeReservation([FromBody] ReservationViewModel model)
     {
-        var result = new Result<bool> { Status = ResultStatus.RequestError };
+        var result = new Result<bool> { Status = ResultStatus.BadRequest };
         try
         {
             if (ModelState.IsValid)
@@ -66,7 +66,7 @@ public class ReservationManageController : AdminBaseController
         catch (Exception ex)
         {
             Logger.Error(ex);
-            result.Status = ResultStatus.ProcessFail;
+            result.Status = ResultStatus.InternalError;
             result.Msg = ex.Message;
         }
         return Json(result);

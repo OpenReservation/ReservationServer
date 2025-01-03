@@ -35,7 +35,7 @@ public abstract class OnceEventHandlerBase<TEvent> : EventHandlerBase<TEvent> wh
 
 public class NoticeViewEventHandler : OnceEventHandlerBase<NoticeViewEvent>
 {
-    public override async Task Handle(NoticeViewEvent @event)
+    public async override Task Handle(NoticeViewEvent @event, EventProperties eventProperties)
     {
         if (await IsHandleNeeded(@event))
         {

@@ -1,17 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
   <ItemGroup>
-    <PackageReference Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />  
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />  
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0" />  
-    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="8.0.0" />  
-    <PackageReference Include="prometheus-net.AspNetCore" Version="8.1.0" />  
-    <PackageReference Include="Sentry.Extensions.Logging" Version="3.41.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageReference Include="WeihanLi.Extensions.Localization.Json" Version="2.0.0" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0-*" />
+    <PackageReference Include="IdentityServer4.AccessTokenValidation" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />  
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />  
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />  
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" />  
+    <PackageReference Include="prometheus-net.AspNetCore" />  
+    <PackageReference Include="Sentry.Extensions.Logging" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+    <PackageReference Include="WeihanLi.Extensions.Localization.Json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenReservation.AdminLogic\OpenReservation.AdminLogic.csproj" />

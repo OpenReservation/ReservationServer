@@ -64,7 +64,7 @@ public class DisabledPeriodController : AdminBaseController
         {
             if (model.EndDate < model.StartDate)
             {
-                result.Status = ResultStatus.RequestError;
+                result.Status = ResultStatus.BadRequest;
                 result.Msg = "结束日期必须大于开始日期";
                 return Json(result);
             }
@@ -73,7 +73,7 @@ public class DisabledPeriodController : AdminBaseController
                 var list = _bllDisabledPeriod.Select(p => model.StartDate <= p.StartDate && model.EndDate >= p.EndDate);
                 if (list.HasValue())
                 {
-                    result.Status = ResultStatus.RequestError;
+                    result.Status = ResultStatus.BadRequest;
                     result.Msg = "该时间段已经被禁用，不可重复添加！";
                     return Json(result);
                 }
@@ -96,7 +96,7 @@ public class DisabledPeriodController : AdminBaseController
                 }
                 else
                 {
-                    result.Status = ResultStatus.ProcessFail;
+                    result.Status = ResultStatus.InternalError;
                     result.Msg = "添加失败";
                 }
                 return Json(result);
@@ -104,7 +104,7 @@ public class DisabledPeriodController : AdminBaseController
         }
         else
         {
-            result.Status = ResultStatus.RequestError;
+            result.Status = ResultStatus.BadRequest;
             result.Msg = "请求参数异常";
             return Json(result);
         }
@@ -123,7 +123,7 @@ public class DisabledPeriodController : AdminBaseController
         if (period == null)
         {
             result.Msg = "时间段不存在，请求参数异常";
-            result.Status = ResultStatus.RequestError;
+            result.Status = ResultStatus.BadRequest;
             return Json(result);
         }
         if ((status > 0 && period.IsActive) || (status <= 0 && !period.IsActive))

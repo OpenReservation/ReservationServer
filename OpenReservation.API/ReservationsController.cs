@@ -139,7 +139,7 @@ public class ReservationsController : ApiControllerBase
 
         var status = updateResult > 0
                 ? ResultStatus.Success
-                : ResultStatus.ProcessFail;
+                : ResultStatus.InternalError;
         return new Result()
         {
             Status = status,
@@ -204,7 +204,7 @@ public class ReservationsController : ApiControllerBase
         [FromServices] CaptchaVerifyHelper captchaVerifyHelper
     )
     {
-        var result = new Result<bool> { Status = ResultStatus.RequestError };
+        var result = new Result<bool> { Status = ResultStatus.BadRequest };
         var isCodeValid = await captchaVerifyHelper
             .ValidateVerifyCodeAsync(captchaType, captcha);
         if (!isCodeValid)
@@ -228,7 +228,7 @@ public class ReservationsController : ApiControllerBase
         catch (Exception ex)
         {
             Logger.Error(ex, $"Make reservation exception: {ex.Message}");
-            result.Status = ResultStatus.ProcessFail;
+            result.Status = ResultStatus.InternalError;
             result.Msg = ex.Message;
         }
         return Ok(result);

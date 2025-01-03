@@ -160,7 +160,7 @@ public class HomeController : FrontBaseController
         var isCodeValid = await captchaVerifyHelper.ValidateVerifyCodeAsync(captchaType, captcha);
         if (!isCodeValid)
         {
-            result.Status = ResultStatus.RequestError;
+            result.Status = ResultStatus.BadRequest;
             result.Msg = localizer["InvalidCaptchaInfo"];
             return Json(result);
         }
@@ -182,7 +182,7 @@ public class HomeController : FrontBaseController
         catch (Exception ex)
         {
             Logger.Error(ex);
-            result.Status = ResultStatus.ProcessFail;
+            result.Status = ResultStatus.InternalError;
             result.Msg = ex.Message;
         }
         return Json(result);

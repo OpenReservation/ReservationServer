@@ -42,7 +42,7 @@ public class OperationLogEventHandler : OnceEventHandlerBase<OperationLogEvent>
         _serviceProvider = serviceProvider;
     }
 
-    public override async Task Handle(OperationLogEvent @event)
+    public async override Task Handle(OperationLogEvent @event, EventProperties eventProperties)
     {
         if (await IsHandleNeeded(@event))
         {

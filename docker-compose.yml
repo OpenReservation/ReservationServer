@@ -27,15 +27,15 @@ services:
   #   environment:
   #     ELASTICSEARCH_URL: http://elasticsearch:9200
 
-  # db:
-  #   container_name: sqlserver
-  #   image: microsoft/mssql-server-linux:2017-latest
-  #   ports: 
-  #     - 1433:1433
-  #   environment: 
-  #     - 'ACCEPT_EULA=Y'
-  #     - 'MSSQL_SA_PASSWORD=Admin888'
-  #   restart: always
+  db:
+    container_name: sqlserver
+    image: microsoft/mssql-server-linux:2017-latest
+    ports: 
+      - 1433:1433
+    environment: 
+      - 'ACCEPT_EULA=Y'
+      - 'MSSQL_SA_PASSWORD=Admin888'
+    restart: always
 
   redis:
     container_name: redis
@@ -46,26 +46,14 @@ services:
         interval: 30s
         timeout: 10s
         retries: 10
-
-  db:
-    container_name: mysql
-    image: mysql:8.0
-    environment:
-      - 'MYSQL_ROOT_PASSWORD=Admin888'
-    restart: always
-    healthcheck:
-        test: ["CMD", "mysqladmin", "ping"]
-        interval: 30s
-        timeout: 10s
-        retries: 10
-
+  
   reservation:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: reservation
     environment:
-      - 'Reservation_AppSettings__DbType=MySql'
+      - 'Reservation_AppSettings__DbType=SqlServer'
       - 'Reservation_ConnectionStrings__ElasticSearch='
       - 'Reservation_ConnectionStrings__Reservation=server=db-server;database=Reservation;uid=root;pwd=Admin888;'
       - 'Reservation_ConnectionStrings__Redis=redis-server'
