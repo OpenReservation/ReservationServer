@@ -12,6 +12,7 @@ WORKDIR /src
 
 # Copy csproj and restore as distinct layers
 COPY ./Directory.Build.props ./
+COPY ./Directory.Packages.props ./
 # https://andrewlock.net/optimising-asp-net-core-apps-in-docker-avoiding-manually-copying-csproj-files-part-2/
 COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done
