@@ -35,7 +35,7 @@ public class AdminPermissionRequireStrategy : IResourceAccessStrategy
     public IActionResult DisallowedAjaxResult => new JsonResult(new Result
     {
         Msg = "No Permission",
-        Status = ResultStatus.NoPermission
+        Status = ResultStatus.Forbidden
     });
 }
 
