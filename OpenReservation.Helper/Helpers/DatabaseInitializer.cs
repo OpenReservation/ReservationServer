@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using OpenReservation.Database;
 using OpenReservation.Models;
 using OpenReservation.Services;
-using WeihanLi.Extensions;
 
 namespace OpenReservation.Helpers;
 
@@ -68,15 +64,27 @@ public static class DatabaseInitializer
 
         var placeId = Guid.NewGuid();
         var placeId1 = Guid.NewGuid();
-        //Places init
-        dbContext.ReservationPlaces.AddRange(new[]
-        {
-            new ReservationPlace { PlaceId = placeId, PlaceName = "第一多功能厅", UpdateBy = "System", PlaceIndex = 0,MaxReservationPeriodNum = 2 },
-            new ReservationPlace { PlaceId = placeId1, PlaceName = "第二多功能厅", UpdateBy = "System", PlaceIndex = 1,MaxReservationPeriodNum = 2},
-        });
+        // Places
+        dbContext.ReservationPlaces.AddRange(
+            new ReservationPlace
+            { 
+                PlaceId = placeId, 
+                PlaceName = "第一多功能厅", 
+                UpdateBy = "System", 
+                PlaceIndex = 0,
+                MaxReservationPeriodNum = 2
+            },
+            new ReservationPlace
+            {
+                PlaceId = placeId1,
+                PlaceName = "第二多功能厅",
+                UpdateBy = "System",
+                PlaceIndex = 1,
+                MaxReservationPeriodNum = 2
+            }
+        );
 
-        dbContext.ReservationPeriods.AddRange(new[]
-        {
+        dbContext.ReservationPeriods.AddRange(
             new ReservationPeriod
             {
                 PeriodId = Guid.NewGuid(),
@@ -136,8 +144,8 @@ public static class DatabaseInitializer
                 CreateTime = DateTime.UtcNow,
                 UpdateBy = "System",
                 UpdateTime = DateTime.UtcNow
-            },
-        });
+            }
+        );
         var notice = new Notice()
         {
             NoticeId = Guid.NewGuid(),
@@ -174,7 +182,7 @@ public static class DatabaseInitializer
                 SettingId = Guid.NewGuid(),
                 SettingName = "SystemDescription",
                 DisplayName = "系统简介/Description",
-                SettingValue = "online reservation system powered by powerful asp.net core"
+                SettingValue = "Online reservation system powered by powerful ASP.NET Core"
             },
             new()
             {

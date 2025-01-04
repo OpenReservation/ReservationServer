@@ -220,7 +220,7 @@ public class Startup
             }
         });
         services.AddEFAutoUpdateInterceptor();
-        services.AddEFAutoAudit(config =>
+        services.AddEFAutoAudit(_ =>
         {
         });
 
