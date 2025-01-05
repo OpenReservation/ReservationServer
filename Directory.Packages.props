@@ -22,12 +22,12 @@
     <PackageVersion Include="prometheus-net.AspNetCore" Version="8.2.1" />
     <PackageVersion Include="Sentry.Extensions.Logging" Version="4.13.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
-    <PackageVersion Include="WeihanLi.Common" Version="1.0.73" />
+    <PackageVersion Include="WeihanLi.Common" Version="1.0.74" />
     <PackageVersion Include="WeihanLi.EntityFramework" Version="9.0.0" />
     <PackageVersion Include="WeihanLi.Extensions.Localization.Json" Version="2.0.0" />
     <PackageVersion Include="WeihanLi.Npoi" Version="3.0.0" />
-    <PackageVersion Include="WeihanLi.Redis" Version="2.0.0-preview-20250104-053505" />
-    <PackageVersion Include="WeihanLi.Web.Extensions" Version="2.1.0-preview-20250104-105255" />
+    <PackageVersion Include="WeihanLi.Redis" Version="2.0.0" />
+    <PackageVersion Include="WeihanLi.Web.Extensions" Version="2.1.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />
     <PackageVersion Include="Xunit.DependencyInjection" Version="9.7.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />

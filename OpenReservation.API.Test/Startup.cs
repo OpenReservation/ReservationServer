@@ -97,7 +97,7 @@ public class Startup
         services.RegisterAssemblyModules();
 
         services
-            .AddAuthentication(HeaderAuthenticationDefaults.AuthenticationSchema)
+            .AddAuthentication(HeaderAuthenticationDefaults.AuthenticationScheme)
             .AddHeader()
             //.AddAuthentication(QueryAuthenticationDefaults.AuthenticationSchema)
             //.AddQuery()
