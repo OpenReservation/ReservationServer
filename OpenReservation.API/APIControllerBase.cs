@@ -6,12 +6,7 @@ namespace OpenReservation.API;
 [ApiController]
 [Route("/api/[controller]")]
 [ResponseCache(CacheProfileName = "default")]
-public abstract class ApiControllerBase : ControllerBase
+public abstract class ApiControllerBase(ILogger logger) : ControllerBase
 {
-    protected readonly ILogger Logger;
-
-    protected ApiControllerBase(ILogger logger)
-    {
-        Logger = logger;
-    }
+    protected readonly ILogger Logger = logger;
 }

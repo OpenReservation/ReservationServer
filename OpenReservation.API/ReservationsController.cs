@@ -16,22 +16,17 @@ using WeihanLi.Web.Extensions;
 
 namespace OpenReservation.API;
 
-public class ReservationsController : ApiControllerBase
+public class ReservationsController(
+    ILogger<ReservationsController> logger,
+    IEFRepository<ReservationDbContext, Reservation> repository)
+    : ApiControllerBase(logger)
 {
-    private readonly IEFRepository<ReservationDbContext, Reservation> _repository;
-
-    public ReservationsController(ILogger<ReservationsController> logger, IEFRepository<ReservationDbContext, Reservation> repository) : base(logger)
-    {
-        _repository = repository;
-    }
-
     /// <summary>
     /// 活动室预约列表
     /// </summary>
     /// <param name="phone">手机号</param>
     /// <param name="pageNumber">pageNumber</param>
     /// <param name="pageSize">pageSize</param>
-    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetAsync(string phone, int pageNumber = 1, int pageSize = 10)
     {
@@ -42,7 +37,7 @@ public class ReservationsController : ApiControllerBase
             predict = predict.And(n => n.ReservationPersonPhone == phone);
         }
 
-        var result = await _repository.GetPagedListResultAsync(
+        var result = await repository.GetPagedListResultAsync(
             x => new ReservationListViewModel
             {
                 ReservationForDate = x.ReservationForDate,
@@ -58,7 +53,10 @@ public class ReservationsController : ApiControllerBase
             },
             queryBuilder => queryBuilder
                 .WithPredict(predict)
-                .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
+                .WithOrderBy(q => q
+                    .OrderByDescending(a => a.ReservationForDate)
+                    .ThenByDescending(a => a.ReservationTime)
+                )
                 .WithInclude(q => q.Include(x => x.Place))
             , pageNumber, pageSize, HttpContext.RequestAborted);
 
@@ -77,7 +75,6 @@ public class ReservationsController : ApiControllerBase
     /// <param name="id">预约id</param>
     /// <param name="phone">预约人手机号</param>
     /// <param name="cancellationToken"></param>
-    /// <returns></returns>
     [HttpGet("{id}")]
     public async Task<IActionResult> GetDetails(Guid id, string phone, CancellationToken cancellationToken)
     {
@@ -101,7 +98,7 @@ public class ReservationsController : ApiControllerBase
                 ? predict.And(x => x.ReservedBy == userId)
                 : predict.And(x => x.ReservationPersonPhone == phone)
             ;
-        var detail = await _repository.FirstOrDefaultAsync(builder => builder.WithPredict(predict), cancellationToken);
+        var detail = await repository.FirstOrDefaultAsync(builder => builder.WithPredict(predict), cancellationToken);
         if (detail == null)
         {
             return NotFound();
@@ -121,7 +118,7 @@ public class ReservationsController : ApiControllerBase
         if (userId == Guid.Empty)
             return new StatusCodeResult(401);
 
-        var exists = await _repository.ExistAsync(x => x.ReservationId == id
+        var exists = await repository.ExistAsync(x => x.ReservationId == id
                                                        && x.ReservedBy == userId
                                                        && x.ReservationForDate > DateTime.UtcNow.AddHours(8).Date);
         if (!exists)
@@ -129,7 +126,7 @@ public class ReservationsController : ApiControllerBase
             return new StatusCodeResult(403);
         }
 
-        var updateResult = await _repository.UpdateAsync(
+        var updateResult = await repository.UpdateAsync(
             new Reservation()
             {
                 ReservationId = id,
@@ -164,7 +161,7 @@ public class ReservationsController : ApiControllerBase
         }
         var userId = User.GetUserId<Guid>();
         Expression<Func<Reservation, bool>> predict = n => n.ReservedBy == userId;
-        var result = await _repository.GetPagedListResultAsync(
+        var result = await repository.GetPagedListResultAsync(
             x => new ReservationListViewModel
             {
                 ReservationForDate = x.ReservationForDate,
@@ -180,7 +177,8 @@ public class ReservationsController : ApiControllerBase
             },
             queryBuilder => queryBuilder
                 .WithPredict(predict)
-                .WithOrderBy(q => q.OrderByDescending(_ => _.ReservationForDate).ThenByDescending(_ => _.ReservationTime))
+                .WithOrderBy(q => q.OrderByDescending(a => a.ReservationForDate)
+                    .ThenByDescending(a => a.ReservationTime))
                 .WithInclude(q => q.Include(x => x.Place))
             , pageNumber, pageSize, HttpContext.RequestAborted);
 

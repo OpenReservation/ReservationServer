@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
@@ -16,12 +15,8 @@ using System.Xml;
 //-40010 :  base64解密异常
 namespace Tencent;
 
-internal class WXBizMsgCrypt
+internal class WXBizMsgCrypt(string sToken, string sEncodingAesKey, string sAppId)
 {
-    private string m_sToken;
-    private string m_sEncodingAESKey;
-    private string m_sAppID;
-
     private enum WXBizMsgCryptErrorCode
     {
         WXBizMsgCrypt_OK = 0,
@@ -41,12 +36,6 @@ internal class WXBizMsgCrypt
     // @param sToken: 公众平台上，开发者设置的Token
     // @param sEncodingAESKey: 公众平台上，开发者设置的EncodingAESKey
     // @param sAppID: 公众帐号的appid
-    public WXBizMsgCrypt(string sToken, string sEncodingAESKey, string sAppID)
-    {
-        m_sToken = sToken;
-        m_sAppID = sAppID;
-        m_sEncodingAESKey = sEncodingAESKey;
-    }
 
     // 检验消息的真实性，并且获取解密后的明文
     // @param sMsgSignature: 签名串，对应URL参数的msg_signature
@@ -57,7 +46,7 @@ internal class WXBizMsgCrypt
     // @return: 成功0，失败返回对应的错误码
     public int DecryptMsg(string sMsgSignature, string sTimeStamp, string sNonce, string sPostData, ref string sMsg)
     {
-        if (m_sEncodingAESKey.Length != 43)
+        if (sEncodingAesKey.Length != 43)
         {
             return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
         }
@@ -76,14 +65,14 @@ internal class WXBizMsgCrypt
         }
         //verify signature
         var ret = 0;
-        ret = VerifySignature(m_sToken, sTimeStamp, sNonce, sEncryptMsg, sMsgSignature);
+        ret = VerifySignature(sToken, sTimeStamp, sNonce, sEncryptMsg, sMsgSignature);
         if (ret != 0)
             return ret;
         //decrypt
         var cpid = "";
         try
         {
-            sMsg = Cryptography.AES_decrypt(sEncryptMsg, m_sEncodingAESKey, ref cpid);
+            sMsg = Cryptography.AES_decrypt(sEncryptMsg, sEncodingAesKey, ref cpid);
         }
         catch (FormatException)
         {
@@ -93,7 +82,7 @@ internal class WXBizMsgCrypt
         {
             return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_DecryptAES_Error;
         }
-        if (cpid != m_sAppID)
+        if (cpid != sAppId)
             return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_ValidateAppid_Error;
         return 0;
     }
@@ -107,14 +96,14 @@ internal class WXBizMsgCrypt
     // return：成功0，失败返回对应的错误码
     public int EncryptMsg(string sReplyMsg, string sTimeStamp, string sNonce, ref string sEncryptMsg)
     {
-        if (m_sEncodingAESKey.Length != 43)
+        if (sEncodingAesKey.Length != 43)
         {
             return (int)WXBizMsgCryptErrorCode.WXBizMsgCrypt_IllegalAesKey;
         }
         var raw = "";
         try
         {
-            raw = Cryptography.AES_encrypt(sReplyMsg, m_sEncodingAESKey, m_sAppID);
+            raw = Cryptography.AES_encrypt(sReplyMsg, sEncodingAesKey, sAppId);
         }
         catch (Exception)
         {
@@ -122,7 +111,7 @@ internal class WXBizMsgCrypt
         }
         var MsgSigature = "";
         var ret = 0;
-        ret = GenarateSinature(m_sToken, sTimeStamp, sNonce, raw, ref MsgSigature);
+        ret = GenarateSinature(sToken, sTimeStamp, sNonce, raw, ref MsgSigature);
         if (0 != ret)
             return ret;
         sEncryptMsg = "";

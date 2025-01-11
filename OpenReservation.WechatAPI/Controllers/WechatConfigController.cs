@@ -5,11 +5,8 @@ using Microsoft.Extensions.Logging;
 
 namespace OpenReservation.WechatAPI.Controllers;
 
-public class WechatConfigController : AdminBaseController
+public class WechatConfigController(ILogger<WechatConfigController> logger, OperLogHelper operLogHelper)
+    : AdminBaseController(logger, operLogHelper)
 {
     public ActionResult Index() => View();
-
-    public WechatConfigController(ILogger<WechatConfigController> logger, OperLogHelper operLogHelper) : base(logger, operLogHelper)
-    {
-    }
 }

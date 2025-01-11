@@ -5,7 +5,7 @@ using WeihanLi.Web.AccessControlHelper;
 
 namespace OpenReservation.Services;
 
-public class AdminPermissionRequireStrategy : IResourceAccessStrategy
+public sealed class AdminPermissionRequireStrategy : IResourceAccessStrategy
 {
     private const string AdminRoleName = "ReservationAdmin";
     private readonly IHttpContextAccessor _accessor;
@@ -39,7 +39,7 @@ public class AdminPermissionRequireStrategy : IResourceAccessStrategy
     });
 }
 
-public class AdminOnlyControlAccessStrategy : IControlAccessStrategy
+public sealed class AdminOnlyControlAccessStrategy : IControlAccessStrategy
 {
     private readonly IHttpContextAccessor _accessor;
 

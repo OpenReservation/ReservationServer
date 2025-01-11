@@ -1,25 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using Tencent;
-using WeihanLi.Common.Logging;
 
 namespace OpenReservation.WechatAPI.Helper;
 
-public class WechatSecurityHelper
+public class WechatSecurityHelper(string signature, string timestamp, string nonce, ILogger logger)
 {
     private static readonly WXBizMsgCrypt Wxcpt =
         new(MpWeChatConsts.Token, MpWeChatConsts.AESKey, MpWeChatConsts.AppId);
-
-    private readonly string _signature, _timestamp, _nonce;
-
-    private readonly ILogger _logger;
-
-    public WechatSecurityHelper(string signature, string timestamp, string nonce, ILogger logger)
-    {
-        _signature = signature;
-        _timestamp = timestamp;
-        _nonce = nonce;
-        _logger = logger;
-    }
 
     /// <summary>
     /// 加密消息
@@ -29,10 +16,10 @@ public class WechatSecurityHelper
     public string EncryptMsg(string msg)
     {
         var encryptMsg = "";
-        var result = Wxcpt.EncryptMsg(msg, _timestamp, _nonce, ref encryptMsg);
+        var result = Wxcpt.EncryptMsg(msg, timestamp, nonce, ref encryptMsg);
         if (result != 0)
         {
-            _logger.Error("微信消息加密失败,result:" + result);
+            logger.Error("微信消息加密失败,result:" + result);
         }
         return encryptMsg;
     }
@@ -45,10 +32,10 @@ public class WechatSecurityHelper
     public string DecryptMsg(string msg)
     {
         var decryptMsg = "";
-        var result = Wxcpt.DecryptMsg(_signature, _timestamp, _nonce, msg, ref decryptMsg);
+        var result = Wxcpt.DecryptMsg(signature, timestamp, nonce, msg, ref decryptMsg);
         if (result != 0)
         {
-            _logger.Error("消息解密失败,result:" + result);
+            logger.Error("消息解密失败,result:" + result);
         }
         return decryptMsg;
     }

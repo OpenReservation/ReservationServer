@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using OpenReservation.WechatAPI.Helper;
+﻿using OpenReservation.WechatAPI.Helper;
 using OpenReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

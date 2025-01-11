@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using OpenReservation.Models;
 using WeihanLi.EntityFramework.Audit;
 
@@ -7,7 +6,8 @@ namespace OpenReservation.Database;
 
 public class ReservationDbContext : AuditDbContext
 {
-    public ReservationDbContext(DbContextOptions<ReservationDbContext> options, IServiceProvider serviceProvider) : base(options, serviceProvider)
+    public ReservationDbContext(DbContextOptions<ReservationDbContext> options, IServiceProvider serviceProvider) 
+        : base(options, serviceProvider)
     {
     }
 
@@ -19,7 +19,7 @@ public class ReservationDbContext : AuditDbContext
         modelBuilder.Entity<Notice>().HasQueryFilter(x => !x.IsDeleted);
         modelBuilder.Entity<Reservation>().HasQueryFilter(r => r.ReservationStatus != ReservationStatus.Deleted);
 
-        if (!Database.ProviderName.EndsWith("InMemory", StringComparison.OrdinalIgnoreCase))
+        if(!IsInMemoryProvider())
         {
             // create index on path for better query performance
             modelBuilder.Entity<Notice>().HasIndex(x => x.NoticeCustomPath);
@@ -35,4 +35,9 @@ public class ReservationDbContext : AuditDbContext
     public virtual DbSet<SystemSettings> SystemSettings { get; set; }
     public virtual DbSet<Notice> Notices { get; set; }
     public virtual DbSet<DisabledPeriod> DisabledPeriods { get; set; }
+
+    private bool IsInMemoryProvider()
+    {
+        return !string.IsNullOrEmpty(Database.ProviderName) && Database.ProviderName.EndsWith("InMemory", StringComparison.OrdinalIgnoreCase);
+    }
 }

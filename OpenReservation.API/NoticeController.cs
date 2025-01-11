@@ -18,15 +18,9 @@ namespace OpenReservation.API;
 /// <summary>
 /// 公告 API
 /// </summary>
-public class NoticeController : ApiControllerBase
+public class NoticeController(ILogger<NoticeController> logger, IEFRepository<ReservationDbContext, Notice> repository)
+    : ApiControllerBase(logger)
 {
-    private readonly IEFRepository<ReservationDbContext, Notice> _repository;
-
-    public NoticeController(ILogger<NoticeController> logger, IEFRepository<ReservationDbContext, Notice> repository) : base(logger)
-    {
-        _repository = repository;
-    }
-
     /// <summary>
     /// 获取公告列表
     /// </summary>
@@ -43,7 +37,7 @@ public class NoticeController : ApiControllerBase
             keyword = keyword.Trim();
             predict = predict.And(n => n.NoticeTitle.Contains(keyword));
         }
-        var result = await _repository.GetPagedListResultAsync(x => new
+        var result = await repository.GetPagedListResultAsync(x => new
             {
                 x.NoticeTitle,
                 x.NoticeCustomPath,
@@ -73,9 +67,10 @@ public class NoticeController : ApiControllerBase
         {
             return BadRequest();
         }
+        
         var notice = await cacheClient.GetOrSetAsync(
             $"Notice_{path.Trim()}",
-            () => _repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
+            () => repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
             TimeSpan.FromMinutes(3));
 
         if (notice == null)

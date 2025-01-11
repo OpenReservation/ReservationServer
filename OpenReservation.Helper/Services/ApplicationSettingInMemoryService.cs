@@ -1,15 +1,14 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
 
 namespace OpenReservation.Services;
 
-public class ApplicationSettingInMemoryService : IApplicationSettingService
+public sealed class ApplicationSettingInMemoryService : IApplicationSettingService
 {
     private readonly ConcurrentDictionary<string, string> _settingDictionary = new();
 
     public int AddSettings(Dictionary<string, string> dictionary)
     {
-        if (dictionary != null && dictionary.Count > 0)
+        if (dictionary is { Count: > 0 })
         {
             foreach (var item in dictionary)
             {

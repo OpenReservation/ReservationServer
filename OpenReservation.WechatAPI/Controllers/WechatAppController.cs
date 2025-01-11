@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using OpenReservation.Common;
 using OpenReservation.WechatAPI.Helper;
 using OpenReservation.WechatAPI.Model;
@@ -16,12 +14,8 @@ namespace OpenReservation.WechatAPI.Controllers;
 /// <summary>
 /// 微信小程序
 /// </summary>
-public class WeChatAppController : WeChatBaseController
+public class WeChatAppController(ILogger<WeChatAppController> logger) : WeChatBaseController(logger)
 {
-    public WeChatAppController(ILogger<WeChatAppController> logger) : base(logger)
-    {
-    }
-
     [HttpGet]
     [ActionName("Index")]
     public async Task Get(string echoStr)

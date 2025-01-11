@@ -12,24 +12,18 @@ using WeihanLi.EntityFramework;
 
 namespace OpenReservation.API;
 
-public class ReservationPlacesController : ApiControllerBase
+public class ReservationPlacesController(
+    ILogger<ReservationPlacesController> logger,
+    IEFRepository<ReservationDbContext, ReservationPlace> repository)
+    : ApiControllerBase(logger)
 {
-    private readonly IEFRepository<ReservationDbContext, ReservationPlace> _repository;
-
-    public ReservationPlacesController(ILogger<ReservationPlacesController> logger, IEFRepository<ReservationDbContext, ReservationPlace> repository) : base(logger)
-    {
-        _repository = repository;
-    }
-
     /// <summary>
     /// 预约活动室列表
     /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
     [HttpGet]
     public async Task<IActionResult> GetAsync(CancellationToken cancellationToken)
     {
-        var result = await _repository.GetResultAsync(p => new
+        var result = await repository.GetResultAsync(p => new
             {
                 p.PlaceName,
                 p.PlaceIndex,
@@ -38,8 +32,8 @@ public class ReservationPlacesController : ApiControllerBase
             }, builder => builder
                 .WithPredict(x => x.IsActive)
                 .WithOrderBy(x => x
-                    .OrderBy(_ => _.PlaceIndex)
-                    .ThenBy(_ => _.UpdateTime)),
+                    .OrderBy(a => a.PlaceIndex)
+                    .ThenBy(a => a.UpdateTime)),
             cancellationToken);
         return Ok(result);
     }
@@ -48,8 +42,7 @@ public class ReservationPlacesController : ApiControllerBase
     /// 获取可预约的时间段
     /// </summary>
     /// <param name="placeId">活动室id</param>
-    /// <param name="dt"></param>
-    /// <returns></returns>
+    /// <param name="dt">预约日期</param>
     [HttpGet("{placeId}/periods")]
     public IActionResult GetPeriodsAsync(Guid placeId, DateTime dt)
     {

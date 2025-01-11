@@ -166,7 +166,11 @@ public class Startup
                 };
                 options.Events.OnMessageReceived = context =>
                 {
-                    context.Properties.IsPersistent = true;
+                    if (context.Properties is not null)
+                    {
+                        context.Properties.IsPersistent = true;
+                    }
+                    
                     return Task.CompletedTask;
                 };
                 options.Events.OnRedirectToIdentityProvider = rc =>

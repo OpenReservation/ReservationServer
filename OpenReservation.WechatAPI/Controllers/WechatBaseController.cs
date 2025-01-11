@@ -9,21 +9,16 @@ namespace OpenReservation.WechatAPI.Controllers;
 
 [Area("WeChat")]
 [WechatRequestValid]
-public class WeChatBaseController : Controller
+public class WeChatBaseController(ILogger logger) : Controller
 {
     /// <summary>
     /// logger
     /// </summary>
-    protected readonly ILogger Logger;
+    protected readonly ILogger Logger = logger;
 
-    public WeChatBaseController(ILogger logger)
+    internal async Task<ContentResult> WechatAsync(WechatMsgRequestModel request)
     {
-        Logger = logger;
-    }
-
-    internal async System.Threading.Tasks.Task<ContentResult> WechatAsync(WechatMsgRequestModel request)
-    {
-        WeChatContext wechatContext = new WeChatContext(request, Logger);
+        var wechatContext = new WeChatContext(request, Logger);
         var response = await wechatContext.GetResponseAsync();
         if (response.IsNullOrEmpty())
         {

@@ -18,8 +18,14 @@ public class BusinessServiceModule : IServiceModule
         services.TryAddSingleton<CaptchaVerifyHelper>();
         services.TryAddSingleton<OperLogHelper>();
 
-        services.RegisterAssemblyTypesAsImplementedInterfaces(ServiceLifetime.Scoped, typeof(IBLLNotice).Assembly);
+        services.RegisterAssemblyTypesAsImplementedInterfaces(
+            ServiceLifetime.Scoped, 
+            typeof(IBLLNotice).Assembly
+            );
         // register eventHandlers
-        services.RegisterAssemblyTypes(t => !t.IsAbstract && t.IsClass && t.IsAssignableTo<IEventHandler>(), typeof(NoticeViewEventHandler).Assembly);
+        services.RegisterAssemblyTypes(t => 
+            t is { IsAbstract: false, IsClass: true } 
+            && t.IsAssignableTo<IEventHandler>(), typeof(NoticeViewEventHandler).Assembly
+            );
     }
 }

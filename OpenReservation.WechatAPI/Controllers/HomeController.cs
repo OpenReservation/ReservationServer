@@ -1,42 +1,29 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using OpenReservation.WechatAPI.Helper;
-using OpenReservation.WechatAPI.Model;
+﻿using OpenReservation.WechatAPI.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WeihanLi.Extensions;
 
 namespace OpenReservation.WechatAPI.Controllers;
 
 /// <summary>
 /// 微信入口
 /// </summary>
-public class HomeController : WeChatBaseController
+public class HomeController(ILogger<HomeController> logger) : WeChatBaseController(logger)
 {
-    public HomeController(ILogger<HomeController> logger) : base(logger)
-    {
-    }
-
     [HttpGet]
     [ActionName("Index")]
-    public async System.Threading.Tasks.Task GetAsync([FromQuery]WechatMsgRequestModel model)
+    public async Task GetAsync([FromQuery]string echoStr)
     {
-        if (ModelState.IsValid)
+        try
         {
-            try
+            if (!string.IsNullOrEmpty(echoStr))
             {
-                var echoStr = HttpContext.Request.Query["echostr"].FirstOrDefault();
-                if (!string.IsNullOrEmpty(echoStr))
-                {
-                    await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
-                }
+                await Response.WriteAsync(echoStr, HttpContext.RequestAborted);
             }
-            catch (Exception ex)
-            {
-                Logger.Error($"Wechat GET 发生异常,异常信息：{ex.Message}", ex);
-            }
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"Wechat GET 发生异常,异常信息：{ex.Message}", ex);
         }
     }
 
@@ -46,7 +33,7 @@ public class HomeController : WeChatBaseController
     /// <param name="model">微信消息</param>
     [HttpPost]
     [ActionName("Index")]
-    public async System.Threading.Tasks.Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
+    public async Task<ActionResult> PostAsync([FromQuery]WechatMsgRequestModel model)
     {
         using (var ms = new MemoryStream())
         {

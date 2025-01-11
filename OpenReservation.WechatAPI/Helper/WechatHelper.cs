@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using OpenReservation.WechatAPI.Entities;
+﻿using OpenReservation.WechatAPI.Entities;
 using Microsoft.Extensions.Logging;
 using WeihanLi.Common.Helpers;
 using WeihanLi.Extensions;
@@ -9,16 +6,9 @@ using WeihanLi.Redis;
 
 namespace OpenReservation.WechatAPI.Helper;
 
-public class WeChatHelper
+public class WeChatHelper(HttpClient httpClient, ILogger<WeChatHelper> logger)
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger _logger;
-
-    public WeChatHelper(HttpClient httpClient, ILogger<WeChatHelper> logger)
-    {
-        _httpClient = httpClient;
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
 
     /// <summary>
     /// GetAccessTokenUrlFormat
@@ -56,7 +46,7 @@ public class WeChatHelper
             {
                 if (await redLock.TryLockAsync())
                 {
-                    var tokenEntity = await RetryHelper.TryInvokeAsync(() => _httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(appId, appSecret))
+                    var tokenEntity = await RetryHelper.TryInvokeAsync(() => httpClient.GetStringAsync(GetAccessTokenUrlFormat.FormatWith(appId, appSecret))
                             .ContinueWith(r => r.Result.JsonToObject<AccessTokenEntity>()),
                         result => string.IsNullOrEmpty(result?.AccessToken));
                     if (!string.IsNullOrEmpty(tokenEntity?.AccessToken))
@@ -94,7 +84,7 @@ public class WeChatHelper
             return false;
         }
         var url = SendMsgUrlFormat.FormatWith(accessToken);
-        using (var response = await _httpClient.PostJsonRequestAsync(url, msg))
+        using (var response = await httpClient.PostJsonRequestAsync(url, msg))
         {
             var responseText = await response.Content.ReadAsStringAsync();
             _logger.LogInformation($"send wechat msg response: {responseText}");
@@ -140,7 +130,7 @@ public class WeChatHelper
             return false;
         }
         var url = UpdateMpWechatMenuUrlFormat.FormatWith(accessToken);
-        var response = await _httpClient.PostJsonRequestAsync(url, menu);
+        var response = await httpClient.PostJsonRequestAsync(url, menu);
         var result = await response.Content.ReadAsStringAsync()
             .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
         return result.Success;
@@ -159,7 +149,7 @@ public class WeChatHelper
             return false;
         }
         var url = DeleteMpWechatMenuUrlFormat.FormatWith(accessToken);
-        var result = await _httpClient.GetStringAsync(url)
+        var result = await httpClient.GetStringAsync(url)
             .ContinueWith(r => r.Result.JsonToObject<WechatResponseEntity>());
         return result.Success;
     }

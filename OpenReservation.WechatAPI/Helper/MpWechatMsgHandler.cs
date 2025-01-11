@@ -1,11 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using System.Xml;
 using OpenReservation.Common;
 using Microsoft.Extensions.Configuration;
 using WeihanLi.Common;
-using WeihanLi.Common.Helpers;
-using WeihanLi.Common.Logging;
 using WeihanLi.Extensions;
 using WeihanLi.Redis;
 using Microsoft.Extensions.Logging;
@@ -15,15 +11,8 @@ namespace OpenReservation.WechatAPI.Helper;
 /// <summary>
 /// 微信消息处理帮助类
 /// </summary>
-internal class MpWechatMsgHandler
+internal class MpWechatMsgHandler(ILogger logger)
 {
-    private readonly ILogger _logger;
-
-    public MpWechatMsgHandler(ILogger logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<string> ReturnMessageAsync(string postStr)
     {
         var responseContent = "";
@@ -70,7 +59,7 @@ internal class MpWechatMsgHandler
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "回复消息发生异常，异常信息：" + ex.Message);
+            logger.Error(ex, "回复消息发生异常，异常信息：" + ex.Message);
         }
         return responseContent;
     }
