@@ -15,12 +15,22 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: Admin888
-
+  
   redis:
     container_name: redis
     image: redis:alpine
     restart: always
   
+  aspire-dashboard:
+    container_name: aspire-dashboard
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:9.0
+    restart: always
+    environment:
+      - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
+    # ports:
+    #   - 18888:18888
+    #   - 4317:18889
+
   reservation:
     build:
       context: .
@@ -32,6 +42,7 @@ services:
       - 'Reservation_AppSettings__DbType=Npgsql'
       - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=postgres;pwd=Admin888;'
       - 'Reservation_ConnectionStrings__Redis=redis'
+      - 'Reservation_OpenReservation'
     ports:
       - 65026:80
     links:
