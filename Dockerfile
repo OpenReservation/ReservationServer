@@ -22,7 +22,7 @@ RUN dotnet restore
 
 # copy everything and build
 COPY . .
-RUN dotnet publish -c Release -o out OpenReservation/OpenReservation.csproj
+RUN dotnet publish -o out OpenReservation/OpenReservation.csproj --no-restore -p UseAppHost=false
 
 # build runtime image
 FROM base AS final

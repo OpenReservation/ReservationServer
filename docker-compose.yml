@@ -1,51 +1,25 @@
-version: '2.1'
 services:
-  # elasticsearch:
-  #   image: elasticsearch:5.6-alpine
-  #   container_name: elasticsearch
-  #   ports:
-  #     - 9200:9200
-  #   ulimits:
-  #     nofile:
-  #       soft: 65536
-  #       hard: 65536
+  # db:
+  #   container_name: sqlserver
+  #   image: microsoft/mssql-server-linux:2017-latest
+  #   ports: 
+  #     - 1433:1433
+  #   environment: 
+  #     - 'ACCEPT_EULA=Y'
+  #     - 'MSSQL_SA_PASSWORD=Admin888'
   #   restart: always
-  #   environment:
-  #     - "ES_JAVA_OPTS=-Xms256m -Xmx256m" #specific es java memory
-  #     - "discovery.type=single-node"
-  #   mem_limit: 512m # memory limit
-
-  # kibana:
-  #   image: kibana:5.6
-  #   container_name: kibana
-  #   ports:
-  #     - 5601:5601
-  #   links:
-  #     - elasticsearch:elasticsearch
-  #   depends_on:
-  #     - elasticsearch
-  #   environment:
-  #     ELASTICSEARCH_URL: http://elasticsearch:9200
 
   db:
-    container_name: sqlserver
-    image: microsoft/mssql-server-linux:2017-latest
-    ports: 
-      - 1433:1433
-    environment: 
-      - 'ACCEPT_EULA=Y'
-      - 'MSSQL_SA_PASSWORD=Admin888'
+    container_name: npgsql
+    image: postgres:alpine
     restart: always
+    environment:
+      POSTGRES_PASSWORD: Admin888
 
   redis:
     container_name: redis
     image: redis:alpine
     restart: always
-    healthcheck:
-        test: ["CMD", "redis-cli", "-h", "127.0.0.1", "PING"]
-        interval: 30s
-        timeout: 10s
-        retries: 10
   
   reservation:
     build:
@@ -53,20 +27,13 @@ services:
       dockerfile: Dockerfile
     container_name: reservation
     environment:
-      - 'Reservation_AppSettings__DbType=SqlServer'
-      - 'Reservation_ConnectionStrings__ElasticSearch='
-      - 'Reservation_ConnectionStrings__Reservation=server=db-server;database=Reservation;uid=root;pwd=Admin888;'
-      - 'Reservation_ConnectionStrings__Redis=redis-server'
+      # - 'Reservation_AppSettings__DbType=SqlServer'
+      # - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=sa;pwd=Admin888;'
+      - 'Reservation_AppSettings__DbType=Npgsql'
+      - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=postgres;pwd=Admin888;'
+      - 'Reservation_ConnectionStrings__Redis=redis'
     ports:
       - 65026:80
-    depends_on:
-      # - elasticsearch
-      redis:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    links: 
-      # - elasticsearch:elasticsearch
-      - db:db-server
-      - redis:redis-server
-      
+    links:
+      - db:db
+      - redis:redis
