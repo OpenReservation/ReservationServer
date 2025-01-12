@@ -12,7 +12,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "psql -U reservation -d Reservation -c 'SELECT 1'"]
       interval: "10s"
-      retries: 8
+      retries: 3
       start_period: "10s"
   
   redis:
@@ -24,7 +24,7 @@ services:
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: "5s"
-      retries: 6
+      retries: 3
       start_period: "10s"
   
   aspire-dashboard:
@@ -45,6 +45,7 @@ services:
       dockerfile: Dockerfile
     container_name: reservation
     environment:
+      - 'Reservation_Logging__Default=Information'
       - 'Reservation_AppSettings__DbType=Npgsql'
       - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=reservation;pwd=Admin888;'
       - 'Reservation_ConnectionStrings__Redis=redis'
@@ -64,6 +65,12 @@ services:
       - db:db
       - redis:redis
       - aspire-dashboard:aspire-dashboard
+    # https://docs.docker.com/reference/compose-file/services/#healthcheck
+    healthcheck:
+      test: ["CMD-SHELL", "dotnet-http localhost/health || exit 1"]
+      interval: "5s"
+      retries: 3
+      start_period: "10s"
 
 networks:
   reservation:
