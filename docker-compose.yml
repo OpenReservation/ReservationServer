@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: npgsql
+    container_name: postgres
     image: postgres:alpine
     restart: always
     environment:
@@ -9,11 +9,11 @@ services:
       POSTGRES_PASSWORD: Admin888
     networks:
       - reservation
-    volumes:
-      - "./docker/healthchecks:/healthchecks"
     healthcheck:
-      test: /healthchecks/postgres.sh
-      interval: "5s"
+      test: ["CMD-SHELL", "psql -U reservation -d Reservation -c 'SELECT 1'"]
+      interval: "10s"
+      retries: 8
+      start_period: "10s"
   
   redis:
     container_name: redis
@@ -21,11 +21,11 @@ services:
     restart: always
     networks:
       - reservation
-    volumes:
-      - "./docker/healthchecks:/healthchecks"
     healthcheck:
-      test: /healthchecks/redis.sh
+      test: ["CMD", "redis-cli", "ping"]
       interval: "5s"
+      retries: 6
+      start_period: "10s"
   
   aspire-dashboard:
     container_name: aspire-dashboard
@@ -45,8 +45,6 @@ services:
       dockerfile: Dockerfile
     container_name: reservation
     environment:
-      # - 'Reservation_AppSettings__DbType=SqlServer'
-      # - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=sa;pwd=Admin888;'
       - 'Reservation_AppSettings__DbType=Npgsql'
       - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=reservation;pwd=Admin888;'
       - 'Reservation_ConnectionStrings__Redis=redis'
@@ -57,9 +55,11 @@ services:
       - reservation
     depends_on:
       redis:
-        condition: service_healthy 
+        condition: service_healthy
       db:
-        condition: service_healthy 
+        condition: service_healthy
+      aspire-dashboard:
+        condition: service_started
     links:
       - db:db
       - redis:redis
