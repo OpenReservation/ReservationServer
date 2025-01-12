@@ -14,30 +14,22 @@ public class GoogleRecaptchaOptions
     public string Secret { get; set; }
 }
 
-public class GoogleRecaptchaHelper
+public class GoogleRecaptchaHelper(
+    IOptions<GoogleRecaptchaOptions> option,
+    ILogger<GoogleRecaptchaHelper> logger,
+    HttpClient httpClient)
 {
     /// <summary>
     /// GoogleRecaptchaVerifyUrl
     /// </summary>
     private const string GoogleRecaptchaVerifyUrl = "https://www.google.com/recaptcha/api/siteverify";
 
-    private readonly GoogleRecaptchaOptions _recaptchaOptions;
-    private readonly ILogger _logger;
-    private readonly HttpClient _httpClient;
-
-    public GoogleRecaptchaHelper(
-        IOptions<GoogleRecaptchaOptions> option,
-        ILogger<GoogleRecaptchaHelper> logger,
-        HttpClient httpClient)
-    {
-        _recaptchaOptions = option.Value;
-        _httpClient = httpClient;
-        _logger = logger;
-    }
+    private readonly GoogleRecaptchaOptions _recaptchaOptions = option.Value;
+    private readonly ILogger _logger = logger;
 
     public async Task<bool> IsValidRequestAsync(string recaptchaResponse)
     {
-        var response = await _httpClient.PostAsync(GoogleRecaptchaVerifyUrl, new FormUrlEncodedContent(new Dictionary<string, string>()
+        var response = await httpClient.PostAsync(GoogleRecaptchaVerifyUrl, new FormUrlEncodedContent(new Dictionary<string, string>()
         {
             {"response", recaptchaResponse},
             {"secret", _recaptchaOptions.Secret }

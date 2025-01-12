@@ -15,7 +15,11 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// <summary>
 /// 禁用预约时间段管理
 /// </summary>
-public class DisabledPeriodController : AdminBaseController
+public class DisabledPeriodController(
+    ILogger<DisabledPeriodController> logger,
+    OperLogHelper operLogHelper,
+    IBLLDisabledPeriod bllDisabledPeriod)
+    : AdminBaseController(logger, operLogHelper)
 {
     /// <summary>
     /// 禁用预约时间段首页
@@ -45,7 +49,7 @@ public class DisabledPeriodController : AdminBaseController
             }
         }
 
-        var pageList = _bllDisabledPeriod.Paged(pageIndex, pageSize,
+        var pageList = bllDisabledPeriod.Paged(pageIndex, pageSize,
             whereLambda, p => p.UpdatedTime);
         var data = pageList.ToPagedList();
         return View(data);
@@ -70,7 +74,7 @@ public class DisabledPeriodController : AdminBaseController
             }
             else
             {
-                var list = _bllDisabledPeriod.Select(p => model.StartDate <= p.StartDate && model.EndDate >= p.EndDate);
+                var list = bllDisabledPeriod.Select(p => model.StartDate <= p.StartDate && model.EndDate >= p.EndDate);
                 if (list.HasValue())
                 {
                     result.Status = ResultStatus.BadRequest;
@@ -87,7 +91,7 @@ public class DisabledPeriodController : AdminBaseController
                     UpdatedTime = DateTime.UtcNow,
                     UpdatedBy = UserName
                 };
-                var count = _bllDisabledPeriod.Insert(period);
+                var count = bllDisabledPeriod.Insert(period);
                 if (count > 0)
                 {
                     result.Status = ResultStatus.Success;
@@ -119,7 +123,7 @@ public class DisabledPeriodController : AdminBaseController
     public JsonResult UpdatePeriodStatus(Guid periodId, int status)
     {
         var result = new Result<bool>();
-        var period = _bllDisabledPeriod.Fetch(p => p.PeriodId == periodId);
+        var period = bllDisabledPeriod.Fetch(p => p.PeriodId == periodId);
         if (period == null)
         {
             result.Msg = "时间段不存在，请求参数异常";
@@ -137,7 +141,7 @@ public class DisabledPeriodController : AdminBaseController
             period.IsActive = status > 0;
             period.UpdatedTime = DateTime.UtcNow;
             period.UpdatedBy = UserName;
-            var count = _bllDisabledPeriod.Update(period, p => p.IsActive);
+            var count = bllDisabledPeriod.Update(period, p => p.IsActive);
             if (count > 0)
             {
                 OperLogHelper.AddOperLog($"{(period.IsActive ? "启用" : "禁用")} 禁止预约时间段 {periodId:N}:{period.StartDate:yyyy/MM/dd}--{period.EndDate:yyyy/MM/dd}",
@@ -157,19 +161,12 @@ public class DisabledPeriodController : AdminBaseController
     /// <returns></returns>
     public JsonResult DeletePeriod(Guid periodId)
     {
-        var count = _bllDisabledPeriod.Delete(new DisabledPeriod() { PeriodId = periodId });
+        var count = bllDisabledPeriod.Delete(new DisabledPeriod() { PeriodId = periodId });
         if (count > 0)
         {
             OperLogHelper.AddOperLog($"删除禁用时间段 {periodId:N}", OperLogModule.DisabledPeriod, UserName);
             return Json("");
         }
         return Json("删除失败");
-    }
-
-    private readonly IBLLDisabledPeriod _bllDisabledPeriod;
-
-    public DisabledPeriodController(ILogger<DisabledPeriodController> logger, OperLogHelper operLogHelper, IBLLDisabledPeriod bllDisabledPeriod) : base(logger, operLogHelper)
-    {
-        _bllDisabledPeriod = bllDisabledPeriod;
     }
 }

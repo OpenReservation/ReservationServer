@@ -3,16 +3,9 @@ using System.Net.Http;
 
 namespace OpenReservation.API.Test;
 
-public class APITestFixture
+public class APITestFixture(IServiceProvider serviceProvider, HttpClient httpClient)
 {
-    public IServiceProvider Services { get; }
+    public IServiceProvider Services { get; } = serviceProvider;
 
-    public HttpClient Client { get; }
-
-    public APITestFixture(IServiceProvider serviceProvider, HttpClient httpClient)
-    {
-        Services = serviceProvider;
-
-        Client = httpClient;
-    }
+    public HttpClient Client { get; } = httpClient;
 }

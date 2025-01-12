@@ -5,19 +5,13 @@ using WeihanLi.Web.AccessControlHelper;
 
 namespace OpenReservation.Services;
 
-public sealed class AdminPermissionRequireStrategy : IResourceAccessStrategy
+public sealed class AdminPermissionRequireStrategy(IHttpContextAccessor accessor) : IResourceAccessStrategy
 {
     private const string AdminRoleName = "ReservationAdmin";
-    private readonly IHttpContextAccessor _accessor;
-
-    public AdminPermissionRequireStrategy(IHttpContextAccessor accessor)
-    {
-        _accessor = accessor;
-    }
 
     public bool IsCanAccess(string accessKey)
     {
-        var user = _accessor.HttpContext?.User;
+        var user = accessor.HttpContext?.User;
         if (user?.Identity is null)
         {
             return false;
@@ -39,15 +33,11 @@ public sealed class AdminPermissionRequireStrategy : IResourceAccessStrategy
     });
 }
 
-public sealed class AdminOnlyControlAccessStrategy : IControlAccessStrategy
+public sealed class AdminOnlyControlAccessStrategy(IHttpContextAccessor httpContextAccessor) : IControlAccessStrategy
 {
-    private readonly IHttpContextAccessor _accessor;
-
-    public AdminOnlyControlAccessStrategy(IHttpContextAccessor httpContextAccessor) => _accessor = httpContextAccessor;
-
     public bool IsControlCanAccess(string accessKey)
     {
-        var user = _accessor.HttpContext?.User;
+        var user = httpContextAccessor.HttpContext?.User;
         if (user?.Identity is null)
         {
             return false;

@@ -14,15 +14,12 @@ using WeihanLi.Extensions;
 
 namespace OpenReservation.AdminLogic.Controllers;
 
-public class HomeController : AdminBaseController
+public class HomeController(
+    ILogger<HomeController> logger,
+    OperLogHelper operLogHelper,
+    IStorageProvider storageProvider)
+    : AdminBaseController(logger, operLogHelper)
 {
-    private readonly IStorageProvider _storageProvider;
-
-    public HomeController(ILogger<HomeController> logger, OperLogHelper operLogHelper, IStorageProvider storageProvider) : base(logger, operLogHelper)
-    {
-        _storageProvider = storageProvider;
-    }
-
     private string SiteUrl => Request.Scheme + "://" + Request.Host.Value;
 
     public ActionResult Index()
@@ -79,7 +76,7 @@ public class HomeController : AdminBaseController
         {
             await imgFile.CopyToAsync(stream);
 
-            var fileUrl = await _storageProvider.SaveBytes(stream.ToArray(), filePath);
+            var fileUrl = await storageProvider.SaveBytes(stream.ToArray(), filePath);
             if (!string.IsNullOrEmpty(fileUrl))
             {
                 await Response.Body.WriteAsync(new { error = 0, url = fileUrl }.ToJson().GetBytes());

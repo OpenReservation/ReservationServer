@@ -16,7 +16,12 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// <summary>
 /// 预约项目管理
 /// </summary>
-public class ReservationPlaceController : AdminBaseController
+public class ReservationPlaceController(
+    ILogger<ReservationPlaceController> logger,
+    OperLogHelper operLogHelper,
+    IBLLReservationPlace bLlReservationPlace,
+    IBLLReservationPeriod bLlReservationPeriod)
+    : AdminBaseController(logger, operLogHelper)
 {
     public ActionResult Index() => View();
 
@@ -35,7 +40,7 @@ public class ReservationPlaceController : AdminBaseController
         {
             whereLambda = (p => p.PlaceName.Contains(placeName) && p.IsDel == false);
         }
-        var list = _reservationPlaceHelper.Paged(pageIndex, pageSize,
+        var list = bLlReservationPlace.Paged(pageIndex, pageSize,
             whereLambda, p => p.UpdateTime, false);
         var data = list.ToPagedList();
         return View(data);
@@ -54,18 +59,18 @@ public class ReservationPlaceController : AdminBaseController
         {
             return Json("预约项目名称不能为空");
         }
-        if (!_reservationPlaceHelper.Exist(p => p.PlaceId == placeId))
+        if (!bLlReservationPlace.Exist(p => p.PlaceId == placeId))
         {
             return Json("预约项目不存在");
         }
-        if (_reservationPlaceHelper.Exist(p =>
+        if (bLlReservationPlace.Exist(p =>
                 p.PlaceName.Equals(newName) && p.IsDel == false))
         {
             return Json("名称已存在");
         }
         try
         {
-            _reservationPlaceHelper.Update(
+            bLlReservationPlace.Update(
                 new ReservationPlace()
                 {
                     PlaceId = placeId,
@@ -90,7 +95,7 @@ public class ReservationPlaceController : AdminBaseController
         {
             return Json("名称不能为空");
         }
-        if (_reservationPlaceHelper.Exist(p => p.PlaceName == placeName && p.IsDel == false))
+        if (bLlReservationPlace.Exist(p => p.PlaceName == placeName && p.IsDel == false))
         {
             return Json("预约项目已存在");
         }
@@ -104,7 +109,7 @@ public class ReservationPlaceController : AdminBaseController
         var isDuplicate = false;
         if (duplicateFrom.GetValueOrDefault() != Guid.Empty)
         {
-            var duplicatePlace = _reservationPlaceHelper.Fetch(x => x.PlaceId == duplicateFrom);
+            var duplicatePlace = bLlReservationPlace.Fetch(x => x.PlaceId == duplicateFrom);
             isDuplicate = duplicatePlace != null;
             if (isDuplicate)
             {
@@ -113,18 +118,18 @@ public class ReservationPlaceController : AdminBaseController
         }
         try
         {
-            _reservationPlaceHelper.Insert(place);
+            bLlReservationPlace.Insert(place);
             //记录日志
             OperLogHelper.AddOperLog($"新增预约项目：{placeName}", OperLogModule.ReservationPlace, place.UpdateBy);
             if (isDuplicate)
             {
-                var periods = _reservationPeriodHelper.Select(x => x.PlaceId == duplicateFrom);
+                var periods = bLlReservationPeriod.Select(x => x.PlaceId == duplicateFrom);
                 foreach(var period in periods)
                 {
                     period.PeriodId = Guid.NewGuid();
                     period.PlaceId = place.PlaceId;
                 }
-                _reservationPeriodHelper.Insert(periods);
+                bLlReservationPeriod.Insert(periods);
             }
             return Json("");
         }
@@ -147,13 +152,13 @@ public class ReservationPlaceController : AdminBaseController
         {
             return Json("名称不能为空");
         }
-        if (!_reservationPlaceHelper.Exist(p => p.PlaceId == placeId))
+        if (!bLlReservationPlace.Exist(p => p.PlaceId == placeId))
         {
             return Json("预约项目不存在");
         }
         try
         {
-            _reservationPlaceHelper.Update(
+            bLlReservationPlace.Update(
                 new ReservationPlace() { PlaceId = placeId, IsDel = true, UpdateBy = UserName }, x => x.IsDel, x => x.UpdateBy,
                 x => x.UpdateTime);
             OperLogHelper.AddOperLog($"删除预约项目{placeId}:{placeName}", OperLogModule.ReservationPlace,
@@ -180,7 +185,7 @@ public class ReservationPlaceController : AdminBaseController
         {
             return Json("名称不能为空");
         }
-        if (!_reservationPlaceHelper.Exist(p => p.PlaceId == placeId))
+        if (!bLlReservationPlace.Exist(p => p.PlaceId == placeId))
         {
             return Json("预约项目不存在");
         }
@@ -190,13 +195,13 @@ public class ReservationPlaceController : AdminBaseController
             if (bStatus)
             {
                 // 验证是否有可用的预约时间段
-                if (!_reservationPeriodHelper.Exist(p => p.PlaceId == placeId))
+                if (!bLlReservationPeriod.Exist(p => p.PlaceId == placeId))
                 {
                     return Json("没有可用的预约时间段，不可修改为已启用，请先添加预约时间段");
                 }
             }
 
-            _reservationPlaceHelper.Update(
+            bLlReservationPlace.Update(
                 new ReservationPlace()
                 {
                     PlaceId = placeId,
@@ -223,7 +228,7 @@ public class ReservationPlaceController : AdminBaseController
     public ActionResult ReservationPeriod(Guid placeId)
     {
         ViewBag.PlaceId = placeId;
-        return View(_reservationPeriodHelper.Select(_ => _.PlaceId == placeId).OrderBy(p => p.PeriodIndex).ToList());
+        return View(bLlReservationPeriod.Select(_ => _.PlaceId == placeId).OrderBy(p => p.PeriodIndex).ToList());
     }
 
     [HttpPost]
@@ -239,7 +244,7 @@ public class ReservationPlaceController : AdminBaseController
             return Json("预约时间段不能为空");
         }
 
-        if (!_reservationPlaceHelper.Exist(p => p.PlaceId == model.PlaceId))
+        if (!bLlReservationPlace.Exist(p => p.PlaceId == model.PlaceId))
         {
             return Json("活动室不存在");
         }
@@ -248,7 +253,7 @@ public class ReservationPlaceController : AdminBaseController
         {
             if (redLock.TryLock())
             {
-                if (_reservationPeriodHelper.Any(builder => builder
+                if (bLlReservationPeriod.Any(builder => builder
                         .IgnoreQueryFilters()
                         .WithPredict(p => p.PeriodIndex == model.PeriodIndex && p.PlaceId == model.PlaceId && p.PeriodId != model.PeriodId)
                     )
@@ -263,7 +268,7 @@ public class ReservationPlaceController : AdminBaseController
                 model.UpdateBy = UserName;
                 model.UpdateTime = DateTime.UtcNow;
 
-                var result = _reservationPeriodHelper.Insert(model);
+                var result = bLlReservationPeriod.Insert(model);
                 if (result > 0)
                 {
                     OperLogHelper.AddOperLog($"创建预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, UserName);
@@ -294,7 +299,7 @@ public class ReservationPlaceController : AdminBaseController
             return Json("预约时间段标题不能为空");
         }
 
-        if (!_reservationPeriodHelper.Exist(_ => _.PeriodId == model.PeriodId))
+        if (!bLlReservationPeriod.Exist(_ => _.PeriodId == model.PeriodId))
         {
             return Json("预约时间段不存在");
         }
@@ -308,7 +313,7 @@ public class ReservationPlaceController : AdminBaseController
         model.UpdateBy = UserName;
         model.UpdateTime = DateTime.UtcNow;
 
-        var result = _reservationPeriodHelper.Update(model, x => x.PeriodTitle, x => x.PeriodDescription, x => x.UpdateBy, x => x.UpdateTime);
+        var result = bLlReservationPeriod.Update(model, x => x.PeriodTitle, x => x.PeriodDescription, x => x.UpdateBy, x => x.UpdateTime);
         if (result > 0)
         {
             OperLogHelper.AddOperLog($"更新预约时间段{model.PeriodId:N},{model.PeriodTitle}", OperLogModule.ReservationPlace, UserName);
@@ -324,19 +329,19 @@ public class ReservationPlaceController : AdminBaseController
             return Json("预约时间段不能为空");
         }
 
-        var period = _reservationPeriodHelper.Fetch(p => p.PeriodId == periodId);
+        var period = bLlReservationPeriod.Fetch(p => p.PeriodId == periodId);
         if (period is null)
         {
             return Json("预约时间段不存在");
         }
         // ...
-        var result = _reservationPeriodHelper.Update(new ReservationPeriod() { PeriodId = periodId, IsDeleted = true }, p => p.IsDeleted);
+        var result = bLlReservationPeriod.Update(new ReservationPeriod() { PeriodId = periodId, IsDeleted = true }, p => p.IsDeleted);
         if (result > 0)
         {
-            if (!_reservationPeriodHelper.Exist(x => x.PlaceId == period.PlaceId))
+            if (!bLlReservationPeriod.Exist(x => x.PlaceId == period.PlaceId))
             {
                 // no valid period for place, disable place
-                _reservationPlaceHelper.Update(
+                bLlReservationPlace.Update(
                     new ReservationPlace()
                     {
                         PlaceId = period.PlaceId,
@@ -349,14 +354,5 @@ public class ReservationPlaceController : AdminBaseController
             OperLogHelper.AddOperLog($"删除预约时间段{periodId:N}", OperLogModule.ReservationPlace, UserName);
         }
         return Json(result > 0 ? "" : "删除失败");
-    }
-
-    private readonly IBLLReservationPeriod _reservationPeriodHelper;
-    private readonly IBLLReservationPlace _reservationPlaceHelper;
-
-    public ReservationPlaceController(ILogger<ReservationPlaceController> logger, OperLogHelper operLogHelper, IBLLReservationPlace bLLReservationPlace, IBLLReservationPeriod bLLReservationPeriod) : base(logger, operLogHelper)
-    {
-        _reservationPeriodHelper = bLLReservationPeriod;
-        _reservationPlaceHelper = bLLReservationPlace;
     }
 }

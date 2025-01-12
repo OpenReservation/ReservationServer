@@ -31,22 +31,16 @@ public class OperationLogEvent : EventBase
     public string OperBy { get; set; }
 }
 
-public class OperationLogEventHandler : OnceEventHandlerBase<OperationLogEvent>
+public class OperationLogEventHandler(ILogger<OperationLogEventHandler> logger, IServiceProvider serviceProvider)
+    : OnceEventHandlerBase<OperationLogEvent>
 {
-    private readonly ILogger _logger;
-    private readonly IServiceProvider _serviceProvider;
-
-    public OperationLogEventHandler(ILogger<OperationLogEventHandler> logger, IServiceProvider serviceProvider)
-    {
-        _logger = logger;
-        _serviceProvider = serviceProvider;
-    }
+    private readonly ILogger _logger = logger;
 
     public async override Task Handle(OperationLogEvent @event, EventProperties eventProperties)
     {
         if (await IsHandleNeeded(@event))
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = serviceProvider.CreateScope())
             {
                 var operationLogRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, OperationLog>>();
                 try

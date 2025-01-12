@@ -6,19 +6,11 @@ using WeihanLi.Web.Extensions;
 
 namespace OpenReservation.Helpers;
 
-public class CaptchaVerifyHelper
+public class CaptchaVerifyHelper(
+    GoogleRecaptchaHelper googleRecaptchaHelper,
+    TencentCaptchaHelper tencentCaptchaHelper,
+    IHttpContextAccessor httpContextAccessor)
 {
-    private readonly GoogleRecaptchaHelper _googleRecaptchaHelper;
-    private readonly TencentCaptchaHelper _tencentCaptchaHelper;
-    private readonly IHttpContextAccessor _contextAccessor;
-
-    public CaptchaVerifyHelper(GoogleRecaptchaHelper googleRecaptchaHelper, TencentCaptchaHelper tencentCaptchaHelper, IHttpContextAccessor httpContextAccessor)
-    {
-        _googleRecaptchaHelper = googleRecaptchaHelper;
-        _tencentCaptchaHelper = tencentCaptchaHelper;
-        _contextAccessor = httpContextAccessor;
-    }
-
     public async System.Threading.Tasks.Task<bool> ValidateVerifyCodeAsync(string captchaType, string captchaInfo)
     {
         if (string.IsNullOrWhiteSpace(captchaType))
@@ -35,16 +27,16 @@ public class CaptchaVerifyHelper
         }
         if (captchaType.Equals("Google", StringComparison.OrdinalIgnoreCase))
         {
-            return await _googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
+            return await googleRecaptchaHelper.IsValidRequestAsync(captchaInfo);
         }
         if (captchaType.Equals("Tencent", StringComparison.OrdinalIgnoreCase))
         {
             var request = captchaInfo.JsonToObject<TencentCaptchaRequest>();
             if (request.UserIP.IsNullOrWhiteSpace())
             {
-                request.UserIP = _contextAccessor.HttpContext.GetUserIP();
+                request.UserIP = httpContextAccessor.HttpContext.GetUserIP();
             }
-            return await _tencentCaptchaHelper.IsValidRequestAsync(request);
+            return await tencentCaptchaHelper.IsValidRequestAsync(request);
         }
         return false;
     }

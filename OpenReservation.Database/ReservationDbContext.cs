@@ -4,13 +4,9 @@ using WeihanLi.EntityFramework.Audit;
 
 namespace OpenReservation.Database;
 
-public class ReservationDbContext : AuditDbContext
+public class ReservationDbContext(DbContextOptions<ReservationDbContext> options, IServiceProvider serviceProvider)
+    : AuditDbContext(options, serviceProvider)
 {
-    public ReservationDbContext(DbContextOptions<ReservationDbContext> options, IServiceProvider serviceProvider) 
-        : base(options, serviceProvider)
-    {
-    }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // globalFilters

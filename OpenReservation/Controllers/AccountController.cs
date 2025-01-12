@@ -15,12 +15,8 @@ using WeihanLi.Web.Extensions;
 
 namespace OpenReservation.Controllers;
 
-public class AccountController : FrontBaseController
+public class AccountController(ILogger<AccountController> logger) : FrontBaseController(logger)
 {
-    public AccountController(ILogger<AccountController> logger) : base(logger)
-    {
-    }
-
     public IActionResult AccessDenied()
     {
         return View();

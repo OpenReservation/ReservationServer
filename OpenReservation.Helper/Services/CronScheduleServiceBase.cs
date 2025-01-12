@@ -9,7 +9,7 @@ using WeihanLi.Redis;
 
 namespace OpenReservation.Services;
 
-public abstract class CronScheduleServiceBase : BackgroundService
+public abstract class CronScheduleServiceBase(ILogger logger) : BackgroundService
 {
     /// <summary>
     /// job cron trigger expression
@@ -19,12 +19,7 @@ public abstract class CronScheduleServiceBase : BackgroundService
 
     protected abstract bool ConcurrentAllowed { get; }
 
-    protected readonly ILogger Logger;
-
-    protected CronScheduleServiceBase(ILogger logger)
-    {
-        Logger = logger;
-    }
+    protected readonly ILogger Logger = logger;
 
     protected abstract Task ProcessAsync(CancellationToken cancellationToken);
 

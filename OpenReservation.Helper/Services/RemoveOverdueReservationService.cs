@@ -10,19 +10,13 @@ using WeihanLi.EntityFramework;
 
 namespace OpenReservation.Services;
 
-public class RemoveOverdueReservationService : CronScheduleServiceBase
+public class RemoveOverdueReservationService(
+    ILogger<RemoveOverdueReservationService> logger,
+    IServiceProvider serviceProvider,
+    IConfiguration configuration)
+    : CronScheduleServiceBase(logger)
 {
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IConfiguration _configuration;
-
-    public RemoveOverdueReservationService(ILogger<RemoveOverdueReservationService> logger,
-        IServiceProvider serviceProvider, IConfiguration configuration) : base(logger)
-    {
-        _serviceProvider = serviceProvider;
-        _configuration = configuration;
-    }
-
-    public override string CronExpression => _configuration.GetAppSetting("RemoveOverdueReservationCron") ?? "0 0 18 * * ?";
+    public override string CronExpression => configuration.GetAppSetting("RemoveOverdueReservationCron") ?? "0 0 18 * * ?";
 
     protected override bool ConcurrentAllowed => false;
 
@@ -30,7 +24,7 @@ public class RemoveOverdueReservationService : CronScheduleServiceBase
     {
         Logger.LogInformation($"job executing...");
 
-        using (var scope = _serviceProvider.CreateScope())
+        using (var scope = serviceProvider.CreateScope())
         {
             var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
             await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == ReservationStatus.UnReviewed && (reservation.ReservationForDate < DateTime.Today.AddDays(-15)), cancellationToken);

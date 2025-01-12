@@ -17,7 +17,11 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// 操作日志
 /// </summary>
 [Authorize(AccessControlHelperConstants.PolicyName)]
-public class OperationLogController : AdminBaseController
+public class OperationLogController(
+    ILogger<OperationLogController> logger,
+    OperLogHelper operLogHelper,
+    IBLLOperationLog bLlOperationLog)
+    : AdminBaseController(logger, operLogHelper)
 {
     /// <summary>
     /// 操作日志首页
@@ -45,16 +49,9 @@ public class OperationLogController : AdminBaseController
         {
             whereLambda = whereLambda.And(l => l.LogContent.Contains(search.SearchItem2.Trim()));
         }
-        var logList = operationLogHelper.Paged(search.PageIndex, search.PageSize,
+        var logList = bLlOperationLog.Paged(search.PageIndex, search.PageSize,
             whereLambda, l => l.OperTime);
         var dataList = logList.ToPagedList();
         return View(dataList);
-    }
-
-    private readonly IBLLOperationLog operationLogHelper;
-
-    public OperationLogController(ILogger<OperationLogController> logger, OperLogHelper operLogHelper, IBLLOperationLog bLLOperationLog) : base(logger, operLogHelper)
-    {
-        operationLogHelper = bLLOperationLog;
     }
 }

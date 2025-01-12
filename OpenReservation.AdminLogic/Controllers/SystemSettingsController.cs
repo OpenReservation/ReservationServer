@@ -19,20 +19,13 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// 系统设置
 /// </summary>
 [Authorize(AccessControlHelperConstants.PolicyName)]
-public class SystemSettingsController : AdminBaseController
+public class SystemSettingsController(
+    ILogger<SystemSettingsController> logger,
+    OperLogHelper operLogHelper,
+    IApplicationSettingService applicationSettingService,
+    IBLLSystemSettings bLlSystemSettings)
+    : AdminBaseController(logger, operLogHelper)
 {
-    private readonly IApplicationSettingService _applicationSettingService;
-    private readonly IBLLSystemSettings _systemSettingHelper;
-
-    public SystemSettingsController(ILogger<SystemSettingsController> logger,
-        OperLogHelper operLogHelper,
-        IApplicationSettingService applicationSettingService,
-        IBLLSystemSettings bLLSystemSettings) : base(logger, operLogHelper)
-    {
-        _applicationSettingService = applicationSettingService;
-        _systemSettingHelper = bLLSystemSettings;
-    }
-
     /// <summary>
     /// 系统设置首页
     /// </summary>
@@ -55,7 +48,7 @@ public class SystemSettingsController : AdminBaseController
         {
             whereLambda = (s => s.SettingName.Contains(search.SearchItem1));
         }
-        var settingsList = _systemSettingHelper.Paged(search.PageIndex, search.PageSize,
+        var settingsList = bLlSystemSettings.Paged(search.PageIndex, search.PageSize,
             whereLambda, s => s.SettingName);
         var data = settingsList.ToPagedList();
         return View(data);
@@ -71,10 +64,10 @@ public class SystemSettingsController : AdminBaseController
         try
         {
             setting.SettingId = Guid.NewGuid();
-            var count = _systemSettingHelper.Insert(setting);
+            var count = bLlSystemSettings.Insert(setting);
             if (count == 1)
             {
-                _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
+                applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                 OperLogHelper.AddOperLog($"新增系统设置 {setting.SettingName}：{setting.SettingValue}",
                     OperLogModule.Settings, UserName);
                 return Json(true);
@@ -96,10 +89,10 @@ public class SystemSettingsController : AdminBaseController
     {
         try
         {
-            var count = _systemSettingHelper.Update(s => s.SettingId == setting.SettingId, s => s.SettingValue, setting.SettingValue);
+            var count = bLlSystemSettings.Update(s => s.SettingId == setting.SettingId, s => s.SettingValue, setting.SettingValue);
             if (count == 1)
             {
-                _applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
+                applicationSettingService.SetSettingValue(setting.SettingName, setting.SettingValue);
                 OperLogHelper.AddOperLog(
                     $"更新系统设置{setting.SettingId}---{setting.SettingName}：{setting.SettingValue}", OperLogModule.Settings, UserName);
                 return Json(true);

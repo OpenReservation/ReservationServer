@@ -42,7 +42,10 @@ public class TencentCaptchaRequest
     public string UserIP { get; set; }
 }
 
-public class TencentCaptchaHelper
+public class TencentCaptchaHelper(
+    IOptions<TencentCaptchaOptions> option,
+    ILogger<TencentCaptchaHelper> logger,
+    HttpClient httpClient)
 {
     internal class TencentCaptchaResponse
     {
@@ -69,24 +72,13 @@ public class TencentCaptchaHelper
     }
 
     private const string TencentCaptchaVerifyUrl = "https://ssl.captcha.qq.com/ticket/verify";
-    private readonly TencentCaptchaOptions _captchaOptions;
-    private readonly ILogger _logger;
-    private readonly HttpClient _httpClient;
-
-    public TencentCaptchaHelper(
-        IOptions<TencentCaptchaOptions> option,
-        ILogger<TencentCaptchaHelper> logger,
-        HttpClient httpClient)
-    {
-        _captchaOptions = option.Value;
-        _logger = logger;
-        _httpClient = httpClient;
-    }
+    private readonly TencentCaptchaOptions _captchaOptions = option.Value;
+    private readonly ILogger _logger = logger;
 
     public async Task<bool> IsValidRequestAsync(TencentCaptchaRequest request)
     {
         // 参考文档：https://007.qq.com/captcha/#/gettingStart
-        var result = await _httpClient.GetFromJsonAsync<TencentCaptchaResponse>(
+        var result = await httpClient.GetFromJsonAsync<TencentCaptchaResponse>(
             $"{TencentCaptchaVerifyUrl}?aid={_captchaOptions.AppId}&AppSecretKey={_captchaOptions.AppSecret}&Ticket={request.Ticket}&Randstr={request.Nonce}&UserIP={request.UserIP}");
         return 1 == result?.Code;
     }

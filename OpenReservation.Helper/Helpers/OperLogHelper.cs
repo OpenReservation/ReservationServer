@@ -12,18 +12,9 @@ namespace OpenReservation.Helpers;
 /// <summary>
 /// 操作日志帮助类
 /// </summary>
-public class OperLogHelper
+public class OperLogHelper(IHttpContextAccessor httpContextAccessor, IEventBus eventBus, ILogger<OperLogHelper> logger)
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger _logger;
-    private readonly IEventBus _eventBus;
-
-    public OperLogHelper(IHttpContextAccessor httpContextAccessor, IEventBus eventBus, ILogger<OperLogHelper> logger)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _eventBus = eventBus;
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
 
     /// <summary>
     /// 添加操作日志
@@ -43,7 +34,7 @@ public class OperLogHelper
     /// <returns>是否添加成功</returns>
     public bool AddOperLog(string logContent, OperLogModule logModule, string operBy)
     {
-        var httpContext = _httpContextAccessor.HttpContext;
+        var httpContext = httpContextAccessor.HttpContext;
         var logEvent = new OperationLogEvent
         {
             LogContent = logContent,
@@ -53,7 +44,7 @@ public class OperLogHelper
         };
         try
         {
-            _ = _eventBus.PublishAsync(logEvent);
+            _ = eventBus.PublishAsync(logEvent);
             return true;
         }
         catch (Exception e)

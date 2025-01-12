@@ -18,7 +18,11 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// <summary>
 /// 预约管理
 /// </summary>
-public class ReservationManageController : AdminBaseController
+public class ReservationManageController(
+    ILogger<ReservationManageController> logger,
+    OperLogHelper operLogHelper,
+    IBLLReservation bLlReservation)
+    : AdminBaseController(logger, operLogHelper)
 {
     public ActionResult Index()
     {
@@ -97,7 +101,7 @@ public class ReservationManageController : AdminBaseController
                 .WithInclude(query => query.Include(r => r.Place));
         };
         //load data
-        var list = _reservationHelper.GetPagedListResult(
+        var list = bLlReservation.GetPagedListResult(
             x => new ReservationListViewModel
             {
                 ReservationForDate = x.ReservationForDate,
@@ -133,7 +137,7 @@ public class ReservationManageController : AdminBaseController
             whereExpression = whereExpression.And(r => r.ReservationForDate <= beginDate);
         }
 
-        var reservations = await _reservationHelper.GetResultAsync(x => new ReservationListViewModel
+        var reservations = await bLlReservation.GetResultAsync(x => new ReservationListViewModel
         {
             ReservationForDate = x.ReservationForDate,
             ReservationForTime = x.ReservationForTime,
@@ -170,13 +174,13 @@ public class ReservationManageController : AdminBaseController
     {
         try
         {
-            var reservation = _reservationHelper.Fetch(r => r.ReservationId == reservationId);
+            var reservation = bLlReservation.Fetch(r => r.ReservationId == reservationId);
             if (reservation == null)
             {
                 return Json(false);
             }
             reservation.ReservationStatus = status > 0 ? ReservationStatus.Reviewed : ReservationStatus.Rejected;
-            var count = _reservationHelper.Update(reservation, r => r.ReservationStatus);
+            var count = bLlReservation.Update(reservation, r => r.ReservationStatus);
             if (count == 1)
             {
                 //记录操作日志
@@ -202,14 +206,14 @@ public class ReservationManageController : AdminBaseController
     {
         try
         {
-            var reservation = _reservationHelper.Fetch(r => r.ReservationId == id);
+            var reservation = bLlReservation.Fetch(r => r.ReservationId == id);
             if (reservation == null)
             {
                 return Json(false);
             }
 
             reservation.ReservationStatus = ReservationStatus.Deleted;
-            var count = _reservationHelper.Update(reservation, r => r.ReservationStatus);
+            var count = bLlReservation.Update(reservation, r => r.ReservationStatus);
             if (count == 1)
             {
                 OperLogHelper.AddOperLog($"删除预约记录 {id}:{reservation.ReservationPersonName}:{reservation.ReservationActivityContent}", OperLogModule.Reservation, UserName);
@@ -221,12 +225,5 @@ public class ReservationManageController : AdminBaseController
             Logger.Error("删除预约记录出错", ex);
         }
         return Json(false);
-    }
-
-    private readonly IBLLReservation _reservationHelper;
-
-    public ReservationManageController(ILogger<ReservationManageController> logger, OperLogHelper operLogHelper, IBLLReservation bLLReservation) : base(logger, operLogHelper)
-    {
-        _reservationHelper = bLLReservation;
     }
 }

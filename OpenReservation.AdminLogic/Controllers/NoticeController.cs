@@ -14,15 +14,9 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// <summary>
 /// 公告管理
 /// </summary>
-public class NoticeController : AdminBaseController
+public class NoticeController(ILogger<NoticeController> logger, OperLogHelper operLogHelper, IBLLNotice bLlNotice)
+    : AdminBaseController(logger, operLogHelper)
 {
-    private readonly IBLLNotice _bLLNotice;
-
-    public NoticeController(ILogger<NoticeController> logger, OperLogHelper operLogHelper, IBLLNotice bLLNotice) : base(logger, operLogHelper)
-    {
-        _bLLNotice = bLLNotice;
-    }
-
     public ActionResult Index()
     {
         return View();
@@ -42,7 +36,7 @@ public class NoticeController : AdminBaseController
         }
         try
         {
-            var list = _bLLNotice.Paged(search.PageIndex, search.PageSize,
+            var list = bLlNotice.Paged(search.PageIndex, search.PageSize,
                 whereExpression, n => n.NoticePublishTime);
             return View(list.ToPagedList());
         }
@@ -102,14 +96,14 @@ public class NoticeController : AdminBaseController
             {
                 n.NoticeCustomPath = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             }
-            var existStatus = _bLLNotice.Exist(nx => nx.NoticeCustomPath.ToLower().Equals(n.NoticeCustomPath.ToLower()));
+            var existStatus = bLlNotice.Exist(nx => nx.NoticeCustomPath.ToLower().Equals(n.NoticeCustomPath.ToLower()));
             if (existStatus)
             {
                 n.NoticeCustomPath = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             }
             n.NoticePath = $"{n.NoticeCustomPath}.html";
 
-            var c = _bLLNotice.Insert(n);
+            var c = bLlNotice.Insert(n);
             if (c == 1)
             {
                 OperLogHelper.AddOperLog($"{UserName}添加新公告，{n.NoticeTitle},ID:{n.NoticeId:N}",
@@ -145,7 +139,7 @@ public class NoticeController : AdminBaseController
             {
                 path = path + ".html";
             }
-            var existStatus = _bLLNotice.Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
+            var existStatus = bLlNotice.Exist(n => n.NoticePath.ToLower().Equals(path.ToLower()));
             if (existStatus)
             {
                 return Json(false);
@@ -170,7 +164,7 @@ public class NoticeController : AdminBaseController
 
     public JsonResult Delete(Guid noticeId)
     {
-        var result = _bLLNotice.Update(new Notice() { NoticeId = noticeId, IsDeleted = true, UpdateBy = UserName, UpdateTime = DateTime.UtcNow }, n => n.IsDeleted);
+        var result = bLlNotice.Update(new Notice() { NoticeId = noticeId, IsDeleted = true, UpdateBy = UserName, UpdateTime = DateTime.UtcNow }, n => n.IsDeleted);
         if (result > 0)
         {
             OperLogHelper.AddOperLog($"删除公告{noticeId:N}", OperLogModule.Notice, UserName);

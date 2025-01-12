@@ -18,14 +18,9 @@ public interface IStorageProvider
 /// <summary>
 /// 本地存储
 /// </summary>
-public class LocalStorageProvider : IStorageProvider
+public class LocalStorageProvider(IOptions<LocalStorageProviderOptions> options) : IStorageProvider
 {
-    private readonly LocalStorageProviderOptions _options;
-
-    public LocalStorageProvider(IOptions<LocalStorageProviderOptions> options)
-    {
-        _options = options.Value;
-    }
+    private readonly LocalStorageProviderOptions _options = options.Value;
 
     public Task<string> SaveBytes(byte[] bytes, string filePath)
     {

@@ -7,14 +7,9 @@ namespace OpenReservation.WorkContexts;
 
 [Authorize(Policy = "ReservationManager")]
 [Area("Admin")]
-public class AdminBaseController : BaseController
+public class AdminBaseController(ILogger logger, OperLogHelper operLogHelper) : BaseController(logger)
 {
-    public AdminBaseController(ILogger logger, OperLogHelper operLogHelper) : base(logger)
-    {
-        OperLogHelper = operLogHelper;
-    }
-
-    protected readonly OperLogHelper OperLogHelper;
+    protected readonly OperLogHelper OperLogHelper = operLogHelper;
 
     /// <summary>
     /// 管理员姓名

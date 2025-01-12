@@ -3,15 +3,9 @@ using System.Net.Http;
 
 namespace OpenReservation.API.Test.Controllers;
 
-public abstract class ControllerTestBase
+public abstract class ControllerTestBase(APITestFixture fixture)
 {
-    protected HttpClient Client { get; }
+    protected HttpClient Client { get; } = fixture.Client;
 
-    protected IServiceProvider Services { get; }
-
-    protected ControllerTestBase(APITestFixture fixture)
-    {
-        Client = fixture.Client;
-        Services = fixture.Services;
-    }
+    protected IServiceProvider Services { get; } = fixture.Services;
 }

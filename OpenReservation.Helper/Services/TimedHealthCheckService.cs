@@ -6,12 +6,9 @@ using OpenReservation.Services;
 
 namespace OpenReservation.Helper.Services;
 
-public class TimedHealthCheckService : TimerScheduledService
+public class TimedHealthCheckService(ILogger<TimedHealthCheckService> logger)
+    : TimerScheduledService(TimeSpan.FromSeconds(5), logger)
 {
-    public TimedHealthCheckService(ILogger<TimedHealthCheckService> logger) : base(TimeSpan.FromSeconds(5), logger)
-    {
-    }
-
     protected override Task ExecuteInternal(CancellationToken stoppingToken)
     {
         Logger.LogInformation("Executing...");

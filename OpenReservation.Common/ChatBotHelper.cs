@@ -10,7 +10,7 @@ namespace OpenReservation.Common;
 /// <summary>
 /// ChatBotHelper
 /// </summary>
-public class ChatBotHelper
+public class ChatBotHelper(HttpClient httpClient, ILogger<ChatBotHelper> logger)
 {
     /// <summary>
     /// 青云客请求地址格式，详情参见 http://api.qingyunke.com/
@@ -21,15 +21,7 @@ public class ChatBotHelper
     /// <summary>
     /// logger
     /// </summary>
-    private readonly ILogger _logger;
-
-    private readonly HttpClient _httpClient;
-
-    public ChatBotHelper(HttpClient httpClient, ILogger<ChatBotHelper> logger)
-    {
-        _httpClient = httpClient;
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
 
     /// <summary>
     /// 获取机器人回复【异步】
@@ -44,7 +36,7 @@ public class ChatBotHelper
         }
         try
         {
-            using (var response = await _httpClient.
+            using (var response = await httpClient.
                        GetAsync(string.Format(QingyunkeRequestUrlFormat, request.UrlEncode())))
             {
                 var responseText = await response.Content.ReadAsStringAsync();

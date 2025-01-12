@@ -9,12 +9,8 @@ using Xunit;
 
 namespace OpenReservation.API.Test.Controllers;
 
-public class ReservationPlaceControllerTest : ControllerTestBase
+public class ReservationPlaceControllerTest(APITestFixture fixture) : ControllerTestBase(fixture)
 {
-    public ReservationPlaceControllerTest(APITestFixture fixture) : base(fixture)
-    {
-    }
-
     [Fact]
     public async Task GetReservationPlaceList()
     {

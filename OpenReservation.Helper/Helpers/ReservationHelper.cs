@@ -14,7 +14,11 @@ using WeihanLi.Web.Extensions;
 
 namespace OpenReservation.Helpers;
 
-public class ReservationHelper
+public class ReservationHelper(
+    IBLLReservationPeriod bllReservationPeriod,
+    IBLLReservation bllReservation,
+    IBLLDisabledPeriod bllDisabledPeriod,
+    IBLLBlockEntity bllBlockEntity)
 {
     /// <summary>
     /// 最多可预约天数
@@ -26,19 +30,6 @@ public class ReservationHelper
     /// </summary>
     private const int MaxReservationCount = 3;
 
-    private readonly IBLLReservationPeriod _bllReservationPeriod;
-    private readonly IBLLReservation _bllReservation;
-    private readonly IBLLDisabledPeriod _bllDisabledPeriod;
-    private readonly IBLLBlockEntity _bllBlockEntity;
-
-    public ReservationHelper(IBLLReservationPeriod bllReservationPeriod, IBLLReservation bllReservation, IBLLDisabledPeriod bllDisabledPeriod, IBLLBlockEntity bllBlockEntity)
-    {
-        _bllReservationPeriod = bllReservationPeriod;
-        _bllReservation = bllReservation;
-        _bllBlockEntity = bllBlockEntity;
-        _bllDisabledPeriod = bllDisabledPeriod;
-    }
-
     /// <summary>
     /// 根据预约日期和预约地点获取可用的预约时间段
     /// </summary>
@@ -48,14 +39,14 @@ public class ReservationHelper
     public List<ReservationPeriodViewModel> GetAvailablePeriodsByDateAndPlace(DateTime dt, Guid placeId)
     {
         //待审核和审核通过的预约时间段不能再被预约
-        var reservationList = _bllReservation.Select(r =>
+        var reservationList = bllReservation.Select(r =>
             r.ReservationForDate == dt
             && r.ReservationPlaceId == placeId
             && r.ReservationStatus != ReservationStatus.Rejected
             && r.ReservationStatus != ReservationStatus.Canceled
         );
 
-        var reservationPeriod = _bllReservationPeriod
+        var reservationPeriod = bllReservationPeriod
             .Select(_ => _.PlaceId == placeId)
             .OrderBy(_ => _.PeriodIndex)
             .ThenBy(_ => _.CreateTime);
@@ -94,7 +85,7 @@ public class ReservationHelper
             return false;
         }
 
-        if (!_bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive
+        if (!bllDisabledPeriod.Any(builder => builder.WithPredict(p => p.IsActive
                                                                         && p.StartDate >= dt
                                                                         && dt >= p.EndDate
             )))
@@ -136,7 +127,7 @@ public class ReservationHelper
     private bool IsReservationInfoInBlockList(ReservationViewModel reservation, out string message)
     {
         var blockList = RedisManager.CacheClient.GetOrSet(Constants.BlackListCacheKey,
-            () => _bllBlockEntity.Select(_ => _.IsActive),
+            () => bllBlockEntity.Select(_ => _.IsActive),
             TimeSpan.FromDays(1));
 
         message = string.Empty;
@@ -229,7 +220,7 @@ public class ReservationHelper
 
             if (!isAdmin)
             {
-                if (_bllReservation.Count(r =>
+                if (bllReservation.Count(r =>
                         r.ReservedBy == userId &&
                         r.ReservationTime.AddHours(8).Date == DateTime.UtcNow.AddHours(8).Date
                     ) >= MaxReservationCount)
@@ -267,7 +258,7 @@ public class ReservationHelper
             {
                 reservationEntity.ReservationStatus = ReservationStatus.Reviewed;
             }
-            _bllReservation.Insert(reservationEntity);
+            bllReservation.Insert(reservationEntity);
             errorMsg = string.Empty;
             return true;
         }

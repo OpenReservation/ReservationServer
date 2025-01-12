@@ -39,19 +39,13 @@ using WeihanLi.Web.Middleware;
 
 namespace OpenReservation;
 
-public class Startup
+public class Startup(IConfiguration configuration, IWebHostEnvironment environment)
 {
     private static readonly Counter ExceptionCounter = Metrics.CreateCounter("Unhandled_exception", "Unhandled Exception", "error");
 
-    public Startup(IConfiguration configuration, IWebHostEnvironment environment)
-    {
-        Configuration = configuration.ReplacePlaceholders();
-        Environment = environment;
-    }
+    public IConfiguration Configuration { get; } = configuration.ReplacePlaceholders();
 
-    public IConfiguration Configuration { get; }
-
-    public IWebHostEnvironment Environment { get; }
+    public IWebHostEnvironment Environment { get; } = environment;
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)

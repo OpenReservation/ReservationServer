@@ -4,12 +4,7 @@ using Microsoft.Extensions.Logging;
 namespace OpenReservation.WorkContexts;
 
 [ApiExplorerSettings(IgnoreApi = true)]
-public abstract class BaseController : Controller
+public abstract class BaseController(ILogger logger) : Controller
 {
-    protected readonly ILogger Logger;
-
-    protected BaseController(ILogger logger)
-    {
-        Logger = logger;
-    }
+    protected readonly ILogger Logger = logger;
 }

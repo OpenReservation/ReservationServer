@@ -25,15 +25,9 @@ using WeihanLi.Redis;
 
 namespace OpenReservation.Controllers;
 
-public class HomeController : FrontBaseController
+public class HomeController(ILogger<HomeController> logger, IBLLReservation reservationBll)
+    : FrontBaseController(logger)
 {
-    private readonly IBLLReservation _reservationBLL;
-
-    public HomeController(ILogger<HomeController> logger, IBLLReservation reservationBLL) : base(logger)
-    {
-        _reservationBLL = reservationBLL;
-    }
-
     [HttpPost]
     public IActionResult SetLanguage(string culture, string returnUrl)
     {
@@ -67,7 +61,7 @@ public class HomeController : FrontBaseController
             whereLambda = whereLambda.And(m => m.ReservationPersonPhone == search.SearchItem1.Trim());
         }
         //load data
-        var list = await _reservationBLL.GetPagedListResultAsync(
+        var list = await reservationBll.GetPagedListResultAsync(
             x => new ReservationListViewModel
             {
                 ReservationForDate = x.ReservationForDate,
@@ -101,8 +95,8 @@ public class HomeController : FrontBaseController
     {
         var places = HttpContext.RequestServices.GetRequiredService<IBLLReservationPlace>()
             .Select(s => s.IsDel == false && s.IsActive)
-            .OrderBy(_ => _.PlaceIndex)
-            .ThenBy(_ => _.PlaceName)
+            .OrderBy(s => s.PlaceIndex)
+            .ThenBy(s => s.PlaceName)
             .ToList();
         return View(places);
     }
@@ -202,7 +196,7 @@ public class HomeController : FrontBaseController
         {
             return Content("请求异常，请验证手机号");
         }
-        var r = _reservationBLL.Fetch(re => re.ReservationId == id);
+        var r = reservationBll.Fetch(re => re.ReservationId == id);
         if (null == r)
         {
             return Content("请求异常，预约不存在");

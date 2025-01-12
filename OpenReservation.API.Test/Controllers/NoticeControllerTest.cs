@@ -7,12 +7,8 @@ using Xunit;
 
 namespace OpenReservation.API.Test.Controllers;
 
-public class NoticeControllerTest : ControllerTestBase
+public class NoticeControllerTest(APITestFixture fixture) : ControllerTestBase(fixture)
 {
-    public NoticeControllerTest(APITestFixture fixture) : base(fixture)
-    {
-    }
-
     [Fact]
     public async Task GetNoticeList()
     {

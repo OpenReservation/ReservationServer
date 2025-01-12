@@ -19,7 +19,12 @@ namespace OpenReservation.AdminLogic.Controllers;
 /// <summary>
 /// 黑名单
 /// </summary>
-public class BlockEntityController : AdminBaseController
+public class BlockEntityController(
+    ILogger<OperationLogController> logger,
+    ICacheClient cacheClient,
+    OperLogHelper operLogHelper,
+    IBLLBlockEntity bLlBlockEntity)
+    : AdminBaseController(logger, operLogHelper)
 {
     // GET: Admin/BlockEntity
     public ActionResult Index()
@@ -63,7 +68,7 @@ public class BlockEntityController : AdminBaseController
         }
         try
         {
-            var blockList = _blockEntityHelper.GetPagedList(queryBuilder => queryBuilder
+            var blockList = bLlBlockEntity.GetPagedList(queryBuilder => queryBuilder
                 .WithPredict(whereLambda)
                 .WithInclude(q => q.Include(b => b.BlockType))
                 .WithOrderBy(q => q.OrderByDescending(b => b.BlockTime)), search.PageIndex, search.PageSize);
@@ -94,7 +99,7 @@ public class BlockEntityController : AdminBaseController
             };
             try
             {
-                var count = _blockEntityHelper.Insert(entity);
+                var count = bLlBlockEntity.Insert(entity);
                 if (count == 1)
                 {
                     ReloadBlackListCache();
@@ -127,7 +132,7 @@ public class BlockEntityController : AdminBaseController
     {
         try
         {
-            var count = _blockEntityHelper.Update(e => e.BlockId == entityId, e => e.IsActive, status > 0);
+            var count = bLlBlockEntity.Update(e => e.BlockId == entityId, e => e.IsActive, status > 0);
             if (count > 0)
             {
                 ReloadBlackListCache();
@@ -154,7 +159,7 @@ public class BlockEntityController : AdminBaseController
     {
         try
         {
-            var c = _blockEntityHelper.Delete(new BlockEntity() { BlockId = entityId });
+            var c = bLlBlockEntity.Delete(new BlockEntity() { BlockId = entityId });
             if (c == 1)
             {
                 ReloadBlackListCache();
@@ -172,15 +177,6 @@ public class BlockEntityController : AdminBaseController
 
     public bool ReloadBlackListCache()
     {
-        return _cacheClient.Set(Constants.BlackListCacheKey, _blockEntityHelper.Get(q => q.WithPredict(x => x.IsActive)), TimeSpan.FromDays(1));
-    }
-
-    private readonly IBLLBlockEntity _blockEntityHelper;
-    private readonly ICacheClient _cacheClient;
-
-    public BlockEntityController(ILogger<OperationLogController> logger, ICacheClient cacheClient, OperLogHelper operLogHelper, IBLLBlockEntity bLLBlockEntity) : base(logger, operLogHelper)
-    {
-        _cacheClient = cacheClient;
-        _blockEntityHelper = bLLBlockEntity;
+        return cacheClient.Set(Constants.BlackListCacheKey, bLlBlockEntity.Get(q => q.WithPredict(x => x.IsActive)), TimeSpan.FromDays(1));
     }
 }

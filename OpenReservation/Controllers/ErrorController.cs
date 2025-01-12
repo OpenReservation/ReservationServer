@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace OpenReservation.Controllers;
 
-public class ErrorController : FrontBaseController
+public class ErrorController(ILogger<ErrorController> logger) : FrontBaseController(logger)
 {
     /// <summary>
     /// 404
@@ -14,9 +14,5 @@ public class ErrorController : FrontBaseController
     {
         Response.StatusCode = 404;
         return View();
-    }
-
-    public ErrorController(ILogger<ErrorController> logger) : base(logger)
-    {
     }
 }
