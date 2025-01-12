@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using OpenReservation.Database;
+﻿using OpenReservation.Database;
 using OpenReservation.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +7,7 @@ using WeihanLi.EntityFramework;
 
 namespace OpenReservation.Services;
 
-public class RemoveOverdueReservationService(
+public sealed class RemoveOverdueReservationService(
     ILogger<RemoveOverdueReservationService> logger,
     IServiceProvider serviceProvider,
     IConfiguration configuration)
@@ -22,12 +19,9 @@ public class RemoveOverdueReservationService(
 
     protected override async Task ProcessAsync(CancellationToken cancellationToken)
     {
-        Logger.LogInformation($"job executing...");
-
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
-            await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == ReservationStatus.UnReviewed && (reservation.ReservationForDate < DateTime.Today.AddDays(-15)), cancellationToken);
-        }
+        Logger.LogInformation("{Job} job executing...", nameof(RemoveOverdueReservationService));
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var reservationRepo = scope.ServiceProvider.GetRequiredService<IEFRepository<ReservationDbContext, Reservation>>();
+        await reservationRepo.DeleteAsync(reservation => reservation.ReservationStatus == ReservationStatus.UnReviewed && (reservation.ReservationForDate < DateTime.Today.AddDays(-15)), cancellationToken);
     }
 }

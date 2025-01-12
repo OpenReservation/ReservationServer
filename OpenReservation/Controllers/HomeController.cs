@@ -1,15 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
 using OpenReservation.Business;
 using OpenReservation.Common;
 using OpenReservation.Events;
@@ -21,7 +16,6 @@ using WeihanLi.Web.Pager;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Models;
 using WeihanLi.Extensions;
-using WeihanLi.Redis;
 
 namespace OpenReservation.Controllers;
 
@@ -125,6 +119,7 @@ public class HomeController(ILogger<HomeController> logger, IBLLReservation rese
     /// </summary>
     /// <param name="dt">预约日期</param>
     /// <param name="placeId">预约地点id</param>
+    /// <param name="reservationHelper"></param>
     /// <returns></returns>
     public ActionResult GetAvailablePeriods(DateTime dt, Guid placeId, [FromServices] ReservationHelper reservationHelper)
     {
@@ -214,10 +209,7 @@ public class HomeController(ILogger<HomeController> logger, IBLLReservation rese
     /// 公告
     /// </summary>
     /// <returns></returns>
-    public ActionResult Notice()
-    {
-        return View();
-    }
+    public ActionResult Notice() => View();
 
     /// <summary>
     /// 公告列表
@@ -251,22 +243,25 @@ public class HomeController(ILogger<HomeController> logger, IBLLReservation rese
     /// <param name="eventBus"></param>
     /// <param name="cacheClient"></param>
     /// <returns></returns>
-    public async Task<ActionResult> NoticeDetails(string path, [FromServices] IEventBus eventBus, [FromServices] ICacheClient cacheClient)
+    public async Task<ActionResult> NoticeDetails(string path, [FromServices] IEventBus eventBus, [FromServices] IMemoryCache cacheClient)
     {
-        if (!string.IsNullOrWhiteSpace(path))
-        {
-            var notice = await cacheClient.GetOrSetAsync(
-                $"Notice_{path.Trim()}",
-                () => HttpContext.RequestServices.GetRequiredService<IBLLNotice>()
-                    .FetchAsync(n => n.NoticeCustomPath == path.Trim()),
-                TimeSpan.FromMinutes(1));
-            if (notice != null)
+        path = path?.Trim();
+        if (string.IsNullOrEmpty(path)) 
+            return RedirectToAction("Notice");
+
+        var cacheKey = "notice_" + path;
+        var notice = await cacheClient.GetOrCreateAsync(
+            cacheKey,
+            _ => HttpContext.RequestServices.GetRequiredService<IBLLNotice>()
+                .FetchAsync(n => n.NoticeCustomPath == path.Trim()), new MemoryCacheEntryOptions
             {
-                await eventBus.PublishAsync(new NoticeViewEvent { NoticeId = notice.NoticeId });
-                return View(notice);
-            }
-        }
-        return RedirectToAction("Notice");
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
+        if (notice is null)
+            return RedirectToAction("Notice");
+        
+        await eventBus.PublishAsync(new NoticeViewEvent { NoticeId = notice.NoticeId });
+        return View(notice);
     }
 
     [HttpGet]

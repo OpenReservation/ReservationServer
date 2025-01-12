@@ -21,9 +21,14 @@ using OpenReservation.Helper.Services;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.Services;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using Polly;
-using Prometheus;
 using StackExchange.Redis;
+using System.Diagnostics.Metrics;
 using WeihanLi.Common;
 using WeihanLi.Common.Event;
 using WeihanLi.Common.Helpers;
@@ -41,7 +46,7 @@ namespace OpenReservation;
 
 public class Startup(IConfiguration configuration, IWebHostEnvironment environment)
 {
-    private static readonly Counter ExceptionCounter = Metrics.CreateCounter("Unhandled_exception", "Unhandled Exception", "error");
+    private static readonly Counter<int> ExceptionCounter = Helpers.DiagnosticHelper.Meter.CreateCounter<int>("Unhandled_exception", "{count}", "Unhandled Exception");
 
     public IConfiguration Configuration { get; } = configuration.ReplacePlaceholders();
 
@@ -317,8 +322,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
                 }
 
                 logger.LogError(exception, exception.Message);
-
-                ExceptionCounter.WithLabels(exception.Message).Inc();
+                ExceptionCounter.Add(1, new KeyValuePair<string, object>("type", ex.GetType().Name));
 
                 return Task.CompletedTask;
             };
@@ -378,6 +382,35 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
         services.AddHostedService<TimedHealthCheckService>();
         // RegisterAssemblyModules
         services.RegisterAssemblyModules();
+
+        double.TryParse(configuration["OpenTelemetry:Tracing:Ratio"], out var tracingRatio);
+        if (tracingRatio is <= 0 or > 1)
+        {
+            tracingRatio = 1;
+        }
+        var openTelemetryBuilder = services.AddOpenTelemetry()
+            .ConfigureResource(res => res.AddService(Constants.ServiceName))
+            .WithLogging()
+            .WithTracing(t=> t.AddSource(Constants.ServiceName)
+                .AddAspNetCoreInstrumentation(options =>
+                {
+                    options.Filter = context => !context.RequestAborted.IsCancellationRequested;
+                })
+                .SetSampler(new TraceIdRatioBasedSampler(tracingRatio))
+            )
+            .WithMetrics(m => m.AddMeter(Constants.ServiceName).AddAspNetCoreInstrumentation().AddRuntimeInstrumentation())
+            ;
+        var exportDestUrl = configuration["OpenTelemetry:OtlpExporter:Url"];
+        if (string.IsNullOrWhiteSpace(exportDestUrl))
+        {
+            openTelemetryBuilder.UseOtlpExporter();
+        }
+        else
+        {
+            Enum.TryParse(configuration["OpenTelemetry:OtlpExporter:Protocol"], out OtlpExportProtocol protocol);
+            openTelemetryBuilder.UseOtlpExporter(protocol, new Uri(exportDestUrl));
+            Console.WriteLine($"Open Telemetry Exporter registered with custom config {protocol} {exportDestUrl}");
+        }
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -403,14 +436,12 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
 
         app.UseRouting();
         app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
-        app.UseHttpMetrics();
 
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapMetrics();
             endpoints.MapControllers();
             endpoints.MapControllerRoute("Notice", "/Notice/{path}.html", new
             {
@@ -451,7 +482,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
             });
     }
 
-    private void ExcelSettings()
+    private static void ExcelSettings()
     {
         FluentSettings.LoadMappingProfiles(typeof(ReservationListMappingProfile).Assembly);
     }

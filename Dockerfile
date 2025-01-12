@@ -11,6 +11,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers
+COPY nuget.config ./
 COPY ./Directory.Build.props ./
 COPY ./Directory.Packages.props ./
 # https://andrewlock.net/optimising-asp-net-core-apps-in-docker-avoiding-manually-copying-csproj-files-part-2/
@@ -22,7 +23,7 @@ RUN dotnet restore
 
 # copy everything and build
 COPY . .
-RUN dotnet publish -o out OpenReservation/OpenReservation.csproj --no-restore -p UseAppHost=false
+RUN dotnet publish -o out OpenReservation/OpenReservation.csproj -p:UseAppHost=false
 
 # build runtime image
 FROM base AS final

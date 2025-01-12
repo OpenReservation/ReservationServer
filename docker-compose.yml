@@ -1,25 +1,31 @@
 services:
-  # db:
-  #   container_name: sqlserver
-  #   image: microsoft/mssql-server-linux:2017-latest
-  #   ports: 
-  #     - 1433:1433
-  #   environment: 
-  #     - 'ACCEPT_EULA=Y'
-  #     - 'MSSQL_SA_PASSWORD=Admin888'
-  #   restart: always
-
   db:
     container_name: npgsql
     image: postgres:alpine
     restart: always
     environment:
+      POSTGRES_DB: Reservation
+      POSTGRES_USER: reservation
       POSTGRES_PASSWORD: Admin888
+    networks:
+      - reservation
+    volumes:
+      - "./docker/healthchecks:/healthchecks"
+    healthcheck:
+      test: /healthchecks/postgres.sh
+      interval: "5s"
   
   redis:
     container_name: redis
     image: redis:alpine
     restart: always
+    networks:
+      - reservation
+    volumes:
+      - "./docker/healthchecks:/healthchecks"
+    healthcheck:
+      test: /healthchecks/redis.sh
+      interval: "5s"
   
   aspire-dashboard:
     container_name: aspire-dashboard
@@ -27,9 +33,11 @@ services:
     restart: always
     environment:
       - DOTNET_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true
-    # ports:
-    #   - 18888:18888
+    ports:
+      - 28888:18888
     #   - 4317:18889
+    networks:
+      - reservation
 
   reservation:
     build:
@@ -40,11 +48,22 @@ services:
       # - 'Reservation_AppSettings__DbType=SqlServer'
       # - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=sa;pwd=Admin888;'
       - 'Reservation_AppSettings__DbType=Npgsql'
-      - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=postgres;pwd=Admin888;'
+      - 'Reservation_ConnectionStrings__Reservation=server=db;database=Reservation;uid=reservation;pwd=Admin888;'
       - 'Reservation_ConnectionStrings__Redis=redis'
-      - 'Reservation_OpenReservation'
+      - 'Reservation_OpenTelemetry__OtlpExporter__Url=http://aspire-dashboard:18889'
     ports:
       - 65026:80
+    networks:
+      - reservation
+    depends_on:
+      redis:
+        condition: service_healthy 
+      db:
+        condition: service_healthy 
     links:
       - db:db
       - redis:redis
+      - aspire-dashboard:aspire-dashboard
+
+networks:
+  reservation:

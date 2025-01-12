@@ -3,7 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using OpenReservation.Business;
 using OpenReservation.Database;
 using OpenReservation.Events;
 using OpenReservation.Models;
@@ -45,7 +48,7 @@ public class NoticeController(ILogger<NoticeController> logger, IEFRepository<Re
                 x.NoticeExternalLink
             }, queryBuilder => queryBuilder
                 .WithPredict(predict)
-                .WithOrderBy(q => q.OrderByDescending(_ => _.NoticePublishTime))
+                .WithOrderBy(q => q.OrderByDescending(n => n.NoticePublishTime))
             , pageNumber, pageSize, HttpContext.RequestAborted);
 
         return Ok(result);
@@ -61,22 +64,26 @@ public class NoticeController(ILogger<NoticeController> logger, IEFRepository<Re
     /// <returns></returns>
     [HttpGet("{path}")]
     [ResponseCache(CacheProfileName = "noCache")]
-    public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, [FromServices] IEventBus eventBus, [FromServices] ICacheClient cacheClient)
+    public async Task<IActionResult> GetByPath(string path, CancellationToken cancellationToken, 
+        [FromServices] IEventBus eventBus, [FromServices] IMemoryCache cacheClient)
     {
-        if (string.IsNullOrWhiteSpace(path))
-        {
-            return BadRequest();
-        }
-        
-        var notice = await cacheClient.GetOrSetAsync(
-            $"Notice_{path.Trim()}",
-            () => repository.FetchAsync(n => n.NoticeCustomPath == path, cancellationToken),
-            TimeSpan.FromMinutes(3));
+        path = path?.Trim();
+        if (string.IsNullOrEmpty(path)) 
+            return BadRequest("Notice");
 
-        if (notice == null)
+        var cacheKey = "notice_" + path;
+        var notice = await cacheClient.GetOrCreateAsync(
+            cacheKey,
+            _ => HttpContext.RequestServices.GetRequiredService<IBLLNotice>()
+                .FetchAsync(n => n.NoticeCustomPath == path.Trim(), cancellationToken), new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5)
+            });
+        if (notice is null)
         {
             return NotFound();
         }
+
         await eventBus.PublishAsync(new NoticeViewEvent { NoticeId = notice.NoticeId });
         return Ok(notice);
     }

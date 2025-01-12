@@ -7,15 +7,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using OpenReservation.API.Test.MockServices;
 using OpenReservation.Common;
 using OpenReservation.Database;
 using OpenReservation.Events;
 using OpenReservation.Services;
 using WeihanLi.Common.Event;
-using WeihanLi.Redis;
 using WeihanLi.Web.Authentication;
 using WeihanLi.Web.Authentication.HeaderAuthentication;
 
@@ -90,9 +86,7 @@ public class Startup
             .AddEventHandler<NoticeViewEvent, NoticeViewEventHandler>()
             .AddEventHandler<OperationLogEvent, OperationLogEventHandler>()
             ;
-
-        services.TryAddSingleton<ICacheClient, MockRedisCacheClient>();
-
+        
         // RegisterAssemblyModules
         services.RegisterAssemblyModules();
 

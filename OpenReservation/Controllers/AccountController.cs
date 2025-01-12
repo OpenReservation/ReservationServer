@@ -77,7 +77,7 @@ public class AccountController(ILogger<AccountController> logger) : FrontBaseCon
         {
             Logger.Info($"{User.Identity.Name} logout at {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}");
 
-            return new SignOutResult(new[] { "Cookies", "OpenIdConnect" });
+            return new SignOutResult(["Cookies", "OpenIdConnect"]);
         }
 
         return RedirectToAction("Index", "Home");
