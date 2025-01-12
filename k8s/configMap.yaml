@@ -8,8 +8,7 @@ data:
     {      
       "ConnectionStrings": {
         "Redis": "redis-server",
-        "Reservation": "Server=localhost;uid=liweihan;pwd=Admin888;database=Reservation",
-        "ElasticSearch": "elasticsearch"
+        "Reservation": "Server=localhost;uid=liweihan;pwd=Admin888;database=Reservation"
       },
       "MpWechat":{
         "AppId": "wx4a41d3773ae55543",
