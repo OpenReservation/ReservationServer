@@ -7,6 +7,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />  
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />  
     <PackageReference Include="Microsoft.Extensions.Http.Polly" />  
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />  
     <PackageReference Include="prometheus-net.AspNetCore" />  
     <PackageReference Include="Sentry.Extensions.Logging" />
     <PackageReference Include="Swashbuckle.AspNetCore" />

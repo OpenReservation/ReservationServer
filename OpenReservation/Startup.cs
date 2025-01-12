@@ -202,6 +202,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
                 provider.GetRequiredService<AuditInterceptor>()
             ]);
             var dbType = Configuration.GetAppSetting<DbType>("DbType");
+            var connectionString = Configuration.GetConnectionString("Reservation");
             switch (dbType)
             {
                 case DbType.InMemory:
@@ -209,11 +210,15 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
                     break;
 
                 case DbType.Sqlite:
-                    options.UseSqlite("Data Source=Reservation.db;Cache=Shared");
+                    options.UseSqlite(connectionString ?? "Data Source=Reservation.db;Cache=Shared");
+                    break;
+                
+                case DbType.Npgsql:
+                    options.UseNpgsql(connectionString);
                     break;
 
                 default:
-                    options.UseSqlServer(Configuration.GetConnectionString("Reservation"));
+                    options.UseSqlServer(connectionString);
                     break;
             }
         });
