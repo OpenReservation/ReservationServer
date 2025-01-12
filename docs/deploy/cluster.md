@@ -14,8 +14,7 @@
 ## 部署需要
 
 - redis（缓存/分布式锁/EventBus）
-- sqlserver/mysql（数据库，也可以换成自己想用的数据库）
-- elasticsearch（日志，可选，但是推荐使用）
+- sqlserver/sqlite/postgresql（数据库，也可以换成自己想用的数据库）
 
 > 下面的配置想要体验的话可以用已有配置，如果要自己部署用的话建议自己注册换成自己的账号
 
@@ -59,7 +58,7 @@
 
 最外层有一个 nginx，nginx 转发请求到 k8s 内部服务，再由 k8s 去调度，选择哪一个 pod 处理请求，
 
-使用到的 redis 和 elasticsearch 均部署在 k8s 的内部，通过 ClusterIP 的方式使用，不直接对外暴露
+使用到的 redis 部署在 k8s 的内部，通过 ClusterIP 的方式使用，不直接对外暴露
 
 数据库使用外部的数据库（如果需要也可以像 redis 那样部署成集群内部使用），可以使用云数据库
 
@@ -70,6 +69,4 @@ k8s 部署详情：
 k8s 部署 yaml 定义可以参考下面的链接：
 
 - [Redis](../../k8s/redis.yaml)
-- [ElasticSearch](../../k8s/elasticsearch.yaml)
-- [Kibana](../../k8s//kibana.yaml)
 - [OpenReservation](../../k8s/reservation-deployment.yaml)（使用了 configMap 挂载了配置文件，可以不用）
