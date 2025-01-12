@@ -15,7 +15,12 @@ LICENSE
 .vs
 *.yaml
 *.yml
-OpenReservation.Clients
-docs
-images
-k8s
+.idea/
+docs/
+images/
+k8s/
+OpenReservation.API.Test/
+OpenReservation.Clients/
+OpenReservation.SourceGeneratorTest/
+OpenReservation.UnitTest/
+tests/
