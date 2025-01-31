@@ -22,6 +22,7 @@
     <ProjectReference Include="..\OpenReservation.Common\OpenReservation.Common.csproj" />
     <ProjectReference Include="..\OpenReservation.Helper\OpenReservation.Helper.csproj" />
     <ProjectReference Include="..\OpenReservation.Models\OpenReservation.Models.csproj" />
+    <ProjectReference Include="..\OpenReservation.ServiceDefaults\OpenReservation.ServiceDefaults.csproj" />
     <ProjectReference Include="..\OpenReservation.WechatAPI\OpenReservation.WechatAPI.csproj" />
   </ItemGroup>
   <ItemGroup>

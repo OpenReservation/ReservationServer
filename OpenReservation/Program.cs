@@ -1,22 +1,28 @@
 ﻿using OpenReservation;
+using WeihanLi.Common.Event;
 
-Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration(builder =>
+var builder = WebApplication.CreateSlimBuilder();
+builder.Configuration.AddEnvironmentVariables("Reservation_");
+
+builder.Logging.AddJsonConsole(options =>
+{
+    options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]";
+    options.JsonWriterOptions = new System.Text.Json.JsonWriterOptions()
     {
-        builder.AddEnvironmentVariables("Reservation_");
-    })
-    .ConfigureLogging(builder => builder.AddJsonConsole(options =>
-    {
-        options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss]";
-        options.JsonWriterOptions = new System.Text.Json.JsonWriterOptions()
-        {
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
-    }))
-    .ConfigureWebHostDefaults(webHostBuilder =>
-    {
-        webHostBuilder.UseStartup<Startup>();
-    })
-    .Build()
-    .Run()
-    ;
+        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+});
+var startup = new Startup(builder.Configuration, builder.Environment);
+startup.ConfigureServices(builder.Services);
+
+builder.AddServiceDefaults();
+
+var app = builder.Build();
+
+app.MapDefaultEndpoints();
+startup.Configure(
+    app, app.Services.GetRequiredService<ILoggerFactory>(), 
+    app.Services.GetRequiredService<IEventBus>()
+    );
+
+await builder.Build().RunAsync();

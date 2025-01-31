@@ -44,6 +44,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenReservation.API.Test", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenReservation.UnitTest", "OpenReservation.UnitTest\OpenReservation.UnitTest.csproj", "{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenReservation.AppHost", "OpenReservation.AppHost\OpenReservation.AppHost.csproj", "{F93B8153-C9B5-4A09-A168-7F7040E02B5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenReservation.ServiceDefaults", "OpenReservation.ServiceDefaults\OpenReservation.ServiceDefaults.csproj", "{F80F37C4-9D12-2176-E615-C0DE7804196A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +98,14 @@ Global
 		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C40B7A88-3FAD-4FEF-BAA0-7329CF9E49E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F93B8153-C9B5-4A09-A168-7F7040E02B5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F93B8153-C9B5-4A09-A168-7F7040E02B5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F93B8153-C9B5-4A09-A168-7F7040E02B5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F93B8153-C9B5-4A09-A168-7F7040E02B5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F80F37C4-9D12-2176-E615-C0DE7804196A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F80F37C4-9D12-2176-E615-C0DE7804196A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F80F37C4-9D12-2176-E615-C0DE7804196A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F80F37C4-9D12-2176-E615-C0DE7804196A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
