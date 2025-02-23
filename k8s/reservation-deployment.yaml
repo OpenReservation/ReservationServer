@@ -47,8 +47,14 @@ spec:
           env:
           - name: OTEL_SERVICE_NAME
             value: "reservation-app"
+          - name: "OTEL_TRACES_SAMPLER"
+            value: "always_on"  
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: "http://aspire-dashboard:4317"
+          - name: OTEL_EXPORTER_OTLP_PROTOCOL
+            value: "grpc"
+            name: OTEL_METRICS_EXEMPLAR_FILTER
+            value: "trace_based"
           volumeMounts:
           - name: settings
             mountPath: /app/appsettings.Production.json
