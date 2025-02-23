@@ -172,9 +172,8 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
                     
                     return Task.CompletedTask;
                 };
-                options.Events.OnRedirectToIdentityProvider = rc =>
+                options.Events.OnUserInformationReceived = context =>
                 {
-                    rc.ProtocolMessage.RedirectUri = authorizationConfiguration["RedirectUri"];
                     return Task.CompletedTask;
                 };
             })

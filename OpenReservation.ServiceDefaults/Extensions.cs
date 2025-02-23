@@ -52,12 +52,14 @@ public static class Extensions
             })
             .WithTracing(tracing =>
             {
-                tracing.AddSource(builder.Environment.ApplicationName)
+                tracing
+                    .SetSampler<AlwaysOnSampler>()
+                    .AddSource(builder.Environment.ApplicationName)
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation();
             })
             // serviceName: OTEL_SERVICE_NAME
-            .ConfigureResource(res => res.AddService("reservation-app").AddEnvironmentVariableDetector())
+            .ConfigureResource(res => res.AddService("OpenReservation"))
             ;
 
         builder.AddOpenTelemetryExporters();

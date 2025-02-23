@@ -13,9 +13,9 @@ builder.Logging.AddJsonConsole(options =>
     };
 });
 var startup = new Startup(builder.Configuration, builder.Environment);
-startup.ConfigureServices(builder.Services);
 
 builder.AddServiceDefaults();
+startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
@@ -25,4 +25,4 @@ startup.Configure(
     app.Services.GetRequiredService<IEventBus>()
     );
 
-await builder.Build().RunAsync();
+await app.RunAsync();
