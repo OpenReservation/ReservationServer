@@ -50,6 +50,8 @@ spec:
           env:
           - name: OTEL_SERVICE_NAME
             value: reservation
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://aspire-dashboard:4317"
           - name: DOTNET_DiagnosticPorts
             value: /diag/port
           volumeMounts:
