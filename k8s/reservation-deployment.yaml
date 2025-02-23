@@ -48,6 +48,8 @@ spec:
           ports:
             - containerPort: 80
           env:
+          - name: OTEL_SERVICE_NAME
+            value: reservation
           - name: DOTNET_DiagnosticPorts
             value: /diag/port
           volumeMounts:
