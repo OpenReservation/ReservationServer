@@ -27,9 +27,6 @@ spec:
           image: openreservation/reservation-server:latest
           imagePullPolicy: Always
           resources:
-            requests:
-              cpu: 30m
-              memory: 32Mi
             limits:
               cpu: 80m
               memory: 256Mi
@@ -52,63 +49,14 @@ spec:
             value: reservation
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: "http://aspire-dashboard:4317"
-          - name: DOTNET_DiagnosticPorts
-            value: /diag/port
           volumeMounts:
           - name: settings
             mountPath: /app/appsettings.Production.json
             subPath: appsettings
-          - mountPath: /diag
-            name: diagvol
-          - mountPath: /dumps
-            name: dumpsvol
-          - mountPath: /tmp
-            name: tmpvol
-        - name: dotnet-monitor
-          image: mcr.microsoft.com/dotnet/monitor:7
-          args: [ "collect", "--urls", "http://+:52323", "--no-auth" ]
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 52323
-          env:
-          - name: DOTNETMONITOR_DiagnosticPort__ConnectionMode
-            value: Listen
-          - name: DOTNETMONITOR_DiagnosticPort__EndpointName
-            value: /diag/port
-          - name: DOTNETMONITOR_Storage__DumpTempFolder
-            value: /dumps
-          - name: XDG_CONFIG_HOME
-            value: "/etc"
-          volumeMounts:
-          - mountPath: /diag
-            name: diagvol
-          - mountPath: /dumps
-            name: dumpsvol
-          - mountPath: /tmp
-            name: tmpvol
-          - name: monitor-configs
-            mountPath: /etc/dotnet-monitor/settings.json
-            subPath: default
-          resources:
-            requests:
-              cpu: 30m
-              memory: 32Mi
-            limits:
-              cpu: 50m
-              memory: 256Mi
       volumes:
         - name: settings
           configMap:
             name: reservation-configs
-        - name: monitor-configs
-          configMap:
-            name: dotnet-monitor-configs
-        - name: diagvol
-          emptyDir: {}
-        - name: dumpsvol
-          emptyDir: {}
-        - name: tmpvol
-          emptyDir: {}
 
 ---
 apiVersion: v1
