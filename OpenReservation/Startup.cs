@@ -382,35 +382,6 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
         services.AddHostedService<TimedHealthCheckService>();
         // RegisterAssemblyModules
         services.RegisterAssemblyModules();
-
-        double.TryParse(configuration["OpenTelemetry:Tracing:Ratio"], out var tracingRatio);
-        if (tracingRatio is <= 0 or > 1)
-        {
-            tracingRatio = 1;
-        }
-        var openTelemetryBuilder = services.AddOpenTelemetry()
-            .ConfigureResource(res => res.AddService(Constants.ServiceName))
-            .WithLogging()
-            .WithTracing(t=> t.AddSource(Constants.ServiceName)
-                .AddAspNetCoreInstrumentation(options =>
-                {
-                    options.Filter = context => !context.RequestAborted.IsCancellationRequested;
-                })
-                .SetSampler(new TraceIdRatioBasedSampler(tracingRatio))
-            )
-            .WithMetrics(m => m.AddMeter(Constants.ServiceName).AddAspNetCoreInstrumentation().AddRuntimeInstrumentation())
-            ;
-        var exportDestUrl = configuration["OpenTelemetry:OtlpExporter:Url"];
-        if (string.IsNullOrWhiteSpace(exportDestUrl))
-        {
-            openTelemetryBuilder.UseOtlpExporter();
-        }
-        else
-        {
-            Enum.TryParse(configuration["OpenTelemetry:OtlpExporter:Protocol"], out OtlpExportProtocol protocol);
-            openTelemetryBuilder.UseOtlpExporter(protocol, new Uri(exportDestUrl));
-            Console.WriteLine($"Open Telemetry Exporter registered with custom config {protocol} {exportDestUrl}");
-        }
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
