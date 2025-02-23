@@ -18,7 +18,7 @@ pool:
 
 variables:
   tagName: '$(Build.BuildNumber)'
-  repoName: 'reservation-server'
+  repoName: 'reservation-app'
   stableImageName: 'openreservation/$(repoName):stable'
   latestImageName: 'openreservation/$(repoName):latest'
   branchImageName: 'openreservation/$(repoName):$(Build.SourceBranchName)'
@@ -66,4 +66,4 @@ steps:
     runOptions: inline
 
     inline: |
-      kubectl set image deployment/reservation-server reservation-server=$(imageName)
+      kubectl set image deployment/reservation-app reservation-app=$(imageName)

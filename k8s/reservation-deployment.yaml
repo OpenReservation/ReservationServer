@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: reservation-server
+  name: reservation-app
   namespace: default
   labels:
-    app: reservation-server
+    app: reservation-app
 spec:
   replicas: 1
   revisionHistoryLimit: 2 # how many old ReplicaSets for this Deployment you want to retain, https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#clean-up-policy
   selector:
     matchLabels:
-      app: reservation-server
+      app: reservation-app
   minReadySeconds: 0
   strategy:
     type: RollingUpdate
@@ -20,10 +20,10 @@ spec:
   template:
     metadata:
       labels:
-        app: reservation-server
+        app: reservation-app
     spec:
       containers:        
-        - name: reservation-server
+        - name: reservation-app
           image: openreservation/reservation-server:latest
           imagePullPolicy: Always
           resources:
@@ -62,31 +62,33 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: reservation-server
+  name: reservation-app
 spec:
   selector:
-    app: reservation-server
-  type: ClusterIP
+    app: reservation-app
+  #type: ClusterIP
+  type: NodePort
   ports:
   - name: http
     protocol: TCP
     port: 80
     targetPort: 80
-  - name: dotnet-monitor
-    port: 52323
-    protocol: TCP
-    targetPort: 52323
+    nodePort: 31220
+  # - name: dotnet-monitor
+  #   port: 52323
+  #   protocol: TCP
+  #   targetPort: 52323
 ---
 # apiVersion: monitoring.coreos.com/v1
 # kind: ServiceMonitor
 # metadata:
-#   name: reservation-server-monitor
+#   name: reservation-app-monitor
 #   labels:
 #     release: kube-prometheus-stack
 # spec:
 #   selector:
 #     matchLabels:
-#       app: reservation-server
+#       app: reservation-app
 #   namespaceSelector:
 #     matchNames:
 #     - default
