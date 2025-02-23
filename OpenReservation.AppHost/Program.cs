@@ -4,7 +4,7 @@ var reservation = builder.AddSqlServer("db")
     .WithLifetime(ContainerLifetime.Persistent)
     .AddDatabase("Reservation")
     ;
-var redis = builder.AddRedis("redis");
+var redis = builder.AddRedis("Redis");
 builder.AddProject<Projects.OpenReservation>("reservation-app")
     .WithReference(reservation)
     .WaitFor(reservation)
