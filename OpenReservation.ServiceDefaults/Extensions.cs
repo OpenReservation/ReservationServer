@@ -57,7 +57,7 @@ public static class Extensions
                     .AddHttpClientInstrumentation();
             })
             // serviceName: OTEL_SERVICE_NAME
-            .ConfigureResource(res => res.AddEnvironmentVariableDetector())
+            .ConfigureResource(res => res.AddService("reservation-app").AddEnvironmentVariableDetector())
             ;
 
         builder.AddOpenTelemetryExporters();
