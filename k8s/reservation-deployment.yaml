@@ -46,7 +46,7 @@ spec:
             - containerPort: 80
           env:
           - name: OTEL_SERVICE_NAME
-            value: reservation
+            value: "reservation-app"
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
             value: "http://aspire-dashboard:4317"
           volumeMounts:
