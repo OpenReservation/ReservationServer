@@ -6,5 +6,4 @@ var redis = builder.AddRedis("redis")
 builder.AddProject<Projects.OpenReservation>("reservation")
     .WithReference(redis);
 
-
 await builder.Build().RunAsync();
