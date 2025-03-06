@@ -32,7 +32,7 @@
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0" />
     <PackageVersion Include="Sentry.Extensions.Logging" Version="4.13.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
-    <PackageVersion Include="WeihanLi.Common" Version="1.0.74" />
+    <PackageVersion Include="WeihanLi.Common" Version="1.0.75" />
     <PackageVersion Include="WeihanLi.EntityFramework" Version="9.0.0" />
     <PackageVersion Include="WeihanLi.Extensions.Localization.Json" Version="2.0.0" />
     <PackageVersion Include="WeihanLi.Npoi" Version="3.0.0" />
