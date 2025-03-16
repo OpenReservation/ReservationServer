@@ -19,7 +19,7 @@ builder.AddServiceDefaults();
 builder.Services.AddHttpLogging(options =>
 {
     options.RequestHeaders.Add("Cookie");
-    options.LoggingFields = HttpLoggingFields.All;
+    options.LoggingFields = HttpLoggingFields.RequestPropertiesAndHeaders | HttpLoggingFields.ResponsePropertiesAndHeaders;
 });
 startup.ConfigureServices(builder.Services);
 
