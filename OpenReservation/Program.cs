@@ -1,4 +1,5 @@
-﻿using OpenReservation;
+﻿using Microsoft.AspNetCore.HttpLogging;
+using OpenReservation;
 using WeihanLi.Common.Event;
 
 var builder = WebApplication.CreateSlimBuilder();
@@ -15,6 +16,11 @@ builder.Logging.AddJsonConsole(options =>
 var startup = new Startup(builder.Configuration, builder.Environment);
 
 builder.AddServiceDefaults();
+builder.Services.AddHttpLogging(options =>
+{
+    options.RequestHeaders.Add("Cookie");
+    options.LoggingFields = HttpLoggingFields.All;
+});
 startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();

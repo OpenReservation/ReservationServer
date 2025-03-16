@@ -409,6 +409,8 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
         app.UseRequestLocalization();
         app.UseResponseCaching();
 
+        app.UseHttpLogging();
+
         app.UseRouting();
         app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(_ => true));
 
