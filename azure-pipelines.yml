@@ -23,6 +23,7 @@ variables:
   latestImageName: 'openreservation/$(repoName):latest'
   branchImageName: 'openreservation/$(repoName):$(Build.SourceBranchName)'
   imageName: 'openreservation/$(repoName):$(tagName)'
+- group: "docker"
 
 steps:
 - task: UseDotNet@2
