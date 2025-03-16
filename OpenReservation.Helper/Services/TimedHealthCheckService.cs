@@ -1,17 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using OpenReservation.Services;
+﻿using Microsoft.Extensions.Logging;
 
-namespace OpenReservation.Helper.Services;
+namespace OpenReservation.Services;
 
 public class TimedHealthCheckService(ILogger<TimedHealthCheckService> logger)
     : TimerScheduledService(TimeSpan.FromSeconds(5), logger)
 {
     protected override Task ExecuteInternal(CancellationToken stoppingToken)
     {
-        Logger.LogInformation("Executing...");
+        Logger.LogDebug("Executing...");
         return Task.CompletedTask;
     }
 }
