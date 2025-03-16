@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
@@ -60,20 +61,19 @@ public static class Extensions
             })
             // serviceName: OTEL_SERVICE_NAME
             .ConfigureResource(res => res.AddService("OpenReservation"))
+            .AddOpenTelemetryExporters(builder.Configuration)
             ;
-
-        builder.AddOpenTelemetryExporters();
 
         return builder;
     }
 
-    private static TBuilder AddOpenTelemetryExporters<TBuilder>(this TBuilder builder) where TBuilder : IHostApplicationBuilder
+    private static OpenTelemetryBuilder AddOpenTelemetryExporters(this OpenTelemetryBuilder builder, IConfiguration configuration)
     {
-        var useOtlpExporter = !string.IsNullOrWhiteSpace(builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
+        var useOtlpExporter = !string.IsNullOrWhiteSpace(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"]);
 
         if (useOtlpExporter)
         {
-            builder.Services.AddOpenTelemetry().UseOtlpExporter();
+            builder.UseOtlpExporter();
         }
 
         return builder;
