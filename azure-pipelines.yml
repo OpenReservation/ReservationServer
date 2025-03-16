@@ -17,12 +17,18 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  tagName: '$(Build.BuildNumber)'
-  repoName: 'reservation-app'
-  stableImageName: 'openreservation/$(repoName):stable'
-  latestImageName: 'openreservation/$(repoName):latest'
-  branchImageName: 'openreservation/$(repoName):$(Build.SourceBranchName)'
-  imageName: 'openreservation/$(repoName):$(tagName)'
+- name: tagName
+  value: '$(Build.BuildNumber)'
+- name: repoName
+  value: 'reservation-app'
+- name: stableImageName
+  value: 'openreservation/$(repoName):stable'
+- name: latestImageName
+  value: 'openreservation/$(repoName):latest'
+- name: branchImageName
+  value: 'openreservation/$(repoName):$(Build.SourceBranchName)'
+- name: imageName
+  value: 'openreservation/$(repoName):$(tagName)'
 - group: "docker"
 
 steps:
