@@ -1,4 +1,8 @@
-# OpenReservation [![Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/OpenReservation.ReservationServer?branchName=dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=7&branchName=dev)
+# OpenReservation
+
+[![Azure DevOps Build Status](https://weihanli.visualstudio.com/Pipelines/_apis/build/status/OpenReservation.OpenReservation?branchName=dev)](https://weihanli.visualstudio.com/Pipelines/_build/latest?definitionId=39&branchName=dev)
+
+[![Github Actions Build Status](https://github.com/OpenReservation/OpenReservation/actions/workflows/dotnetcore.yml/badge.svg)](https://github.com/OpenReservation/OpenReservation/actions/workflows/dotnetcore.yml)
 
 ## Intro
 
