@@ -56,7 +56,7 @@ appveyor => travis => Azure Pipeline
 
 ### 2.0
 
-- [x] 活动室预约 SPA <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>（angular8 + material)
+- [x] 活动室预约 SPA <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/ReservationClient>（Angular + Material)
 - [x] 微信小程序预约 <https://github.com/OpenReservation/ReservationServer/tree/dev/OpenReservation.Clients/WxAppClient>
 - [x] 从单机到集群，详细修改参考：<https://www.cnblogs.com/weihanli/p/aspnetcore-migrate-standalone-to-cluster.html>
 
