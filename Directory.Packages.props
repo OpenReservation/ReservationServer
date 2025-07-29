@@ -5,9 +5,9 @@
     <NuGetAudit>false</NuGetAudit>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.0.0" />
-    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.0.0" />
-    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.0.0" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+    <PackageVersion Include="Aspire.Hosting.Redis" Version="9.3.0" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="9.3.0" />
     <PackageVersion Include="IdentityServer4.AccessTokenValidation" Version="3.0.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="9.0.0" />
@@ -32,10 +32,10 @@
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.0.0" />
     <PackageVersion Include="Sentry.Extensions.Logging" Version="4.13.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
-    <PackageVersion Include="WeihanLi.Common" Version="1.0.75" />
+    <PackageVersion Include="WeihanLi.Common" Version="1.0.80" />
     <PackageVersion Include="WeihanLi.EntityFramework" Version="9.0.0" />
     <PackageVersion Include="WeihanLi.Extensions.Localization.Json" Version="2.0.0" />
-    <PackageVersion Include="WeihanLi.Npoi" Version="3.0.0" />
+    <PackageVersion Include="WeihanLi.Npoi" Version="3.1.0" />
     <PackageVersion Include="WeihanLi.Redis" Version="2.0.0" />
     <PackageVersion Include="WeihanLi.Web.Extensions" Version="2.1.0" />
     <PackageVersion Include="xunit" Version="2.9.2" />
