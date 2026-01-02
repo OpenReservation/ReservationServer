@@ -36,7 +36,7 @@ steps:
   displayName: 'Use .NET sdk'
   inputs:
     packageType: sdk
-    version: 9.0.x
+    version: 10.0.x
 
 - script: dotnet --info
   displayName: 'dotnet info'

@@ -14,7 +14,7 @@
     <RepositoryUrl>https://github.com/OpenReservation/ReservationServer</RepositoryUrl>
     <Authors>WeihanLi</Authors>
     <Copyright>Copyright 2015-2024 (c) WeihanLi</Copyright>
-    <TargetFramework>net9.0</TargetFramework>
-    <DotNetPackageVersion>9.0.0</DotNetPackageVersion>
+    <TargetFramework>net10.0</TargetFramework>
+    <DotNetPackageVersion>10.0.0</DotNetPackageVersion>
   </PropertyGroup>
 </Project>

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using OpenReservation.Common;
 using OpenReservation.Database;
 using OpenReservation.Events;
@@ -20,11 +20,6 @@ using OpenReservation.ExcelMappingProfiles;
 using OpenReservation.Helpers;
 using OpenReservation.Models;
 using OpenReservation.Services;
-using OpenTelemetry;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Polly;
 using StackExchange.Redis;
 using System.Diagnostics.Metrics;
@@ -102,7 +97,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
             .AddDataAnnotationsLocalization()
             ;
 
-        var supportedCultureNames = Configuration.GetSection("Localization:SupportedCultures")?.Get<string[]>();
+        var supportedCultureNames = Configuration.GetSection("Localization:SupportedCultures").Get<string[]>();
         if (supportedCultureNames is not { Length: not 0 })
         {
             supportedCultureNames = ["zh", "en"];
@@ -176,10 +171,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
                     rc.ProtocolMessage.RedirectUri = authorizationConfiguration["RedirectUri"];
                     return Task.CompletedTask;
                 };
-                options.Events.OnUserInformationReceived = context =>
-                {
-                    return Task.CompletedTask;
-                };
+                options.Events.OnUserInformationReceived = _ => Task.CompletedTask;
             })
             ;
         services.AddAuthorization(options =>
@@ -348,18 +340,9 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
             });
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
             {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference()
-                        {
-                            Id = "Bearer",
-                            Type = ReferenceType.SecurityScheme
-                        }
-                    }, Array.Empty<string>()
-                }
+                [new OpenApiSecuritySchemeReference("Bearer", document)] = []
             });
         });
 

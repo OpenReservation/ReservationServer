@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 
 # copy http
 # COPY --from=weihanli/dotnet-httpie /usr/bin/http /usr/bin/http
@@ -10,7 +10,7 @@ ENV ASPNETCORE_HTTP_PORTS=80
 
 LABEL Maintainer="WeihanLi"
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build-env
 WORKDIR /src
 
 # Copy csproj and restore as distinct layers

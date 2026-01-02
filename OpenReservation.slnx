@@ -1,0 +1,32 @@
+<Solution>
+  <Folder Name="/00Solution Items/">
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/01UI/">
+    <Project Path="OpenReservation/OpenReservation.csproj" />
+  </Folder>
+  <Folder Name="/02Logic/">
+    <Project Path="OpenReservation.AdminLogic/OpenReservation.AdminLogic.csproj" />
+    <Project Path="OpenReservation.API/OpenReservation.API.csproj" />
+    <Project Path="OpenReservation.Helper/OpenReservation.Helper.csproj" />
+    <Project Path="OpenReservation.WechatAPI/OpenReservation.WechatAPI.csproj" />
+  </Folder>
+  <Folder Name="/03Business/">
+    <Project Path="OpenReservation.Business/OpenReservation.Business.csproj" />
+  </Folder>
+  <Folder Name="/04Database/">
+    <Project Path="OpenReservation.Database/OpenReservation.Database.csproj" />
+  </Folder>
+  <Folder Name="/05Model/">
+    <Project Path="OpenReservation.Models/OpenReservation.Models.csproj" />
+  </Folder>
+  <Folder Name="/06Common/">
+    <Project Path="OpenReservation.Common/OpenReservation.Common.csproj" />
+  </Folder>
+  <Folder Name="/07Test/">
+    <Project Path="OpenReservation.API.Test/OpenReservation.API.Test.csproj" />
+    <Project Path="OpenReservation.UnitTest/OpenReservation.UnitTest.csproj" />
+  </Folder>
+  <Project Path="OpenReservation.AppHost/OpenReservation.AppHost.csproj" />
+  <Project Path="OpenReservation.ServiceDefaults/OpenReservation.ServiceDefaults.csproj" />
+</Solution>
